@@ -17,4 +17,4 @@ ${Bearer_failed}            Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ### Get  Store ###
 ${Bearer1_success}           Bearer HGAwMy6oy0LRePfudBB3UiAxLf12
-${Bearer1_failed}            Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+${Bearer1_failed}            Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxx

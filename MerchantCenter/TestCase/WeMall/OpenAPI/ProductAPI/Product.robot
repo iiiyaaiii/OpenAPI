@@ -53,7 +53,7 @@ Get single product detail success
   ${resp}=  Get Request  single_product  ${Product_single}${product_id_success}    headers=${headers}
   Log To Console    	${resp.status_code}
   Should Be Equal As Strings    ${resp.status_code}    200
-  Should Be Equal               ${resp.json()['status_txt']}    OK
+
 
 Get single product detail success (access token failed)
   Create Session    single_product    ${STAGING_HOST}
