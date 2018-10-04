@@ -1,0 +1,411 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Test Setup        Check Mobile Report Data
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_05530
+    [Documentation]    TMH Mobile Report page is displayed when user choose menu mobile report
+    [Tags]    Low
+    Click Element    //input[@name="reset"]
+    Element Should Contain    ${breadcrumbs_truemoveh_report}    Mobile Report
+
+TC_MC_05358
+    [Documentation]    Mobile list report display mobile number list correctly by using criteria : date
+    [Tags]    Regression    Medium
+    Click Element    //input[@name="reset"]
+    ${current_date}    Get Current Date    UTC    +7 hours    result_format=%Y-%m-%d    exclude_millis=True
+    ${current_date_str}    Convert To String    ${current_date}
+    ${current_date_str}    Get Substring    ${current_date_str}    \    10
+
+    Execute Javascript    $('#import_date_from').val('${current_date_str}').datepicker('update');
+    Click Element    //input[@name="submit"]
+    Element Should Be Visible    //*[@id="table_report_info"]
+    Element Should Be Visible    //*[@id="sample-table-2_paginate"]
+
+    ${count}=    Get Matching Xpath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr
+    ${new_count}=    Set Variable If    ${count} > 10    10    ${count}
+
+    : FOR    ${a}    IN RANGE    1    ${new_count}
+    \    ${text}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[1]
+    \    ${text_int}=   Convert To Integer    ${text}
+    \    Should Be True    ${a} == ${text_int}
+    \    ${lot}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[2]
+    \    ${lot_length}=    Get Length    ${lot}
+    \    Should Be True    ${lot_length} > 0
+    \    ${type}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[3]
+    \    ${type_length}=    Get Length    ${type}
+    \    Should Be True    ${type_length} > 0
+    \    ${mobile}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[4]
+    \    ${mobile_length}=    Get Length    ${mobile}
+    \    Should Be True    ${mobile_length} == 10
+    \    ${expire}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[5]
+    \    ${expire_length}=    Get Length    ${expire}
+    \    Should Be True    ${expire_length} == 19
+    \    ${status}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[6]
+    \    ${status_length}=    Get Length    ${status}
+    \    Should Be True    ${status_length} > 0
+    \    ${import}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[7]
+    \    ${import_length}=    Get Length    ${import}
+    \    Should Be True    ${import_length} == 19
+
+TC_MC_05360
+    [Documentation]    Mobile list report display mobile number list correctly by using criteria : mobile
+    [Tags]    Regression    Medium
+    Click Element    //input[@name="reset"]
+    Input Text    //input[@id="mobile"]    0901100000
+    Click Element    //input[@name="submit"]
+    Element Should Be Visible    //*[@id="table_report_info"]
+    Element Should Be Visible    //*[@id="sample-table-2_paginate"]
+
+    ${count}=    Get Matching Xpath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr
+    ${new_count}=    Set Variable If    ${count} > 10    10    ${count}
+
+    : FOR    ${a}    IN RANGE    1    ${new_count}
+    \    ${text}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[1]
+    \    ${text_int}=   Convert To Integer    ${text}
+    \    Should Be True    ${a} == ${text_int}
+    \    ${lot}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[2]
+    \    ${lot_length}=    Get Length    ${lot}
+    \    Should Be True    ${lot_length} > 0
+    \    ${type}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[3]
+    \    ${type_length}=    Get Length    ${type}
+    \    Should Be True    ${type_length} > 0
+    \    ${mobile}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[4]
+    \    Should Be True    ${mobile} == '0901100000'
+    \    ${expire}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[5]
+    \    ${expire_length}=    Get Length    ${expire}
+    \    Should Be True    ${expire_length} == 19
+    \    ${status}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[6]
+    \    ${status_length}=    Get Length    ${status}
+    \    Should Be True    ${status_length} > 0
+    \    ${import}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[7]
+    \    ${import_length}=    Get Length    ${import}
+    \    Should Be True    ${import_length} == 19
+
+TC_MC_05521
+    [Documentation]    Mobile list report display mobile number list correctly by using criteria : lot
+    [Tags]    Regression    Medium
+    Click Element    //input[@name="reset"]
+    Click Element   //select[@id="lot"]/option[2]
+    ${lot_str}=    Get Selected List Label    //select[@id="lot"]
+
+    Click Element    //input[@name="submit"]
+    Element Should Be Visible    //*[@id="table_report_info"]
+    Element Should Be Visible    //*[@id="sample-table-2_paginate"]
+
+    ${count}=    Get Matching Xpath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr
+    ${new_count}=    Set Variable If    ${count} > 10    10    ${count}
+
+    : FOR    ${a}    IN RANGE    1    ${new_count}
+    \    ${text}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[1]
+    \    ${text_int}=   Convert To Integer    ${text}
+    \    Should Be True    ${a} == ${text_int}
+    \    ${lot}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[2]
+    \    Should Be True    ${lot} == ${lot_str}
+    \    ${type}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[3]
+    \    ${type_length}=    Get Length    ${type}
+    \    Should Be True    ${type_length} > 0
+    \    ${mobile}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[4]
+    \    ${mobile_length}=    Get Length    ${mobile}
+    \    Should Be True    ${mobile_length} == 10
+    \    ${expire}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[5]
+    \    ${expire_length}=    Get Length    ${expire}
+    \    Should Be True    ${expire_length} == 19
+    \    ${status}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[6]
+    \    ${status_length}=    Get Length    ${status}
+    \    Should Be True    ${status_length} > 0
+    \    ${import}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[7]
+    \    ${import_length}=    Get Length    ${import}
+    \    Should Be True    ${import_length} == 19
+
+TC_MC_05367
+    [Documentation]    Mobile list report display mobile number list correctly by using criteria : expire
+    [Tags]    Regression    Medium
+    Click Element    //input[@name="reset"]
+    ${current_date_time}    Get Current Date    UTC    +7 hours    result_format=timestamp    exclude_millis=True
+    ${current_date_time}=    Convert Date    ${current_date_time}    epoch
+    Click Element   //select[@id="expired"]/option[2]
+
+    Click Element    //input[@name="submit"]
+    Element Should Be Visible    //*[@id="table_report_info"]
+    Element Should Be Visible    //*[@id="sample-table-2_paginate"]
+
+    ${count}=    Get Matching Xpath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr
+    ${new_count}=    Set Variable If    ${count} > 10    10    ${count}
+
+    : FOR    ${a}    IN RANGE    1    ${new_count}
+    \    ${text}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[1]
+    \    ${text_int}=   Convert To Integer    ${text}
+    \    Should Be True    ${a} == ${text_int}
+    \    ${lot}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[2]
+    \    ${lot_length}=    Get Length    ${lot}
+    \    Should Be True    ${lot_length} > 0
+    \    ${type}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[3]
+    \    ${type_length}=    Get Length    ${type}
+    \    Should Be True    ${type_length} > 0
+    \    ${mobile}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[4]
+    \    ${mobile_length}=    Get Length    ${mobile}
+    \    Should Be True    ${mobile_length} == 10
+    \    ${expire}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[5]
+    \    ${expire_length}=    Get Length    ${expire}
+    \    Should Be True    ${expire_length} == 19
+    \    ${expire_date_time}=    Convert Date    ${expire}    epoch
+    \    Should Be True    ${expire_date_time} < ${current_date_time}
+    \    ${status}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[6]
+    \    ${status_length}=    Get Length    ${status}
+    \    Should Be True    ${status_length} > 0
+    \    ${import}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[7]
+    \    ${import_length}=    Get Length    ${import}
+    \    Should Be True    ${import_length} == 19
+
+TC_MC_05368
+    [Documentation]    Mobile list report display mobile number list correctly by using criteria : not expire
+    [Tags]    Regression    Medium
+    Click Element    //input[@name="reset"]
+    ${current_date_time}    Get Current Date    UTC    +7 hours    result_format=timestamp    exclude_millis=True
+    ${current_date_time}=    Convert Date    ${current_date_time}    epoch
+    Click Element   //select[@id="expired"]/option[3]
+
+    Click Element    //input[@name="submit"]
+    Element Should Be Visible    //*[@id="table_report_info"]
+    Element Should Be Visible    //*[@id="sample-table-2_paginate"]
+
+    ${count}=    Get Matching Xpath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr
+    ${new_count}=    Set Variable If    ${count} > 10    10    ${count}
+
+    : FOR    ${a}    IN RANGE    1    ${new_count}
+    \    ${text}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[1]
+    \    ${text_int}=   Convert To Integer    ${text}
+    \    Should Be True    ${a} == ${text_int}
+    \    ${lot}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[2]
+    \    ${lot_length}=    Get Length    ${lot}
+    \    Should Be True    ${lot_length} > 0
+    \    ${type}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[3]
+    \    ${type_length}=    Get Length    ${type}
+    \    Should Be True    ${type_length} > 0
+    \    ${mobile}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[4]
+    \    ${mobile_length}=    Get Length    ${mobile}
+    \    Should Be True    ${mobile_length} == 10
+    \    ${expire}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[5]
+    \    ${expire_length}=    Get Length    ${expire}
+    \    Should Be True    ${expire_length} == 19
+    \    ${expire_date_time}=    Convert Date    ${expire}    epoch
+    \    Should Be True    ${expire_date_time} >= ${current_date_time}
+    \    ${status}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[6]
+    \    ${status_length}=    Get Length    ${status}
+    \    Should Be True    ${status_length} > 0
+    \    ${import}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[7]
+    \    ${import_length}=    Get Length    ${import}
+    \    Should Be True    ${import_length} == 19
+
+TC_MC_05369
+    [Documentation]    Mobile list report display mobile number list correctly by using criteria : draft
+    [Tags]    Regression    Medium
+    Click Element    //input[@name="reset"]
+    Click Element   //select[@id="status"]/option[4]
+    Click Element    //input[@name="submit"]
+    Element Should Be Visible    //*[@id="table_report_info"]
+    Element Should Be Visible    //*[@id="sample-table-2_paginate"]
+
+    ${count}=    Get Matching Xpath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr
+    ${new_count}=    Set Variable If    ${count} > 10    10    ${count}
+
+    : FOR    ${a}    IN RANGE    1    ${new_count}
+    \    ${text}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[1]
+    \    ${text_int}=   Convert To Integer    ${text}
+    \    Should Be True    ${a} == ${text_int}
+    \    ${lot}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[2]
+    \    ${lot_length}=    Get Length    ${lot}
+    \    Should Be True    ${lot_length} > 0
+    \    ${type}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[3]
+    \    ${type_length}=    Get Length    ${type}
+    \    Should Be True    ${type_length} > 0
+    \    ${mobile}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[4]
+    \    ${mobile_length}=    Get Length    ${mobile}
+    \    Should Be True    ${mobile_length} == 10
+    \    ${expire}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[5]
+    \    ${expire_length}=    Get Length    ${expire}
+    \    Should Be True    ${expire_length} == 19
+    \    ${status}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[6]
+    \    ${status_length}=    Get Length    ${status}
+    \    Should Be True    ${status_length} > 0
+    \    ${status_lower} =  Convert To Lowercase    ${status}
+    \    Should Be Equal    ${status_lower}    draft
+    \    ${import}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[7]
+    \    ${import_length}=    Get Length    ${import}
+    \    Should Be True    ${import_length} == 19
+
+TC_MC_05370
+    [Documentation]    Mobile list report display mobile number list correctly by using criteria : used
+    [Tags]    Regression    Medium
+    Click Element    //input[@name="reset"]
+    Click Element   //select[@id="status"]/option[5]
+    Click Element    //input[@name="submit"]
+    Element Should Be Visible    //*[@id="table_report_info"]
+    Element Should Be Visible    //*[@id="sample-table-2_paginate"]
+
+    ${count}=    Get Matching Xpath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr
+    ${new_count}=    Set Variable If    ${count} > 10    10    ${count}
+
+    : FOR    ${a}    IN RANGE    1    ${new_count}
+    \    ${text}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[1]
+    \    ${text_int}=   Convert To Integer    ${text}
+    \    Should Be True    ${a} == ${text_int}
+    \    ${lot}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[2]
+    \    ${lot_length}=    Get Length    ${lot}
+    \    Should Be True    ${lot_length} > 0
+    \    ${type}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[3]
+    \    ${type_length}=    Get Length    ${type}
+    \    Should Be True    ${type_length} > 0
+    \    ${mobile}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[4]
+    \    ${mobile_length}=    Get Length    ${mobile}
+    \    Should Be True    ${mobile_length} == 10
+    \    ${expire}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[5]
+    \    ${expire_length}=    Get Length    ${expire}
+    \    Should Be True    ${expire_length} == 19
+    \    ${status}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[6]
+    \    ${status_length}=    Get Length    ${status}
+    \    Should Be True    ${status_length} > 0
+    \    ${status_lower} =  Convert To Lowercase    ${status}
+    \    Should Be Equal    ${status_lower}    used
+    \    ${import}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[7]
+    \    ${import_length}=    Get Length    ${import}
+    \    Should Be True    ${import_length} == 19
+
+TC_MC_05371
+    [Documentation]    Mobile list report display mobile number list correctly by using criteria : active
+    [Tags]    Regression    Medium
+    Click Element    //input[@name="reset"]
+    Click Element   //select[@id="status"]/option[2]
+    Click Element    //input[@name="submit"]
+    Element Should Be Visible    //*[@id="table_report_info"]
+    Element Should Be Visible    //*[@id="sample-table-2_paginate"]
+
+    ${count}=    Get Matching Xpath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr
+    ${new_count}=    Set Variable If    ${count} > 10    10    ${count}
+
+    : FOR    ${a}    IN RANGE    1    ${new_count}
+    \    ${text}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[1]
+    \    ${text_int}=   Convert To Integer    ${text}
+    \    Should Be True    ${a} == ${text_int}
+    \    ${lot}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[2]
+    \    ${lot_length}=    Get Length    ${lot}
+    \    Should Be True    ${lot_length} > 0
+    \    ${type}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[3]
+    \    ${type_length}=    Get Length    ${type}
+    \    Should Be True    ${type_length} > 0
+    \    ${mobile}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[4]
+    \    ${mobile_length}=    Get Length    ${mobile}
+    \    Should Be True    ${mobile_length} == 10
+    \    ${expire}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[5]
+    \    ${expire_length}=    Get Length    ${expire}
+    \    Should Be True    ${expire_length} == 19
+    \    ${status}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[6]
+    \    ${status_length}=    Get Length    ${status}
+    \    Should Be True    ${status_length} > 0
+    \    ${status_lower} =  Convert To Lowercase    ${status}
+    \    Should Be Equal    ${status_lower}    active
+    \    ${import}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[7]
+    \    ${import_length}=    Get Length    ${import}
+    \    Should Be True    ${import_length} == 19
+
+TC_MC_05372
+    [Documentation]    Mobile list report display mobile number list correctly by using criteria : inactive
+    [Tags]    Regression    Medium
+    Click Element    //input[@name="reset"]
+    Click Element   //select[@id="status"]/option[3]
+    Click Element    //input[@name="submit"]
+    Element Should Be Visible    //*[@id="table_report_info"]
+    Element Should Be Visible    //*[@id="sample-table-2_paginate"]
+
+    ${count}=    Get Matching Xpath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr
+    ${new_count}=    Set Variable If    ${count} > 10    10    ${count}
+
+    : FOR    ${a}    IN RANGE    1    ${new_count}
+    \    ${text}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[1]
+    \    ${text_int}=   Convert To Integer    ${text}
+    \    Should Be True    ${a} == ${text_int}
+    \    ${lot}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[2]
+    \    ${lot_length}=    Get Length    ${lot}
+    \    Should Be True    ${lot_length} > 0
+    \    ${type}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[3]
+    \    ${type_length}=    Get Length    ${type}
+    \    Should Be True    ${type_length} > 0
+    \    ${mobile}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[4]
+    \    ${mobile_length}=    Get Length    ${mobile}
+    \    Should Be True    ${mobile_length} == 10
+    \    ${expire}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[5]
+    \    ${expire_length}=    Get Length    ${expire}
+    \    Should Be True    ${expire_length} == 19
+    \    ${status}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[6]
+    \    ${status_length}=    Get Length    ${status}
+    \    Should Be True    ${status_length} > 0
+    \    ${status_lower} =  Convert To Lowercase    ${status}
+    \    Should Be Equal    ${status_lower}    inactive
+    \    ${import}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[7]
+    \    ${import_length}=    Get Length    ${import}
+    \    Should Be True    ${import_length} == 19
+
+TC_MC_09450
+    [Documentation]    Search only one mobile number
+    [Tags]    Regression    Medium
+    Search mobile number    0601125827
+    Check the searched mobile number is displayed correctly
+
+TC_MC_09451
+    [Documentation]    Search multiple mobile number
+    [Tags]    Regression    Medium
+    Search mulitple mobile numbers    0901300252,0901300254
+    Check the result displays searched mobile number correctly
+
+TC_MC_09453
+    [Documentation]    Search 101 mobile number
+    [Tags]    Regression    Medium
+    Search mobile number    0901300252,0901300253,0901300254,0901300255,0901300276,0901300277,0600112518,0600112527,0901300308,0917281212,0901300309,0600112536,0600112545,0901300101,0901300102,0901300103,0901300104,0901300105,0901300126,0901300127,0901300128,0901300129,0901300130,0901300151,0901300152,0901300153,0901300154,0901300155,0901300176,0901300177,0901300178,0901300179,0901300180,0901300201,0901300202,0901300203,0901300204,0901300205,0901300226,0901300227,0901300228,0901300229,0901300230,0901300001,0901300002,0901300003,0901300004,0901300005,0901300026,0901300027,0901300028,0901300029,0901300030,0901300051,0901300052,0901300053,0901300054,0901300055,0839999909,0839999918,0839999927,0839999936,0839999945,0839999954,0839999963,0839999972,0839999981,0839999990,0712369909,0712369918,0712369927,0712369936, 0712369945,0712369954,0712369963,0712369981,0712369972,0712369990,0900136688,0900146688,0900196688,0900216688,0900246688,0900156688,0900166688,0900176688,0900186688,0900206688,0900226688,0900236688,0900276688,0900256688,0900266688,0900296688,0900286688,0900321234,0900306688,0900331234,0900341234,0900351234,0900361234,0900371234,0900391234,0900381234,0900401234,0900411234,0900421234,0901300254
+    Check that the result message display only 100 mobile number correctly
+
+TC_MC_09506
+    [Documentation]    Change Active to Inactive status for 1 mobile number
+    [Tags]    Regression    Medium
+    Search mobile number    0901300300
+    Change status to    Inactive
+    Check that the mobile status is changed successfully
+
+TC_MC_09507
+    [Documentation]     Change Inactive to Active status for 1 mobile number
+    [Tags]    Regression    Medium
+    Search mobile number    0901300300
+    Change status to    Active
+    Check that the mobile status is changed successfully
+
+TC_MC_09510
+    [Documentation]     Change Active to Inactive status for 100 mobile numbers
+    [Tags]    Regression    Medium
+    Search mobile number    0600112527,0901300308,0917281212,0901300309,0600112536,0600112545,0901300101,0901300102,0901300103,0901300104,0901300105,0901300126,0901300127,0901300128,0901300129,0901300130,0901300151,0901300152,0901300153,0901300154,0901300155,0901300176,0901300177,0901300178,0901300179,0901300180,0901300201,0901300202,0901300203,0901300204,0901300205,0901300226,0901300227,0901300228,0901300229,0901300230,0901300001,0901300002,0901300003,0901300004,0901300005,0901300026,0901300027,0901300028,0901300029,0901300030,0901300051,0901300052,0901300053,0901300054,0901300055,0839999909,0839999918,0839999927,0839999936,0839999945,0839999954,0839999963,0839999972,0839999981,0839999990,0712369909,0712369918,0712369927,0712369936,0712369945,0712369954,0712369963,0712369981,0712369972,0712369990,0900136688,0900146688,0900196688,0900216688,0900246688,0900156688,0900166688,0900176688,0900186688,0900206688,0900226688,0900236688,0900276688,0900256688,0900266688,0900296688,0900286688,0900321234,0900306688,0900331234,0900341234,0900351234,0900361234,0900371234,0900391234,0900381234,0900401234,0900411234,0900421234
+    Change status to    Inactive
+    Check that the mobile status is changed successfully
+
+TC_MC_09511
+    [Documentation]     Change Active to Inactive status for 100 mobile numbers
+    [Tags]    Regression    Medium
+    Search mobile number    0600112527,0901300308,0917281212,0901300309,0600112536,0600112545,0901300101,0901300102,0901300103,0901300104,0901300105,0901300126,0901300127,0901300128,0901300129,0901300130,0901300151,0901300152,0901300153,0901300154,0901300155,0901300176,0901300177,0901300178,0901300179,0901300180,0901300201,0901300202,0901300203,0901300204,0901300205,0901300226,0901300227,0901300228,0901300229,0901300230,0901300001,0901300002,0901300003,0901300004,0901300005,0901300026,0901300027,0901300028,0901300029,0901300030,0901300051,0901300052,0901300053,0901300054,0901300055,0839999909,0839999918,0839999927,0839999936,0839999945,0839999954,0839999963,0839999972,0839999981,0839999990,0712369909,0712369918,0712369927,0712369936,0712369945,0712369954,0712369963,0712369981,0712369972,0712369990,0900136688,0900146688,0900196688,0900216688,0900246688,0900156688,0900166688,0900176688,0900186688,0900206688,0900226688,0900236688,0900276688,0900256688,0900266688,0900296688,0900286688,0900321234,0900306688,0900331234,0900341234,0900351234,0900361234,0900371234,0900391234,0900381234,0900401234,0900411234,0900421234
+    Change status to    Active
+    Check that the mobile status is changed successfully
+
+TC_MC_09514
+    [Documentation]     Change Used to Active or Inactive status
+    [Tags]    Regression    Medium
+    Search mobile number    0601125827,0900296688
+    Change status to    Active
+    Check that the used mobile status isn't changed correctly

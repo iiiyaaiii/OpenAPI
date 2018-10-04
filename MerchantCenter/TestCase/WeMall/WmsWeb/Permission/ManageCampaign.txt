@@ -1,0 +1,127 @@
+*** Settings ***
+Suite Setup       Suite Setup       WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web
+Test Setup        Go To    ${URL_WMS}/groups
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Permission.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Permission.txt
+
+*** Test Cases ***
+TC_MC_00965
+    [Documentation]    [Wemall] Not select premission
+    Click Edit Role
+    Click Unselect All Permission    ระบบจัดการ Campaign
+    Click Save Button
+    Go To Campaign
+    Verify Not Access Campaign
+
+TC_MC_00943
+    [Documentation]    [Wemall] Select premission เห็น
+    Click Edit Role
+    Click Unselect All Permission    ระบบจัดการ Campaign
+    Click Select Role    ระบบจัดการ Campaign    เห็น
+    Click Save Button
+    Go To Campaign
+    Verify Campaign Permission    เห็น
+
+TC_MC_00945
+    [Documentation]    [Wemall] Select premission Mange-show-view
+    Click Edit Role
+    Click Unselect All Permission    ระบบจัดการ Campaign
+    Click Select Role    ระบบจัดการ Campaign    เห็น
+    Click Select Role    ระบบจัดการ Campaign    manage-show-view
+    Click Save Button
+    Go To Campaign
+    Get Campaign ID
+    Verify Campaign Permission    manage-show-view
+
+TC_MC_00947
+    [Documentation]    [Wemall] Select premission Approve-view
+    Click Edit Role
+    Click Unselect All Permission    ระบบจัดการ Campaign
+    Click Select Role    ระบบจัดการ Campaign    เห็น
+    Click Select Role    ระบบจัดการ Campaign    approve-view
+    Click Save Button
+    Go To Campaign
+    Get Campaign ID
+    Verify Campaign Permission    approve-view
+
+TC_MC_00949
+    [Documentation]    [Wemall] Select premission Export
+    Click Edit Role
+    Click Unselect All Permission    ระบบจัดการ Campaign
+    Click Select Role    ระบบจัดการ Campaign    เห็น
+    Click Select Role    ระบบจัดการ Campaign    export
+    Click Save Button
+    Go To Campaign
+    Get Campaign ID
+    Verify Campaign Permission    export
+
+TC_MC_00951
+    [Documentation]    [Wemall] Select premission Campaign-view
+    Click Edit Role
+    Click Unselect All Permission    ระบบจัดการ Campaign
+    Click Select Role    ระบบจัดการ Campaign    เห็น
+    Click Select Role    ระบบจัดการ Campaign    campaign-view
+    Click Save Button
+    Go To Campaign
+    Get Campaign ID
+    Verify Campaign Permission    campaign-view
+
+TC_MC_00955
+    [Documentation]    [Wemall] Select premission Dealzapp
+    Click Edit Role
+    Click Unselect All Permission    ระบบจัดการ Campaign
+    Click Select Role    ระบบจัดการ Campaign    เห็น
+    Click Select Role    ระบบจัดการ Campaign    dealzapp
+    Click Save Button
+    Go To Campaign
+    Selete Campaign Tab    Deal Zapp
+    Get Campaign ID
+    Verify Campaign Permission    dealzapp
+
+TC_MC_00957
+    [Documentation]    [Wemall] Select premission Collection-non-join
+    Click Edit Role
+    Click Unselect All Permission    ระบบจัดการ Campaign
+    Click Select Role    ระบบจัดการ Campaign    เห็น
+    Click Select Role    ระบบจัดการ Campaign    collection-non-join
+    Click Save Button
+    Go To Campaign
+    Selete Campaign Tab    Non Join Campaign
+    Get Campaign ID
+    Verify Campaign Permission    collection-non-join
+
+TC_MC_00959
+    [Documentation]    [Wemall] Select premission Collection-join
+    Click Edit Role
+    Click Unselect All Permission    ระบบจัดการ Campaign
+    Click Select Role    ระบบจัดการ Campaign    เห็น
+    Click Select Role    ระบบจัดการ Campaign    collection-join
+    Click Save Button
+    Go To Campaign
+    Selete Campaign Tab    Join Campaign
+    Get Campaign ID
+    Verify Campaign Permission    collection-join
+
+TC_MC_00961
+    [Documentation]    [Wemall] Select premission Promotion
+    Click Edit Role
+    Click Unselect All Permission    ระบบจัดการ Campaign
+    Click Select Role    ระบบจัดการ Campaign    เห็น
+    Click Select Role    ระบบจัดการ Campaign    promotion
+    Click Save Button
+    Go To Campaign
+    Selete Campaign Tab    WLS Promotion
+    Get Campaign ID
+    Verify Campaign Permission    promotion
+
+TC_MC_00963
+    [Documentation]    [Wemall] Select all premission
+    Click Edit Role
+    Click Select All Permission    ระบบจัดการ Campaign
+    Click Save Button
+    Verify Campaign Permission    All

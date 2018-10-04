@@ -1,0 +1,92 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../../Resource/WeLoveShopping/WebElement/StoreDetail.txt
+Resource          ../../Resource/Wemall/WebElement/Store_Detail.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/AccountHistory.txt
+Resource          ../../Resource/WeLoveShopping/init.robot
+
+***Keyword***
+
+Go To Store Order Detail Page
+    [Documentation]    Use for go to store order detail page
+    [Arguments]    ${slug_name}    ${secure_key}
+    Go To    ${URL_STORE}/${slug_name}/admin/orders/show/${secure_key}
+
+Check Text Main Status Order
+    [Documentation]    Use for check main status order
+    [Arguments]    ${txt_main_status}
+    Check Text    ${order_status_detail}    ${txt_main_status}
+
+Check Order Countdown Main Status Order
+    [Documentation]    Use for check order countdown main status order
+    Should Not Match Regexp    ${order_countdown_detail_main}    เหลือเวลาภายใน\n([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})
+
+Check Button Shipping Detail Page
+    [Documentation]    Use for check button shipping detail page
+    Check Text    ${btn_shipping_detail}    แจ้งจัดส่งสินค้า
+
+Check Product Detail Countdown Time
+    [Documentation]    Use for check product count down time
+     Should Not Match Regexp    ${countdown_product}    เหลือเวลาภายใน\n([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})
+
+Check countdown time text on top bubble store detail
+    [Documentation]    Use for check countdown time text on tob bubble store detail page
+    [Arguments]    ${countdown_time_text}
+    Should Not Match Regexp    ${countdown_time_text}    ([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})
+
+Click accept refund button
+    [Documentation]    Use for click accept refund button
+    Click Element    ${accept_refund_button}
+
+Input password accept request refund
+    [Documentation]    Use for input password accept request refund
+    [Arguments]    ${password}
+    Input Text    ${element_password_accept_refund}    ${password}
+
+Click confirm accept refund button
+    [Documentation]    Use for click confirm accept refund button
+    Click Element    ${confirm_accept_button}
+
+Click ok button on confirm accept modal
+    [Documentation]    Use for click ok button on confirm accept modal
+    Click Element    ${ok_button_confirm_accept_modal}
+
+Click decline refund button
+    [Documentation]    Use for click decline refund button
+    Click Element    ${decline_refund_button}
+
+Input description decline to buyer
+    [Documentation]    Use for input description decline to buyer
+    [Arguments]    ${description_decline}
+    Input Text    ${element_description_decline}    ${description_decline}
+
+Choose file for decline refund
+    [Documentation]    Use for choose file for decline refund
+    Execute Javascript    $('input[id="refund_upload"]').css({"visibility":"visible"});
+    ${visibility}=    Execute Javascript    return $('input[id="refund_upload"]').css("visibility");
+    ${file_path}    Replace String    ${CURDIR}    ${/}Keyword${/}Common    ${/}Resource${/}${BU}
+    Choose File    ${element_browse_file_decline}    ${file_path}${/}Image${/}header.jpg
+
+Click confirm decline refund button
+    [Documentation]    Use for click confirm decline refund button
+    Click Element    ${confirm_decline_button}
+
+Click ok button on confirm decline modal
+    [Documentation]    Use for click ok button on confirm decline modal
+    Click Element    ${ok_button_confirm_decline_modal}
+
+Check Button Shipping Custom Detail Page
+    [Documentation]    Use for check button shipping detail page
+    Check Text    ${element_shipping_detail}    แจ้งจัดส่งสินค้า
+
+Seller accept the refund request
+    [Documentation]    Seller complete accept the refund request
+    [Arguments]    ${password_store_order}
+    Wait Until Element Is Visible    ${view_detail_store_order_detail}
+    Click Element    ${view_detail_store_order_detail}
+    Click accept refund button
+    Check Element Visible    ${accept_refund_modal}    ${expect_load_time}
+    Input password accept request refund    ${password_store_order}
+    Click confirm accept refund button
+    Click ok button on confirm accept modal
+    Check Element Visible    ${go_to_detail_button}    ${expect_load_time}

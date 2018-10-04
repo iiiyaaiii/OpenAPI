@@ -1,0 +1,123 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Go to My Shipping Address Page    ${buyer_account}    ${buyer_account_pass}
+Suite Teardown    Run Keywords    Clear Active Login    AND    Close All Browsers
+Force Tags        Account-API    ManageProfile    Ligo    mc-wls
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/ManageProfile.txt
+
+*** Variables ***
+##INITIAL
+${testFName}    TestFirstName
+${testLName}    TestLastName
+${testStreet}    This is street address
+${testCountry}    ประเทศไทย
+${testProvince}    กรุงเทพมหานคร
+${testDistrict}    ลาดพร้าว
+${testSubDistrict}    ลาดพร้าว
+${testPostalCode}    12300
+${testContactNumber}    0810000007
+${testEmail}    buyer_test07@mailinator.com
+##UPDATE
+${testFNameUpd}    TestFirstNameUpdate
+${testLNameUpd}    TestLastNameUpdate
+${testStreetUpd}    This is updated street address
+${testCountryUpd}    ประเทศไทย
+${testProvinceUpd}    กรุงเทพมหานคร
+${testDistrictUpd}    คลองสามวา
+${testSubDistrictUpd}    ทรายกองดิน
+${testPostalCodeUpd}    10510
+${testContactNumberUpd}    0819998765
+${testEmailUpd}    buyer_test07_update@mailinator.com
+
+*** Test Cases ***
+TC_MC_00076
+    [Documentation]    [Welove]Add new shipping address
+    [Tags]    Regression    SmokeTest    Sprint2017MC5    Medium
+    Click on Add New Address Button
+    Fill In Contact Name    ${testFName}    ${testLName}
+    Fill In Shipping Address    ${testStreet}    ${testCountry}    ${testProvince}    ${testDistrict}    ${testSubDistrict}    ${testPostalCode}
+    Fill In Contact Information    ${testContactNumber}    ${testEmail}
+    Save Shipping Address
+    Entered Shipping Address Should Be Appeared    ${testFName} ${testLName}
+    Entered Shipping Address Should Be Appeared    ${testStreet}
+    Entered Shipping Address Should Be Appeared    ${testProvince} ${testPostalCode} ${testCountry}
+    Entered Shipping Address Should Be Appeared    เบอร์โทรศัพท์ : ${testContactNumber}
+    Entered Shipping Address Should Be Appeared    อีเมล: ${testEmail}
+    [Teardown]    ManageProfile.Remove Shipping Address    ${testFName} ${testLName}
+
+TC_MC_00078
+    [Documentation]    [Welove]Edit shipping address
+    [Tags]    Regression    Sprint2017MC5    Medium
+    [Setup]    Prepare New Shipping Address
+    ManageProfile.Edit Shipping Address    ${testFName} ${testLName}
+    Fill In Contact Name    ${testFNameUpd}    ${testLNameUpd}
+    Fill In Shipping Address    ${testStreetUpd}    ${testCountryUpd}    ${testProvinceUpd}    ${testDistrictUpd}    ${testSubDistrictUpd}    ${testPostalCodeUpd}
+    Fill In Contact Information    ${testContactNumberUpd}    ${testEmailUpd}
+    Save Shipping Address
+    Entered Shipping Address Should Be Appeared    ${testFNameUpd} ${testLNameUpd}
+    Entered Shipping Address Should Be Appeared    ${testStreetUpd}
+    Entered Shipping Address Should Be Appeared    ${testProvinceUpd} ${testPostalCodeUpd} ${testCountryUpd}
+    Entered Shipping Address Should Be Appeared    เบอร์โทรศัพท์ : ${testContactNumberUpd}
+    Entered Shipping Address Should Be Appeared    อีเมล: ${testEmailUpd}
+    [Teardown]    ManageProfile.Remove Shipping Address    ${testFNameUpd} ${testLNameUpd}
+
+TC_MC_00080
+    [Documentation]    [Welove]Delete shipping address
+    [Tags]    Regression    Sprint2017MC5    Low
+    [Setup]    Prepare New Shipping Address
+    ManageProfile.Remove Shipping Address    ${testFName} ${testLName}
+
+*** Keywords ***
+Go to My Shipping Address Page
+    [Arguments]    ${username}    ${password}
+    Go to Login    ${username}    ${password}
+    Execute JavaScript    ${myacc}.mouseover()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Click Element    ${profile_address}
+
+Click on Add New Address Button
+    Click Element    ${address_add}
+
+Fill In Contact Name
+    [Arguments]    ${firstName}    ${lastName}
+    Input Text    ${edit_name}    ${firstName}
+    Input Text    ${edit_surname}    ${lastName}
+
+Fill In Shipping Address
+    [Arguments]    ${streetAddress}    ${country}    ${province}    ${district}    ${subDistrict}    ${postalCode}
+    Input Text    ${address_addr}    ${streetAddress}
+    Select From List By Label    country    ${country}
+    Select From List By Label    province    ${province}
+    Select From List By Label    city    ${district}
+    Select From List By Label    district    ${subDistrict}
+    Input Text    ${address_zipcode}    ${postalCode}
+
+Fill In Contact Information
+    [Arguments]    ${phoneNumber}    ${email}
+    Input Text    ${edit_phone}    ${phoneNumber}
+    Input Text    ${address_shippingemail}    ${email}
+
+Save Shipping Address
+    Execute Javascript    $("button:contains(บันทึก)").click()
+
+Entered Shipping Address Should Be Appeared
+    [Arguments]    ${shippingDetail}
+    Element Should Contain    ${address_info}    ${shippingDetail}
+
+Prepare New Shipping Address
+    Click on Add New Address Button
+    Fill In Contact Name    ${testFName}    ${testLName}
+    Fill In Shipping Address    ${testStreet}    ${testCountry}    ${testProvince}    ${testDistrict}    ${testSubDistrict}    ${testPostalCode}
+    Fill In Contact Information    ${testContactNumber}    ${testEmail}
+    Save Shipping Address
+
+
+

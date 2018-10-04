@@ -1,0 +1,182 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Force Tags        Account-Web
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignUp.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/LevelD.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Member_Register.txt
+
+*** Test Cases ***
+TC_MC_00009
+   [Documentation]    Register - (new pages register) Register new member with invalid password, Data Deficient 8 words "123456"
+   [Tags]    Regression     Low
+   Delete All Product In Cart
+   Go To LevelD Product On Wemall Web    ${robot_stg_store1_instock_type_use}
+   Click Add to Cart and go to Cart
+   Click Go To Checkout
+   Key Register Checkout    123456
+   Verify Message Password Error    กรุณากรอกอย่างน้อย 8 ตัวอักษร
+
+TC_MC_00011
+   [Documentation]    [WeMall]Register - (new pages register) Register new member with invalid password format "กกกขขขคคค"
+   Delete All Product In Cart
+   Go To LevelD Product On Wemall Web    ${robot_stg_store1_instock_type_use}
+   Click Add to Cart and go to Cart
+   Click Go To Checkout
+   Key Register Checkout    กกกขขขคคค
+   Verify Message Password Error    ข้อมูลไม่ถูกต้อง (ตัวอักษรและตัวเลขเท่านั้น)
+
+TC_MC_00013
+   [Documentation]    Register - (new pages register) Register new member with invalid password format "12345678"
+   [Tags]    Regression    Low
+   Delete All Product In Cart
+   Go To LevelD Product On Wemall Web    ${robot_stg_store1_instock_type_use}
+   Click Add to Cart and go to Cart
+   Click Go To Checkout
+   Key Register Checkout    12345678
+   Verify Message Password Error    กรุณาใส่รหัสผ่านที่คาดเดาได้ยาก
+
+TC_MC_00015
+   [Documentation]    Register - (new pages register) Register new member with invalid password, comfirm password format "12345678"
+   [Tags]    Regression    Low
+   Delete All Product In Cart
+   Go To LevelD Product On Wemall Web    ${robot_stg_store1_instock_type_use}
+   Click Add to Cart and go to Cart
+   Click Go To Checkout
+   Key Register Checkout    12345678
+   Key Register Checkout Confirm    123432
+   Verify Message Password Confirm Error    กรุณากรอกให้ตรงกับรหัสผ่าน
+
+TC_MC_00017
+   [Documentation]    Register - (new pages register) Register new member with invalid mobile number format "01234567"
+   [Tags]    Regression    Low
+   Delete All Product In Cart
+   Go To LevelD Product On Wemall Web    ${robot_stg_store1_instock_type_use}
+   Click Add to Cart and go to Cart
+   Click Go To Checkout
+   Key Register Checkout Mobile Number    01234567
+   Verify Message Number Error    กรุณากรอกเบอร์โทรศัพท์มือถือ 10 หลัก
+
+TC_MC_00019
+   [Documentation]    Register - (new pages register) Register new member with invalid mobile number format "1234567890"
+   [Tags]    Regression    Low
+   Delete All Product In Cart
+   Go To LevelD Product On Wemall Web    ${robot_stg_store1_instock_type_use}
+   Click Add to Cart and go to Cart
+   Click Go To Checkout
+   Key Register Checkout Mobile Number    1234567890
+   Verify Message Number Error    หมายเลขโทรศัพท์ต้องขึ้นต้นด้วย 0 เท่านั้น
+
+TC_MC_00021
+   [Documentation]    Register - (new pages register) Register new member with invalid mobile number format "กกกกกกกกกก"
+   [Tags]    Regression    Low
+   Delete All Product In Cart
+   Go To LevelD Product On Wemall Web    ${robot_stg_store1_instock_type_use}
+   Click Add to Cart and go to Cart
+   Click Go To Checkout
+   Key Register Checkout Mobile Number    กกกกกกกกกก
+   Verify Message Number Error    เบอร์โทรศัพท์มือถือไม่ถูกต้อง
+
+TC_MC_00023
+   [Documentation]    Checkout - Register - Check hint password
+   [Tags]    Regression    Low
+   Go to    ${URL_ACCOUNT}/login?ref=https://checkout.wls-dev.com/store/step2
+   Click Element    //a[@href="https://account.wemall-dev.com/signup/user"]
+   Element Should Be Visible    ${checkout_regis_hint}
+   Element Should Contain    ${checkout_regis_hint}    รหัสผ่านต้องมีความยาวตั้งแต่ 8 ตัว ขึ้นไป ประกอบด้วย
+   Element Should Contain    ${checkout_regis_hint}    - ตัวอักษร (A-Z) ตัวใหญ่ อย่างน้อย 1 ตัว
+   Element Should Contain    ${checkout_regis_hint}    - ตัวอักษร (a-z) ตัวเล็ก อย่างน้อย 1 ตัว
+   Element Should Contain    ${checkout_regis_hint}    - ตัวเลข อย่างน้อย 1 ตัว
+
+TC_MC_00025
+   [Documentation]    Checkout - Register new member with invalid password format "testbuyer"
+   [Tags]    Regression    Low
+   Go to    ${URL_ACCOUNT}/signup/user
+   Input Password    ${password_register}    testbuyer
+   Execute Javascript    ${password_register_js}.focusout()
+   Element Should Contain    ${password_register_error}    กรุณาใส่รหัสผ่านที่คาดเดาได้ยาก
+
+TC_MC_00027
+   [Documentation]    Register - Register new member with invalid password format "TESTSBUYER"
+   [Tags]    Regression    Low
+   Go to    ${URL_ACCOUNT}/signup/user
+   Input Password    ${password_register}    TESTBUYER
+   Execute Javascript    ${password_register_js}.focusout()
+   Element Should Contain    ${password_register_error}    กรุณาใส่รหัสผ่านที่คาดเดาได้ยาก
+
+TC_MC_00029
+   [Documentation]    Checkout - Register new member with invalid password format "testbuyer1"
+   [Tags]    Regression    Low
+   Go to    ${URL_ACCOUNT}/signup/user
+   Input Password    ${password_register}    testbuyer1
+   Execute Javascript    ${password_register_js}.focusout()
+   Element Should Contain    ${password_register_error}    กรุณาใส่รหัสผ่านที่คาดเดาได้ยาก
+
+TC_MC_00031
+   [Documentation]    Checkout - Register new member with invalid password format "TESTBUYER2"
+   [Tags]    Regression    Low
+   Go to    ${URL_ACCOUNT}/signup/user
+   Input Password    ${password_register}    TESTBUYER1
+   Execute Javascript    ${password_register_js}.focusout()
+   Element Should Contain    ${password_register_error}    กรุณาใส่รหัสผ่านที่คาดเดาได้ยาก
+
+TC_MC_00033
+   [Documentation]    Checkout - Register new member with invalid password format "TEST@buyer"
+   [Tags]    Regression    Low
+   Go to    ${URL_ACCOUNT}/signup/user
+   Input Password    ${password_register}    TEST@buyer
+   Execute Javascript    ${password_register_js}.focusout()
+   Element Should Contain    ${password_register_error}    กรุณาใส่รหัสผ่านที่คาดเดาได้ยาก
+
+TC_MC_00035
+   [Documentation]    Checkout - Register new member with invalid password format "#123!4567"
+   [Tags]    Regression    Low
+   Go to    ${URL_ACCOUNT}/signup/user
+   Input Password    ${password_register}    123!4567
+   Execute Javascript    ${password_register_js}.focusout()
+   Element Should Contain    ${password_register_error}    กรุณาใส่รหัสผ่านที่คาดเดาได้ยาก
+
+TC_MC_00037
+   [Documentation]    Checkout - Register new member with invalid password format "TestBuyer1เทส"
+   [Tags]    Regression    Low
+   Go to    ${URL_ACCOUNT}/signup/user
+   Input Password    ${password_register}    TestBuyer1เทส
+   Execute Javascript    ${password_register_js}.focusout()
+   Element Should Contain    ${password_register_error}    ข้อมูลไม่ถูกต้อง (ตัวอักษรและตัวเลขเท่านั้น)
+
+TC_MC_00039
+   [Documentation]    Register Success
+   [Tags]    Regression    Low
+   Go to    ${URL_ACCOUNT}/signup/user
+   ${gettime}=    Get Time    epoch
+   ${email}=    Catenate    SEPARATOR=    wlstest    ${gettime}    @mailinator.com
+   Input Text    ${regis_email}    ${email}
+   Input Password    ${password_register}    P@ssw0rd
+   Input Password    ${password_confirmation}    P@ssw0rd
+   Input Text    ${regis_phone}    0811111111
+   Click Element    ${regis_accept}
+   Click Element    ${button_register}
+   ${regis_messagesuccess} =    Execute Javascript    return $('.content-box h1').text()
+   Should Contain    ${regis_messagesuccess}    กรุณายืนยันการสมัครสมาชิก
+   ${regis_youremail} =    Execute Javascript    return $('.mail-box').text()
+   Should Contain    ${regis_youremail}    ${email}
+
+TC_MC_00041
+   [Documentation]    Checkout - Register new member with invalid password format "P@ss01"
+   [Tags]    Regression    Low
+   Go to    ${URL_ACCOUNT}/signup/user
+   Input Password    ${password_register}    P@ss01
+   Execute Javascript    ${password_register_js}.focusout()
+   Element Should Contain    ${password_register_error}    กรุณากรอกอย่างน้อย 8 ตัวอักษร

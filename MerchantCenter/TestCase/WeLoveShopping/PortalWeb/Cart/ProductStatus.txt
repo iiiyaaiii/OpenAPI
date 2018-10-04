@@ -1,0 +1,297 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Reset Store/Product Status    wls
+Test Setup        Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Reset Store/Product Status    wls
+Suite Teardown    Close All Browsers
+Test Teardown     Close All Browsers
+Force Tags        Portal-Web    Ligo    Sprint2017MC8    mc-wls
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Cart.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Account_Refund.txt
+
+*** Test Cases ***
+TC_MC_03997
+    [Documentation]    Check status product add to cart (shop status warning)
+    [Tags]    Regression    High    Portal-Web    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_blockstore3_instock_type_new}?refresh=changeme
+    ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+    Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+    ${productname}=    Get Text    ${leveld_itemname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Go to WMS    ${wms_user}    ${wms_pass}
+    Change Shop Product Status    shop    ${blockstore_id3}    warning
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    \    Run Keyword If    '${status}' == 'True'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'False'    Go to    ${URL_PORTAL}/cart
+    Go to WMS    ${wms_user}    ${wms_pass}
+    Change Shop Product Status    shop    ${blockstore_id3}    normal
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'False'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    ${cart_itemquantity}    Run Keyword If    '${status}' == 'False'    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    \    Run Keyword If    '${status}' == 'False'    Should Be True    ${cart_itemquantity} == ${quantity}
+    \    Run Keyword If    '${status}' == 'False'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'True'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    ${cart_itemquantity}=    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    Should Be True    ${cart_itemquantity} == ${quantity}
+
+TC_MC_04002
+    [Documentation]    Check status product add to cart (shop status blocked)
+    [Tags]    Regression    High    Portal-Web    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_blockstore3_instock_type_new}?refresh=changeme
+    ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+    Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+    ${productname}=    Get Text    ${leveld_itemname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Go to WMS    ${wms_user}    ${wms_pass}
+    Change Shop Product Status    shop    ${blockstore_id3}    blocked
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    \    Run Keyword If    '${status}' == 'True'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'False'    Go to    ${URL_PORTAL}/cart
+    Go to WMS    ${wms_user}    ${wms_pass}
+    Change Shop Product Status    shop    ${blockstore_id3}    normal
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'False'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    ${cart_itemquantity}    Run Keyword If    '${status}' == 'False'    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    \    Run Keyword If    '${status}' == 'False'    Should Be True    ${cart_itemquantity} == ${quantity}
+    \    Run Keyword If    '${status}' == 'False'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'True'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    ${cart_itemquantity}=    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    Should Be True    ${cart_itemquantity} == ${quantity}
+
+TC_MC_04007
+    [Documentation]    Check status product add to cart (product status ปิด by admin)
+    [Tags]    Regression    High    Portal-Web    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_blockstore3_instock_type_new}?refresh=changeme
+    ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+    Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+    ${productname}=    Get Text    ${leveld_itemname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Go to WMS    ${wms_user}    ${wms_pass}
+    Change Shop Product Status    product    ${robot_blockstore3_instock_type_new}    ปิด
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    \    Run Keyword If    '${status}' == 'True'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'False'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    Go to WMS    ${wms_user}    ${wms_pass}
+    Change Shop Product Status    product    ${robot_blockstore3_instock_type_new}    แสดง
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'False'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    ${cart_itemquantity}    Run Keyword If    '${status}' == 'False'    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    \    Run Keyword If    '${status}' == 'False'    Should Be True    ${cart_itemquantity} == ${quantity}
+    \    Run Keyword If    '${status}' == 'False'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'True'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    ${cart_itemquantity}=    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    Should Be True    ${cart_itemquantity} == ${quantity}
+
+TC_MC_04012
+    [Documentation]    Check status product add to cart (ไม่ผ่านการตรวจสอบ)
+    [Tags]    Regression    High    Portal-Web    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_blockstore3_instock_type_new}?refresh=changeme
+    ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+    Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+    ${productname}=    Get Text    ${leveld_itemname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Go to WMS    ${wms_user}    ${wms_pass}
+    Change Shop Product Status    product    ${robot_blockstore3_instock_type_new}    ไม่ผ่านการตรวจสอบ
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    \    Run Keyword If    '${status}' == 'True'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'False'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    Go to WMS    ${wms_user}    ${wms_pass}
+    Change Shop Product Status    product    ${robot_blockstore3_instock_type_new}    ผ่านการตรวจสอบ
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'False'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    ${cart_itemquantity}    Run Keyword If    '${status}' == 'False'    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    \    Run Keyword If    '${status}' == 'False'    Should Be True    ${cart_itemquantity} == ${quantity}
+    \    Run Keyword If    '${status}' == 'False'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'True'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    ${cart_itemquantity}=    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    Should Be True    ${cart_itemquantity} == ${quantity}
+
+TC_MC_04017
+    [Documentation]    Check status product when close shop
+    [Tags]    Regression    High    Portal-Web    mock
+    Clear Active Login
+    Go To Login    ${blockstore_email3}    ${blockstore_password3}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_blockstore3_instock_type_new}?refresh=changeme
+    ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+    Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+    ${productname}=    Get Text    ${leveld_itemname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Go To    ${URL_STORE}/${blockstore_url3}/admin
+    ${check} =    Get Value    //input[@id="openshop_status_old"]
+    Run Keyword If    "${check}" == "true"    Execute Javascript    $('#btn_openshop_sidebar').click()
+    Execute Javascript    $('.modal-footer .btn-primary').click();
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    \    Run Keyword If    '${status}' == 'True'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'False'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    Go To    ${URL_STORE}/${blockstore_url3}/admin
+    ${check} =    Get Value    //input[@id="openshop_status_old"]
+    Run Keyword If    "${check}" == "false"    Execute Javascript    $('#btn_openshop_sidebar').click()
+    Execute Javascript    $('.modal-footer .btn-primary').click();
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'False'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    ${cart_itemquantity}    Run Keyword If    '${status}' == 'False'    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    \    Run Keyword If    '${status}' == 'False'    Should Be True    ${cart_itemquantity} == ${quantity}
+    \    Run Keyword If    '${status}' == 'False'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'True'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    ${cart_itemquantity}=    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    Should Be True    ${cart_itemquantity} == ${quantity}
+
+TC_MC_04018
+    [Documentation]    Check status product when hide product
+    [Tags]    Regression    High    Portal-Web    mock
+    Clear Active Login
+    Go To Login    ${blockstore_email3}    ${blockstore_password3}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_blockstore3_instock_type_new}?refresh=changeme
+    ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+    Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+    ${productname}=    Get Text    ${leveld_itemname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Go To    ${URL_STORE}/${blockstore_url3}/admin/product
+    Input Text    //input[@id='search']    ${robot_blockstore3_instock_type_new}
+    Press Key    //input[@id='search']    \\13
+    Execute Javascript    $('.icon-q-editpd').click()
+    Execute Javascript    $('.status-icon.icon-eye-show-green.tooltip-grey').click()
+    Execute Javascript    $('.quick-save').click()
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    \    Run Keyword If    '${status}' == 'True'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'False'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    Go To    ${URL_STORE}/${blockstore_url3}/admin/product
+    Input Text    //input[@id='search']    ${robot_blockstore3_instock_type_new}
+    Press Key    //input[@id='search']    \\13
+    Execute Javascript    $('.checkbox-select').click()
+    Execute Javascript    $('#btn_visible').click()
+    Execute Javascript    $('.btn.btn-primary').click()
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'False'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    ${cart_itemquantity}    Run Keyword If    '${status}' == 'False'    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    \    Run Keyword If    '${status}' == 'False'    Should Be True    ${cart_itemquantity} == ${quantity}
+    \    Run Keyword If    '${status}' == 'False'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'True'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    ${cart_itemquantity}=    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    Should Be True    ${cart_itemquantity} == ${quantity}
+    Clear Active Login
+
+TC_MC_04019
+    [Documentation]    Check status product when hide product some inventory
+    [Tags]    Regression    Medium    Portal-Web    mock
+    Clear Active Login
+    Go To Login    ${blockstore_email3}    ${blockstore_password3}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_blockstore3_1attr_3inv}?refresh=changeme
+    ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+    Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+    ${productname}=    Get Text    ${leveld_itemname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    ${attribute}=    Selected Attribute    สี    แดง
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Go To    ${URL_STORE}/${blockstore_url3}/admin/product
+    Input Text    //input[@id='search']    ${robot_blockstore3_1attr_3inv}
+    Press Key    //input[@id='search']    \\13
+    Execute Javascript    $('.icon-q-editpd').click()
+    Execute Javascript    $('.status-icon.icon-eye-show-green.tooltip-grey').eq(0).click()
+    Execute Javascript    $('.quick-save').click()
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${attribute}
+    \    Run Keyword If    '${status}' == 'True'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    \    Run Keyword If    '${status}' == 'True'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'False'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}    สินค้าไม่พร้อมจำหน่าย
+    Go To    ${URL_STORE}/${blockstore_url3}/admin/product
+    Input Text    //input[@id='search']    ${robot_blockstore3_1attr_3inv}
+    Press Key    //input[@id='search']    \\13
+    Execute Javascript    $('.checkbox-select').click()
+    Execute Javascript    $('#btn_visible').click()
+    Execute Javascript    $('.btn.btn-primary').click()
+    Go to    ${URL_PORTAL}/cart
+    : FOR    ${index}    IN RANGE    0    10
+    \    ${status}    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,'color-red font-16px') and contains(text(),'สินค้าไม่พร้อมจำหน่าย')]
+    \    Run Keyword If    '${status}' == 'False'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    \    Run Keyword If    '${status}' == 'False'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${attribute}
+    \    ${cart_itemquantity}    Run Keyword If    '${status}' == 'False'    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    \    Run Keyword If    '${status}' == 'False'    Should Be True    ${cart_itemquantity} == ${quantity}
+    \    Run Keyword If    '${status}' == 'False'    Exit For Loop
+    \    Run Keyword If    '${status}' == 'True'    Go to    ${URL_PORTAL}/cart
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${productname}
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${attribute}
+    ${cart_itemquantity}=    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    Should Be True    ${cart_itemquantity} == ${quantity}
+    Clear Active Login

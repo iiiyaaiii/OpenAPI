@@ -1,0 +1,14 @@
+*** Variables ***
+
+###Locator###
+${accept_refund_button}    //a[@class="btn btn-small btn-primary btn_request_refund"]
+${txt_accept_refund}    $('h3.span11').text()
+${txt_price_refund}    //*[@id="page-content"]/div[2]/div[2]/div[1]/div[2]/div[1]/div[1]
+${price_refund}    //*[@id="page-content"]/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/strong
+${txt_process_time}    //*[@id="page-content"]/div[2]/div[2]/div[1]/div[2]/div[2]/div[1]
+${process_time_refund}    //*[@id="page-content"]/div[2]/div[2]/div[1]/div[2]/div[2]/div[2]/strong
+${txt_decline_refund}    //*[@id="page-content"]/div[2]/div[2]/p[1]
+${txt_decline_refund_2}    //*[@id="page-content"]/div[2]/div[2]/p[2]
+${decline_countdown}    //*[@id="page-content"]/div[2]/div[2]/div[1]/div[3]/span
+${btn_buyer_cancel_refund}    //*[@class="btn-black cancel_refund"]
+${txt_buyer_cancel_refund}    //div[@class="span9 refund-right"]/center/h2

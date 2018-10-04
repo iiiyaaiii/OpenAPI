@@ -1,0 +1,75 @@
+*** Variable ***
+${total_cart_product}    //*[@id="total_cart_product"]
+${delete_product_cart}    //div[@class='remove-product cursor-pointer']
+${cart_popup_title}    //div[@class='popup-cart-title']
+${cart_popup_productname}    //div[@class='col-xs-9']/p[1]
+${cart_popup_quantity}    //*[@id="modal-option"]
+${cart_popup_sumprice}    //*[@id="modal-price"]
+${leveld_gotocart}    //div[@class="col-xs-6 text-right no-padding-left"]//a[@class="btn btn-default btn-popup-add-cart"]
+${cart_decrease}    //button[@data-type='decrease']
+${cart_shop}      //div[contains(@class,'cart-list')]
+${cart_product}    //div[@class='box-cart-product-detail cart_product main-product']
+${cart_productname}    //div[@class='box-cart-product-detail cart_product main-product']//a[@class="text-name"]
+${cart_product_list}    //div[@class='box-cart-product-list']
+${cart_promotion_product}    //div[@class='box-cart-promotion']
+${cart_shopname}    //div[@class='box-shop-name']
+${cart_shop_summary}    //div[@class='sum-total']
+${cart_boxitem}    //div[@class='box-col-product']
+${cart_boxitemprice}    //div[@class='box-col-price']
+${cart_boxitempiece}    //div[@class='box-col-piece']
+${cart_boxitemtotal}    //div[@class='box-col-total']
+${cart_itempromotion_total}    //strong[@class='total_item_price box-col-total']
+${cart_summary}    //div[@class='box-overflow'][1]//div[@class='col-2 shop_subtotal']
+${cart_netsummary}    //div[@class='box-overflow'][2]//div[@id='amount-change']
+${cart_itemname}    //div[@class='box-cart-product-name']
+${cart_flashsale}    //div[@class='text-flashsale']
+${cart_promotion}    //div[@class='text-promotion']
+${cart_itemprice}    //span[@class='color-red font-16px item-price item_price']
+${cart_itempiece}    //input[@class='input-option-num input_qty']
+${cart_itemtotal}    //strong[@class='total_item_price']
+${shop_item_amount}    //span[@class='font-15px total_price shop_subtotal']
+${cart_increase_quantity}    //button[@class='btn btn-num update_qty'][2]
+${cart_decrease_quantity}    //button[@class='btn btn-num update_qty'][1]
+${cart_back_to_shop}    //a[@class='back-to-shop']
+${cart_noti}      //span[@class='sum-noti ng-binding']
+${cart_noti_hide}    //span[@class='sum-noti ng-binding ng-hide']
+${cart_emtry}     //span[@class='text-empty']
+${back_to_shop}    $('.back-to-shop')
+${check_shopname1}    //*[@id="search-keyword"]
+${check_shopname2}    //h1[@class='pull-left']
+${add_size}       //*[@id="wrapper"]/div[2]/div[2]/div[1]/div[2]/div[2]/div[1]/div[2]/span[1]
+${goto_store}     //*[@id="store_url"]
+${leveld_buy}     //*[@id="modalAddCart"]/div/div/div[3]/div[1]/a
+${select_productc}    //*[@id="wrapper"]/div[3]/div[2]/div[2]/div[3]/div/div[1]/ul/li[1]/a/div/img
+${selectprod_store}    //*[@id="pushstate-content"]/li[2]/div/a[2]
+${total_cart}     //*[@class="text-tile-cart ng-scope"]
+${select_productcloth}    //*[@id="wrapper"]/div[3]/div[2]/div[2]/ul[1]/li[1]/div/a
+${get_price_sum}    //*[@id="W18774834_0"]/div[4]/strong
+${select_product_store}    //*[@id="wrapper"]/div[3]/div[2]/div[2]/div[3]/div/div[1]/ul/li[1]/a/div/img
+${click_continue_shopping}    //*[@id="modalAddCart"]/div/div/div[3]/div[1]/a
+${select_product_bag}    //*[@id="product-wrapper-home"]/ul/li[4]/div/div[1]/a/img
+${select_store}    //*[@id="wrapper"]/div[3]/div[2]/div[2]/div[3]/div/div/div/div[1]/div[2]/a
+${plus_quantityproduct}    //*[@id="product_quantity_increase"]
+${cart_alert}     $(".cart-alert-box")
+${cart_increase_btn}    $(".update_qty").eq(1)
+${cart_decrease_btn}    $(".update_qty").eq(0)
+${cart_input_qty}    $("input[class='input-option-num input_qty']")
+${cart_click_qty}    $("button[class='btn btn-num update_qty']")
+${cart_limit}    //div[@class="cart-alert-box"]
+${cart_flashsale}    //div[contains(@class,'text-flashsale') and contains(text(),'Flash Sale')]
+${cart_promotion}    //div[@class='text-promotion']
+${cart_box_promotion}    //div[@class='box-promotion-detail']
+${shopname_tab}    //div[@class="box-shop-name"]//strong
+${cart_shopid}    $('.box-cart-wrapper')[0].id
+${lbl_product_name}    //div[@class="box-cart-product-name"]//a
+${lbl_promotion}    //div[@class="text-promotion"]
+${tbr_freebie}    //div[@class="box-cart-product-detail box-cart-feebie"]
+${txt_condition_truepoint_cart}    //div[@class="text-promotion"]/span
+${txt_remark_truepoint_cart}    //div[@class="promotion-remark"]/span
+${text_headline_cart}    //div[@class="box-cart-product-headline headline-h"]
+${text_headline_fresh_cart}    //div[@data-headline-fresh="สินค้าสดใหม่ ส่งได้ทันที"]
+${btn_buy_nonefresh}    //button[@class="btn btn-buy-wemall"]
+${btn_buy_fresh}    //button[@class="btn btn-buy"]
+${lbl_remark_cart}    //div[@class="promotion-remark"]
+${lbl_text_time}    //span[@class="limited-order-text"]
+${lbl_remark_fresh_cart}    //div[@class="fresh-remark"]

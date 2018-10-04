@@ -1,0 +1,35 @@
+*** Settings ***
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           OperatingSystem
+Library           Collections
+#Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeMall/WebElement/WMS_StoreInfo.txt
+
+
+*** Keywords ***
+Search store id
+    [Documentation]    Search store id and click search button
+    [Arguments]    ${storeid}
+    Input Text    ${txt_storeid}    ${storeid}
+    Click Element    ${btn_storeid_search}
+
+Change url store name to be
+    [Documentation]    Change url store name and click save button
+    [Arguments]    ${new_url_name}
+    Wait Until Element Is Visible    ${txt_url_name}
+    Input Text    ${txt_url_name}    ${new_url_name}
+    Click Element    ${btn_url_save}
+    Wait Until Element Is Visible    ${btn_ok}
+    Click Element    ${btn_ok}
+
+Check that url store name updates successfully
+    [Documentation]    Check noti message display as success
+    Wait Until Element Is Visible    ${noti_success_message}
+    Element Should Contain    ${noti_success_message}    แก้ไขสำเร็จ
+
+Check the notify message displays
+    [Documentation]    Check notify message
+    [Arguments]    ${expected_message}
+    Wait Until Element Is Visible    ${noti_fail_message}
+    Element Should Contain    ${noti_fail_message}    ${expected_message}

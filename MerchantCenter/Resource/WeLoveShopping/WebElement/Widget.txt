@@ -1,0 +1,18 @@
+*** variable ***
+${myacc}    $("a[title='บัญชีของฉัน']")
+${mycart}    $("a[title='ตะกร้าของฉัน']")
+${widget_favshop}    $("a[title='ร้านค้าโปรด']")[0]
+${login}          $(".w-nologin > a")[0]
+${btn_mycart}     //div[@class='logo-mycart']
+${input_search}    //div[@class='box-group-search']//input
+${search_type}    $('.box-search-type')
+${search_shop}    $("a[ng-bind='anotherSearch']")
+${suggestion_box}    //div[@class='search-suggestion']
+${suggest_keyword_search}    //div[@class='search-suggestion']//ul[1]//li
+${suggest_incat}    //li[@ng-repeat="item in suggestionCategory"]
+${suggest_keyword}    //div[@class='search-suggestion']//ul[2]//li
+${h_fav_icon}    //div[@id='new_favorite']
+${h_cart_icon}    //div[@id='box-my-cart']
+${h_before_login}    //div[@class='link-login']
+${h_user_icon}    //div[@class='box-user-info']
+${btn_signup}    //a[@ng-click="accountTo('signup/user')"]

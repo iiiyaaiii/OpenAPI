@@ -1,0 +1,21 @@
+*** Settings ***
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeMall/WebElement/WMS_installment.txt
+
+*** Keywords ***
+Go To Installment
+    Go to    ${URL_WMS}/installment
+
+Search Product ID 
+    [Arguments]    ${product}
+    Input Text    ${lbl_product_id}    ${product}
+    Select From List    ${lbl_type_installment}    false 
+    Click Element    ${btn_search_product}
+
+Verify Product After For Search
+    [Arguments]    ${beforeproductid}
+    Wait Until Element Is Visible    ${tbl_list_all_product_search}
+    ${afterproductid}    Get Text    ${tbc_list_product)id}
+    Should Be Equal    ${beforeproductid}    ${afterproductid}
+

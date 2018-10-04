@@ -1,0 +1,25 @@
+*** Variables ***
+### Data ###
+${url_monitoring_listing}    ${URL_WMS}/monitoringlisting
+${url_Dashboard_monitoring}    ${URL_WMS}/dashboardmonitoring
+###
+### locator ###
+${input_product_id}    //input[@name="product_id"]
+${input_store_id}    //input[@name="store_id"]
+${input_product_name}    title_th
+${btn_search_mn}    //button[@class="btn btn-info"]
+${top_record_adminstatus}    //*[@id="frm_delete_all"]/table/tbody/tr[1]/td[5]/span
+${top_record_sellerstatus}    //*[@id="frm_delete_all"]/table/tbody/tr[1]/td[6]/span
+${top_record_mnstatus}    //*[@id="frm_delete_all"]/table/tbody/tr[1]/td[7]/span
+${Select_category}    $("select[name='plaza_category_id']")
+${edit_cate_popup}    //div[@class="modal hide fade q-editpd-modal in"]
+${close_cate_popup}    //div[@class="modal hide fade q-editpd-modal in"]//button[contains(.,"ยกเลิก")]
+@{Category}
+${Total_Stock}    ${EMPTY}
+${btn_click_Search}    //button[@type="submit"]
+@{List_Val}
+${lbl_pending}    //span[@class="label label-warning"]
+${chk_waiting_for_check}    //span[@class="lbl" and contains(text(),'รอการตรวจสอบ')]
+${btn_approve_product}    //i[contains(text(),'Spacebar')]
+${lbl_first_product_record}	   //table[@class="table table-striped table-bordered table-hover dataTable no-footer tbl-product"]//tr/td[2]
+${txt_product_id}	 id=inputError

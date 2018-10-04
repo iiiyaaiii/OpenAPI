@@ -1,0 +1,39 @@
+*** Variables ***
+### Data ####
+${user_store_order}    trustorder@lackmail.ru
+${password_store_order}    P@ssw0rd
+${slug_order_store}    trustorder
+${robot_inpage_product_product}    robot_inpage_product [เทสระบบห้ามลบ]
+${recon_orange_product}    Recon Orange
+${expect_load_time}    60
+${user_admin_manage_orderweb}    automate
+${pass_admin_manage_orderweb}    Tfs7o8JMRwcr
+### Locator ###
+${element_main_status_order_detail}    //p[@class="font-16px"]//strong
+${element_countdown_time_order_detail}    //div[@class="text-center"]
+${lbl_item_status_order_detail}    //td[@class="hidden-xs text-center"]//div[@class="shipby-item-status d-item-status-box"]
+${account_detail_refund_link}    //p[@class="order__process-refund"]//a
+${receive_button_order_detail}    //button[@class="btn-black btn_receive"]
+${element_des_number_box_product_table}    //span[@class="tracking-desc-number"]
+${element_link_check_ship}    //*[@id="product_detail_list"]/tbody/tr/td[3]/div/div/span[2]/div/a
+${text_ship_by_item}    //p[@class="shipby-item_"]
+${element_wait_receive_status_order_detail}    //*[@id="product_detail_list"]/tbody/tr[2]/td[3]/div/div/span[1]
+${element_item_status_row2}    //*[@id="product_detail_list"]/tbody/tr[2]/td[3]//div[@class="tracking-desc"]
+${text_request_refund_order_detail}    //div[@class="order-list-refund"]
+${element_item_countdown_time_order_detail}    //div[@class="text-center"]
+${text_item_refund_status}    //*[@id="product_detail_list"]/tbody/tr[1]/td[3]/div/span
+${text_item_status2}    //*[@id="product_detail_list"]/tbody/tr[1]/td[3]//div[@class="shipby-item-status d-item-status-box"]/span
+${view_detail_refund}    //a[@class="btn-black  btn__send-file pull-right"]
+${element_item_tracking_desc}    //div[@class="tracking-desc"]
+${element_item_tracking_status}    //div[@class="order-item-ship"]
+${element_item_link_tracking}    //ul[@class="link-tracking"]
+${element_item_link_attach_file}    //p[@class="link-attachfile"]
+#AccountBubble
+${account_detail_bubble_countdown_time}    //div[@class="countdown-time"]
+${account_detail_bubble_box_content_step_1}    //div[@class="box-content-step content-step-1"]
+${account_detail_bubble_box_content_step_2}    //div[@class="box-content-step content-step-2"]
+${account_detail_bubble_box_content_step_3}    //div[@class="box-content-step content-step-3"]
+${account_detail_bubble_box_content_step_4}    //div[@class="box-content-step content-step-4"]
+${account_detail_bubble_refund_text}    //div[@class="countdown-time grey"]
+${lbl_item_status_product1_order_detail}    //tbody/tr[1]/td[@class="hidden-xs text-center"]/div[@class="shipby-item-status d-item-status-box"]
+${lbl_item_status_product2_order_detail}    //tbody/tr[3]/td[@class="hidden-xs text-center"]/div[@class="shipby-item-status d-item-status-box"]

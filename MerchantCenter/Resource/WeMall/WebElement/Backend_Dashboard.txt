@@ -1,0 +1,36 @@
+*** Variables ***
+### Data ###
+${user_wlsatm06}    wlsautomate06@yahoo.com
+${pwd_wlsatm06}    @Abcd001
+###
+### Locator ###
+${url_dashboard_incomplete}    ${URL_STORE}/wlsautomate06/admin/dashboard
+${url_shopinfo_incomplete}    ${URL_STORE}/wlsautomate06/admin/store
+${url_payment_incomplete}    ${URL_STORE}/wlsautomate06/admin/payment
+${url_payment_complete}    ${URL_STORE}/wlsautomate02/admin/payment
+${url_product_incomplete}    ${URL_STORE}/wlsautomate06/admin/product/create
+${btn_open_shop_disable}    //a[@class="btn btn-default btn-large btn-nov-openshop disabled"]
+${icon_shopinfo_disable}    //*[@class="span4 icon-4step-box icon-4step-01"]
+${icon_shopinfo_enable}    //*[@class="span4 icon-4step-box icon-4step-01 active"]
+${icon_shipping_disable}    //*[@class="span4 icon-4step-box icon-4step-03"]
+${icon_shipping_enable}    //*[@class="span4 icon-4step-box icon-4step-03 active"]
+${icon_ewallet_disable}    //*[@class="span4 icon-4step-box icon-4step-02"]
+${icon_ewallet_enable}    //*[@class="span4 icon-4step-box icon-4step-02 active"]
+${icon_product_disable}    //*[@class="span4 icon-4step-box icon-4step-04"]
+${icon_product_enable}    //*[@class="span4 icon-4step-box icon-4step-04 active"]
+${msg_status_ewallet}    //*[@id="page-content"]/div/div[2]/ul/li[4]/div/div[2]/p[2]/strong[2]
+${msg_product}    //*[@id="page-content"]/div/div[2]/ul/li[3]/div/div[2]/p[1]
+${msg_status_product}    //*[@id="page-content"]/div/div[2]/ul/li[3]/div/div[2]/p[2]/strong[2]
+${btn_shopinfo}    //*[@id="page-content"]//li[1]/div/div[2]//a
+${btn_shipping}    //*[@id="page-content"]//li[2]/div/div[2]//a
+${btn_product}    //*[@id="page-content"]//li[3]/div/div[2]//a
+${btn_ewallet}    //*[@id="page-content"]//li[4]/div/div[2]//a
+${msg_shopinfo}    //*[@id="page-content"]/div/div[2]/ul/li[1]/div/div[2]/p[1]
+${status_shopinfo}    //*[@id="page-content"]/div/div[2]/ul/li[1]/div/div[2]/p[2]/strong[2]
+${msg_shipping}    //*[@id="page-content"]/div/div[2]/ul/li[2]/div/div[2]/p[1]
+${status_shipping}    //*[@id="page-content"]/div/div[2]/ul/li[2]/div/div[2]/p[2]/strong[2]
+${msg_ewallet}    //*[@id="page-content"]/div/div[2]/ul/li[4]/div/div[2]/p[1]
+${btn_logout}     //a[contains(.,"ออกจากระบบ")]
+${btn_openshop}    //*[@id="btn-nov-openshop"]
+${Click_Close_TC}    //div[@id="alert_cond"]//button[@class="close"]
+${TC_Popup}       alert_cond

@@ -1,0 +1,687 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wls
+Suite Teardown    Run Keywords    Delete Robot Campaign    AND    Close All Browsers
+Force Tags        WMS-Web    Ligo    Sprint2017MC8    JoinCampaign    mc-wls
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+
+*** Test Cases ***
+TC_MC_01800
+    [Documentation]    [Welove] Search join campaign from campaign name
+    [Tags]    Regression   High    mock
+    Go to    ${URL_WMS}/campaign
+    Execute Javascript    $("input[name='campaign_name']").val('แบบบาท')
+    Execute Javascript    $("button.btn-purple").click()
+    Wait Until Element Is Visible    //*[@id="sample-table-2"]/tbody/tr
+    ${count_all}=    Get Matching Xpath Count    //*[@id="sample-table-2"]/tbody/tr
+    : FOR    ${i}    IN RANGE    1    ${count_all}
+    \    Element Should Contain    //*[@id="sample-table-2"]/tbody/tr[${i}]/td[3]    แบบบาท
+
+TC_MC_01802
+    [Documentation]    [Welove] Search join campaign from วันที่ร้านเข้าร่วมแคมเปญ
+    [Tags]    Meduium    mock
+    Go to    ${URL_WMS}/campaign
+    Execute Javascript    $("input[name='date_join_campaign']").val('01/01/2016 00:00:00  - 31/03/2016 23:59:00')
+    Execute Javascript    $("button.btn-purple").click()
+    Wait Until Element Is Visible    //*[@id="sample-table-2"]/tbody/tr
+    ## Verify expected result
+    ${count_result}    Get Matching Xpath Count    //*[@id="sample-table-2"]/tbody/tr
+
+TC_MC_01804
+    [Documentation]    [Welove] Search from join campaign type
+    [Tags]    Regression   High    mock
+    Go to    ${URL_WMS}/campaign
+    Select From List By Label    //*[@id="filter_promotion_type"]    ส่วนลด % เดียวและแบบช่วง
+    Execute Javascript    $("button.btn-purple").click()
+    Wait Until Element Is Visible    //*[@id="sample-table-2"]/tbody/tr
+    ${count_all}=    Get Matching Xpath Count    //*[@id="sample-table-2"]/tbody/tr
+    : FOR    ${i}    IN RANGE    1    ${count_all}
+    \    Element Should Contain    //*[@id="sample-table-2"]/tbody/tr[${i}]/td[6]    ส่วนลด % เดียวและแบบช่วง
+
+TC_MC_01806
+    [Documentation]    [Welove] Join Campaign Search from วันที่แสดงแคมเปญ
+    [Tags]    Regression   High    mock
+    Go to    ${URL_WMS}/campaign
+    Execute Javascript    $("input[name='date_show_campaign']").val('13/12/2016 0:00 - 13/12/2016 23:59')
+    Execute Javascript    $("button.btn-purple").click()
+    Wait Until Element Is Visible    //*[@id="sample-table-2"]/tbody/tr
+    ## Verify expected result
+    ${count_result}    Get Matching Xpath Count    //*[@id="sample-table-2"]/tbody/tr
+
+TC_MC_01808
+    [Documentation]    [Welove] Join Campaign Search from status
+    [Tags]    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Select From List By Label    //*[@id="status"]    On
+    Execute Javascript    $("button.btn-purple").click()
+    Wait Until Element Is Visible    //*[@id="sample-table-2"]/tbody/tr
+    ${count_all}=    Get Matching Xpath Count    //*[@id="sample-table-2"]/tbody/tr
+    : FOR    ${i}    IN RANGE    1    ${count_all}
+    \    Element Should Contain    //*[@id="sample-table-2"]/tbody/tr[${i}]/td[7]/span   ON
+
+TC_MC_01812
+    [Documentation]    [Welove] Delete join campaign
+    [Tags]    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Click Button    ${btn_add_join_campaign}
+    Wait Until Element Is Visible    ${popup_choose_join_type}    10s
+    Click Button    ${btn_join_type_percent}
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] JoinCampaign
+    Choose Campaign Banner    join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type1}
+    Input Price of discount    10
+    Execute Javascript    $("input[name='product_limit_input']").val('10')
+    sleep    1
+    Execute JavaScript    $('#percent_limit_2').click()
+    Execute JavaScript    $('#percent_limit_min').val('50')
+    Execute JavaScript    $('#percent_limit_max').val('100')
+    Execute JavaScript    $('.checkbox_newseller').click()
+    Execute Javascript    $("input[name='date_join_campaign']").val('31/03/2016 00:00:00  - 31/03/2016 23:59:00')
+    Execute Javascript    $("input[name='date_show_campaign']").val('31/03/2016 00:00:00  - 31/03/2016 23:59:00')
+    Input Minimum quantity of product    1
+    Input Price of product    100
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Delete Campaign
+    ${campaignID}    Get JoinCampaign ID    ${campaign_name_th}
+    Element Should Contain    //*[@id="status-${campaignID}"]    EXPIRED
+    Click Element    ${tab_list_join_campaign}
+    List Campaign - Click Icon Delete Campaign    //*[@id="row-${campaignID}"]/td[9]/a[3]
+
+TC_MC_01814
+    [Documentation]    [Welove] Create JoinCampaign type [เลือกเปอร์เซ็นต์ส่วนลดสูงสุด,เลือกจำนวนรายการสินค้าที่สามารถส่งเข้าร่วมแคมเปญได้ต่อร้าน:ไม่จำกัดจำนวน][ไม่กำหนด % ผู้ซื้อพึ่งพอใจ้ราน][ไม่เลือก ร้านค้าใหม่สามารถเข้าร่วมแคมเปญนี้ได้] (+ส่วนลด % เดียว และแบบช่วง)
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Click Button    ${btn_add_join_campaign}
+    Wait Until Element Is Visible    ${popup_choose_join_type}    10s
+    Click Button    ${btn_join_type_percent}
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] JoinCampaign
+    Choose Campaign Banner    join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type1}
+    Input Price of discount    10
+    Execute Javascript    $("#percent_limit_1").click()
+    Input Date Join Campaign    ${cur_date}
+    Input Date Show Campaign    ${cur_date}
+    Input Minimum quantity of product    1
+    Input Price of product    100
+    Input Handle URL TH
+    Execute Javascript    $(':contains("ไม่จำกัดจำนวน")').click()
+    Execute Javascript    $('#percent_limit_1').click()
+    Click Button Submit Campaign
+    ## Verify expect result
+    List Campaign - Get Last Campaign Name
+    List Campaign - Get Last Campaign Type    ส่วนลด % เดียวและแบบช่วง
+    List Campaign - Click Icon Edit Last Campaign
+    ${campaignID}    Get JoinCampaign ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${campaignID}
+    Verify Campaign Name TH
+    Verify Date Join Compaign
+    Verify Date Show Compaign
+    Verify Price of discount
+    Verify Minimum quantity of product
+    Verify Price of product
+    Verify Handle URL TH
+    ## Delete Campaign
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_join_campaign}
+    List Campaign - Click Icon Delete Campaign    //*[@id="row-${campaignID}"]/td[9]/a[3]
+
+TC_MC_01818
+    [Documentation]    [Welove] Join Campaign Close Campaign (OFF)
+    [Tags]    Regression    High    mock
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Get CampaignID    ${URL_WMS}/campaign/collection-join/edit/
+    Get Campaign Name
+    Checked Campaign Status    ${radio_campaign_close}
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/promotion/${compaign_name_th}-${campaignID}?refresh=changeme
+    Verify Campaign Portal    Element Should Be Visible    ${text_not_found_campaign}
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Get CampaignID    ${URL_WMS}/campaign/collection-join/edit/
+    Get Campaign Name
+    Checked Campaign Status    ${radio_campaign_open}
+    Click Button Submit Campaign
+
+TC_MC_01820
+    [Documentation]    [Welove] Join Campaign Open Campaign (ON)
+    [Tags]    Regression    High    mock
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Get CampaignID    ${URL_WMS}/campaign/collection-join/edit/
+    Get Campaign Name
+    Checked Campaign Status    ${radio_campaign_open}
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/promotion/${compaign_name_th}-${campaignID}?refresh=changeme
+    Verify Campaign Portal    Element Should Be Visible    ${img_banner_campaign}
+
+TC_MC_01822
+    [Documentation]    [Welove] Join Campaign Hide Campaign (Hide)
+    [Tags]    Regression    High    mock
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Checked Campaign Show    ${radio_campaign_hide}
+    Get Campaign Name
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/campaign/?refresh=changeme
+    Verify Campaign Portal    Page Should Not Contain    ${compaign_name_th}
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Get CampaignID    ${URL_WMS}/campaign/collection-join/edit/
+    Get Campaign Name
+    Checked Campaign Status    ${radio_campaign_show}
+    Click Button Submit Campaign
+
+TC_MC_01824
+    [Documentation]    [Welove] Join Campaign Show Campaign (Show)
+    [Tags]    Regression    High    mock
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Checked Campaign Show    ${radio_campaign_show}
+    Get Campaign Name
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/campaign/?refresh=changeme
+    Verify Campaign Portal    Page Should Contain    ${compaign_name_th}
+
+TC_MC_01828
+    [Documentation]    [Welove] [Join Campaign] Add product to campaign
+    [Tags]    Regression    Medium    mock
+    WMS Select Product To Campaign    join    ${join_campaign_id}    ${robot_store2_fix_join_campaign}
+    Remove Product from Campaign    ${join_campaign_id}    ${robot_store2_fix_join_campaign}    join
+
+TC_MC_01830
+    [Documentation]    [Welove] [Join Campaign] Add product by select all to campaign
+    [Tags]    Regression    Medium    mock
+    WMS Select Product to Campaign Check All    join    ${empty_join_campaign_id}    \
+    Remove Product from Campaign All    ${empty_join_campaign_id}    \    join
+
+TC_MC_01832
+    [Documentation]    [Welove] [Join Campaign] Move back product selected to campaign
+    [Tags]    Regression    Medium    mock
+    WMS Select Product To Campaign    join    ${empty_join_campaign_id}    L91199738
+    Verify Product In Cmmpaign    Robotreconcheckout Promotion by Collection    400000    0 / 0.0%    -    3    0    200.00    0
+    Remove Product from Campaign    ${empty_join_campaign_id}    L91199738    join
+
+TC_MC_01871
+    [Documentation]    [Welove] Create JoinCampaign type [เลือกเปอร์เซ็นต์ส่วนลดสูงสุด, เลือกจำนวนรายการสินค้าที่สามารถส่งเข้าร่วมแคมเปญได้ต่อร้าน:จำกัดจำนวน] [กำหนด % ผู้ซื้อพึ่งพอใจร้าน][เลือก ร้านค้าใหม่สามารถเข้าร่วมแคมเปญนี้ได้] (+ส่วนลด % เดียว และแบบช่วง)
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Click Button    ${btn_add_join_campaign}
+    Wait Until Element Is Visible    ${popup_choose_join_type}    10s
+    Click Button    ${btn_join_type_percent}
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] JoinCampaign
+    Choose Campaign Banner    join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type1}
+    Input Price of discount    10
+    Execute Javascript    $("input[name='product_limit_input']").val('10')
+    sleep    1
+    Execute JavaScript    $('#percent_limit_2').click()
+    Execute JavaScript    $('#percent_limit_min').val('50')
+    Execute JavaScript    $('#percent_limit_max').val('100')
+    Execute JavaScript    $('.checkbox_newseller').click()
+    Input Date Join Campaign    ${cur_date}
+    Input Date Show Campaign    ${cur_date}
+    Input Minimum quantity of product    1
+    Input Price of product    100
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    List Campaign - Get Last Campaign Name
+    List Campaign - Get Last Campaign Type    ส่วนลด % เดียวและแบบช่วง
+    List Campaign - Click Icon Edit Last Campaign
+    # Get CampaignID    ${URL_WMS}/campaign/collection-join/edit/
+    ${campaignID}    Get JoinCampaign ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${campaignID}
+    Verify Campaign Name TH
+    Verify Date Join Compaign
+    Verify Date Show Compaign
+    Verify Price of discount
+    Verify Minimum quantity of product
+    Verify Minimum quantity of product
+    Verify Feedback min
+    Verify Feedback max
+    Verify Price of product
+    Verify Handle URL TH
+    ## Delete Campaign
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_join_campaign}
+    List Campaign - Click Icon Delete Campaign    //*[@id="row-${campaignID}"]/td[9]/a[3]
+
+TC_MC_01875
+    [Documentation]    [Welove] Create JoinCampaign type [เลือกราคาเดียว, เลือกจำนวนรายการสินค้าที่สามารถส่งเข้าร่วมแคมเปญได้ต่อร้าน:จำกัดจำนวน] [ไม่กำหนด % ผู้ซื้อพึ่งพอใจร้าน][ไม่เลือก ร้านค้าใหม่สามารถเข้าร่วมแคมเปญนี้ได้] (+สินค้าราคาเดียว และ แบบช่วงราคา)
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Click Button    ${btn_add_join_campaign}
+    Wait Until Element Is Visible    ${popup_choose_join_type}    10s
+    Click Button    ${btn_join_type_price}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] JoinCampaign
+    Choose Campaign Banner    join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type1}
+    Execute Javascript    $("#percent_limit_1").click()
+    Input Price of discount    99
+    Execute Javascript    $("input[name='product_limit_input']").val('10')
+    Input Date Join Campaign    ${cur_date}
+    Input Date Show Campaign    ${cur_date}
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    List Campaign - Get Last Campaign Name
+    List Campaign - Get Last Campaign Type    สินค้าราคาเดียวและแบบช่วง
+    List Campaign - Click Icon Edit Last Campaign
+    ${campaignID}    Get JoinCampaign ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${campaignID}
+    Verify Campaign Name TH
+    Verify Date Join Compaign
+    Verify Date Show Compaign
+    Verify Price of discount
+    Verify Minimum quantity of product
+    Verify Handle URL TH
+    ## Delete Campaign
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_join_campaign}
+    List Campaign - Click Icon Delete Campaign    //*[@id="row-${campaignID}"]/td[9]/a[3]
+
+TC_MC_01877
+    [Documentation]    [Welove] Create JoinCampaign type [เลือกราคาเดียว, เลือกจำนวนรายการสินค้าที่สามารถส่งเข้าร่วมแคมเปญได้ต่อร้าน:ไม่จำกัดจำนวน][กำหนด % ผู้ซื้อพึ่งพอใจร้าน][เลือก ร้านค้าใหม่สามารถเข้าร่วมแคมเปญนี้ได้] (+สินค้าราคาเดียว และ แบบช่วงราคา)
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Click Button    ${btn_add_join_campaign}
+    Wait Until Element Is Visible    ${popup_choose_join_type}    10s
+    Click Button    ${btn_join_type_price}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] JoinCampaign
+    Choose Campaign Banner    join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type1}
+    Input Price of discount    99
+    Execute JavaScript    $('#product_limit_input').val('99')
+    Execute JavaScript    $('#percent_limit_2').click()
+    Execute JavaScript    $('#percent_limit_min').val('0')
+    Execute JavaScript    $('#percent_limit_max').val('90')
+    Execute JavaScript    $('.checkbox_newseller').click()
+    Input Date Join Campaign    ${cur_date}
+    Input Date Show Campaign    ${cur_date}
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    List Campaign - Get Last Campaign Name
+    List Campaign - Get Last Campaign Type    สินค้าราคาเดียวและแบบช่วง
+    List Campaign - Click Icon Edit Last Campaign
+    ${campaignID}    Get JoinCampaign ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${campaignID}
+    Verify Campaign Name TH
+    Verify Date Join Compaign
+    Verify Date Show Compaign
+    Verify Price of discount
+    Verify Minimum quantity of product
+    Verify Handle URL TH
+    ## Delete Campaign
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_join_campaign}
+    List Campaign - Click Icon Delete Campaign    //*[@id="row-${campaignID}"]/td[9]/a[3]
+
+TC_MC_01879
+    [Documentation]    [Welove] Create JoinCampaign type [เลือกราคาเดียว, เลือกจำนวนรายการสินค้าที่สามารถส่งเข้าร่วมแคมเปญได้ต่อร้าน:จำกัดจำนวน but empty limit ][กำหนด % ผู้ซื้อพึ่งพอใจร้าน empty] (+สินค้าราคาเดียว และ แบบช่วงราคา)
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Click Button    ${btn_add_join_campaign}
+    Wait Until Element Is Visible    ${popup_choose_join_type}    10s
+    Click Button    ${btn_join_type_price}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] JoinCampaign
+    Choose Campaign Banner    join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type1}
+    Input Price of discount    99
+    Execute JavaScript    $('#percent_limit_2').click()
+    Execute JavaScript    $('#percent_limit_min').val('0')
+    Execute JavaScript    $('#percent_limit_max').val('')
+    Input Date Join Campaign    ${cur_date}
+    Input Date Show Campaign    ${cur_date}
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    Element Should Contain    //*[@id="show_error_ercent_limit"]    This field is required.
+    Element Should Contain    //*[@id="product_limit_input-error"]    This field is required.
+
+TC_MC_01881
+    [Documentation]    [Welove] Create JoinCampaign type [เลือกช่วงราคา, เลือกจำนวนรายการสินค้าที่สามารถส่งเข้าร่วมแคมเปญได้ต่อร้าน:จำกัดจำนวน][กำหนด % ผู้ซื้อพึ่งพอใจร้าน][ไม่เลือก ร้านค้าใหม่สามารถเข้าร่วมแคมเปญนี้ได้] (+สินค้าราคาเดียว และ แบบช่วงราคา)
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Click Button    ${btn_add_join_campaign}
+    Wait Until Element Is Visible    ${popup_choose_join_type}    10s
+    Click Button    ${btn_join_type_price}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] JoinCampaign
+    Choose Campaign Banner    join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type2}
+    Input Price of discount    99
+    Execute Javascript    $('#promotion_amount_end').val('1000')
+    Input Date Join Campaign    ${cur_date}
+    Input Date Show Campaign    ${cur_date}
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Input Text    //input[@id='product_limit_input']    10
+    Click Button Submit Campaign
+    ## Verify expect result
+    List Campaign - Get Last Campaign Name
+    List Campaign - Get Last Campaign Type    สินค้าราคาเดียวและแบบช่วง
+    List Campaign - Click Icon Edit Last Campaign
+    ${campaignID}    Get JoinCampaign ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${campaignID}
+    Verify Campaign Name TH
+    Verify Date Join Compaign
+    Verify Date Show Compaign
+    Verify Price of discount
+    Verify Minimum quantity of product
+    Verify Handle URL TH
+    Verify Limit JoinCampaign    10
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_join_campaign}
+    List Campaign - Click Icon Delete Campaign    //*[@id="row-${campaignID}"]/td[9]/a[3]
+
+TC_MC_01883
+    [Documentation]    [Welove] Create JoinCampaign type [เลือกช่วงราคา, เลือกจำนวนรายการสินค้าที่สามารถส่งเข้าร่วมแคมเปญได้ต่อร้าน: ไม่จำกัดจำนวน][ไม่กำหนด % ผู้ซื้อพึ่งพอใจร้าน][ไม่เลือก ร้านค้าใหม่สามารถเข้าร่วมแคมเปญนี้ได้] (+สินค้าราคาเดียว และ แบบช่วงราคา)
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Click Button    ${btn_add_join_campaign}
+    Wait Until Element Is Visible    ${popup_choose_join_type}    10s
+    Click Button    ${btn_join_type_price}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] JoinCampaign
+    Choose Campaign Banner    join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type2}
+    Input Price of discount    99
+    Execute Javascript    $('#promotion_amount_end').val('1000')
+    Execute Javascript    $("#percent_limit_1").click()
+    Input Date Join Campaign    ${cur_date}
+    Input Date Show Campaign    ${cur_date}
+    Execute Javascript    $(':contains("ไม่จำกัดจำนวน")').click()
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    List Campaign - Get Last Campaign Name
+    List Campaign - Get Last Campaign Type    สินค้าราคาเดียวและแบบช่วง
+    List Campaign - Click Icon Edit Last Campaign
+    ${campaignID}    Get JoinCampaign ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${campaignID}
+    Verify Campaign Name TH
+    Verify Date Join Compaign
+    Verify Date Show Compaign
+    Verify Price of discount
+    Verify Minimum quantity of product
+    Verify Handle URL TH
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_join_campaign}
+    List Campaign - Click Icon Delete Campaign    //*[@id="row-${campaignID}"]/td[9]/a[3]
+
+TC_MC_01885
+    [Documentation]    [Welove] Create JoinCampaign type [เลือกช่วงราคา, เลือกจำนวนรายการสินค้าที่สามารถส่งเข้าร่วมแคมเปญได้ต่อร้าน:จำกัดจำนวน but empty limit ][กำหนด % ผู้ซื้อพึ่งพอใจร้าน empty] (+สินค้าราคาเดียว และ แบบช่วงราคา)
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Click Button    ${btn_add_join_campaign}
+    Wait Until Element Is Visible    ${popup_choose_join_type}    10s
+    Click Button    ${btn_join_type_price}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] JoinCampaign
+    Choose Campaign Banner    join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type2}
+    Input Price of discount    99
+    Execute Javascript    $('#promotion_amount_end').val('1000')
+    Execute JavaScript    $('#percent_limit_2').click()
+    Execute JavaScript    $('#percent_limit_min').val('0')
+    Execute JavaScript    $('#percent_limit_max').val('')
+    Input Date Join Campaign    ${cur_date}
+    Input Date Show Campaign    ${cur_date}
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    Sleep    5
+    Element Should Contain    //label[@id='product_limit_input-error']    This field is required.
+    Element Should Contain    //label[@id='show_error_ercent_limit']    This field is required.
+
+TC_MC_01887
+    [Documentation]    [Welove] Edit condition JoinCampaign (edit limit product to join campaign)
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Change limit join campaign    5
+    Wait Until Element Is Visible    //input[@id='product_limit_input']
+    ${new_limit}=    Get Value    //input[@id='product_limit_input']
+    Should Be True    ${new_limit}    5
+
+TC_MC_01895
+    [Documentation]    [Welove] Edit condition JoinCampaign (edit % ผู้ซื้อพึ่งพอใจร้าน to join campaign)
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Execute JavaScript    $('#percent_limit_2').click()
+    Execute JavaScript    $('#percent_limit_min').val('50')
+    Execute JavaScript    $('#percent_limit_max').val('80')
+    Click Button Submit Campaign
+    ${min}    Execute Javascript    return $('#percent_limit_min').val();
+    ${max}    Execute Javascript    return $('#percent_limit_max').val();
+    Should Be True    ${min}    50
+    Should Be True    ${max}    80
+
+TC_MC_01897
+    [Documentation]    [Welove] View JoinCampaign pages
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/campaign?filter_campaign_type=1
+    Click Element    //*[@id="sample-table-2"]/tbody/tr[1]/td[9]/a[1]
+    Wait Until Element Is Visible    //*[@id="campaign_name_th"]
+    Location Should Contain    ${URL_WMS}/campaign/campaign-view/
+    Validate JoinCampaign View Pages
+
+TC_MC_01899
+    [Documentation]    [Welove] View Manage Show JoinCampaign pages
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/campaign?filter_campaign_type=1
+    Click Element    //*[@id="sample-table-2"]/tbody/tr[1]/td[8]/div[1]/button
+    Click Element    //*[@id="sample-table-2"]/tbody/tr[1]/td[8]/div[1]/ul/li[2]/a
+    Wait Until Element Is Visible    xpath=/html/body/div[5]/div/div[1]/div/form/a
+    Location Should Contain        ${URL_WMS}/campaign/manage-show-view/
+
+TC_MC_01905
+    [Documentation]    [Welove] Edit condition JoinCampaign (edit ร้านค้าใหม่สามารถเข้าร่วมแคมเปญนี้ได้])
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Execute JavaScript    $('#percent_limit_2').click()
+    Execute JavaScript    $('#percent_limit_min').val('50')
+    Execute JavaScript    $('#percent_limit_max').val('80')
+    Execute JavaScript    $('input[name=allow_not_feedback]').prop( "checked" ,false)
+    Click Button Submit Campaign
+    ${min}    Execute Javascript    return $('#percent_limit_min').val();
+    ${max}    Execute Javascript    return $('#percent_limit_max').val();
+    Should Be True    ${min}    50
+    Should Be True    ${max}    80
+
+TC_MC_01838
+    [Documentation]    [Welove] [Join Campaign]: Default limit product in campaign equal 0
+    [Tags]    Medium
+    Go to    ${URL_WMS}/campaign/collection-join/manage-show/${empty_join_campaign_id}
+    Execute Javascript    $("input[name='txt_search_product']").val('L90578758')
+    Press Key    //input[@name='txt_search_product']    \\13
+    Wait Until Element Is Visible    //a[contains(@href,'L90578758')]
+    ${Get_PName}    Get Text    //a[contains(@href,'L90578758')]
+    ${product_load}    Run Keyword and Return Status    Element Should Be Visible    //span[@ng-if='productMsg']
+    Run Keyword If    '${product_load}'=='True'    Wait Until Element Is Not Visible    //span[@ng-if='productMsg']
+    Execute Javascript    $('.all_check.ng-pristine.ng-untouched.ng-valid')[0].click()
+    Click Element    //button[@class='btn btn-sm btn-primary pull-right']
+    Execute JavaScript    $('.btn-warning').click()
+    Wait Until Element Is Visible    //*[@id="list_product_promotion"]/tr/td[10]/input
+    ${text_limit}=    Get Value    //*[@id="list_product_promotion"]/tr/td[10]/input
+    Should Be True    ${text_limit} == 0
+    ## Move Back product
+    Wait Until Element Is Visible    xpath=/html/body/div[5]/div[3]/div[2]/div[2]/div/table/thead/tr/th[1]/input
+    Click Element    xpath=/html/body/div[5]/div[3]/div[2]/div[2]/div/table/thead/tr/th[1]/input
+    Execute JavaScript    $('.btn-danger').click()
+    Execute JavaScript    $('.btn-warning').click()
+    Wait Until Element Is Not Visible    //*[@id="list_product_promotion"]/tr/td[10]/input    60s
+
+TC_MC_01840
+    [Documentation]    [Welove] [Join Campaign]: Edit limit product in campaign not equal 0
+    [Tags]    Medium
+    Go to    ${URL_WMS}/campaign/collection-join/manage-show/${empty_join_campaign_id}
+    Execute Javascript    $("input[name='txt_search_product']").val('L90578758')
+    Press Key    //input[@name='txt_search_product']    \\13
+    Wait Until Element Is Visible    //a[contains(@href,'L90578758')]
+    ${Get_PName}    Get Text    //a[contains(@href,'L90578758')]
+    ${product_load}    Run Keyword and Return Status    Element Should Be Visible    //span[@ng-if='productMsg']
+    Run Keyword If    '${product_load}'=='True'    Wait Until Element Is Not Visible    //span[@ng-if='productMsg']
+    Execute Javascript    $('.all_check.ng-pristine.ng-untouched.ng-valid')[0].click()
+    Click Element    //button[@class='btn btn-sm btn-primary pull-right']
+    Wait Until Element Is Visible    //*[@id="list_product_promotion"]/tr/td[10]/input
+    ${text_limit_default}=    Get Value    //*[@id="list_product_promotion"]/tr/td[10]/input
+    Should Be True    ${text_limit_default} == 0
+    Input Text    //*[@id="list_product_promotion"]/tr/td[10]/input    2
+    Execute JavaScript    $('.btn-warning').click()
+    ## Verify expected result
+    ${text_limit_after_edit}=    Get Value    //*[@id="list_product_promotion"]/tr/td[10]/input
+    Should Be True    ${text_limit_after_edit} == 2
+    ## Move Back product
+    Wait Until Element Is Visible    xpath=/html/body/div[5]/div[3]/div[2]/div[2]/div/table/thead/tr/th[1]/input
+    Click Element    xpath=/html/body/div[5]/div[3]/div[2]/div[2]/div/table/thead/tr/th[1]/input
+    Execute JavaScript    $('.btn-danger').click()
+    Execute JavaScript    $('.btn-warning').click()
+    Wait Until Element Is Not Visible    //*[@id="list_product_promotion"]/tr/td[10]/input    60s
+
+TC_MC_01873
+    [Documentation]    [Welove] Create JoinCampaign (+ส่วนลด % เดียว และแบบช่วง) select เลือกจำนวนรายการสินค้าที่สามารถส่งเข้าร่วมแคมเปญได้ต่อร้าน:จำกัดจำนวน] but empty limit
+    [Tags]    Medium
+    Go to    ${URL_WMS}/campaign
+    Click Button    ${btn_add_join_campaign}
+    Wait Until Element Is Visible    ${popup_choose_join_type}    10s
+    Click Button    ${btn_join_type_price}
+    Wait Until Element Is Visible    //*[@id="edit-basic"]/div[2]/button[1]    10s
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] JoinCampaign
+    Choose Campaign Banner    join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type2}
+    Input Price of discount    99
+    Execute Javascript    $('#promotion_amount_end').val('1000')
+    Input Date Join Campaign    ${cur_date}
+    Input Date Show Campaign    ${cur_date}
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    ${msg_error_limit_input}=    Execute Javascript   return $('#product_limit_input-error').text()
+    Should Contain    ${msg_error_limit_input}    This field is required.
+
+TC_MC_01816
+    [Documentation]    [Welove] Edit condition JoinCampaign
+    [Tags]    Medium    Mock
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_close}
+    Checked Campaign Show    ${radio_campaign_hide}
+    ${old_campaign_name}=    Execute Javascript    return $('#campaign_name_th').val()
+    Input Campaign Name TH    [QA-Robot] JoinCampaign
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type1}
+    Input Date Join Campaign    ${cur_date}
+    Input Date Show Campaign    ${cur_date}
+    Click Button Submit Campaign
+    ## Verify expect result
+    ${campaignID}    Get JoinCampaign ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${campaignID}
+    Verify Campaign Name TH
+    Verify Date Join Compaign
+    Verify Date Show Compaign
+    ## Restore Data
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Execute Javascript    $('#campaign_name_th').val('${old_campaign_name}')
+    Input Campaign Description
+    Checked Discount Type    ${radio_discount_type2}
+    Input Text    //*[@id="promotion_amount_end"]    399
+    Execute Javascript    $("#date_join_campaign").val('02/01/2017 0:00 - 02/01/2020 23:59');
+    Execute Javascript    $("#date_show_campaign").val('02/01/2017 0:00 - 02/01/2020 23:59');
+    Click Button Submit Campaign
+
+*** Keywords ***
+Delete Robot Campaign
+    Switch Browser    1
+    Go to    ${URL_WMS}
+    #BuyerKeyword.Go to WMS
+    Go to    ${URL_WMS}/campaign?filter_campaign_type=6
+    Input Text    //input[@name='campaign_name']    Campaign for SEO
+    Select From List By Label    id=status    Expired
+    Click Element    //button[@class='btn btn-purple btn-sm']
+    Sleep    1s
+    ${result}    Execute Javascript    return $('#sample-table-2 > tbody > tr').length
+    Run Keyword If    ${result} != 1    Confirm Delete Campaign
+    Go to    ${URL_WMS}/campaign?filter_campaign_type=1
+    Input Text    //input[@name='campaign_name']    Campaign for SEO
+    Click Element    //button[@class='btn btn-purple btn-sm']
+    Sleep    1s
+    ${result}    Execute Javascript    return $('#sample-table-2 > tbody > tr').length
+    Run Keyword If    ${result} != 1    Confirm Delete Campaign
+    Go to    ${URL_WMS}/campaign?filter_campaign_type=4
+    Input Text    //input[@name='campaign_name']    Campaign for SEO
+    Click Element    //button[@class='btn btn-purple btn-sm']
+    Sleep    1s
+    ${result}    Execute Javascript    return $('#sample-table-2 > tbody > tr').length
+    Run Keyword If    ${result} != 1    Confirm Delete Campaign
+
+Confirm Delete Campaign
+    Execute Javascript    $('#check_all').click()
+    Execute Javascript    $('.btn-remove-multi').click()
+    Sleep    2s
+    Confirm Action
+    Sleep    5s
+    Confirm Action

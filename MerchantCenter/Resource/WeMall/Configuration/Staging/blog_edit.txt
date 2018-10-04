@@ -1,0 +1,3 @@
+Selenium IDE มันคืออะไรนะ ?
+
+Selenium IDE เป็น Automated Testing Tools ที่ออกแบบมา สำหรับ ใช้งาน ทดสอบกับ Web Application การทำงานของ Selenium IDE จะเป็นในลักษณะ บันทึก ขั้นตอนการทำงาน ตามที่ เราใช้งานกับ Web Application หลังจากนั้น เราสามารถ Save Test Script ตาม Test Scenario ที่เราออกแบบไว้ และ Export ออกมา เป็น Script ในภาษาต่างๆ ได้ เช่น Python Ruby และนำ Test Script ที่ได้มา นำ ไป Run Test ในการทำ Automated Regression Testing ได้ นอกจากนี้ Selenium  ยังมี ในแบบ Webdriver แต่บทความนี้ขอเล่าแค่ Selenium IDE เท่านั้นค่ะ

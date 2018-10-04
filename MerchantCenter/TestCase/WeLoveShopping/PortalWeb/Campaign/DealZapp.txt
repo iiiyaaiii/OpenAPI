@@ -1,0 +1,376 @@
+*** Settings ***
+Suite Setup       Open and Prepare Data
+Suite Teardown    Close All Browsers
+Force Tags        Portal-Web    Ligo    Sprint2017MC9    dealzapp1    mc-wls
+Test Setup        Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Test Teardown     Close All Browsers
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Library           Collections
+Library           ../../../../Keyword/PythonLibrary/_customkeyword.py
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Dealzap.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/Dealzap.robot
+
+*** Variables ***
+${campaig_sub1}    ราคาเดียว 99 บาท
+${campaig_sub2}    Best Sport ware
+${category_dealzap}    แฟชั่น
+${low_price_dealzap}    ราคาต่ำสุด
+${message_countdown}    เหลือเวลาอีก
+
+*** Test Cases ***
+TC_MC_08215
+    [Documentation]    [Welove] Dealzapp list have Dealzapp on time
+    [Tags]    Medium
+    Go to    ${URL_PORTAL}/dealzapp
+    Page Should Not Contain Element    //img[@src="https://cdn-p.wls-dev.com/themes/titan/assets/images/dealzapp/dealzapp_time.png"]
+    Page Should Contain Element    timeLayout
+    Page Should Contain Element    //div[@class="box-dz-counter"]
+    Page Should Not Contain Element    //p[contains(.,'อดใจรอสักครู่') and contains(.,'กำลังมา')]
+
+TC_MC_08217
+    [Documentation]    [Welove] Dealzapp list have Dealzapp in next day
+    [Tags]    High
+    Go to    ${URL_PORTAL}/dealzapp?nextdeal=1
+    Page Should Contain Element    //img[@src="https://cdn-p.wls-dev.com/themes/titan/assets/images/dealzapp/dealzapp_time.png"]
+    Page Should Not Contain Element    timeLayout
+    Page Should Not Contain Element    //div[@class="box-dz-counter"]
+    Page Should Not Contain Element    //p[contains(.,'อดใจรอสักครู่') and contains(.,'กำลังมา')]
+
+TC_MC_08253
+    [Documentation]    Sorting product DealZapp by Price as ASC on Tab DealZapp on time
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/dealzapp
+    Click Element    ${select_order}
+    Execute javascript    $('#select_order ul li').eq(2).find('a')[0].click();
+    Sleep    2s
+    Element Should Contain    ${selected_sort}    ราคาต่ำสุด
+    : FOR    ${i}    IN RANGE    1    3
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/div/div[2]/div[1]/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/div/div[2]/div[1]/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} <= ${price_next}
+
+TC_MC_08255
+    [Documentation]    Sorting product DealZapp by Price as DESC on Tab DealZapp on time
+    [Tags]    Medium
+    Go to    ${URL_PORTAL}/dealzapp
+    Click Element    ${select_order}
+    Execute javascript    $('#select_order ul li').eq(3).find('a')[0].click();
+    Sleep    2s
+    Element Should Contain    ${selected_sort}    ราคาสูงสุด
+    : FOR    ${i}    IN RANGE    1    3
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/div/div[2]/div[1]/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/div/div[2]/div[1]/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} <= ${price_next}
+
+TC_MC_08257
+    [Documentation]    Sorting product DealZapp by Latest product on Tab DealZapp on time
+    Go to    ${URL_PORTAL}/dealzapp
+    Click Element    ${select_order}
+    Execute javascript    $('#select_order ul li').eq(0).find('a')[0].click();
+    Sleep    2s
+    Element Should Contain    ${selected_sort}    สินค้ายอดฮิต
+
+TC_MC_08259
+    [Documentation]    Sorting product DealZapp by Discount maximum product on Tab DealZapp on time
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/dealzapp
+    Click Element    ${select_order}
+    Execute javascript    $('#select_order ul li').eq(1).find('a')[0].click();
+    Sleep    2s
+    Element Should Contain    ${selected_sort}    ส่วนลดสูงสุด
+    : FOR    ${i}    IN RANGE    1    3
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/a/div
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/a/div
+    \    ${price_now}    Remove String Using Regexp    ${price_now}    %\n+[A-Z]+
+    \    ${price_next}    Remove String Using Regexp    ${price_next}    %\n+[A-Z]+
+    \    Should Be True    ${price_now} >= ${price_next}
+
+TC_MC_08261
+    [Documentation]    Filtering product DealZapp by Category on DealZapp on time
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/dealzapp
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').click();
+    sleep    2s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("แฟชั่น")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').click();
+    sleep    2s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    2s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('.items-list-box li').eq(0).find('a')[0].click();
+    sleep    2s
+    ${is_contain}    Execute Javascript    return $('.breadcrumb-box:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+
+TC_MC_08263
+    [Documentation]    Filtering product DealZapp by Sub-Campiagn on DealZapp on time
+    [Tags]    Regression    Medium
+    Go To LevelC Dealzap
+    Click Filter Sub-Campaign    ${campaig_sub1}
+    Verify Fillter After Selected Sub-Campaign    ${campaig_sub1}
+    Click Filter Sub-Campaign    ${campaig_sub1}
+
+TC_MC_08265
+    [Documentation]    Filtering and sorting product DealZapp on DealZapp on time
+    [Tags]    Regression    Portal-Web    High    SmokeTest
+    Go To LevelC Dealzap
+    Click Filter Category    ${category_dealzap}
+    Click Filter Sub-Campaign    ${campaig_sub1}
+    Select Lower Price Sorting Product
+    Verify Fillter After Selected    ${category_dealzap}    ${campaig_sub1}    ${low_price_dealzap}
+    Verify Price After Sorting
+    Click First Product After Sorting
+    Verify Product    ${category_dealzap}    ${message_countdown}
+
+TC_MC_08267
+    [Documentation]    De-selected filter from side bar on DealZapp on time
+    [Tags]    Regression    Low    Portal-Web
+    Go To LevelC Dealzap
+    Click Filter Category    ${category_dealzap}
+    Click Filter Sub-Campaign    ${campaig_sub1}
+    Verify Fillter After Selected Category    ${category_dealzap}
+    Verify Fillter After Selected Sub-Campaign    ${campaig_sub1}
+    Click Filter Category    ${category_dealzap}
+    Click Filter Sub-Campaign    ${campaig_sub1}
+    Verify Not Display Category When De-selected    ${category_dealzap}
+    Verify Not Display Sub-Campaign When De-selected    ${campaig_sub1}
+
+
+TC_MC_08269
+    [Documentation]    De-selected filter from filter bar on DealZapp on time
+    [Tags]    Low    Portal-Web
+    Go To LevelC Dealzap
+    Click Filter Category    ${category_dealzap}
+    Click Filter Sub-Campaign    ${campaig_sub1}
+    Verify Fillter After Selected Category    ${category_dealzap}
+    Verify Fillter After Selected Sub-Campaign    ${campaig_sub1}
+    Click Cancle On Filter Bar
+    Click Cancle On Filter Bar
+    Verify Not Display Category When De-selected    ${category_dealzap}
+    Verify Not Display Sub-Campaign When De-selected    ${campaig_sub1}
+
+TC_MC_08271
+    [Documentation]    De-selected all filter from filter bar on DealZapp on time
+    [Tags]    Regression    Low    Portal-Web
+    Go To LevelC Dealzap
+    Click Filter Category    ${category_dealzap}
+    Click Filter Sub-Campaign    ${campaig_sub1}
+    Verify Fillter After Selected Category    ${category_dealzap}
+    Verify Fillter After Selected Sub-Campaign    ${campaig_sub1}
+    Click Cancle All On Filter Bar
+    Verify Not Display Category When De-selected    ${category_dealzap}
+    Verify Not Display Sub-Campaign When De-selected    ${campaig_sub1}
+
+TC_MC_08273
+    [Documentation]    Sorting product DealZapp by Price as ASC on Tab DealZapp next time
+    [Tags]    Medium
+    Go to    ${URL_PORTAL}/dealzapp?nextdeal=1
+    Click Element    ${select_order}
+    Execute javascript    $('#select_order ul li').eq(2).find('a')[0].click();
+    Sleep    3s
+    Element Should Contain    ${selected_sort}    ราคาต่ำสุด
+    : FOR    ${i}    IN RANGE    1    10
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/div/div[2]/div[1]/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/div/div[2]/div[1]/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} <= ${price_next}
+
+TC_MC_08275
+    [Documentation]    Sorting product DealZapp by Price as DESC on Tab DealZapp next time
+    [Tags]    Medium
+    Go to    ${URL_PORTAL}/dealzapp?nextdeal=1
+    Click Element    ${select_order}
+    Execute javascript    $('#select_order ul li').eq(3).find('a')[0].click();
+    Sleep    2s
+    Element Should Contain    ${selected_sort}    ราคาสูงสุด
+    : FOR    ${i}    IN RANGE    1    10
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/div/div[2]/div[1]/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/div/div[2]/div[1]/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} <= ${price_next}
+
+TC_MC_08277
+    [Documentation]    Sorting product DealZapp by Latest product on Tab DealZapp next time
+    Go to    ${URL_PORTAL}/dealzapp?nextdeal=1
+    Click Element    ${select_order}
+    Execute javascript    $('#select_order ul li').eq(0).find('a')[0].click();
+    Sleep    2s
+    Element Should Contain    ${selected_sort}    สินค้ายอดฮิต
+
+TC_MC_08279
+    [Documentation]    Sorting product DealZapp by Discount maximum product on Tab DealZapp next time
+    # [Tags]    Regression
+    Go to    ${URL_PORTAL}/dealzapp?nextdeal=1
+    Click Element    ${select_order}
+    Execute javascript    $('#select_order ul li').eq(1).find('a')[0].click();
+    Sleep    2s
+    Element Should Contain    ${selected_sort}    ส่วนลดสูงสุด
+    : FOR    ${i}    IN RANGE    1    3
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/a/div
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/a/div
+    \    ${price_now}    Remove String    ${price_now}    %    ${\n}    OFF
+    \    ${price_next}    Remove String    ${price_next}    %    ${\n}    OFF
+    \    Should Be True    ${price_now} >= ${price_next}
+
+TC_MC_08281
+    [Documentation]    Filtering product DealZapp by Category on DealZapp next time
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/dealzapp?nextdeal=1
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').click();
+    sleep    1s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("แฟชั่น")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    1s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('.items-list-box li').eq(0).find('a')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.breadcrumb-box:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+
+TC_MC_08283
+    [Documentation]    Filtering product DealZapp by Sub-Campiagn on DealZapp next time
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/dealzapp?nextdeal=1
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Gadget") input').click();
+    sleep    1s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Gadget") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Gadget")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Gadget") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').click();
+    sleep    1s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').is(':visible')
+    Should Be True    ${is_contain}
+
+TC_MC_08287
+    [Documentation]    De-selected filter from side bar on DealZapp next time
+    [Tags]    Low    Portal-Web
+    Go to    ${URL_PORTAL}/dealzapp?nextdeal=1
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').is(':checked')
+    Should Be True    ${is_checked}
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').length
+    Should Be Equal    '${is_contain}'    '0'
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').length
+    Should Be Equal    '${is_contain}'    '0'
+
+TC_MC_08289
+    [Documentation]    De-selected filter from filter bar on DealZapp next time
+    [Tags]    Regression    Low    Portal-Web
+    Go to    ${URL_PORTAL}/dealzapp?nextdeal=1
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').is(':checked')
+    Should Be True    ${is_checked}
+    Execute javascript    $('.sort-option-list-box .sort-active').eq(0).find('a')[0].click();
+    sleep    1s
+    Execute javascript    $('.sort-option-list-box .sort-active').eq(0).find('a')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').length
+    Should Be Equal    '${is_contain}'    '0'
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').length
+    Should Be Equal    '${is_contain}'    '0'
+
+TC_MC_08291
+    [Documentation]    De-selected all filter from filter bar on DealZapp next time
+    [Tags]    Low    Portal-Web
+    Go to    ${URL_PORTAL}/dealzapp?nextdeal=1
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').is(':checked')
+    Should Be True    ${is_checked}
+    Execute javascript    $('.sort-option-list-box .remove-sort-all')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').length
+    Should Be Equal    '${is_contain}'    '0'
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').length
+    Should Be Equal    '${is_contain}'    '0'
+
+TC_MC_08307
+    [Documentation]    Filtering and sorting product DealZapp on DealZapp next time
+    Go to    ${URL_PORTAL}/dealzapp
+    sleep    0.5s
+    ${product_count}    Get Matching Xpath Count    ${active_dealzapp}//div[3]//div[2]//ul[1]//li
+    Pass Execution If    '${product_count}' == '0'    Message : ไม่มี DealZapp ในช่วงเวลานี้
+    Execute Javascript    $('.dz-tab')[1].click()
+    Sleep    1s
+    ${product_count}    Get Matching Xpath Count    ${active_dealzapp}//div[3]//div[2]//ul[1]//li
+    Pass Execution If    '${product_count}' == '0'    Message : ไม่มี DealZapp ในช่วงเวลาถัดไป
+    ${filter_category}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust > div > label').eq(2).text().trim()
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust > div > label > input').eq(2).click()
+    Sleep    2s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("${filter_category}")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('.items-list-box li').eq(0).find('a')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.breadcrumb-box:contains("${filter_category}")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.inner-dealzapp:contains("เริ่มเวลา 10:00 น.")').is(':visible')
+    Should Be True    ${is_contain}

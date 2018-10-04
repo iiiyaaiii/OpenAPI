@@ -1,0 +1,26 @@
+*** Variable ***
+#### Locators#
+${url_search_analysis}    ${URL_WMS}/wordsanalysis
+${URL_WordsPhrase}    ${URL_WMS}/wordsphrase
+${URL_create_wordsphrase}    ${URL_WMS}/wordsphrase/create
+${input_keywords}    //*[@id="q"]
+${input_keywords_last}    //*[@id="keyword"]
+${btn_analyse_value}    //*[@id="analysesubmit"]
+${BtnSearch}    //a[@class="btn btn-sm btn-primary"]//span[contains(.,'ค้นหา')]
+${BtnCreate}    //span[contains(.,'เพิ่ม Words Phrase')]
+${TxtAdd}    keyword
+${a_create_phrase}    //*[@id="frm_delete"]/table/tbody/tr/td/a
+${BtnSubmit}    submit
+${BtnSave}    //button[contains(.,'บันทึก')]
+${word_analysis_result}    //*[@id="table-sort"]
+${btn_save}    //*[@id="edit-basic"]/div[2]/button[1]
+${noti_save_sucess}    //*[@id="notify-top"]
+${btn_phrase_reset}    //*[@id="edit-basic"]/div[2]/button[2]
+${Icon_Edit}    //i[contains(@class,'pencil')]
+${Icon_Delete}    //a[@class="red btndel"]/i[contains(@class,'trash')]
+${btn_delete}    //*[@id="btn_delete"]
+${btn_edit}    //*[@class="btn btn-info"]
+${input_keywords_edit}    //*[@name="keyword[]"]
+${Btn_Import}    //span[contains(.,'Import')]
+${Browse_ImportFile}    //*[@id="import_file"]
+${btn_save_import}    //*[@id="edit-basic"]/div[2]/button[1]

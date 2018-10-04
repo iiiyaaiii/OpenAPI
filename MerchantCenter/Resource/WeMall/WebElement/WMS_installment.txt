@@ -1,0 +1,6 @@
+*** Variables ***
+${lbl_product_id}    //input[@class="p-id s-input"]
+${lbl_type_installment}    //select[@class="p-inst"]
+${btn_search_product}    //button[@class="search-btn btn btn-primary"]
+${tbl_list_all_product_search}    //div[4][@class="col-xs-12"]
+${tbc_list_product)id}    //table[@id="product-table"]/tbody/tr/td[1]

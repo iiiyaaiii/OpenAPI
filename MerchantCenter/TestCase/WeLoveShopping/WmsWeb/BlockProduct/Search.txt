@@ -1,0 +1,136 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${url_block_product_history}
+Force Tags        WMS-Web    mock    blockproduct1    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_BlockProduct.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/WMS_BlockProduct.txt
+
+*** Test Cases ***
+TC_MC_01552
+    [Documentation]    [Welove] search by Product ID - Input more than 50 id.
+    [Tags]    Regression    Low
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_product_id}    L91199418,L91199401,L91199396,L91199297,L91199293,L91199291,L91122155,L91199091,L91166846,L91166895,L91199356,L91199362,L91199338,L91199336,L91199329,L91199328,L91199332,L91075698,L91199309,L90579916,L91199294,L91199274,L91199280,L91122112,L91085324,L91122109,L90965841,L90250602,L91159712,L91122105,L91182181,L91182208,L91193393,L91122052,L90898074,L90881269,L91199195,L91199201,L90791588,L90791861,L91071082,L91199117,L91199108,L91199107,L91199105,L91199097,L91199102,L91199092,L91199089,L91035422,L91018516
+    ${msg_over_limit}=    Get Text    //span[@class="help-block error-limit"]
+
+TC_MC_01554
+    [Documentation]    [Welove] search by Product ID - Case Not Found all product id
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_product_id}    L904453
+    Click Button    ${btn_bp_search}
+    Element Should Be Visible    //div[@id="product-id-missing"]
+    ${msg_not_found}=    Get Text    //*[@id="product-id-missing"]/div/ul/li[1]
+
+TC_MC_01556
+    [Documentation]    [Welove] search by Product ID - Case Found all product id
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_product_id}    ${product_block2}
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count} == 2
+
+TC_MC_01558
+    [Documentation]    [Welove] Search by Product ID - Case not found some product id
+    [Tags]    Regression   Medium
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_product_id}    ${product_block1},${product_block2},L11111111,L22222222
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count} == 2
+    Element Should Be Visible    //div[@id="product-id-missing"]
+    ${msg_not_found}=    Get Text    //*[@id="product-id-missing"]/div/ul/li[1]
+
+TC_MC_01560
+    [Documentation]    [Welove] Search by Store ID - Case found all product of store id
+    [Tags]    Regression    Medium
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_store_id_portal}    ${store_id}
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${column_store_id}
+    Should Be True    ${count} > 0
+    Element Should Contain    ${column_store_id}    ${store_id}
+    ${p_status_show}=    Get Matching Xpath Count    //i[@data-original-title="เปิด"]
+    ${p_status_close}=    Get Matching Xpath Count    //i[@data-original-title="ปิด"]
+    Clear Element Text    ${input_store_id_portal}
+    Input Text    ${input_store_id_portal}    913592
+    ${msg_error_format}=    Get Text    //span[@class="help-block error-format"]
+    Focus    ${input_store_id_portal}
+
+TC_MC_01562
+    [Documentation]    [Welove] Search by Email
+    [Tags]    Regression    Low
+    Execute javascript    $("input[name='store_email']").val('${seller_user_001}')
+    Execute javascript    $('.btn-primary').click()
+    ${count}=    Get Matching Xpath Count    ${column_email}
+    : FOR    ${i}    IN RANGE    1    ${count}
+    \    ${email}=    Get Text    //*[@id="result-table"]/tbody/tr[${1}]/td[8]
+    \    ${result}=    Get Substring    ${email}    8
+    \    Element Should Contain    //*[@id="result-table"]/tbody/tr[${1}]/td[8]    ${seller_user_001}
+
+TC_MC_01564
+    [Documentation]    [Welove] Search by Phone
+    [Tags]    Regression    Low
+    Execute javascript    $("input[name='store_phone']").val('043334343')
+    Execute javascript    $('.btn-primary').click()
+    ${count}=    Get Matching Xpath Count    ${column_phone}
+    : FOR    ${i}    IN RANGE    1    ${count}
+    \    ${phone}=    Get Text    //*[@id="result-table"]/tbody/tr[${1}]/td[9]
+    \    Element Should Contain    ${phone}    043334343
+
+TC_MC_01566
+    [Documentation]    [Welove] BlockProduct History - Search by Store ID
+    [Tags]    Regression    Low
+    Execute javascript    $("input[name='store_id']").val('${store_name1}')
+    Execute javascript    $('.btn-primary').click()
+    ${count}=    Get Matching Xpath Count    ${column_store_id}
+    : FOR    ${i}    IN RANGE    1    ${count}
+    \    Element Should Contain    //*[@id="result-table"]/tbody/tr[${1}]/td[7]    ${store_name1}
+
+TC_MC_01568
+    [Documentation]    [Welove] Search by "วันที่อัพเดตสินค้า"
+    Go To    ${url_block_product_portal}
+    Click Element    //i[@class="fa fa-calendar bigger-110"]
+    Click Element    xpath=/html/body/div[8]/div[3]/ul/li[1]
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count} > 0
+
+TC_MC_01570
+    [Documentation]    [Welove] Search by Status = show
+    Go To    ${url_block_product_portal}
+    Select From List By Label    ${select_product_status}    แสดง
+    Click Button    ${btn_bp_search}
+    ${count_icon_Status}=    Get Matching Xpath Count    ${icon_status_show}
+    Should Be True    ${count_icon_Status} > 0
+
+TC_MC_01572
+    [Documentation]    Welove] Search by Status = block
+    Go To    ${url_block_product_portal}
+    Select From List By Label    ${select_product_status}    ปิด
+    Click Button    ${btn_bp_search}
+    ${count_icon_Status}=    Get Matching Xpath Count    ${icon_status_close}
+    Should Be True    ${count_icon_Status} > 0
+
+TC_MC_01574
+    [Documentation]    [Welove] Check Paging Product Listing
+    Go To    ${url_block_product_portal}
+    Select From List By Label    ${select_product_status}    แสดง
+    Click Button    ${btn_bp_search}
+    ${show_all}=    Get Text    //div[@id="table_report_info"]
+    ${count_per_page}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count_per_page} == 50
+
+TC_MC_08824
+    [Documentation]    [Welove] BlockProduct portal - Redirect product name link
+    Go To    ${url_block_product_portal}
+    Click Button    ${btn_bp_search}
+    Click product name link on first record in Block Product page
+    Check that link is redirect to product detail page successfully    welove
+

@@ -1,0 +1,491 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../..//Resource/WeLoveShopping/init.robot
+Resource          ../../Resource/WeLoveShopping/WebElement/AccountHistory.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/AccountDetail.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/AccountRefund.txt
+Resource          Bulktracking.txt
+Resource          Store_Detail.txt
+
+*** Keywords ***
+Check error message on account refund page
+    [Documentation]    Use for check error message on account refund page
+    [Arguments]    ${element_error_message}    ${error_message}
+    Element Should Contain    ${element_error_message}    ${error_message}
+
+Click view refund detail button on account detail page
+    [Documentation]    Use for click view refund detail button on account detail page
+    ${url}    Get Element Attribute    //*[@id="content-container"]/div/div/div[2]/div[2]/div[5]/a@href
+    Go To    ${url}
+
+Get text accept refund on account refund page
+    [Documentation]    Use for get text accept refund on account refund page
+    ${text_accept_refund}    Execute Javascript    return $("div[class='refund-status']").text()
+    Return From Keyword    ${text_accept_refund}
+
+Compare string
+    [Documentation]    Use for compare string
+    [Arguments]    ${text_accept_refund}    ${text_compare}
+    Should Be String    ${text_accept_refund}    ${text_compare}
+
+Click cancel refund on account refund page
+    [Documentation]    Use for click cancel refund on account refund page
+    Click Element    ${cancel_refund_button_account_refund}
+
+Get year
+    [Documentation]    Use for get year
+    ${yyyy}=    Get Time    year    NOW
+    Return From Keyword    ${yyyy}
+
+Get month
+    [Documentation]    Use for get month
+    ${mm}=    Get Time    month    NOW
+    Return From Keyword    ${mm}
+
+Get day
+    [Documentation]    Use for get day
+    ${dd}=    Get Time    day    NOW
+    Return From Keyword    ${dd}
+
+Create Valid SCB Mid Day Bank Text File
+    [Documentation]    Use for create SCB text file midday
+    [Arguments]    ${order_id}    ${name}    ${ref1}    ${ref2}
+    ...    ${payment_channel}
+    ${price}=    Get Text    ${element_total_price_account_detail}
+    ${yyyy}    Get year
+    ${mm}    Get month
+    ${dd}    Get day
+    ${dateFile}=    Set Variable    ${dd}${mm}${yyyy}
+    ${dateReconcile}=    Set Variable    ${yyyy}-${mm}-${dd}
+    ${file_path}    Replace String    ${CURDIR}    /TestCase/WeLoveShopping/AccountWeb/WLSAccount    /Resource/${BU}/Image
+    ${scb_header}=    Set SCB Transaction Header Date    ${scb_mid_day_header}    ${dateFile}
+    Create File    ${file_path}${/}SCB_TexFile.txt    ${scb_header}${\n}    ${default_encoding}
+    ${transaction_line}=    Set Transaction Payer Name    ${scb_mid_day_content}    ${NAME_20CHARS}
+    ${transaction_line}=    Set Transaction Date    ${transaction_line}    ${dateFile}
+    ${sequence_num}=    Generate Random String    6    [NUMBERS]
+    ${transaction_line}=    Set SCB Transaction Sequence Number    ${transaction_line}    ${sequence_num}
+    ${transaction_line}=    Set Transaction Ref1    ${transaction_line}    ${ref1}
+    ${transaction_line}=    Set Transaction Ref2    ${transaction_line}    ${ref2}
+    ${transaction_line}=    Set SCB Mid Day Payment Method    ${transaction_line}    ${payment_channel}
+    ${transaction_line}=    Set SCB Mid Day Transaction Amount    ${transaction_line}    ${price}
+    Append To File    ${file_path}${/}SCB_TexFile.txt    ${transaction_line}${\n}    ${default_encoding}
+    Append To File    ${file_path}${/}SCB_TexFile.txt    ${scb_mid_day_tailing}${\n}    ${default_encoding}
+    Set Test Variable    ${file_path}
+    Set Test Variable    ${dateReconcile}
+
+Set SCB Mid Day Payment Method
+    [Documentation]    Use for set value payment method for bank file
+    [Arguments]    ${line}    ${payment_method}
+    ${payment_method}=    Convert To Lowercase    ${payment_method}
+    log    use ${payment_method} ${scb_${payment_method}_pay_method}
+    ${line}=    Replace String    ${line}    PAY_METHOD    ${scb_${payment_method}_pay_method}
+    [Return]    ${line}
+
+Set SCB Mid Day Transaction Amount
+    [Documentation]    Use for set value transaction amount for bank file
+    [Arguments]    ${line}    ${amount}
+    ${amount}=    Replace String    ${amount}000    .    ${EMPTY}
+    ${amount_length}=    Get Length    ${amount}
+    ${zeroes_to_add}=    Evaluate    23 - ${amount_length}
+    : FOR    ${i}    IN RANGE    1    ${zeroes_to_add} + 1
+    \    ${amount}=    Catenate    SEPARATOR=${EMPTY}    0${amount}
+    ${amount}=    Replace String    ${amount}    ${SPACE}    ${EMPTY}
+    ${line}=    Replace String    ${line}    TR_AMOUNT    ${amount}
+    [Return]    ${line}
+
+Set SCB Transaction Header Date
+    [Documentation]    Use for set value transaction header date for bank file
+    [Arguments]    ${header}    ${date}
+    ${line}=    Replace String    ${header}    HEADER_DATE    ${date}
+    [Return]    ${line}
+
+Set SCB Transaction Sequence Number
+    [Documentation]    Use for set value transaction sequence number for bank file
+    [Arguments]    ${line}    ${seq_num}
+    ${line}=    Replace String    ${line}    SEQNUM    ${seq_num}
+    [Return]    ${line}
+
+Set Transaction Date
+    [Documentation]    Use for set value transaction date for bank file
+    [Arguments]    ${line}    ${trans_date}
+    ${line}=    Replace String    ${line}    TRANS_DATE    ${trans_date}
+    [Return]    ${line}
+
+Set Transaction Payer Name
+    [Documentation]    Use for set value transaction payer name for bank file
+    [Arguments]    ${line}    ${name}
+    ${line}=    Replace String    ${line}    NAME_20CHARS    ${name}
+    [Return]    ${line}
+
+Set Transaction Ref1
+    [Documentation]    Use for set value transaction ref1 for bank file
+    [Arguments]    ${line}    ${ref1}
+    ${line}=    Replace String    ${line}    REF18CHR    ${ref1}
+    [Return]    ${line}
+
+Set Transaction Ref2
+    [Documentation]    Use for set value transaction ref2 for bank file
+    [Arguments]    ${line}    ${ref2}
+    ${line}=    Replace String    ${line}    REF2_12_CHRS    ${ref2}
+    [Return]    ${line}
+
+Go to order offline reconcile on wms system
+    [Documentation]    Use for go to order offline reconcile on wms system
+    Go To    ${URL_RECONCLINE_OFFLINE}
+
+Go to WMS
+    [Documentation]    Use for admin login WMS page and already check login
+    [Arguments]    ${username_wms}    ${password_wms}
+    Go to    ${URL_WMS}
+    ${title}    Get Title
+    Run Keyword If    '${title}' == 'Authentication'    Input Text    //input[@name="email"]    ${username_wms}
+    Run Keyword If    '${title}' == 'Authentication'    Input Password    //input[@name="password"]    ${password_wms}
+    Run Keyword If    '${title}' == 'Authentication'    Click Button    //button[@class="width-35 pull-right btn btn-sm btn-primary"]
+    Run Keyword If    '${title}' == 'Authentication'    Location Should Be    ${URL_WMS}/dashboard
+
+Click create_reconcline_file button
+    [Documentation]    Use for click create_reconcline_file button
+    Click Element    ${create_reconcline_file}
+
+Select bank for reconcline
+    [Documentation]    Use for select bank for reconcline
+    [Arguments]    ${bank}
+    Select From List    ${element_select_bank_reconcline}    ${bank}
+
+Choose file reconcile
+    [Documentation]    Use for
+    [Arguments]    ${file}
+    Choose File    ${element_input_file_reconcline}    ${file}
+
+Click save reconcile file
+    [Documentation]    Use for click save reconcile file
+    Click Element    ${element_save_button_on_reconclie}
+
+Offline Upload And Reconcile
+    [Documentation]    Use for upload document and reconcile when accept refund by payment offline channel
+    [Arguments]    ${order_id}    ${file}    ${date}
+    Go to WMS    ${wms_user}    ${wms_pass}
+    Go to order offline reconcile on wms system
+    Check Element Visible    ${create_reconcline_file}    ${expect_load_time}
+    Click create_reconcline_file button
+    Select bank for reconcline    SCB (ธนาคารไทยพาณิชย์)
+    Choose file reconcile    ${file}
+    Click save reconcile file
+    Wait Until Element Is Visible    //input[@name="reconcile_check_${order_id}"]    60
+    Focus    //input[@name="reconcile_check_${order_id}"]
+    Select Checkbox    //input[@name="reconcile_check_${order_id}"]
+    Check Element Visible    //*[@value="Reconcile Truemoney"]    ${expect_load_time}
+    Click Element    //*[@value="Reconcile Truemoney"]
+    Wait Until Element Is Visible    //*[@value="Match Order"]
+
+Go to send refund offline document page
+    [Documentation]    Use for
+    ${url_send_refund_offline}    Get Element Attribute    //*[@id="content-container"]/div/div/div[2]/div[2]/div[5]/a@href
+    Go To    ${url_send_refund_offline}
+
+Select bank on send refund offline document page
+    [Documentation]    Use for select bank on send refund offline document page
+    [Arguments]    ${bank}
+    Select From List    ${element_select_bank}    ${bank}
+
+Input bank no
+    [Documentation]    Use for input bank no
+    [Arguments]    ${bank_no}
+    Input Text    ${element_input_bank_no}    ${bank_no}
+
+Click checkbox confirm document
+    [Documentation]    Use for click checkbox confirm document
+    Execute Javascript    ${element_checkbox_confirm_document}
+
+Click send document button
+    [Documentation]    Use for click send document button
+    Click Element    ${send_document_button}
+
+Choose file refund offline
+    [Documentation]    Use for choose file for rquest refund
+    [Arguments]    ${file_upload}
+    ${file_path}    Replace String    ${CURDIR}    ${/}Keyword${/}Common    ${/}Resource${/}${BU}
+    Choose File    ${element_browse_refund_offline_file}    ${file_path}${/}Image${/}${file_upload}
+
+Buyer attach document refund offline
+    [Documentation]    Upload document refund offline
+    [Arguments]    ${bank_name}    ${bank_number}    ${file_upload}
+    Go to send refund offline document page
+    Check Element Visible    ${element_select_bank}    ${expect_load_time}
+    Select bank on send refund offline document page    ${bank_name}
+    Input bank no    ${bank_number}
+    Choose file refund offline    ${file_upload}
+    Click checkbox confirm document
+    Click send document button
+    Confirm Action
+
+Go To Wms Refund Success Page
+    [Documentation]    Use for go to wms refund success page
+    Go To    ${URL_WMS}/orderrequestrefund
+
+Search By Order Id On Wms Page
+    [Documentation]    Use for search by order id on wms page
+    [Arguments]    ${input_search_orderid}    ${order_id}
+    Input Text    ${input_search_orderid}    ${order_id}
+    Click Element    ${btn_search_on_refund_success_page}
+
+Go To Detail Wms Refund Success Page
+    [Documentation]    Use for go to detail wms refund success page
+    ${url_detail_refund_success}    Get Element Attribute    //*[@id="form_list"]/table/tbody/tr[1]/td[22]/a@href
+    Go To    ${url_detail_refund_success}
+
+WLSApprove Reject Refund Document
+    [Documentation]    Use for WLSApprove reject document refund on WMS page
+    [Arguments]    ${order_id}
+    Open Browser    ${URL_WMS}    gc
+    Maximize Browser Window
+    Input text    ${input_username_wms}    ${user_wlsapprove}
+    Input text    ${input_password_wms}    ${password_approve}
+    Click Element    ${logon_button_wms}
+    Go to    ${URL_REFUND}
+    Input text    //*[@name="secure_key"]    ${order_id}
+    Click Element    //input[@class="btn btn-sm btn-primary margin-bottom-5 "]
+    ${accept_refund_detail_link}=    Get Element Attribute    //*[@id="form_list"]/table/tbody/tr[1]/td[22]/a@href
+    Go to    ${accept_refund_detail_link}
+    Focus    //input[@name="chk_file_all"]
+    Execute Javascript    $("input[class='chk_approve_file']").eq(3).click()
+    Execute Javascript    $("textarea[name='note[]']").eq(0).val("เอกสารไม่ชัด")
+    Execute Javascript    $("textarea[name='note[]']").eq(1).val("ไม่ตรงกับเอกสารผู้ซื้อ")
+    Execute Javascript    $("textarea[name='note[]']").eq(2).val("เอกสารไม่ชัด")
+    Click Element    //input[@id="btn_wls_approve"]
+    Wait Until Element Is Visible    //div[@class="alert alert-success"]
+    Element Should Contain    //div[@class="alert alert-success"]    ปรับสถานะเรียบร้อยแล้ว
+    Element Should Contain    //span[@class="label label-warning"]    waiting for doc
+    Close Browser
+
+WLSApprove Approve Refund Document
+    [Documentation]    Use for WLSApprove approve document refund on WMS page
+    [Arguments]    ${order_id}
+    Open Browser    ${URL_WMS}    gc
+    Maximize Browser Window
+    Input text    ${input_username_wms}    ${user_wlsapprove}
+    Input text    ${input_password_wms}    ${password_approve}
+    Click Element    ${logon_button_wms}
+    Go to    ${URL_REFUND}
+    Input text    //*[@name="secure_key"]    ${order_id}
+    Click Element    //input[@class="btn btn-sm btn-primary margin-bottom-5 "]
+    ${accept_refund_detail_link}=    Get Element Attribute    //*[@id="form_list"]/table/tbody/tr[1]/td[22]/a@href
+    Go to    ${accept_refund_detail_link}
+    Focus    //input[@name="chk_file_all"]
+    Click Element    //input[@name="chk_file_all"]
+    Click Element    //input[@id="btn_wls_approve"]
+    Wait Until Element Is Visible    //div[@class="alert alert-success"]
+    Element Should Contain    //div[@class="alert alert-success"]    ปรับสถานะเรียบร้อยแล้ว
+    Element Should Contain    //span[@class="label label-warning"]    waiting for review
+    Close Browser
+
+TMNReview Approve Refund Document
+    [Documentation]    Use for TMNReview approve document refund on WMS page
+    [Arguments]    ${order_id}
+    Open Browser    ${URL_WMS}    gc
+    Maximize Browser Window
+    Input text    ${input_username_wms}    ${user_tmnreview}
+    Input text    ${input_password_wms}    ${password_approve}
+    Click Element    ${logon_button_wms}
+    Go to    ${URL_REFUND}
+    Input text    //*[@name="secure_key"]    ${order_id}
+    Click Element    //input[@class="btn btn-sm btn-primary margin-bottom-5 "]
+    ${accept_refund_detail_link}=    Get Element Attribute    //*[@id="form_list"]/table/tbody/tr[1]/td[22]/a@href
+    Go to    ${accept_refund_detail_link}
+    Focus    //input[@name="chk_file_all"]
+    Click Element    //input[@name="chk_file_all"]
+    Click Element    //input[@id="btn_tmn_review"]
+    Wait Until Element Is Visible    //div[@class="alert alert-success"]
+    Element Should Contain    //div[@class="alert alert-success"]    ปรับสถานะเรียบร้อยแล้ว
+    Element Should Contain    //span[@class="label label-warning"]    waiting for verify
+    Close Browser
+
+TMNVerify Approve Refund Document
+    [Documentation]    Use for TMNVerify approve document refund on WMS page
+    [Arguments]    ${order_id}
+    Open Browser    ${URL_WMS}    gc
+    Maximize Browser Window
+    Input text    ${input_username_wms}    ${user_tmnverify}
+    Input text    ${input_password_wms}    ${password_approve}
+    Click Element    ${logon_button_wms}
+    Go to    ${URL_REFUND}
+    Input text    //*[@name="secure_key"]    ${order_id}
+    Click Element    //input[@class="btn btn-sm btn-primary margin-bottom-5 "]
+    ${accept_refund_detail_link}=    Get Element Attribute    //*[@id="form_list"]/table/tbody/tr[1]/td[22]/a@href
+    Go to    ${accept_refund_detail_link}
+    Focus    //input[@name="chk_file_all"]
+    Click Element    //input[@name="chk_file_all"]
+    Click Element    //input[@id="btn_tmn_verify"]
+    Wait Until Element Is Visible    //div[@class="alert alert-success"]
+    Element Should Contain    //div[@class="alert alert-success"]    ปรับสถานะเรียบร้อยแล้ว
+    Element Should Contain    //span[@class="label label-warning"]    waiting for tmn approve
+    Go to    ${URL_REFUND}
+    Input text    //*[@name="secure_key"]    ${order_id}
+    Click Element    //button[@id="submit_for_approval"]
+    Wait Until Element Is Visible    //div[@class="alert alert-success"]
+    Element Should Contain    //div[@class="alert alert-success"]    Send email success
+    Close Browser
+
+TMNApprove Approve Refund Document
+    [Documentation]    Use for TMNApprove approve document refund on WMS page
+    [Arguments]    ${order_id}
+    Open Browser    ${URL_WMS}    gc
+    Maximize Browser Window
+    Input text    ${input_username_wms}    ${user_tmnapprove}
+    Input text    ${input_password_wms}    ${password_approve}
+    Click Element    ${logon_button_wms}
+    Go to    ${URL_REFUND}
+    Wait Until Element Is Visible    //button[@id="tmn_approval"]
+    Click Element    //button[@id="tmn_approval"]
+    Confirm Action
+    Wait Until Element Is Visible    //div[@class="alert alert-success"]
+    Element Should Contain    //div[@class="alert alert-success"]    Approve success
+    Close Browser
+
+Select Refund Product By Name
+    [Documentation]    Use for select product name when user refund
+    [Arguments]    ${product_name}
+    Click Element    jquery=ul.box-table-product-list li:contains('${product_name}') input.refund_chk
+
+Enter request refund data
+    [Documentation]    Use for input request refund data
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Check Text    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+
+Seller accept refund
+    [Documentation]    Use for seller accept refund
+    [Arguments]    ${password}
+    Click Element    ${view_detail_store_order_detail}
+    Click accept refund button
+    Check Element Visible    ${accept_refund_modal}    ${expect_load_time}
+    Input password accept request refund    ${password}
+    Click confirm accept refund button
+    Click ok button on confirm accept modal
+    Check Element Visible    ${go_to_detail_button}    ${expect_load_time}
+
+Seller decline refund
+    [Documentation]    Use for seller decline refund from buyer
+    Wait Until Element Is Visible    ${view_order_request_refund}
+    Click Element    ${view_order_request_refund}
+    Click decline refund button
+    Check Element Visible    ${decline_refund_modal}    ${expect_load_time}
+    Input description decline to buyer    ขออภัยสินค้าสินค้าหมดจะทำการจัดส่งภายใน 3-7 วัน
+    Choose file for decline refund
+    Click confirm decline refund button
+    Click ok button on confirm decline modal
+
+Click refund again button
+    [Documentation]    Use for incase buyer click refund again button
+    [Arguments]    ${order_id}
+    Go To    ${URL_ACCOUNT}/profile/report/refund/${order_id}
+    ${refund_again_url}=    Get val form refund again button on refund page
+    Go To    ${refund_again_url}
+
+Get total price on account detail page
+    [Documentation]    Use for get total price on account detail page
+    ${url_detail}    Get Element Attribute    ${btn_view_order_detail_thankyou_page}@href
+    ${order_id}=    Remove String    ${url_detail}    ${URL_ACCOUNT}/profile/report/orderdetail/
+    Go to account order detail page    ${order_id}
+    ${price}=    Get Text    ${element_total_price_account_detail}
+    Set Test Variable    ${price}
+
+Buyer cancel request refund
+    [Documentation]    Use for buyer click cancel request refund
+    Check Element Visible    ${cancel_refund_button_account_refund}    ${expect_load_time}
+    Click cancel refund on account refund page
+    Click confirm action
+
+Validate error message on account refund page
+    [Documentation]    Use for check error message in case buyer input incompletely
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Focus    ${check_box_account_refund_page}
+    Select checkbox all product for refund
+    Select reason refund on account refund page    กรุณาเลือกเหตุผลที่ต้องการขอเงินคืน
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Check error message on account refund page    ${element_reason_refund_error_message}    กรุณาเลือกเหตุผลที่ต้องการขอเงินคืน
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Execute Javascript    $("textarea[id='request_description']").val('')
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Check error message on account refund page    ${element_description_error_message}    ระบุรายละเอียดการขอคืน
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    ExcelUpload.xlsx
+    Click request refund button on account refund page
+    Check error message on account refund page    ${element_upload_file_error_message}    ไฟล์ต้องเป็น jpg ,gif ,png หรือ pdf เท่านั้น
+    Choose file upload    over2MB.jpg
+    Click request refund button on account refund page
+    Check error message on account refund page    ${element_upload_file_error_message}    ขนาดไฟล์ต้องไม่เกิน 2 MB
+
+Validate error message on send refund document page
+    [Documentation]    Use for check error message in case buyer input incompletely
+    Check Element Visible    ${element_select_bank}    ${expect_load_time}
+    Input bank no    11111111111
+    Choose file refund offline    bookbank_exam.jpg
+    Click checkbox confirm document
+    Click send document button
+    ${error_message}    Execute Javascript    return $("div[class='validate-placement']").eq(0).text().trim()
+    Should Be Equal As Strings    ${error_message}    กรุณาเลือกธนาคารที่ต้องการให้โอนเงินเข้าบัญชี
+    Select bank on send refund offline document page    ธนาคารกรุงไทย จำกัด (มหาชน)
+    Execute Javascript    $("input[name='refund_bank_number']").val('')
+    Choose file refund offline    bookbank_exam.jpg
+    Click checkbox confirm document
+    Click send document button
+    ${error_message}    Execute Javascript    return $("div[class='validate-placement']").eq(1).text().trim()
+    Should Be Equal As Strings    ${error_message}    กรุณากรอกเลขที่บัญชีธนาคารที่ต้องการให้โอนเงินเข้า
+    Reload page
+    Select bank on send refund offline document page    ธนาคารกรุงไทย จำกัด (มหาชน)
+    Input bank no    11111111111
+    Click checkbox confirm document
+    Click send document button
+    Check Text    //span[@class="help-inline"]    กรุณาเลือกไฟล์เพื่ออัพโหลด
+    Select bank on send refund offline document page    ธนาคารกรุงไทย จำกัด (มหาชน)
+    Input bank no    11111111111
+    Choose file refund offline    bookbank_exam.jpg
+    Click checkbox confirm document
+    Click send document button
+    ${error_message}    Execute Javascript    return $("div[class='validate-placement']").eq(2).text().trim()
+    Should Be Equal As Strings    ${error_message}    คุณยังไม่ได้กดยอมรับเงื่อนไขการขอรับเงินคืน
+    Select bank on send refund offline document page    ธนาคารกรุงไทย จำกัด (มหาชน)
+    Input bank no    111-1111-11
+    Choose file refund offline    bookbank_exam.jpg
+    Click checkbox confirm document
+    Click send document button
+    ${error_message}    Execute Javascript    return $("div[class='validate-placement']").eq(1).text().trim()
+    Should Be Equal As Strings    ${error_message}    กรุณากรอกเลขที่บัญชีธนาคารเป็นตัวเลข
+    Select bank on send refund offline document page    ธนาคารกรุงไทย จำกัด (มหาชน)
+    Input bank no    bank!1111#
+    Choose file refund offline    bookbank_exam.jpg
+    Click checkbox confirm document
+    Click send document button
+    ${error_message}    Execute Javascript    return $("div[class='validate-placement']").eq(1).text().trim()
+    Should Be Equal As Strings    ${error_message}    กรุณากรอกเลขที่บัญชีธนาคารเป็นตัวเลข
+    Select bank on send refund offline document page    ธนาคารกรุงไทย จำกัด (มหาชน)
+    Input bank no    111111111111
+    Choose file refund offline    bookbank_exam.jpg
+    Click checkbox confirm document
+    Click send document button
+    ${error_message}    Execute Javascript    return $("div[class='validate-placement']").eq(1).text().trim()
+    Should Be Equal As Strings    ${error_message}    เลขที่บัญชีธนาคารระบุได้ไม่เกิน 11 หลัก
+
+Buyer send refund document success
+    [Documentation]    Use for buyer send refund document
+    [Arguments]    ${bankname}    ${bank_no}    ${bookbank}
+    Check Element Visible    ${element_select_bank}    ${expect_load_time}
+    Select bank on send refund offline document page    ${bankname}
+    Input bank no    ${bank_no}
+    Choose file refund offline    ${bookbank}
+    Click checkbox confirm document
+    Click send document button
+    Click confirm action
+    Check Text    ${txt_waiting_check_refund_document}    เอกสารของคุณกำลังรอการตรวจสอบ
+

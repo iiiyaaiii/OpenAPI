@@ -1,0 +1,63 @@
+*** Settings ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close Browser
+Test Setup        Go To    ${URL_STORE}/${user_s001}/admin/gallery
+Force Tags        Store-Web    Gallery    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Gallery.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Test Cases ***
+TC_MC_00447
+    [Documentation]    [Welove] Verify delete folder. If delete album with edit button.
+    [Tags]    Regression    High
+    Upload Image To Gallery    logo_mi6_seller_3.jpg    id=fileuploadinput
+    Sleep    2s
+    Reload Page
+    ${count_before}    Count Album in shop
+    Click Element    id=tool_albume_edit
+    Element Should Be Disabled    id=tool_albume_delete
+    Click Element    ${chk_first_album}
+    Element Should Be Enabled    id=tool_albume_delete
+    Click Element    ${btn_delete_album}
+    Click OK Alert Box
+    Sleep    2s
+    Reload Page
+    ${count_after}    Count Album in shop
+    Should Be True    ${count_before} > ${count_after}
+
+TC_MC_00449
+    [Documentation]    [Welove] Verify delete folder. If cancel delete album with edit button.
+    [Tags]    Regression    Medium
+    ${count_before}    Execute Javascript    return $('.list-albums .box-album:visible').length;
+    Execute Javascript    ${btn_edit_gallery}.click()
+    ${status_1}    Execute Javascript    return $('#tool_albume_delete').is(":disabled")
+    Should Be True    '${status_1}' == 'True'
+    Execute Javascript    $('.check_selected').eq(0).click()
+    ${status_2}    Execute Javascript    return $('#tool_albume_delete').is(":enabled")
+    Should Be True    '${status_2}' == 'True'
+    Execute Javascript    ${btn_delete_album}.click()
+    Click Cancel Alert Box
+    Sleep    3s
+    Reload Page
+    ${count_after}    Execute Javascript    return $('.list-albums .box-album:visible').length;
+    Should Be True    ${count_before} == ${count_after}
+
+TC_MC_00455
+    [Documentation]    [Welove] Verify Delete all with select all button.
+    [Tags]    Regression    High
+    Execute Javascript    ${btn_edit_gallery}.click()
+    ${status_1}    Execute Javascript    return $('#tool_albume_delete').is(":disabled")
+    Should Be True    '${status_1}' == 'True'
+    Execute Javascript    ${select_all}.click()
+    ${status_2}    Execute Javascript    return $('#tool_albume_delete').is(":enabled")
+    Should Be True    '${status_2}' == 'True'
+    #Click Element    ${btn_delete_album}
+    Execute Javascript    ${btn_delete_album}.click()
+    Click OK Alert Box

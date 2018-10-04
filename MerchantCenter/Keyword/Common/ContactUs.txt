@@ -1,0 +1,13 @@
+*** Settings ***
+Resource    ../../Resource/WeMall/WebElement/Store_Front.txt
+
+*** Variables ***
+&{contactUsDict}	contactUsPage=xpath=//div[@class='box-header']//h2[text()='ติดต่อร้านค้า']
+
+*** Keywords ***
+##COMMON KEYWORDS FOR HOME PAGE
+Open Contact Us page
+	Click Element 	${wemall_contactUs_menu}
+
+Contact Us page should be appeared
+	Element Should Be Visible 	&{contactUsDict}[contactUsPage]

@@ -1,0 +1,56 @@
+*** Settings ***
+Suite Setup       Run Keywords    WMS Login    ${PermissionUser}
+...               AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_WMS}/wordsphrase
+Force Tags        WMS-Web
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/ManageSynonyms.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/ManageSynonyms.txt
+
+*** Test Case ***
+TC_MC_01510
+    [Documentation]    [Wemall] Verify WordsPhrase menu
+    [Tags]    Low
+    Verify Navigation bar    ระบบจัดการ การเจาะจงคำค้นหา
+    Verify Input Field    เพิ่ม / ค้นหา Phrase
+    Verify Label on WordsPhrase Screen
+    Verify Button on WordsPhrase Screen
+
+TC_MC_01512
+    [Documentation]    [Wemall] Verify search WordsPhrase
+    [Tags]    Medium
+    ${DataPhrase} =    Get Data From Table
+    Input Search    ${DataPhrase}
+    Click Search Phrase
+    Verify Search Result
+
+TC_MC_01514
+    [Documentation]    [Wemall] Verify add WordsPhrase
+    [Tags]    Medium
+    Input Search    Test
+    Click Search Phrase
+    Click Add Phrase
+    Input Add Phrase    Add Phrase
+    Click Save Add Phrase
+    Verify Phrase On List    Add Phrase
+
+TC_MC_01516
+    [Documentation]    [Wemall] Verify edit WordsPhrase
+    [Tags]    Medium
+    Input Search    Add Phrase
+    Click Search Phrase
+    Click Edit Phrase    Add Phrase
+    Input Edit Phrase    Edit Phrase
+    Click Save Edit Phrase
+    Verify Phrase On List    Edit Phrase
+
+TC_MC_01518
+    [Documentation]    [Wemall] Verify delete WordsPhrase
+    [Tags]    Medium
+    Input Search    Edit Phrase
+    Click Search Phrase
+    Click Delete Phrase
+    Verify Phrase On List    None

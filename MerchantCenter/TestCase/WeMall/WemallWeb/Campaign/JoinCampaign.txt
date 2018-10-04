@@ -1,0 +1,220 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Force Tags        Wemall-Web    Ligo
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+
+*** Test Cases ***
+TC_MC_05152
+    [Documentation]    Join Campaign : Campaign is active and have product in campaign
+    [Tags]    Regression    High    mock
+    Go to    ${URL_PORTAL}/campaign/${join_campaign_id}
+    Element Should Be Visible    ${breadcrumb_new}
+    Element Should Contain    ${breadcrumb_new}    หน้าหลัก > กิจกรรมส่งเสริมการขาย > [QA-Automation] Join Campaign
+    Element Should Contain    ${lbl_header_campaignname}    [QA-Automation] Join Campaign
+    Element Should Contain    ${campaign_total}    แสดงทั้งหมด
+    Element Should Be Visible    ${campaign_list_prodoct}
+    Element Should Be Visible    ${category_campaign}
+
+TC_MC_05156
+    [Documentation]    Join Campaign : Sorting product campaign by Product Price ASC
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_PORTAL}/campaign/${join_campaign_id}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_asc}.click()
+    Sleep    1
+    : FOR    ${i}    IN RANGE    1    2
+    \    ${price_now}    Get Text    //ul[@class='items-list-box']/li[${i}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}    Get Text    //ul[@class='items-list-box']/li[${i_next}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${price_now}    Remove String    ${price_now}    ฿
+    \    ${price_next}    Remove String    ${price_next}    ฿
+    \    Should Be True    ${price_now} <= ${price_next}
+
+TC_MC_05157
+    [Documentation]    Join Campaign : Sorting product campaign by Product Price DESC
+    [Tags]    Medium    mock
+    Go to    ${URL_PORTAL}/campaign/${join_campaign_id}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_desc}.click()
+    Sleep    1
+    : FOR    ${i}    IN RANGE    1    2
+    \    ${price_now}    Get Text    //ul[@class='items-list-box']/li[${i}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}    Get Text    //ul[@class='items-list-box']/li[${i_next}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${price_now}    Remove String    ${price_now}    ฿
+    \    ${price_next}    Remove String    ${price_next}    ฿
+    \    Should Be True    ${price_now} >= ${price_next}
+
+TC_MC_05158
+    [Documentation]    Join Campaign : Filter product by price mininum
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_PORTAL}/campaign/${join_campaign_id}
+    Input Text    ${input_price_min}    100
+    Click Element    ${button_ok_fillterprice}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_asc}.click()
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    ฿
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} >= 100
+
+TC_MC_05159
+    [Documentation]    [Welove] Join Campaign : Filter product by price maximum
+    [Tags]    Medium    mock
+    Go to    ${URL_PORTAL}/campaign/${join_campaign_id}
+    Input Text    ${input_price_max}    1000
+    Click Element    ${button_ok_fillterprice}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_desc}.click()
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    ฿
+    ${price_now}    Remove String    ${price_now}    ,
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} <= 1000
+
+TC_MC_05160
+    [Documentation]    Join Campaign : Filter product by price lenght
+    [Tags]    Medium    mock
+    Go to    ${URL_PORTAL}/campaign/${join_campaign_id}
+    Input Text    ${input_price_min}    100
+    Input Text    ${input_price_max}    1000
+    Click Element    ${button_ok_fillterprice}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_asc}.click()
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    ฿
+    ${price_now}    Remove String    ${price_now}    ,
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} >= 100
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_desc}.click()
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    ฿
+    ${price_now}    Remove String    ${price_now}    ,
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} <= 1000
+
+TC_MC_05161
+    [Documentation]    Join Campaign : Filter product not found
+    [Tags]    Medium    mock
+    Go to    ${URL_PORTAL}/campaign/${join_campaign_id}
+    Wait Until Element Is Visible    ${input_price_max}
+    Input Text    ${input_price_min}    2
+    Input Text    ${input_price_max}    2
+    Press Key    ${input_price_min}    \\13
+    Sleep    1
+    Element Should Contain    //*[@class='no-result-title']    การค้นหาของท่าน ไม่ตรงกับสินค้าใดๆ กรุณาค้นหาอีกครั้ง
+
+TC_MC_05162
+    [Documentation]    Join Campaign : Campaign is active but don't have product in campaign
+    [Tags]    Regression    Medium    mock
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/campaign/${empty_join_campaign_id}
+    Sleep    1
+    Element Should Contain    //span[@class="font-22px"]    กิจกรรมส่งเสริมการขายนี้ยังไม่มีสินค้าเข้าร่วมรายการ
+
+TC_MC_05163
+    [Documentation]    Join Campaign : Campaign is expired
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/campaign/${expired_join_campaign_id}&refresh=changeme
+    Sleep    1
+    Element Should Contain    //span[@class="font-22px"]    ขออภัยค่ะ กิจกรรมส่งเสริมการขาย [QA-Automation] Join Campaign Expired สิ้นสุดการขายแล้ว
+    Element Should Contain    //a[@href="/campaign"]    ดูกิจกรรมส่งเสริมการขายอื่นที่นี่
+
+TC_MC_05164
+    [Documentation]    Join Campaign : Campaign can next page
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id_limit}
+    ${count_page}    Execute Javascript    return $('.portal-pagination > li').length
+    Run Keyword IF    ${count_page} != 0    Run Keywords    Execute Javascript    $('.portal-pagination > li > a')[2].click()    AND    Element Should Be Visible    //ul[@class='pagination portal-pagination']//li[@class='active']//a[contains(text(),'2')]
+    Run Keyword IF    ${count_page} == 0    Go to    ${URL_PORTAL}
+
+TC_MC_05204
+    [Documentation]    Validate new Handle url field in Join campaing create page  (แบบส่วนลด% แบบเดียวและแบบช่วง)
+    [Tags]    Regression    High    mock
+    WMS Switch Project    wm
+    ${my_campaign_id}    Create Join Campaign    qa-joincampaign-testhandleurl////1/2    1
+    ${groupcampignid}    Get Group Campaign ID     ${my_campaign_id}
+    Verify Handle URL After Save    qa-joincampaign-testhandleurl12    ${my_campaign_id}
+    ${handleurl}    Set Variable    qa-joincampaign-testhandleurl12
+    Go to    ${URL_PORTAL}/campaign/${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}-${handleurl}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Switch Browser    1
+    WMS Switch Project    wm
+    Delete My Campaign    join    ${my_campaign_id}
+
+TC_MC_05205
+    [Documentation]    Validate new Handle url field in Join campaing create page  (แบบสินค้าราคาเดียว และ แบบช่วงราคา)
+    [Tags]    Regression    High    mock
+    WMS Switch Project    wm
+    ${my_campaign_id}    Create Join Campaign    qa-joincampaign-testhandle-2- ///1234Test    2
+    ${groupcampignid}    Get Group Campaign ID     ${my_campaign_id}
+    Verify Handle URL After Save    qa-joincampaign-testhandle-2-1234test    ${my_campaign_id}
+    ${handleurl}    Set Variable    qa-joincampaign-testhandle-2-1234test
+    Go to    ${URL_PORTAL}/campaign/${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}-${handleurl}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Switch Browser    1
+    WMS Switch Project    wm
+    Delete My Campaign    join    ${my_campaign_id}
+
+TC_MC_05211
+    [Documentation]    join campaign edit handle url
+    [Tags]    Regression    High    mock
+    WMS Switch Project    wm
+    Edit Handle Url    join    ${join_campaign_id}    qa-joincampaign-999-baht
+    ${groupcampignid}    Get Group Campaign ID     ${join_campaign_id}
+    ${handleurl}    Set Variable    qa-joincampaign-999-baht
+    Go to    ${URL_PORTAL}/campaign/${join_campaign_id}
+    Verify Redirect URL    portal    ${join_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id}-${handleurl}
+    Verify Redirect URL    portal    ${join_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id}
+    Verify Redirect URL    portal    ${join_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${join_campaign_id}
+    Verify Redirect URL    portal    ${join_campaign_id}    ${handleurl}
+    Switch Browser    1
+    WMS Switch Project    wm
+    Edit Handle Url    join    ${join_campaign_id}    [QA-Automation] Join Campaign
+
+TC_MC_05216
+    [Documentation]    [Wemall]To edit seo description in join campaign (ส่วนลด% แบบเดียวและแบบช่วง)
+    [Tags]    Regression    High    mock
+    Edit Seo Description    join    ${empty_join_campaign_id}    Editseo.txt
+    ${handleurl}    Set Variable    qa-robot-join-empty
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${empty_join_campaign_id}
+    Verify Edit Seo Description    portal    ${handleurl}    ${empty_join_campaign_id}
+    Edit Seo Description    join    ${empty_join_campaign_id}    html_data.txt
+
+TC_MC_05225
+    [Documentation]    [WeMall] Verify UTM tag in Join campaing create page
+    [Tags]    Regression    Medium    mock
+    ${slug}    Set Variable    qa-robot-join-empty
+    ${campaign_id}    Set Variable    ${empty_join_campaign_id}
+    ${groupcampignid}    Set Variable    5
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/promotion/${slug}-${campaign_id}${utm_tag}
+    Verify Redirect URL    portal    ${campaign_id}    ${slug}    ${utm_tag}
+    Go to    ${URL_PORTAL}/promotion/${campaign_id}-${slug}${utm_tag}
+    Verify Redirect URL    portal    ${campaign_id}    ${slug}    ${utm_tag}
+    Go to    ${URL_PORTAL}/campaign/${campaign_id}${utm_tag}
+    Verify Redirect URL    portal    ${campaign_id}    ${slug}    ${utm_tag}

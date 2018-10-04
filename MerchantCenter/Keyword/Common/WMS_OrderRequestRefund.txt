@@ -1,0 +1,127 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../../Resource/WeLoveShopping/WebElement/WMS_OrderRequestRefund.txt
+
+*** Keywords ***
+
+Go to Seller Accept Refund page
+    [Documentation]    Go to Seller Accept Refund page
+    Go to    ${URL_WMS}/orderrequestrefund
+
+Check search fields and buttons on Refund Success page
+    [Documentation]    Check search field on Refund success page
+    Element Should Contain    ${search_transfer}    Transfer (Bank Name)
+    Element Should Contain    ${search_last_update_date}    Last Update Doc Date
+    Element Should Contain    ${search_order_ID}    Order ID
+    Element Should Contain    ${search_customer_ID}    Customer ID
+    Element Should Contain    ${search_order_status}    Order Status
+    Element Should Contain    ${search_channel}    Channel
+    Element Should Contain    ${search_request_refund_date}    Request Refund Date
+    Element Should Contain    ${search_accept_refund_time}    Accept Refund Time
+    Element Should Contain    ${search_reason_refund}    Reason Refund
+    Element Should Contain    ${search_store_ID}    Store ID
+    Element Should Contain    ${search_admin_status}    Admin Status
+    Element Should Contain    ${search_refect_by}    Reject By
+    Element Should Contain    ${search_limit}    Limit
+    Element Should Contain    ${search_auto_manual_refund}    Auto/Manual Refund
+    Element Should Contain    ${search_merchant_ID}    Merchant ID
+    Element Should Be Visible    ${search_button}    //input[@value="Search"]
+    Element Should Be Visible    ${reset_button}    //a[@href="orderrequestrefund"]
+    Element Should Be Visible    ${export_button}    //button[@id="export_excel"]
+
+
+Check column name on Seller Accept Refund
+    [Documentation]    Check column name on Seller Accept Refund table
+    Element Should Contain    ${request_name}    Request Name
+    Element Should Contain    ${transfer_bank_name}    Transfer (Bank Name)
+    Element Should Contain    ${bank_account}    Bank Account No.
+    Element Should Contain    ${last_update_doc_date}    Last Update Doc. Date
+    Element Should Contain    ${order_ID}    Order ID
+    Element Should Contain    ${account_name}    Account Name
+    Element Should Contain    ${payment_channel}    Payment Channel
+    Element Should Contain    ${shipping_name}    Shipping Name
+    Element Should Contain    ${amount_order}    Amount Order
+    Element Should Contain    ${amount_refund}    Amount Refund
+    Element Should Contain    ${payment_from_text_file}    Payment From Text File
+    Element Should Contain    ${payment_from_system}    Payment From System
+    Element Should Contain    ${merchant_ID}    Merchant ID
+    Element Should Contain    ${order_status}    Order Status
+    Element Should Contain    ${request_refund_date}    Request Refund Date
+    Element Should Contain    ${accept_refund_date}    Accept Refund Date
+    Element Should Contain    ${reason_refund}    Reason Refund
+    Element Should Contain    ${refund_ID}    Refund ID
+    Element Should Contain    ${refund_store_ID}    Store ID
+    Element Should Contain    ${admin _status}    Admin Status
+    Element Should Contain    ${reject_by}    Reject By
+    Element Should Contain    ${detail}    Detail
+    Element Should Contain    ${auto_refund}    Auto Refund
+
+Search order id on wms refund success
+    [Documentation]    Use for search order by order id on wms order tracking
+    [Arguments]    ${order_id}
+    Check Element Visible    ${txt_order_ID}    ${expect_load_time}
+    Input Text    ${txt_order_ID}    ${order_id}
+    Click search button on wms refund success
+
+Click search button on wms refund success
+    [Documentation]    Use for click search button
+    Click Element    ${search_button}
+    Wait Until Page Contains Element    ${search_button}
+
+Go To Refund Detail page
+    [Documentation]    Go to detail link
+    Check Element Visible    ${detail_button}    ${expect_load_time}
+    ${refund_success_detail_link}=    Get Element Attribute    ${detail_link}
+    Go To    ${refund_success_detail_link}
+
+Admin approve refund documents
+    [Documentation]    Approve all documents
+    Execute Javascript    $("input[class='chk_approve_file']").eq(0).click()
+    Execute Javascript    $("input[class='chk_approve_file']").eq(1).click()
+    Execute Javascript    $("input[class='chk_approve_file']").eq(2).click()
+    Execute Javascript    $("input[class='chk_approve_file']").eq(3).click()
+    Click Element    ${btn_wls_approve}
+    Wait Until Element Is Visible    ${btn_wls_approve}
+    Element Should Contain    ${label_warning}    waiting for review
+    Element Should Be Disabled    ${btn_wls_approve}
+
+Admin decline some refund documents
+    [Documentation]    Decline the first 3 documents
+    [Arguments]    ${reason_copy_bank}    ${reason_name}    ${reason_bank_name}
+    Execute Javascript    $("textarea[name='note[]']").eq(0).val("เอกสารไม่ชัด")
+    Execute Javascript    $("textarea[name='note[]']").eq(1).val("ไม่ตรงกับข้อมูลผู้ซื้อ")
+    Execute Javascript    $("textarea[name='note[]']").eq(2).val("ไม่ตรงกับบัญชีธนาคาร")
+    Execute Javascript    $("input[class='chk_approve_file']").eq(3).click()
+    Click Element    ${btn_wls_approve}
+    Wait Until Element Is Visible    ${btn_wls_approve}
+    Element Should Contain    ${label_warning}    waiting for doc
+
+Buyer upload refund documents
+    [Documentation]    Go to refund page to upload document
+    ${upload_refund_offline}=    Get Element Attribute    //div[@class="box-history-refund"][2]//a[1]@href
+    Go To    ${upload_refund_offline}
+
+Check status of Book Bank name
+    [Documentation]    Check status of ชื่อเจ้าของบัญชี
+    [Arguments]    ${book_bank_name}
+    Element Should Contain    //p[1]//span[@class="help-block refund-bookmark color-red padding-left20px"]    ${book_bank_name}
+
+Check status of Bank name
+    [Documentation]    Check status of ธนาคาร
+    [Arguments]    ${bank_name}
+    Element Should Contain    //p[2]//span[@class="help-block refund-bookmark color-red padding-left20px"]    ${bank_name}
+
+Check status of Bank number
+    [Documentation]    Check status of เลขที่บัญชี
+    [Arguments]    ${bank_number}
+    Element Should Contain    //p[3]//span[@class="help-block refund-bookmark color-red padding-left20px"]    ${bank_number}
+
+Check status of copy Book Bank
+    [Documentation]    Check status of สำเนาหน้าบัญชีธนาคาร
+    [Arguments]    ${copy_bank}
+    Element Should Contain    //p[4]//span[@class="help-block refund-bookmark color-red padding-left20px"]    ${copy_bank}
+
+Check sent email on order admin page
+    [Documentation]    Check email after refunding success
+    Element Should Contain    //table[1]//tbody//tr[2]//td[8]    1
+    Element Should Contain    //table[1]//tbody//tr[2]//td[9]    1

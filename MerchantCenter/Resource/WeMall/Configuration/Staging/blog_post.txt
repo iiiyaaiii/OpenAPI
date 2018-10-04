@@ -1,0 +1,6 @@
+<p class="p1"><img class="aligncenter size-full wp-image-6463" src="https://dqk1dnz21ztlg.cloudfront.net/wp-content/uploads/2016/12/15142145/banner.jpg" alt="banner" width="800" height="200" /></p>
+<p class="p1"><span class="s1">สวัสดีครับพี่น้อง หลังจากห่างหายจากการเขียนไปนาน เนื่องจากภารกิจรัดตัว วันนี้ขอนำเสนอเรื่องราวเบาๆเกี่ยวกับ <b>Retest, Confirmation test</b> และ <b>Regression test</b> แล้วกันครับ</span></p>
+<p class="p1"><span class="s1">มาเริ่มกันจากสองคำแรกก่อน <b>Retest</b> กับ<b> Confirmation test</b> จริงๆแล้วสองคำนี้มีความหมายเท่ากันเลยครับ</span></p>
+<p class="p1"><span class="s1"><b>Retest = Confirmation test</b> คือ การ test เพื่อ confirm ว่าปัญหาที่เคยเจอก่อนหน้านี้ถูก fixed ไปแล้ว ตัวอย่างเช่น เรา test software เจอบั๊กแล้ว report ไป เมื่อทาง Dev แก้มาแล้วเราเอา software กลับมาแล้วเทสตรงจุดที่เราเคยเจอ bug เพื่อ confirm ว่า bug นั้นถูกแก้ไปแล้วจริงๆ อันนี้เรียกว่า retest หรือ confirmation test</span></p>
+<p class="p1"><span class="s1">เที่ยบเท่าได้กับการที่ลูกค้าหรือคนใช้งาน software แจ้ง bug มา แล้วทีม developer แก้ปัญหา แล้วส่งมาให้เราทำเทส การเทสตรงจุดที่ลูกค้ารีพอร์ตปัญหาเพื่อคอนเฟิร์มว่าปัญหานั้นถูกแก้ไปแล้ว นั่นคือการ retest หรือการทำ confirmation test นั่นเอง</span></p>
+<p class="p1"><span class="s1">ส่วนอีกคำหนึ่ง <b>Regression test</b> นั้นคือการ test เพื่อตรวจสอบ side effect ที่เกิดจากการ <b>Change</b></span></p>

@@ -1,0 +1,143 @@
+*** Setting ***
+Library           SeleniumLibrary
+Library           HttpLibrary.HTTP
+Library           Collections
+Library           OperatingSystem
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/Common/API/Api_Escrow.txt
+
+*** keyword ***
+Get One Time Token From TMN
+    [Documentation]    Use for api get one time token from truemoney for placeorder
+    [Arguments]    ${url_get_token}    ${content_type}    ${pubilc_token}    ${card_holder_name}    ${card_number}    ${card_expiry_month}    ${card_expiry_year}    ${card_cvn}
+    Create Http Context    ${url_get_token}    https
+    Set Request Body   card_name=${card_holder_name}&card_number=${card_number}&expiration_month=${card_expiry_month}&expiration_year=${card_expiry_year}&security_code=${card_cvn}
+    Set Request Header    Content-Type    ${content_type}
+    Set Request Header    Authorization    ${pubilc_token}
+    POST    /payment-card/v1/card
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+Get Token From MD5
+    [Documentation]    Use for get token from MD5 with api
+    [Arguments]    ${order_id}    ${app_secret}    ${action}
+    ${token}=    gen_token_from_md5    ${order_id}    ${app_secret}    ${action}
+    [return]    ${token}
+
+Check Status Api List
+    [Documentation]    Use for check status api order list
+    [Arguments]    ${order_id}    ${status}    ${url}
+    Create Http Context    ${URL_ORDER_FOR_API}    https
+    ${return}=  Run Keyword And Return Status   GET    /v3/order/${order_id}?scope=orderProduct,orderRequestRefund
+    ${response_data}=   Get Response Body
+    ${status_from_api}    Get Json Value    ${response_data}    ${url}
+    Should Be Equal As Strings    ${status_from_api}    ${status}
+
+Get Product Id From Api
+    [Documentation]    Use for get product id from api for shipping
+    [Arguments]    ${order_id}    ${get_id_index_1}    ${get_id_index_2}    ${get_id_index_3}    ${get_id_index_4}
+    Create Http Context    ${URL_ORDER_FOR_API}    https
+    ${return}=  Run Keyword And Return Status   GET    /v3/order/${order_id}?scope=orderProduct,orderRequestRefund
+    ${response_data}=   Get Response Body
+    ${order_product_id_1}    Get Json Value    ${response_data}    ${get_id_index_1}
+    ${order_product_id_2}    Get Json Value    ${response_data}    ${get_id_index_2}
+    ${order_product_id_3}    Get Json Value    ${response_data}    ${get_id_index_3}
+    ${order_product_id_4}    Get Json Value    ${response_data}    ${get_id_index_4}
+    [return]    ${order_product_id_1}    ${order_product_id_2}    ${order_product_id_3}    ${order_product_id_4}
+
+Get Refund Id From Api
+    [Documentation]    Use for get product id from api for shipping
+    [Arguments]    ${order_id}    ${url_get_refund_id}
+    Create Http Context    ${URL_ORDER_FOR_API}    https
+    ${return}=  Run Keyword And Return Status   GET    /v3/order/${order_id}?scope=orderProduct,orderRequestRefund
+    ${response_data}=   Get Response Body
+    ${refund_id}    Get Json Value    ${response_data}    ${url_get_refund_id}
+    [return]    ${refund_id}
+
+Check response code
+    [Documentation]    Use for check response code
+    [Arguments]    ${response_data}    ${response_code}    ${response_message}
+    ${code}    Get Json Value    ${response_data}    /code
+    ${message}    Get Json Value    ${response_data}    /message
+    Should Be Equal As Strings    ${code}    ${response_code}
+    Should Be Equal As Strings    ${message}    "${response_message}"
+
+Get secure_key from response data
+    [Documentation]    Use for get secure_key
+    [Arguments]    ${response_data}
+    ${securekey_text}    Get Json Value    ${response_data}    /secureKey
+    ${securekey}    Remove String    ${securekey_text}    "
+    [return]    ${securekey}
+
+API Placeorder
+    [Documentation]    Use for placeorder with api
+    [Arguments]    ${one_time_token}    ${payment_channel}
+    Create Http Context    ${URL_ORDER_FOR_API}    https
+    Set Request Body    config[in_page]=1&config[device]=web&config[app_id]=1&config[redirect_url]=https%3A%2F%2Falpha-order.wls-aws.com%2Fv1%2Fpayment%2Fthankyou&store_detail[0][store_id]=L900029&store_detail[0][seller_id]=222222&store_detail[0][corporate_account]=0&store_detail[0][seller_wallet_token]=c19e2e28b2ba97451c09af19e1cbd93c2b476d95&store_detail[0][seller_name]=Test+Seller&store_detail[0][store_name]=Store+Test&store_detail[0][store_user]=Test3&store_detail[0][address]=address+test+%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B9%84%E0%B8%97%E0%B8%A2&store_detail[0][phone]=0849200235&store_detail[0][email]=welove%409que.com&store_detail[1][store_id]=L913475&store_detail[1][seller_id]=162231&store_detail[1][corporate_account]=0&store_detail[1][seller_wallet_token]=c19e2e28b2ba97451c09af19e1cbd93c2b476d95&store_detail[1][seller_name]=Amm+Kusuma%28Staging%29&store_detail[1][store_name]=MyShop_Test2&store_detail[1][store_user]=Test2&store_detail[1][address]=+Test++Test+%E0%B8%84%E0%B8%A5%E0%B8%AD%E0%B8%87%E0%B8%95%E0%B8%B1%E0%B8%99+%E0%B8%84%E0%B8%A5%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%95%E0%B8%A2+%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%A3+10101+%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B9%84%E0%B8%97%E0%B8%A2&store_detail[1][phone]=0849200253&store_detail[1][email]=21testwls@gmail.com&customer_detail[id]=161747&customer_detail[group_id]=1&customer_detail[type]=email&customer_detail[first_name]=firstName&customer_detail[last_name]=lastName&customer_detail[email]=21testwls@gmail.com&customer_detail[telephone]=0849200253&customer_detail[fax]=084920025&customer_detail[ip]=122.155.1.92&payment_detail[company]=wetrust&payment_detail[method]=${payment_channel}&payment_detail[total]=20&payment_detail[currency_code]=THB&payment_detail[payment_amount]=15&payment_detail[discount]=1&payment_detail[com_vat]=7&payment_detail[com_ship_fee]=3&shipping_detail[company]=ThailandPost&shipping_detail[method]=EMS&shipping_detail[weight_unit]=1&shipping_detail[price]=5&delivery_address[firstname]=delivery+firstname&delivery_address[lastname]=delivery+lastname&delivery_address[company]=company&delivery_address[address1]=address1&delivery_address[address2]=address2&delivery_address[district_id]=7&delivery_address[district]=district&delivery_address[city_id]=5&delivery_address[city]=Bangkok&delivery_address[province_id]=8&delivery_address[province]=province&delivery_address[postcode]=12222&delivery_address[country]=Thailand&delivery_address[country_id]=66&delivery_address[phone]=0849200253&delivery_address[email]=21testwls@gmail.com&billing_address[firstname]=billing+firstName&billing_address[lastname]=billing+lastName&billing_address[company]=company&billing_address[address1]=address1&billing_address[address2]=address2&billing_address[district_id]=3&billing_address[district]=district&billing_address[phone]=0849200253&billing_address[email]=21testwls@gmail.com&billing_address[city_id]=1&billing_address[city]=city&billing_address[province_id]=2&billing_address[province]=Bangkok&billing_address[postcode]=15022&billing_address[country]=Thailand&billing_address[country_id]=1&products[0][product_id]=L90128510&products[0][inventory_id]=199192&products[0][store_id]=L913475&products[0][category_id]=1&products[0][category_name]=${EMPTY}&products[0][sku]=Recon+Black&products[0][title]=[Test]+Recon+Black&products[0][option]=${EMPTY}&products[0][price]=5&products[0][cost_price]=0&products[0][compare_at_price]=5&products[0][shipprice_peritem]=${EMPTY}&products[0][quantity]=1&products[0][weight]=1.42&products[0][discount]=${EMPTY}&products[0][final_price]=5&products[0][prepare_ship_time]=4&products[0][com_fee_percent]=5&products[0][campaign_fee_percent]=2&products[0][com_discount_price]=0.15&products[0][collection_id]=0&products[0][promotion_id]=0&products[0][campaign_id]=0&products[0][promotion][0][code]=collection&products[0][promotion][0][type]=5&products[0][promotion][1][code]=collection2&products[0][promotion][1][type]=5&products[0][promotion][2][code]=WLS+NEW+PROMOTION&products[0][promotion][2][type]=2&products[0][flashsale]=0&products[0][image_url]=https%3A%2F%2Falpha-res.wls-dev.com%2F913475%2Fw_70%2Ch_70%2Cc_thumb%2F1e2254f91b7cd3abe3970d4b48026bdb%2Freconorange.png&products[0][meta]=254689&products[1][product_id]=L90128508&products[1][inventory_id]=199190&products[1][store_id]=L913475&products[1][category_id]=1&products[1][category_name]=${EMPTY}&products[1][sku]=Recon+Brown&products[1][title]=[Test]+Recon+Brown&products[1][option]=${EMPTY}&products[1][price]=2&products[1][cost_price]=0&products[1][compare_at_price]=2&products[1][shipprice_peritem]=${EMPTY}&products[1][quantity]=1&products[1][weight]=1.42&products[1][discount]=${EMPTY}&products[1][final_price]=2&products[1][prepare_ship_time]=4&products[1][com_fee_percent]=3&products[1][campaign_fee_percent]=2&products[1][com_discount_price]=0.85&products[1][collection_id]=0&products[1][promotion_id]=0&products[1][campaign_id]=0&products[1][promotion][0][code]=WLS+NEW+PROMOTION&products[1][promotion][0][type]=2&products[1][promotion][1][code]=collection&products[1][promotion][1][type]=5&products[1][flashsale]=0&products[1][image_url]=https%3A%2F%2Falpha-res.wls-dev.com%2F913475%2Fw_70%2Ch_70%2Cc_thumb%2F1e2254f91b7cd3abe3970d4b48026bdb%2Freconorange.png&products[1][meta]=180293&products[2][product_id]=L90128506&products[2][inventory_id]=199188&products[2][store_id]=L913475&products[2][category_id]=1&products[2][category_name]=${EMPTY}&products[2][sku]=Recon+Pink&products[2][title]=[Test]+Recon+Pink&products[2][option]=${EMPTY}&products[2][price]=2&products[2][cost_price]=0&products[2][compare_at_price]=2&products[2][shipprice_peritem]=${EMPTY}&products[2][quantity]=1&products[2][weight]=1.42&products[2][discount]=${EMPTY}&products[2][final_price]=2&products[2][prepare_ship_time]=4&products[2][com_fee_percent]=2&products[2][campaign_fee_percent]=1&products[2][com_discount_price]=0&products[2][collection_id]=0&products[2][promotion_id]=0&products[2][campaign_id]=0&products[2][promotion][0][code]=SELLER+PROMOTION&products[2][promotion][0][type]=3&products[2][flashsale]=0&products[2][image_url]=https%3A%2F%2Falpha-res.wls-dev.com%2F913475%2Fw_70%2Ch_70%2Cc_thumb%2F938fbed09638973338cb8befa664b3e1%2Freconpink3.png&products[2][meta]=25400&products[3][product_id]=L90128506&products[3][inventory_id]=199188&products[3][store_id]=L900029&products[3][category_id]=1&products[3][category_name]=${EMPTY}&products[3][sku]=Recon+Pink&products[3][title]=[Test]+Recon+Pink&products[3][option]=${EMPTY}&products[3][price]=2&products[3][cost_price]=0&products[3][compare_at_price]=2&products[3][shipprice_peritem]=${EMPTY}&products[3][quantity]=1&products[3][weight]=1.42&products[3][discount]=${EMPTY}&products[3][final_price]=2&products[3][prepare_ship_time]=2&products[3][com_fee_percent]=2&products[3][campaign_fee_percent]=${EMPTY}&products[3][com_discount_price]=0&products[3][collection_id]=0&products[3][promotion_id]=0&products[3][campaign_id]=0&products[3][flashsale]=0&products[3][image_url]=https%3A%2F%2Falpha-res.wls-dev.com%2F913475%2Fw_70%2Ch_70%2Cc_thumb%2F938fbed09638973338cb8befa664b3e1%2Freconpink3.png&products[3][meta]=41641&promotions[0][id]=1&promotions[0][code]=WLS+NEW+PROMOTION&promotions[0][type]=2&promotions[0][name]=Super+Save+Price&promotions[0][detail]=Super+Save+Price+%E0%B8%A5%E0%B8%94%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%B3+2015+Super+Save+Price+%E0%B8%A5%E0%B8%94%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%B3+2015+Super+Save+Price+%E0%B8%A5%E0%B8%94%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%B3+2015&promotions[0][value]=0&promotions[0][discount_type]=item&promotions[0][campaign_fee_percent]=2&promotions[0][subsidize_by]=1&promotions[0][subsidize_value]=2&promotions[0][discount_percent]=${EMPTY}&promotions[0][discount_max]=${EMPTY}&promotions[1][id]=2&promotions[1][code]=SELLER+PROMOTION&promotions[1][type]=3&promotions[1][name]=Haft+Price&promotions[1][detail]=Haft+Price+%E0%B8%A5%E0%B8%94%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%B3+2015+Super+Save+Price+%E0%B8%A5%E0%B8%94%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%B3+2015+Super+Save+Price+%E0%B8%A5%E0%B8%94%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%B3+2015&promotions[1][value]=1&promotions[1][discount_type]=cart&promotions[1][campaign_fee_percent]=1&promotions[1][subsidize_by]=2&promotions[1][subsidize_value]=3&promotions[1][discount_percent]=${EMPTY}&promotions[1][discount_max]=${EMPTY}&promotions[2][id]=3&promotions[2][code]=FLASHSALE&promotions[2][type]=4&promotions[2][name]=FLASHSALE&promotions[2][detail]=${EMPTY}&promotions[2][value]=${EMPTY}&promotions[2][discount_type]=item&promotions[2][campaign_fee_percent]=0&promotions[2][subsidize_by]=2&promotions[2][subsidize_value]=3&promotions[2][discount_percent]=${EMPTY}&promotions[2][discount_max]=${EMPTY}&promotions[3][id]=4&promotions[3][code]=collection&promotions[3][type]=5&promotions[3][name]=collection&promotions[3][detail]=${EMPTY}&promotions[3][value]=${EMPTY}&promotions[3][discount_type]=item&promotions[3][campaign_fee_percent]=0&promotions[3][subsidize_by]=2&promotions[3][subsidize_value]=3&promotions[3][discount_percent]=${EMPTY}&promotions[3][discount_max]=${EMPTY}&promotions[4][id]=5&promotions[4][code]=collection2&promotions[4][type]=5&promotions[4][name]=collection2&promotions[4][detail]=${EMPTY}&promotions[4][value]=${EMPTY}&promotions[4][discount_type]=item&promotions[4][campaign_fee_percent]=0&promotions[4][subsidize_by]=2&promotions[4][subsidize_value]=3&promotions[4][discount_percent]=${EMPTY}&promotions[4][discount_max]=${EMPTY}&summaries[0][code]=sub_total&summaries[0][title]=sub_total&summaries[0][value]=11&summaries[0][meta]=meta&summaries[1][code]=discount&summaries[1][title]=Discount&summaries[1][value]=1&summaries[1][meta]=meta&summaries[2][code]=shipping&summaries[2][title]=%E0%B9%81%E0%B8%9A%E0%B8%9A+EMS&summaries[2][value]=5&summaries[2][meta]=meta&summaries[3][code]=total&summaries[3][title]=Total&summaries[3][value]=15&summaries[3][meta]=meta&oneTimeCardToken=${one_time_token}
+    ${return}=  Run Keyword And Return Status   POST    /v3/process/placeorder
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+API Shipping
+    [Documentation]    Use for shipping with api
+    [Arguments]    ${order_id}    ${app_secret}    ${action}    ${order_product_id_1}    ${order_product_id_2}    ${order_product_id_3}    ${order_product_id_4}    ${tracking_company}    ${tracking_method}    ${tracking_number}    ${tracking_desc}    ${tracking_url}
+    ${token}    Get Token From MD5    ${order_id}    ${app_secret}    ${action}
+    Create Http Context    ${URL_ORDER_FOR_API}    https
+    Set Request Body    tracking[0][product_ids][0]=${order_product_id_1}&tracking[0][product_ids][1]=${order_product_id_2}&tracking[0][product_ids][2]=${order_product_id_3}&tracking[0][product_ids][3]=${order_product_id_4}&tracking[0][tracking_company]=${tracking_company}&tracking[0][tracking_method]=${tracking_method}&tracking[0][tracking_number]=${tracking_number}&tracking[0][tracking_desc]=${tracking_desc}&tracking[0][tracking_url]=${tracking_url}&secure_key=${order_id}&token=${token}
+    ${return}=  Run Keyword And Return Status   POST    /v3/process/shipping
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+API Receive
+    [Documentation]    Use for receive with api
+    [Arguments]    ${order_id}    ${app_secret}    ${action}    ${order_product_id_1}    ${order_product_id_2}    ${order_product_id_3}    ${order_product_id_4}
+    ${token}    Get Token From MD5    ${order_id}    ${app_secret}    ${action}
+    Create Http Context    ${URL_ORDER_FOR_API}    https
+    Set Request Body    product_ids[0]=${order_product_id_1}&product_ids[1]=${order_product_id_2}&product_ids[2]=${order_product_id_3}&product_ids[3]=${order_product_id_4}&secure_key=${order_id}&token=${token}
+    ${return}=  Run Keyword And Return Status   POST    /v3/process/receive
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+API Request Refund
+    [Documentation]    Use for request refund with api
+    [Arguments]    ${order_id}    ${app_secret}    ${action}    ${order_request_reasons_code}    ${request_description}    ${items_1}    ${items_2}    ${items_3}    ${items_4}
+    ${token}    Get Token From MD5    ${order_id}    ${app_secret}    ${action}
+    Create Http Context    ${URL_ORDER_FOR_API}    https
+    Set Request Body    secure_key=${order_id}&order_request_reasons_code=${order_request_reasons_code}&request_description=${request_description}&items[0]=${items_1}&items[1]=${items_2}&items[2]=${items_3}&items[3]=${items_4}&token=${token}
+    ${return}=  Run Keyword And Return Status   POST    /v3/process/requestrefund
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+API Accept Refund
+    [Documentation]    Use for request refund with api
+    [Arguments]    ${order_id}    ${app_secret}    ${action}    ${items_1}    ${items_2}    ${items_3}    ${items_4}    ${order_request_refund_id}    ${request_description}
+    ${token}    Get Token From MD5    ${order_id}    ${app_secret}    ${action}
+    Create Http Context    ${URL_ORDER_FOR_API}    https
+    Set Request Body    secure_key=${order_id}&refund_item_id[0]=${items_1}&refund_item_id[1]=${items_2}&refund_item_id[2]=${items_3}&refund_item_id[3]=${items_4}&order_request_refund_id=${order_request_refund_id}&request_description=${request_description}&token=${token}
+    ${return}=  Run Keyword And Return Status   POST    /v3/process/accept
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+API Decline Request Refund
+    [Documentation]    Use for decline request refund with api
+    [Arguments]    ${order_id}    ${app_secret}    ${action}    ${items_1}    ${items_2}    ${items_3}    ${items_4}    ${order_request_refund_id}    ${request_description}
+    ${token}    Get Token From MD5    ${order_id}    ${app_secret}    ${action}
+    Create Http Context    ${URL_ORDER_FOR_API}    https
+    Set Request Body    secure_key=${order_id}&items[0]=${items_1}&items[1]=${items_2}&items[2]=${items_3}&items[3]=${items_4}&order_request_refund_id=${order_request_refund_id}&request_description=${request_description}&token=${token}
+    ${return}=  Run Keyword And Return Status   POST    /v3/process/decline
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+API Cancel Request Refund
+    [Documentation]    Use for cancel request refund with api
+    [Arguments]    ${order_id}    ${app_secret}    ${action}    ${refund_id}    ${request_description}
+    ${token}    Get Token From MD5    ${order_id}    ${app_secret}    ${action}
+    Create Http Context    ${URL_ORDER_FOR_API}    https
+    Set Request Body    secure_key=${order_id}&refund_id=${refund_id}&request_description=${request_description}&token=${token}
+    ${return}=  Run Keyword And Return Status   POST    /v3/process/cancel
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+
+
+

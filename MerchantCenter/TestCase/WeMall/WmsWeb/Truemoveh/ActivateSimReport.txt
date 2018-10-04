@@ -1,0 +1,56 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+Resource          ../../../../Keyword/Common/TruemoveH_activateSim.txt
+
+
+*** Test Cases ***
+TC_MC_09201
+   [Tags]    Medium    WmsWeb
+   [Documentation]    Verify activate sim report page
+    Go to TruemoveH Activate Sim Report on wms page
+    Check the search fields on Activate Sim Report page
+
+TC_MC_09202
+    [Tags]    Medium    WmsWeb
+    [Documentation]    Verify search by order ID
+    Go to TruemoveH Activate Sim Report on wms page
+    Search activate sim report by order id    800011402717
+    Check that the searched result displays order ID correctly    800011402717
+
+TC_MC_09212
+    [Tags]    Medium    WmsWeb
+    [Documentation]    Verify order id have status = approved, and Item status = shipped and wait for confirm receive
+    Go to TruemoveH Activate Sim Report on wms page
+    Search activate sim report by order id    800011402717
+    Check that the Activate status dropdown displays list value correctly
+
+TC_MC_09213
+    [Tags]    Medium    WmsWeb
+    [Documentation]    Verify order id have status = approved, and Item status = Receive and order completed
+    Go to TruemoveH Activate Sim Report on wms page
+    Search activate sim report by order id    800011402814
+    Check that the Activate status dropdown displays list value correctly
+
+TC_MC_09214
+    [Tags]    Medium    WmsWeb
+    [Documentation]    Verify order id have status = approved, and Item status =  Payment success and waiting for shipment
+    Go to TruemoveH Activate Sim Report on wms page
+    Search activate sim report by order id    800011402800
+    Check that there is no activate status dropdown and status correctly    Waiting..
+
+TC_MC_09215
+    [Tags]    Regression    Medium    WmsWeb
+    [Documentation]    Verify order id have status = waiting
+    Go to TruemoveH Activate Sim Report on wms page
+    Search activate sim report by order id    800011402832
+    Check the verify status is displayed as    Waiting
+    Check that there is no activate status dropdown without activate status correctly

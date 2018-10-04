@@ -1,0 +1,688 @@
+*** Settings ***
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           Collections
+Library           OperatingSystem
+Library           DateTime
+Library           String
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Variable ***
+${TIMEOUT}                      10s
+
+*** Keywords ***
+Check Mobile Price Plan
+    Go To    ${url_price_plan}
+    ${count}=    Get Matching XPath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[3]/span
+    Run Keyword If    ${count} == 0    Create Init Price Plan    Do not delete Initial First Price Plan 1    priceplan1
+    Run Keyword If    ${count} == 0    Create Init Price Plan    Do not delete Initial First Price Plan 2    priceplan2
+
+Create Init Price Plan
+    [Arguments]    ${name}    ${code}
+    Go To    ${url_price_plan}/create
+    Input Text    //input[@id="name"]    ${name}
+    Input Text    //input[@id="code"]    ${code}
+    Input Text    //textarea[@id="description"]    ${name}
+    Execute Javascript    CKEDITOR.instances['long_description'].setData('${name}');
+    Click Element    //*[@id="submit_btn"]
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Input Text    //input[@id="code"]    ${code}
+    Click Element    //*[@id="formsearch_priceplan"]/div[3]/div/input
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Element Should Contain    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[3]/span    ${code}
+    Go To    ${url_price_plan}
+
+Check Mobile Import Data
+    Check Mobile Report Data
+    Go To    ${url_block_truemoveh_import}
+
+Check Mobile Report Data
+    Go To    ${url_block_truemoveh}
+    ${count}=    Get matching xpath count    //select[@id="lot"]/option
+    Run Keyword If    ${count} == 0    Import Mobile Number    tmvh_mobile_import_1k.xlsx    example    Yes
+
+Import Mobile Number
+    [Arguments]    ${filename}    ${lot}    ${redirect}
+    Go To    ${url_block_truemoveh}/import
+    ${FILE_DIR}=    Remove String    ${CURDIR}    /Keyword/Common
+    ${file_to_upload}=    Catenate    SEPARATOR=${/}    ${FILE_DIR}${/}Resource${/}WeMall${/}Image    ${filename}
+    Execute Javascript    $('#file_excel').show();
+    Sleep    1s
+    Choose File    //input[@id="file_excel"]    ${file_to_upload}
+    Input Text    //input[@id="lot"]    ${lot}
+    Click Element    //*[@id="import_btn"]
+    Choose Ok On Next Confirmation
+    Confirm Action
+    Wait Until Element Is Visible    //*[@id="import_form"]/div[1]/div[4]/div/div/div
+    Sleep    3s
+#    Go To    ${url_block_truemoveh}
+
+Set Expire Date
+    [Arguments]    ${expire_date}
+    Execute Javascript    $("[id='extend_expired']").click()
+    Input Text    //input[@id="expired_date"]    ${expire_date}
+    Click Element    //*[@id="extend_btn"]
+
+Fill Digit Zero Of The Month
+    [Documentation]    Fill Digit Zero Of The Month
+    [Arguments]    ${month}
+    ${month}=    Convert To Integer    ${month}
+    ${month}=    Fill Digit Of The Month    ${month}
+    Set Test Variable    ${month}    ${month}
+
+Fill Digit Zero Of The Day
+    [Documentation]    Fill Digit Zero Of The Day
+    [Arguments]    ${day}
+    ${day}=    Convert To Integer    ${day}
+    ${day}=    Fill Digit Of The Day    ${day}
+    Set Test Variable    ${day}    ${day}
+
+# --------------------------- Horoscopes ---------------------------
+Go To Menu Horoscopes
+    Wait Until Element Is Visible       ${Menu_TruemoveH}               ${TIMEOUT}
+    Mouse Over                          ${Menu_TruemoveH}
+    Wait Until Element Is Visible       //ul[@class='submenu']/li/a[@href='${url_horoscopes_truemoveh}']             ${TIMEOUT}
+    Click Element                       //ul[@class='submenu']/li/a[@href='${url_horoscopes_truemoveh}']
+
+Go To Menu Create Horoscope
+    Go To Menu Horoscopes
+    Wait Until Element Is Visible       ${btn_create_horoscopes}
+    Click Element                       ${btn_create_horoscopes}
+
+Create Horoscope
+    [Arguments]    ${score}=1   ${title}=robot_title1   ${desc}=robot_desc1    ${status}=active
+    Go To                               ${url_horoscopes_truemoveh}/create
+    Wait Until Element Is Visible       ${input_score}                  ${TIMEOUT}
+    Wait Until Element Is Visible       ${input_title}                  ${TIMEOUT}
+    Wait Until Element Is Visible       ${input_description}            ${TIMEOUT}
+    Wait Until Element Is Visible       ${input_status_active}          ${TIMEOUT}
+    Input Text                          ${input_score}                  ${score}
+    Input Text                          ${input_title}                  ${title}
+    Input Text                          ${input_description}            ${desc}
+    Run Keyword If    '${status}' == 'active'       Click Element           ${input_status_active}
+    ...    ELSE IF    '${status}' == 'inactive'     Click Element           ${input_status_inactive}
+    Click Element                       ${btn_submit}
+
+Verify data horoscope
+    [Arguments]    ${score}     ${title}      ${description}     ${status}
+    Go To                               ${url_horoscopes_truemoveh}
+    Wait Until Element Is Visible       //tr[@data-id='row_${score}']/td/span[@data-id="score" and text()="${score}"]              ${TIMEOUT}
+    Wait Until Element Is Visible       //tr[@data-id='row_${score}']/td/span[@data-id="title" and text()="${title}"]              ${TIMEOUT}
+    Wait Until Element Is Visible       //tr[@data-id='row_${score}']/td/span[@data-id="description" and text()="${description}"]  ${TIMEOUT}
+    Wait Until Element Is Visible       //tr[@data-id='row_${score}']/td/span[@data-id="status" and text()="${status}"]            ${TIMEOUT}
+
+Create Horoscope If Score Not Exist
+    [Arguments]    ${score}
+    Go To                               ${url_horoscopes_truemoveh}
+    ${target}                           Convert To String             //span[@data-id="score" and text()="${score}"]
+    Sleep                               3s
+    ${count_score}                      Get Matching Xpath Count      ${target}
+    Run Keyword If                      ${count_score} < 1            Create Horoscope           ${score}          robot_title${score}
+
+Delete Horoscope By Score
+    [Arguments]    ${score}
+    Wait Until Element Is Visible       //tr[@data-id='row_${score}']${btn_delete}          ${TIMEOUT}
+    Click Element                       //tr[@data-id='row_${score}']${btn_delete}
+    Wait Until Element Is Visible       ${btn_cf_delete}                                    ${TIMEOUT}
+    Click Element                       ${btn_cf_delete}
+    Wait Until Element Is Not Visible   ${btn_cf_delete}
+
+Delete Horoscope By Title
+    [Arguments]    ${title}
+    Wait Until Element Is Visible       //span[@data-id="title" and text()="${title}"]/parent::td/parent::tr${btn_delete}          ${TIMEOUT}
+    Click Element                       //span[@data-id="title" and text()="${title}"]/parent::td/parent::tr${btn_delete}
+    Wait Until Element Is Visible       ${btn_cf_delete}                                    ${TIMEOUT}
+    Click Element                       ${btn_cf_delete}
+    Wait Until Element Is Not Visible   ${btn_cf_delete}
+
+Delete Existing Score
+    [Arguments]    ${score}
+    ${target}                           Convert To String             //span[@data-id="score" and text()="${score}"]
+    Sleep                               3s
+    ${count_score}                      Get Matching Xpath Count      ${target}
+    Run Keyword If                      ${count_score} >= 1           Delete Horoscope By Score           ${score}
+
+Delete Existing Title
+    [Arguments]    ${title}
+    ${target}                           Convert To String             //span[@data-id="title" and text()="${title}"]
+    Sleep                               3s
+    ${count_title}                      Get Matching Xpath Count      ${target}
+    Run Keyword If                      ${count_title} >= 1           Delete Horoscope By Title           ${title}
+
+Click Edit Horoscope
+    [Arguments]    ${score}
+    Wait Until Element Is Visible       //tr[@data-id='row_${score}']${btn_edit}          ${TIMEOUT}
+    Click Element                       //tr[@data-id='row_${score}']${btn_edit}
+
+Edit Horoscope
+    [Arguments]    ${key_score}=1       ${score}=1   ${title}=robot_title1   ${desc}=robot_desc1    ${status}=active
+    Click Edit Horoscope                ${key_score}
+    Wait Until Element Is Visible       ${input_score}                  ${TIMEOUT}
+    Wait Until Element Is Visible       ${input_title}                  ${TIMEOUT}
+    Wait Until Element Is Visible       ${input_description}            ${TIMEOUT}
+    Wait Until Element Is Visible       ${input_status_active}          ${TIMEOUT}
+    Input Text                          ${input_score}                  ${score}
+    Input Text                          ${input_title}                  ${title}
+    Input Text                          ${input_description}            ${desc}
+    Run Keyword If    '${status}' == 'active'       Click Element       ${input_status_active}
+    ...    ELSE IF    '${status}' == 'inactive'     Click Element       ${input_status_inactive}
+    Click Element                       ${btn_submit}
+
+Delete Price Plan By Code
+    [Arguments]    ${str_plan}
+    Input Text    //input[@id="code"]    ${str_plan}
+    Click Element    //*[@id="search_priceplan"]
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Click Element    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[6]/form/div/a[contains(@class, 'btndel')]
+    Wait Until Element Is Visible    //*[@id="confirm_delete"]
+    Sleep    1s
+    Click Element    //*[@id="btn_confirm_delete"]
+
+Get Mapping Url By Nas Code
+    [Arguments]    ${nas_code}
+    Go To    ${url_proposition}
+    Wait Until Element Is Visible    //*[@id="search_nas_code"]
+    Input Text    //*[@id="search_nas_code"]    ${nas_code}
+    Click Element    ${btn_submit_search_propo}
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    ${mapping_url}=    SeleniumLibrary.Get Element Attribute    //*[@id="sample-table-2_wrapper"]/table/tbody/tr/td[4]/span/a@href
+    ${number_plan_str}=    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr/td[4]/span/a
+    ${number_plan}=   Convert To Integer    ${number_plan_str}
+    [Return]    ${mapping_url}    ${number_plan}
+
+Generate Price Plan Name And Code
+    ${current_date_time}    Get Current Date    UTC    +7 hours    result_format=epoch    exclude_millis=True
+    ${current_date_str}    Convert To String    ${current_date_time}
+    ${current_date_str}    Get Substring    ${current_date_str}    \    10
+    ${str_plan}=    Catenate    SEPARATOR=    plan   ${current_date_str}
+    ${str_name}=    Catenate    SEPARATOR=-    name   ${current_date_str}
+    [Return]    ${str_name}    ${str_plan}
+
+Generate New Price Plan
+    [Arguments]    ${recommended}=yes    ${status}=active
+    Go To    ${url_price_plan}/create
+    ${str_name}    ${str_plan}    Generate Price Plan Name And Code
+
+    Input Text    //input[@id="name"]    ${str_name}
+    Input Text    //input[@id="code"]    ${str_plan}
+    Input Text    //textarea[@id="description"]    ${str_name}
+    Execute Javascript    CKEDITOR.instances['long_description'].focus();
+    Execute Javascript    CKEDITOR.instances['long_description'].setData('${str_name}');
+
+    Run Keyword If    '${recommended}' == 'yes'    Click Element    //input[@id="yes"]
+    ...    ELSE IF    '${recommended}' == 'no'    Click Element    //input[@id="no"]
+
+    Run Keyword If    '${status}' == 'active'    Click Element    //input[@id="active"]
+    ...    ELSE IF    '${status}' == 'inactive'    Click Element    //input[@id="inactive"]
+
+    Click Element    //*[@id="submit_btn"]
+
+    Wait Until Element Is Visible    //*[@id="notify-top"]
+    [Return]    ${str_name}    ${str_plan}
+
+# --------------------------- Proposition ---------------------------
+Go To Menu Proposition
+    Wait Until Element Is Visible       ${Menu_TruemoveH}               ${TIMEOUT}
+    Mouse Over                          ${Menu_TruemoveH}
+    Wait Until Element Is Visible       //ul[@class='submenu']/li/a[@href='${url_proposition}']             ${TIMEOUT}
+    Click Element                       //ul[@class='submenu']/li/a[@href='${url_proposition}']
+
+Proposition - Delete By Name
+    [Arguments]    ${name}
+    Wait Until Element Is Visible       //span[@data-id="name" and text()="${name}"]/parent::td/parent::tr${btn_delete}           ${TIMEOUT}
+    Click Element                       //span[@data-id="name" and text()="${name}"]/parent::td/parent::tr${btn_delete}
+    Wait Until Element Is Visible       ${btn_cf_delete}                                    ${TIMEOUT}
+    Click Element                       ${btn_cf_delete}
+    Wait Until Element Is Not Visible   ${btn_cf_delete}
+
+Proposition - Delete By Nas Code
+    [Arguments]    ${nas_code}
+    Wait Until Element Is Visible       //span[@data-id="nas_code" and text()="${nas_code}"]/parent::td/parent::tr${btn_delete}     ${TIMEOUT}
+    Click Element                       //span[@data-id="nas_code" and text()="${nas_code}"]/parent::td/parent::tr${btn_delete}
+    Wait Until Element Is Visible       ${btn_cf_delete}                                    ${TIMEOUT}
+    Click Element                       ${btn_cf_delete}
+    Wait Until Element Is Not Visible   ${btn_cf_delete}
+
+Proposition - Delete Existing Name
+    [Arguments]    ${name}
+    ${target}                           Convert To String             //span[@data-id="name" and text()="${name}"]
+    Sleep                               3s
+    ${count_name}                       Get Matching Xpath Count      ${target}
+    Run Keyword If                      ${count_name} >= 1            Proposition - Delete By Name            ${name}
+
+Proposition - Delete Existing Nas Code
+    [Arguments]    ${nas_code}
+    ${target}                           Convert To String             //span[@data-id="nas_code" and text()="${nas_code}"]
+    Sleep                               3s
+    ${count_nas_code}                   Get Matching Xpath Count      ${target}
+    Run Keyword If                      ${count_nas_code} >= 1        Proposition - Delete By Nas Code         ${nas_code}
+
+Proposition - Click Edit
+    [Arguments]    ${nas_code}
+    Wait Until Element Is Visible       //tr[@data-id='row_${nas_code}']${btn_edit}          ${TIMEOUT}
+    Click Element                       //tr[@data-id='row_${nas_code}']${btn_edit}
+
+Verify Proposition Status As
+    [Arguments]    ${active}
+    ${status}    Execute Javascript    return $('input[id="${active}"]').prop('checked')
+    Should Be True    '${status}' == 'True'
+
+Create Proposition one merchant
+    [Arguments]     ${name}=robot01     ${merchant}=True Move    ${campaign_code}=${EMPTY}   ${nas_code}=robot01     ${pool_number}=${EMPTY}     ${baseline}=${EMPTY}
+    ...             ${contract}=12      ${penalty}=1000.00          ${source_type}=sim      ${term_short}=robot_ts      ${term_long}=robot_tl
+    Go To                               ${url_proposition}/create
+    Wait Until Element Is Visible       ${input_name}                  ${TIMEOUT}
+    Input Text                          ${input_name}                  ${name}
+    Select 1 Merchant In Proposition    0
+    Input Text                          ${input_campaign_code}         ${campaign_code}
+    Input Text                          ${input_nas_code}              ${nas_code}
+    Input Text                          ${input_pool_number}           ${pool_number}
+    Input Text                          ${input_base_line}             ${base_line}
+    Input Text                          ${input_contract}              ${contract}
+    Input Text                          ${input_penalty}               ${penalty}
+    Select From List by Value           ${select_source_type}          ${source_type}
+    Run Keyword IF    '${source_type}' == 'bundle'    Run Keywords    Verify Proposition Status As    inactive    AND    Select 1 Mobile Number Nas Code    1
+    Input Text                          ${input_term_short}            ${term_short}
+    Execute Javascript                  CKEDITOR.instances['term_long'].setData('${term_long}');
+    Click Element                       ${btn_submit}
+
+Create Proposition Muti merchant
+    [Arguments]     ${name}=robot01     ${merchant}=True Move,Trust Move    ${campaign_code}=${EMPTY}   ${nas_code}=robot01     ${pool_number}=${EMPTY}     ${baseline}=${EMPTY}
+    ...             ${contract}=12      ${penalty}=1000.00          ${source_type}=sim      ${term_short}=robot_ts      ${term_long}=robot_tl
+    Go To                               ${url_proposition}/create
+    Wait Until Element Is Visible       ${input_name}                  ${TIMEOUT}
+    Input Text                          ${input_name}                  ${name}
+    Select Multiple Merchant In Proposition    0    2
+    Input Text                          ${input_campaign_code}         ${campaign_code}
+    Input Text                          ${input_nas_code}              ${nas_code}
+    Input Text                          ${input_pool_number}           ${pool_number}
+    Input Text                          ${input_base_line}             ${base_line}
+    Input Text                          ${input_contract}              ${contract}
+    Input Text                          ${input_penalty}               ${penalty}
+    Select From List by Value           ${select_source_type}          ${source_type}
+    Run Keyword IF    '${source_type}' == 'bundle'    Run Keywords    Verify Proposition Status As    inactive    AND    Select Multiple Mobile Number Nas Code    1    2
+    Input Text                          ${input_term_short}            ${term_short}
+    Execute Javascript                  CKEDITOR.instances['term_long'].setData('${term_long}');
+    Click Element                       ${btn_submit}
+
+Select 1 Merchant In Proposition
+    [Arguments]    ${i}
+    Click Element    ${click_merchant}
+    Click Element    ${select_merchant}//li[@data-option-array-index="${i}"]
+
+Select Multiple Merchant In Proposition
+    [Arguments]    ${i}    ${l}
+    Click Element    ${click_merchant}
+    Click Element    ${select_merchant}//li[@data-option-array-index="${i}"]
+    Click Element    ${click_merchant}
+    Click Element    ${select_merchant}//li[@data-option-array-index="${l}"]
+
+Select 1 Mobile Number Nas Code
+    [Arguments]    ${i}
+    Click Element    ${click_mobile_nas_codes}
+    Click Element    ${select_mobile_nas_codes}[${i}]
+
+Select Multiple Mobile Number Nas Code
+    [Arguments]    ${i}    ${l}
+    Click Element    ${click_mobile_nas_codes}
+    Click Element    ${select_mobile_nas_codes}[${i}]
+    Click Element    ${click_mobile_nas_codes}
+    Click Element    ${select_mobile_nas_codes}[${l}]
+
+Verify data proposition one merchant
+    [Arguments]    ${name}              ${merchant}    ${campaign_code}        ${nas_code}         ${pool_number}     ${baseline}
+    ...            ${contract}          ${penalty}              ${source_type}      ${term_short}      ${term_long}
+    ...            ${status}
+    Go To                               ${url_proposition}
+    Set Test Variable                   ${target_row}           //tr[@data-id='row_${nas_code}']
+    Set Test Variable                   ${nas_code}             ${nas_code}
+    Wait Until Element Is Visible       ${target_row}/td/span[@data-id="name" and text()="${name}"]                  ${TIMEOUT}
+### Column Merchant ####
+    Wait Until Element Is Visible       ${column_merchant}
+    Element Should Contain              ${merchant_name}    True Move
+    Wait Until Element Is Visible       ${target_row}/td/span[@data-id="nas_code" and text()="${nas_code}"]
+    ${text_source_type}=                Get Text                ${target_row}/td/div[@data-id="source_type"]
+    ${text_source_type}=                Convert To Lowercase    ${text_source_type}
+    Should Contain                      ${text_source_type}     ${source_type}
+    Verify data proposition status      ${status}
+    Proposition - Click Edit            ${nas_code}
+    Wait Until Element Is Visible       //input[@id='campaign_code' and @value='${campaign_code}']
+    Wait Until Element Is Visible       //input[@id='pool_number' and @value='${pool_number}']
+    Wait Until Element Is Visible       //input[@id='baseline' and @value='${baseline}']
+    Wait Until Element Is Visible       //input[@id='contract' and @value='${contract}']
+    Wait Until Element Is Visible       //input[@id='penalty' and @value='${penalty}']
+    Wait Until Element Is Visible       //select[@id='source_type']/option[@value='${source_type}' and @selected='selected']
+    Wait Until Element Is Visible       //textarea[@id='term_short' and contains(text(),'${term_short}')]
+    ${val_trem_long}=                   Execute Javascript                  return CKEDITOR.instances['term_long'].getData();
+
+Verify data proposition muti merchant
+    [Arguments]    ${name}              ${merchant}    ${campaign_code}        ${nas_code}         ${pool_number}     ${baseline}
+    ...            ${contract}          ${penalty}              ${source_type}      ${term_short}      ${term_long}
+    ...            ${status}
+    Go To                               ${url_proposition}
+    Set Test Variable                   ${target_row}           //tr[@data-id='row_${nas_code}']
+    Set Test Variable                   ${nas_code}             ${nas_code}
+    Wait Until Element Is Visible       ${target_row}/td/span[@data-id="name" and text()="${name}"]                  ${TIMEOUT}
+### Column Merchant ####
+    Wait Until Element Is Visible       ${column_merchant}
+    Element Should Contain              ${merchant_name}//li[1]    True Move
+    Element Should Contain              ${merchant_name}//li[2]    Trust Move
+    Wait Until Element Is Visible       ${target_row}/td/span[@data-id="nas_code" and text()="${nas_code}"]
+    ${text_source_type}=                Get Text                ${target_row}/td/div[@data-id="source_type"]
+    ${text_source_type}=                Convert To Lowercase    ${text_source_type}
+    Should Contain                     ${text_source_type}     ${source_type}
+    Verify data proposition status      ${status}
+    Proposition - Click Edit            ${nas_code}
+    Wait Until Element Is Visible       //input[@id='campaign_code' and @value='${campaign_code}']
+    Wait Until Element Is Visible       //input[@id='pool_number' and @value='${pool_number}']
+    Wait Until Element Is Visible       //input[@id='baseline' and @value='${baseline}']
+    Wait Until Element Is Visible       //input[@id='contract' and @value='${contract}']
+    Wait Until Element Is Visible       //input[@id='penalty' and @value='${penalty}']
+    Wait Until Element Is Visible       //select[@id='source_type']/option[@value='${source_type}' and @selected='selected']
+    Wait Until Element Is Visible       //textarea[@id='term_short' and contains(text(),'${term_short}')]
+    ${val_trem_long}=                   Execute Javascript                  return CKEDITOR.instances['term_long'].getData();
+
+Verify data proposition status
+    [Arguments]    ${status}
+    Set Test Variable                   ${target_row}           //tr[@data-id='row_${nas_code}']
+    Wait Until Element Is Visible       ${target_row}           ${TIMEOUT}
+    ${text_status}=                     Get Text                ${target_row}/td/span[@data-id="status"]
+    ${text_status}=                     Convert To Lowercase    ${text_status}
+    Should Be Equal                     ${text_status}          ${status}
+
+Create Proposition If Nas Code Not Exist
+    [Arguments]     ${name}=robot01     ${campaign_code}=${EMPTY}   ${nas_code}=robot01     ${pool_number}=${EMPTY}     ${baseline}=${EMPTY}
+    ...             ${contract}=12      ${penalty}=1000.00          ${source_type}=sim      ${term_short}=robot_ts      ${term_long}=robot_tl
+    ...             ${status}=active
+    Go To                               ${url_proposition}
+    ${target}                           Convert To String             //span[@data-id="nas_code" and text()="${nas_code}"]
+    Sleep                               3s
+    ${count_nas_code}                   Get Matching Xpath Count      ${target}
+    Run Keyword If                      ${count_nas_code} < 1         Proposition - Delete Existing Name        ${name}
+    Run Keyword If                      ${count_nas_code} < 1         Create Proposition one merchant    ${name}     ${campaign_code}
+    ...             ${nas_code}         ${pool_number}                ${baseline}
+    ...             ${contract}         ${penalty}                    ${source_type}        ${term_short}      ${term_long}
+    ...             ${status}
+
+Proposition - Mapping Price Plan
+    Click Element           ${map_price_plan}
+    ${target_element}=      Convert To String      //select[@id='m-selectable']/option[1]
+    Wait Until Element Is Visible       ${target_element}           ${TIMEOUT}
+    Click Element           ${target_element}
+    Click Element           //button[@class='multis-right']
+    Click Element           //button[@id='submit_btn']
+    Sleep                   5s
+    Go To                   ${url_proposition}
+
+Mapping Price Plan
+    [Arguments]    ${nas_code}    ${price_plan}
+    ${mapping_url}    ${number_plan}    Get Mapping Url By Nas Code    ${nas_code}
+    Go To    ${mapping_url}
+    Wait Until Element Is Visible    //*[@id="select-form-group"]
+    Element Should Be Visible    //*[@id="m-selectable"]/option[contains(text(),'${price_plan}')]
+    Click Element    //*[@id="m-selectable"]/option[contains(text(),'${price_plan}')]
+    Click Element    //*[@id="select-form-group"]/div/span/div/div[2]/button[1]
+    Click Element    //*[@id="submit_btn"]
+    Sleep    1s
+    Wait Until Element Is Visible    //*[@id="result-success"]
+    Element Should Contain    //*[@id="result-success"]    Successful
+    ${mapping_url_2}    ${number_plan_2}    Get Mapping Url By Nas Code    ${nas_code}
+    Should Be True    ${number_plan_2} > ${number_plan}
+    [Return]    ${mapping_url}
+
+Mapping All Price Plan
+    [Arguments]    ${nas_code}
+    ${mapping_url}    ${number_plan}    Get Mapping Url By Nas Code    ${nas_code}
+    Go To    ${mapping_url}
+    Wait Until Element Is Visible    //*[@id="select-form-group"]
+    Element Should Be Visible    //*[@id="m-selectable"]/option
+    Execute Javascript    $('#m-selected').append($('#m-selectable option'))
+    Click Element    //*[@id="submit_btn"]
+    Wait Until Element Is Visible    //*[@id="result-success"]
+    Element Should Contain    //*[@id="result-success"]    Successful
+    [Return]    ${mapping_url}
+
+Clear Mapping Price Plan
+    [Arguments]    ${url}    ${price_plan}
+    Go To    ${url}
+    Wait Until Element Is Visible    //*[@id="m-selected"]
+    Execute Javascript    $('#m-selectable').append($('#m-selected option:contains("${price_plan}")'))
+    Click Element    //*[@id="submit_btn"]
+    Wait Until Element Is Visible    //*[@id="result-success"]
+    Element Should Contain    //*[@id="result-success"]    Successful
+
+Clear Mapping Price Plan Multi
+    [Arguments]    ${url}    ${price_plan_lists}
+    Go To    ${url}
+    Wait Until Element Is Visible    //*[@id="m-selected"]
+
+    : FOR    ${a}    IN    @{price_plan_lists}
+    \    Execute Javascript    $('#m-selectable').append($('#m-selected option:contains("${a}")'))
+
+    Click Element    //*[@id="submit_btn"]
+    Wait Until Element Is Visible    //*[@id="result-success"]
+    Element Should Contain    //*[@id="result-success"]    Successful
+
+Clear Mapping All Price Plan
+    [Arguments]    ${url}
+    Go To    ${url}
+    Wait Until Element Is Visible    //*[@id="m-selected"]
+    Execute Javascript    $('#m-selectable').append($('#m-selected option'))
+    Click Element    //*[@id="submit_btn"]
+    Wait Until Element Is Visible    //*[@id="result-success"]
+    Element Should Contain    //*[@id="result-success"]    Successful
+
+
+Import Phone Number
+    [Arguments]    ${filename}    ${lot}    ${redirect}
+    Go To    ${url_block_truemoveh}/import
+    ${c}=          Convert To String              ${CURDIR}
+    ${merchart_dir}=        Replace String          ${c}    ${/}Keyword${/}Common    ${EMPTY}
+    ${file_to_upload}=    Catenate    SEPARATOR=${/}    ${merchart_dir}${/}Resource${/}WeMall${/}Image    ${filename}
+    Execute Javascript    $('#file_excel').show();
+    Sleep    1s
+    Choose File    //input[@id="file_excel"]    ${file_to_upload}
+    Input Text    //input[@id="lot"]    ${lot}
+    Click Element    //*[@id="import_btn"]
+    Choose Ok On Next Confirmation
+    Confirm Action
+    Wait Until Element Is Visible    //*[@id="import_form"]/div[1]/div[4]/div/div/div
+    Sleep    3s
+
+Get Total Mobile
+    [Arguments]    ${import_date_from}=${EMPTY}    ${import_date_to}=${EMPTY}    ${mobile_number}=${EMPTY}    ${lot}=${EMPTY}    ${mobile_type}=${EMPTY}    ${expire_status}=${EMPTY}    ${status}=${EMPTY}
+    Wait Until Element Is Visible       //*[@id='import_date_from']
+    Execute Javascript                  $('#import_date_from').val('${import_date_from}').datepicker('update');
+    Execute Javascript                  $('#import_date_to').val('${import_date_to}').datepicker('update');
+    Input Text                          //*[@id="mobile"]            ${mobile_number}
+    Select From List by Value           //select[@id='lot']          ${lot}
+    Select From List by Value           //*[@id="mobile_type"]       ${mobile_type}
+    Select From List by Value           //*[@id="expired"]           ${expire_status}
+    Select From List by Value           //select[@id='status']       ${status}
+    Click Element                       //input[@name="submit"]
+    Wait Until Element Is Visible       //*[@id='table_report_info']
+    ${total_mobile}=        Execute Javascript      return $('#table_report_info').text().split('of')[1].split('entries')[0].trim()
+    ${total_mobile}=        Convert To Integer      ${total_mobile}
+    [return]                ${total_mobile}
+
+Search Mobile
+    [Arguments]    ${import_date_from}=${EMPTY}    ${import_date_to}=${EMPTY}    ${mobile_number}=${EMPTY}    ${lot}=${EMPTY}    ${mobile_type}=${EMPTY}    ${expire_status}=${EMPTY}    ${status}=${EMPTY}
+    Wait Until Element Is Visible       //*[@id='import_date_from']
+    Execute Javascript                  $('#import_date_from').val('${import_date_from}').datepicker('update');
+    Execute Javascript                  $('#import_date_to').val('${import_date_to}').datepicker('update');
+    Input Text                          //*[@id="mobile"]            ${mobile_number}
+    Select From List by Value           //select[@id='lot']          ${lot}
+    Select From List by Value           //*[@id="mobile_type"]       ${mobile_type}
+    Select From List by Value           //*[@id="expired"]           ${expire_status}
+    Select From List by Value           //select[@id='status']       ${status}
+    Click Element                       //input[@name="submit"]
+    Wait Until Element Is Visible       //*[@id='table_report_info']
+
+Search Proposition By Source Type
+    [Arguments]    ${type}
+    Select From List    ${type_dropdown}    ${type}
+    Click Element    ${btn_submit_search_propo}
+
+Go To Map Proposition Page
+    Wait Until Element Is Visible    ${btn_map_proposition}
+    Click Element    ${btn_map_proposition}
+    Page Should Contain    Manage map
+
+Search Product By Product ID
+    [Arguments]    ${productId}
+    Input Text    ${txt_productId}    ${productId}
+    Click Element    ${btn_search_product}
+
+Search Product By Product Name
+    [Arguments]    ${productName}
+    Input Text    ${txt_productName}    ${productName}
+    Click Element    ${btn_search_product}
+
+Search Product By SKU
+    [Arguments]    ${sku}
+    Input Text    ${txt_product_sku}    ${sku}
+
+The Search Warning Display Under Product SKU
+    [Arguments]    ${message}
+    Element Should Contain    ${lbl_warning_sku}    ${message}
+
+Reset Search Value
+    Click Element    ${btn_reset_search_product}
+
+All Search Fields Are Cleared The Value Correctly
+    Element Should Contain    ${txt_productName}    ${EMPTY}
+    Element Should Contain    ${txt_productId}    ${EMPTY}
+    Element Should Contain    ${txt_product_sku}    ${EMPTY}
+
+Update Map Proposition With Product Successfully
+    Click Element    ${chk_the_first_row}
+    Click Element    ${btn_map}
+    Confirm Action
+    Element Should Contain    ${notify_message}    Successful :)
+
+Go Back To Proposition By Clicking Back On Map Page
+    Click Element    ${btn_back_to_proposition}
+    Element Should Contain    ${lbl_header_proposition}    Truemove H Proposition
+
+All Proposition Records display Source Type as
+    [Arguments]    ${source_type}
+    ${row}    Get Matching Xpath Count    ${tbl_search_result}
+    : FOR    ${i}    IN RANGE    1    ${row} + 1
+    \    Run Keyword if    ${i}%2 == 1    Element Text Should Be    //div[@id="sample-table-2_wrapper"]/table/tbody/tr[${i}]/td[7]/div/span    ${source_type}
+
+# --------------------------- Device ---------------------------
+Go To Menu Device
+    Wait Until Element Is Visible       ${Menu_TruemoveH}               ${TIMEOUT}
+    Mouse Over                          ${Menu_TruemoveH}
+    Wait Until Element Is Visible       //ul[@class='submenu']/li/a[@href='${url_device}']             ${TIMEOUT}
+    Click Element                       //ul[@class='submenu']/li/a[@href='${url_device}']
+
+Search Device
+    [Arguments]    ${device_name}
+    Go To                               ${url_device}
+    Wait Until Element Is Visible       ${input_search_name}            ${TIMEOUT}
+    Input Text                          ${input_search_name}            ${device_name}
+    Click Element                       ${btn_search_device}
+
+Delete Device
+    [Arguments]    ${device_name}
+    Search Device                       ${device_name}
+    ${target}=                          Convert To String   //*[contains(text(), '${device_name}')]/parent::td/parent::tr${btn_delete}
+    Wait Until Element Is Visible       ${target}                ${TIMEOUT}
+    Click Element                       ${target}
+    Wait Until Element Is Visible       ${btn_cf_delete}                ${TIMEOUT}
+    Click Element                       ${btn_cf_delete}
+    Wait Until Element Is Not Visible   ${btn_cf_delete}
+
+Create Device If Score Not Exist
+    [Arguments]    ${device_name}       @{sim_typs}
+    Search Device                       ${device_name}
+    Sleep                               3s
+    ${row_data}                         Convert To String               //span[@data-id="name"]
+    ${count_row_data}                   Get Matching Xpath Count        ${row_data}
+    Run Keyword If                      ${count_row_data} < 1              Create Device           ${device_name}      @{sim_typs}
+
+Create Device
+    [Arguments]                         ${name}=Robot_Device_01         @{sim_typs}
+    Go To                               ${url_device}/create
+    Wait Until Element Is Visible       ${input_name}                   ${TIMEOUT}
+    Input Text                          ${input_name}                   ${name}
+    : FOR    ${sim_typ}    IN           @{sim_typs}
+    \        Select Sim Type            ${sim_typ}
+    Click Element                       ${btn_submit}
+
+Select Sim Type
+    [Arguments]                         ${sim_type_name}
+    Wait Until Element Is Visible       //span[contains(text(), '${sim_type_name}')]                   ${TIMEOUT}
+    Click Element                       //span[contains(text(), '${sim_type_name}')]
+
+Delete Existing Device Name
+    [Arguments]    ${device_name}
+    Search Device                       ${device_name}
+    Sleep                               3s
+    ${row_data}                         Convert To String               //span[@data-id="name"]
+    ${count_row_data}                   Get Matching Xpath Count        ${row_data}
+    Run Keyword If                      ${count_row_data} > 0           Delete Device           ${device_name}
+
+Verify data device
+    [Arguments]    ${device_name}       @{sim_typs}
+    Search Device                       ${device_name}
+    ${row_target}=                      Convert To String               //*[contains(text(), '${device_name}')]/parent::td/parent::tr
+    Wait Until Element Is Visible       ${row_target}/td/span[@data-id="name" and contains(text(), '${device_name}')]              ${TIMEOUT}
+    : FOR    ${sim_typ}    IN           @{sim_typs}
+    \        Wait Until Element Is Visible       ${row_target}/td/span[@data-id="sim_type" and contains(text(), '${sim_typ}')]
+
+Click Edit Device
+    [Arguments]    ${device_name}
+    Search Device                       ${device_name}
+    ${row_target}=                      Convert To String               //*[contains(text(), '${device_name}')]/parent::td/parent::tr
+    Wait Until Element Is Visible       ${row_target}${btn_edit}        ${TIMEOUT}
+    Click Element                       ${row_target}${btn_edit}
+
+Search mobile number
+    [Arguments]    ${mobileNumber}
+    Input Text    ${txt_msisdn}    ${mobileNumber}
+    Click Element    ${btn_search_mobile}
+    Set Test Variable    ${mobileNumber}
+
+Search mulitple mobile numbers
+    [Arguments]    ${multipleMobile}
+    Input Text    ${txt_msisdn}    ${multipleMobile}
+    Click Element    ${btn_search_mobile}
+    ${mobile1}    ${mobile2}=    Split String    ${multipleMobile}    ,
+    Set Test Variable    ${mobile1}
+    Set Test Variable    ${mobile2}
+
+Check the searched mobile number is displayed correctly
+    Element Should Contain    ${mobile_label}    ${mobileNumber}
+
+Check that the result message display only 100 mobile number correctly
+    Element Should Contain    ${table_info}    Showing 1 to 50 of 100 entries
+
+Check the result displays searched mobile number correctly
+    ${count}    Get matching xpath count    ${searched_result}
+    : FOR    ${i}    IN RANGE    1    ${Count}+1
+    \    ${mobile}    Get Text    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${i}]/td[4]
+    \    Should Contain Any    ${mobile}    ${mobile1}    ${mobile2}
+
+Change status to
+    [Arguments]    ${status}
+    Click Element    ${btn_active_inactive}
+    Run Keyword if    '${status}'=='Active'    Select From List    ${dropdown_changed_status}    Active
+    Run Keyword if    '${status}'=='Inactive'    Select From List    ${dropdown_changed_status}    Inactive
+    Click Element    ${btn_confirm}
+    Element Should Contain    ${notify_message}    Successful
+    Set Test Variable    ${status}
+
+Check that the mobile status is changed successfully
+    Wait Until Element Is Visible    ${searched_result}
+    ${count}    Get matching xpath count    ${searched_result}
+    : FOR    ${i}    IN RANGE    1    ${Count}+1
+    \    Run Keyword if    '${status}'=='Active'    Element Should Contain    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${i}]/td[6]    Active
+    \    Run Keyword if    '${status}'=='Inactive'    Element Should Contain    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${i}]/td[6]    Inactive
+
+Check that the used mobile status isn't changed correctly
+    Wait Until Element Is Visible    ${searched_result}
+    ${count}    Get matching xpath count    ${searched_result}
+    : FOR    ${i}    IN RANGE    1    ${Count}+1
+    \    Element Should Contain    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${i}]/td[6]    Used

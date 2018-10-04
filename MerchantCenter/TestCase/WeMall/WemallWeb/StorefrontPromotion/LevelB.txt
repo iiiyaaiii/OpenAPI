@@ -1,0 +1,103 @@
+*** Settings ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close All Browsers
+Force Tags        WeMall-Web    Ligo
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Category.txt
+Resource          ../../../../Resource/WeMall/WebElement/Product_Highlight.txt
+Resource          ../../../../Resource/WeMall/WebElement/Search.txt
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeMall/WebElement/Search.txt
+Resource          ../../../../Resource/WeMall/WebElement/Backend_Sellerpromotion.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Product_Collection.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+
+*** Test Cases ***
+TC_MC_06315
+    [Documentation]    [LevelB]Promotion list should not display. Incase Store no have promotion period at today.
+    [Tags]    Regression     Ligo    Medium
+    Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+    ${count_promotion}    Execute Javascript    return $(".promotion-name-seller").length;
+    Sleep    1s
+    Execute Javascript    ${select_all}
+    Sleep    1s
+    Execute Javascript    ${icon_hide}
+    #Click OK Alert Box
+    Sleep    5s
+    Execute Javascript    ${comfim}
+    Sleep    10s
+    #Wait Until Element Is Not Visible    ${confirm_Hide&Show_popup}
+    Wait Until Element Is Visible    ${icon_gray_eye}
+    ${length}    Execute Javascript    return $(".icon-eye-hide-grey").length;
+    Should Be Equal As Integers    ${length}    ${count_promotion}
+    Sleep    1s
+    Go To    ${URL_PORTAL}/${shopname_user001}/promotion
+    Element Should Contain    //span[@class='caption-desc']    ทั้งหมด : 0 รายการ
+
+TC_MC_06324
+    [Documentation]    [LevelB]Promotion SideBar category: Verify side bar main category
+    [Tags]    Regression     Ligo    Medium
+    Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+    Sleep    1s
+    Execute Javascript    ${select_all}
+    Sleep    1s
+    Execute Javascript    ${icon_show}
+    #Click OK Alert Box
+    Sleep    5s
+    Execute Javascript    ${comfim}
+    Sleep    5s
+    Go To    ${URL_STORE}/${shopname_user001}/admin/category
+
+    ${product_cate_id}=    Execute Javascript    return $( "a:contains('robot_stg_store1_test_promotion_item')" ).parent().parent().parent().find('input[name="cat_order_id[]"]').val()
+    Go To    ${URL_STORE}/${shopname_user001}/admin/product?status=true&cat=${product_cate_id}&page=1
+    Sleep    10s
+
+    ${product_cate}=    Execute Javascript    return $('span.all').text()
+    Go To    ${URL_PORTAL}/${shopname_user001}/promotion
+
+    ${product_cate_2}=    Execute Javascript    return $( "ul.shop-left-submenu li a:contains('robot_stg_store1_test_promotion_item')" ).text();
+    Should Contain    ${product_cate_2}    ${product_cate}
+
+    ${product_cate_sign_left}=    Execute Javascript    return $( "ul.shop-left-submenu li a:contains('robot_stg_store1_test_promotion_item')" ).parent().find('span.sign-left').length;
+    Should Be Equal As Integers    ${product_cate_sign_left}    0
+
+TC_MC_06325
+    [Documentation]    [LevelB]Promotion SideBar category: Verify side bar main category have sub category
+    [Tags]    Regression     Ligo    Medium
+    Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+    Sleep    1s
+    Execute Javascript    ${select_all}
+    Sleep    1s
+    Execute Javascript    ${icon_show}
+    #Click OK Alert Box
+    Sleep    5s
+    Execute Javascript    ${comfim}
+    Sleep    5s
+    Go To    ${URL_STORE}/${shopname_user001}/admin/category
+
+    ${product_cate_id}=    Execute Javascript    return $( "a:contains('กระเป๋าโน๊ตบุ๊ค')" ).parent().parent().parent().find('input[name="cat_order_id[]"]').val()
+    Go To    ${URL_STORE}/${shopname_user001}/admin/product?status=true&cat=${product_cate_id}&page=1
+    Sleep    10s
+
+    ${product_cate}=    Execute Javascript    return $('span.all').text()
+    Go To    ${URL_PORTAL}/${shopname_user001}/promotion
+
+    ${product_cate_2}=    Execute Javascript    return $( "ul.shop-left-submenu li a:contains('กระเป๋าเอกสาร')" ).text();
+    Should Contain    ${product_cate_2}    ${product_cate}
+
+    ${product_cate_sign_left}=    Execute Javascript    return $( "ul.shop-left-submenu li a:contains('กระเป๋าเอกสาร')" ).parent().find('i.icon-angle-right').length;
+    Should Be Equal As Integers    ${product_cate_sign_left}    1
+    Sleep    5s
+
+    ${url_cate}=    Execute Javascript    return $( "ul.shop-left-submenu li a:contains('กระเป๋าเอกสาร')" ).attr('href');
+    Go To    ${url_cate}
+    Sleep    1s
+
+    ${product_cate_sign_down}=    Execute Javascript    return $( "ul.shop-left-submenu li a:contains('กระเป๋าเอกสาร')" ).parent().find('i.icon-angle-down').length;
+    Should Be Equal As Integers    ${product_cate_sign_down}    1

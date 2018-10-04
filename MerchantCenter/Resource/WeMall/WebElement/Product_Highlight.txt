@@ -1,0 +1,8 @@
+*** Variables ***
+${viewall_producthighlight}    //div[@class="tool-box"]//a[@href="https://www.wemall-dev.com/recommended"]
+${titlename}    //div[@class="title-lvc"]
+${detail_showproduct}    //div[@class='list-box']
+${detail_priceproduct}    //span[@class='highlight_num']
+${property_brand}    //div[@id="label-brand"]
+${lbl_promotion}	//div[@class="promotion-desc ng-binding"]
+

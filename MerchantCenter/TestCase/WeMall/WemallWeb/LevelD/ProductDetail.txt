@@ -1,0 +1,839 @@
+*** Settings ***
+Suite Setup       Run Keyword    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    #AND    Reset Store/Product Status    wm
+Suite Teardown    Close All Browsers
+Force Tags        Wemall-Web    feature-leveld
+Test Timeout      3 minutes
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Resource/WeMall/init.robot
+# Resource          ../../../../Keyword/Common/Promocode.txt
+Resource          ../../../../Keyword/Common/LevelD.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeMall/WebElement/Cart.txt
+Resource          ../../../../Resource/WeMall/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeMall/WebElement/Product.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+
+*** Test Cases ***
+
+# TC_WLS_01998
+#     [Documentation]    Products have 1 picture and information on Level D
+#     [Tags]    Regression    Portal-Web    Medium    mock
+#     Go to    ${URL_PORTAL}
+#     Click Element    ${h_flashsale_item}[1]
+#     # Get DealZapp Product    robot_stg_store1 - สินค้า FlashSale 1
+#     ${current_url}    Get Location
+#     Go to    ${current_url}?refresh=changeme
+#     Element Should Be Visible    //div[@class="zoomContainer"]
+
+# TC_WLS_02000
+#     [Documentation]    Products has more promocodes set status hide some promocode and input text
+#     [Tags]    Regression    Medium    Portal-API    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_promocode1}
+#     ${count_match}    Execute Javascript    return $('.promotion-list li').length
+#     ${count_match}    Convert To String    ${count_match}
+#     Should Be Equal    ${count_match}    1
+
+# TC_WLS_02001
+#     [Documentation]    Products has more promocodes set status hide some promocode and input text
+#     [Tags]    Regression    Medium    Portal-API    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_promocode2}
+#     ${count_match}    Execute Javascript    return $('.promotion-list li').length
+#     ${count_match}    Convert To String    ${count_match}
+#     Should Be Equal    ${count_match}    2
+
+# TC_WLS_02002
+#     [Documentation]    Products has more promocodes set status hide some promocode and input text
+#     [Tags]    Regression    Medium    Portal-API    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_promotion_custom_edit}
+#     Element Should Not Be Visible    //*[@id="coupon_content"]/div
+
+TC_MC_04021
+    [Documentation]    FlashSale product on time
+    [Tags]    Regression    Portal-Web    High    mock
+    Go to    ${URL_PORTAL}
+    # Scroll Element Into View    ${h_flashsale_item}
+    Click Element    ${obj_first_flashsale_item}
+    # Get DealZapp Product    robot_stg_store1 - สินค้า FlashSale 1
+    ${current_url}    Get Location
+    Go to    ${current_url}?refresh=changeme
+    Element Should Be Visible    ${leveld_active_fl}
+    Element Should Be Visible    ${leveld_itemname_fl}
+
+TC_MC_12067
+    [Documentation]    Verify TruePoint thumbnail for main Product image on Level D page
+    [Tags]    Regression    High   Portal-Web
+    GoTo Lv D WeMall    product_id_with_truepoint_promotion
+    Verify TruePoint Thumbnail    exist
+
+TC_MC_12069
+    [Documentation]    Verify TruePoint button on Level D page
+    [Tags]    Regression    High    Portal-Web
+    GoTo Lv D WeMall    product_id_with_truepoint_promotion
+    Verify TruePoint Button    exist
+
+TC_MC_12070
+    [Documentation]    Verify product's price on Level D page
+    [Tags]    Regression    High    Portal-Web
+    GoTo Lv D WeMall    product_id_with_truepoint_promotion
+    Verify Additional Line For TruePoint Product    exist
+
+TC_MC_12071
+    [Documentation]    Verify Level D page which product is in TruePoint and Freebie promotion
+    [Tags]    Regression    High    Portal-Web
+    GoTo Lv D WeMall    product_id_with_truepoint_and_freebie_promotion
+    Validate freebie promotion correctly displayed on level D
+    Verify TruePoint Thumbnail    exist
+    Verify TruePoint Button    exist
+    Verify Additional Line for TruePoint Product    exist
+
+TC_MC_12072
+    [Documentation]    Verify Level D page which some product's attribute is not in TruePoint promotion (multiple SKUs testing)
+    [Tags]    Regression    High    Portal-Web
+    GoTo Lv D WeMall    product_id_multiple_sku_and_some_product_with_truepoint_product
+    Verify TruePoint Thumbnail    exist
+    Verify Additional Line for TruePoint Product    notexist
+    Select Level D Product    normal
+    Verify TruePoint Thumbnail    notexist
+    Verify TruePoint Button    notexist
+    Verify Additional Line for TruePoint Product    notexist
+    Select Level D Product    truepoint
+    Verify TruePoint Thumbnail    exist
+    Verify Additional Line for TruePoint Product    exist
+    Verify TruePoint Button    exist
+
+TC_MC_12076
+    [Documentation]    Verify alert message at Level D page when Cart is not empty
+    [Tags]    Regression    High    Portal-Web
+    Delete All Product In Cart
+    GoTo Lv D WeMall    product_id_multiple_sku_and_some_product_with_truepoint_product
+    Select Level D Product    normal
+    Click Add to Cart and go to Cart
+    GoTo Lv D WeMall    product_id_with_truepoint_promotion
+    Click TruePoint Button On Level D Page
+    Verify Level D TruePoint Alert Message    yes
+    Click Continue On TruePoint Alert Message
+    Delete All Product In Cart
+
+TC_MC_12077
+    [Documentation]    Verify no alert message at Level D page when Cart is empty
+    [Tags]    Regression    High    Portal-Web
+    Delete All Product In Cart
+    GoTo Lv D WeMall    product_id_with_truepoint_promotion
+    Click TruePoint Button On Level D Page
+    Verify Level D TruePoint Alert Message    no
+    Delete All Product In Cart
+
+TC_MC_12078
+    [Documentation]    Verify no alert message at Level D page when Cart has TruePoint product and add another normal product
+    [Tags]    Regression    High    Portal-Web
+    Delete All Product In Cart
+    GoTo Lv D WeMall    product_id_with_truepoint_promotion
+    Click TruePoint Button On Level D Page
+    Verify Level D TruePoint Alert Message    no
+    GoTo Lv D WeMall    product_id_multiple_sku_and_some_product_with_truepoint_product
+    Select Level D Product    normal
+    Click Add to Cart and go to Cart
+    Verify Level D TruePoint Alert Message    no
+    Delete All Product In Cart
+
+
+
+# TC_WLS_02033
+#     [Documentation]    FlashSale product next time
+#     [Tags]    Regression    Portal-Web    Medium    mock    Sanity-Test
+#     Go to    ${URL_PORTAL}
+#     Execute Javascript    ${megamenu_flashsale}.click()
+#     Execute Javascript    $('.dz-tab')[1].click()
+#     # Click Element    ${box_next_flashsale}${fl_item}[1]
+#     Get DealZapp Product    robot_stg_store1 - สินค้า FlashSale 2
+#     ${current_url}    Get Location
+#     Go to    ${current_url}?refresh=changeme
+#     Element Should Be Visible    ${leveld_off_fl}
+#     Element Should Be Visible    ${leveld_itemname_fl}
+
+# TC_WLS_02034
+#     [Documentation]    FlashSale product quantity less than 10
+#     Go to    ${URL_PORTAL}
+#     Click Element    //div[@class="tool-box"]//a[@href="https://www.wemall-dev.com/everyday-wow"]
+#     #Execute Javascript    ${megamenu_flashsale}.click()
+#     # Click Element    ${active_flashsale}//a[contains(@class,'item-name') and contains(text(),'robot_stg_store1 - สินค้า flashsale near soldout')]
+#     #Get DealZapp Product    robot_stg_store1 - สินค้า flashsale near soldout
+#     Get DealZapp Product    robot_dealzap1
+#     Element Should Be Visible    //div[@class='item-stock pull-left']
+#     Element Should Contain    //div[@class='item-stock pull-left']    เหลือ
+#     Element Should Contain    //div[@class='item-stock pull-left']    ชิ้นสุดท้าย
+
+# TC_WLS_02035
+#     [Documentation]    Product have promocode but is EveryDay Wow and on time
+#     Go to    ${URL_PORTAL}
+#     Click Element    ${h_flashsale_item}[1]
+#     # Get DealZapp Product    robot_stg_store1 - สินค้า FlashSale 1
+#     ${current_url}    Get Location
+#     Go to    ${current_url}?refresh=changeme
+#     Element Should Not Be Visible    //*[@id="coupon_content"]/div
+
+# TC_WLS_02008
+#     [Documentation]    Products have 1 attribute and 1 inventory
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     sleep    1
+#     Element Should Be Visible    ${attribute_boxdetail_color}
+#     Element Should Contain    ${attribute_textselect_color}    เลือกสี
+#     Element Should Be Visible    ${attribute_color}
+#     ${count_color}    Execute Javascript    return $('.box-option-color').length
+#     ${count_color}    Convert To String    ${count_color}
+#     Should Be Equal    ${count_color}    1
+
+
+# TC_WLS_02009
+#     [Documentation]    Products have 2 attributes and 1 inventory
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_1inv}?refresh=changeme
+#     sleep    1
+#     Element Should Be Visible    ${attribute_boxdetail_color}
+#     Element Should Contain    ${attribute_textselect_color}    เลือกสี
+#     Element Should Be Visible    ${attribute_color}
+#     Element Should Be Visible    ${attribute_textselect_size}
+#     Element Should Contain    ${attribute_textselect_size}    เลือกขนาด
+#     Element Should Be Visible    ${attribute_size}
+
+# TC_WLS_02010
+#     [Documentation]    Products have 1 attribute and more inventories
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_3inv}?refresh=changeme
+#     Sleep    1
+#     Element Should Be Visible    ${attribute_boxdetail_color}
+#     Element Should Contain    ${attribute_textselect_color}    เลือกสี
+#     Element Should Be Visible    ${attribute_color}
+#     ${count_color}    Execute Javascript    return $('.box-option-color').length
+#     ${count_color}    Convert To String    ${count_color}
+#     Should Be Equal    ${count_color}    3
+
+
+# TC_WLS_02011
+#     [Documentation]    Products have 2 attributes and more inventories
+#     [Tags]    Regression    Portal-Web    Low    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_3inv}?refresh=changeme
+#     Sleep    1
+#     Element Should Be Visible    ${attribute_boxdetail_color}
+#     Element Should Contain    ${attribute_textselect_color}    เลือกสี
+#     Element Should Be Visible    ${attribute_color}
+#     ${count_color}    Execute Javascript    return $('.box-option-color').length
+#     ${count_color}    Convert To String    ${count_color}
+#     Should Be Equal    ${count_color}    3
+#     Element Should Be Visible    ${attribute_textselect_size}
+#     Element Should Contain    ${attribute_textselect_size}    เลือกขนาด
+#     Element Should Be Visible    ${attribute_size}
+#     ${count_size}    Execute Javascript    return $('.box-option-size').length
+#     ${count_size}    Convert To String    ${count_size}
+
+# TC_WLS_02020
+#     [Documentation]    Product's type availiability have 1 inventory then out of stock
+#     [Tags]    Regression    Portal-Web    Low    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_instock_soldout}?refresh=changeme
+#     #    Element Should Contain    ${leveld_itemname}    Automate inventory4
+#     Element Should Be Visible    ${out_of_stock}
+#     Element Should Be Visible    ${tag_soldout}
+#     ${button}=    Get Text    ${out_of_stock}
+#     ${Tag}=    Get Text    ${tag_soldout}
+
+# TC_WLS_02021
+#     [Documentation]    Product's type availiability have more inventorires then out of stock for some inventories
+#     [Tags]    Regression    Portal-Web    Medium    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_3inv}?refresh=changeme
+#     Element Should Be Visible    ${attribute_color_disable}
+#     Element Should Be Visible    //div[@class="box-option-color option-selector-item"]
+
+# TC_WLS_02022
+#     [Documentation]    Product's type availiability have more inventorires then out of stock all inventories
+#     [Tags]    Regression    Portal-Web    Medium    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_instock_soldout_inv}?refresh=changeme
+#     #    Element Should Contain    ${leveld_itemname}    Automate inventory3
+#     Element Should Be Visible    ${out_of_stock}
+#     Element Should Be Visible    ${tag_soldout}
+#     ${button}=    Get Text    ${out_of_stock}
+#     ${Tag}=    Get Text    ${tag_soldout}
+
+# TC_WLS_02023
+#     [Documentation]    Product's type preorder ignore stock have 1 inventory
+#     [Tags]    Regression    Medium    Portal-Web    mock
+#     Delete All Product In Cart
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_preorder_ignore_stock}?refresh=changeme
+#     Element Should Contain    //strong[@class="text-product-type"]    สินค้าพรีออเดอร์
+#     Execute Javascript    $('#product_quantity_input').val(100)
+#     Execute Javascript    $('#product_quantity_increase').click()
+#     Element Should Be Visible    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]
+#     Element Should Contain    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]    จำนวนสูงสุดคือ 99
+#     Verify Cart Noti    99
+
+# TC_WLS_02024
+#     [Documentation]    Product's type preorder ignore stock have more inventories
+#     [Tags]    Regression    Medium    Portal-Web    mock
+#     Delete All Product In Cart
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_preorder_ignore_stock_inv}?refresh=changeme
+#     Element Should Contain    //strong[@class="text-product-type"]    สินค้าพรีออเดอร์
+#     Selected Attribute    สี    ดำ
+#     Execute Javascript    $('#product_quantity_input').val(100)
+#     Execute Javascript    $('#product_quantity_increase').click()
+#     Element Should Be Visible    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]
+#     Element Should Contain    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]    จำนวนสูงสุดคือ 99
+#     Verify Cart Noti    99
+#     Selected Attribute    สี    น้ำเงิน
+#     Execute Javascript    $('#product_quantity_input').val(100)
+#     Execute Javascript    $('#product_quantity_increase').click()
+#     Element Should Be Visible    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]
+#     Element Should Contain    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]    จำนวนสูงสุดคือ 99
+#     Verify Cart Noti    99
+
+# TC_WLS_02025
+#     [Documentation]    Product's type preorder use stock have 1 inventory then out of stock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_preorder_use_stock_soldout}?refresh=changeme
+#     Element Should Contain    //strong[@class="text-product-type"]    สินค้าพรีออเดอร์
+#     Element Should Be Visible    ${out_of_stock}
+#     Element Should Be Visible    ${tag_soldout}
+#     ${button}=    Get Text    ${out_of_stock}
+#     ${Tag}=    Get Text    ${tag_soldout}
+#     Should Be Equal    ${button}    ดูสินค้าอื่นของร้านนี้
+#     Should Be Equal    ${Tag}    SOLD OUT
+
+# TC_WLS_02026
+#     [Documentation]    Product's type preorder use stock have more inventories then out of stock for some inventories
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_preorder_use_stock_inv}?refresh=changeme
+#     Element Should Contain    //strong[@class="text-product-type"]    สินค้าพรีออเดอร์
+#     Element Should Be Visible    ${attribute_color_disable}
+#     Element Should Be Visible    //div[@class="box-option-color option-selector-item"]
+
+# TC_WLS_02027
+#     [Documentation]    Product's type preorder use stock have more inventories then out of stock for all inventories
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_preorder_use_stock_inv_soldout}
+#     #    Element Should Contain    ${leveld_itemname}    Automate preorder 10
+#     Element Should Contain    //strong[@class="text-product-type"]    สินค้าพรีออเดอร์
+#     Element Should Be Visible    ${out_of_stock}
+#     Element Should Be Visible    ${tag_soldout}
+#     ${button}=    Get Text    ${out_of_stock}
+#     ${Tag}=    Get Text    ${tag_soldout}
+#     Should Be Equal    ${button}    ดูสินค้าอื่นของร้านนี้
+#     Should Be Equal    ${Tag}    SOLD OUT
+
+# TC_WLS_02028
+#     [Documentation]    Product's type preorder use stock have 1 inventory then out of stock but allow when out of stock
+#     [Tags]    Regression    Low    Portal-Web    mock
+#     Delete All Product In Cart
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_preorder_use_stock_allow}?refresh=changeme
+#     Element Should Contain    //strong[@class="text-product-type"]    สินค้าพรีออเดอร์
+#     Selected Attribute    สี    ครีม
+#     Execute Javascript    $('#product_quantity_input').val(100)
+#     Execute Javascript    $('#product_quantity_increase').click()
+#     Element Should Be Visible    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]
+#     Element Should Contain    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]    จำนวนสูงสุดคือ 99
+#     Verify Cart Noti    99
+
+# TC_WLS_02029
+#     [Documentation]    Product's type preorder use stock have more inventories then out of stock for some inventories but allow when out of stock
+#     Delete All Product In Cart
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_preorder_use_stock_inv_allow}?refresh=changeme
+#     Element Should Contain    //strong[@class="text-product-type"]    สินค้าพรีออเดอร์
+#     Selected Attribute    สี    ขาว
+#     Execute Javascript    $('#product_quantity_input').val(100)
+#     Execute Javascript    $('#product_quantity_increase').click()
+#     Element Should Be Visible    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]
+#     Element Should Contain    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]    จำนวนสูงสุดคือ 99
+#     Verify Cart Noti    99
+
+# TC_WLS_02030
+#     [Documentation]    Product's type preorder use stock have more inventories then out of stock for all inventories but allow when out of stock
+#     [Tags]    Regression    Medium    Portal-Web    mock
+#     Delete All Product In Cart
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_preorder_use_stock_allow_soldout}?refresh=changeme
+#     Element Should Contain    //strong[@class="text-product-type"]    สินค้าพรีออเดอร์
+#     Selected Attribute    สี    ขาว
+#     Execute Javascript    $('#product_quantity_input').val(100)
+#     Execute Javascript    $('#product_quantity_increase').click()
+#     Element Should Be Visible    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]
+#     Element Should Contain    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]    จำนวนสูงสุดคือ 99
+#     Verify Cart Noti    99
+#     Selected Attribute    สี    ดำ
+#     Execute Javascript    $('#product_quantity_input').val(100)
+#     Execute Javascript    $('#product_quantity_increase').click()
+#     Element Should Be Visible    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]
+#     Element Should Contain    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]    จำนวนสูงสุดคือ 99
+#     Verify Cart Noti    99
+# TC_WLS_02239
+#     [Documentation]    Product is Dealzapp and limit equal 0 : by ignore product in cart
+#     [Tags]    Regression    High    Wemall-Web    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_everyday}
+#     Execute Javascript    $('#product_quantity_input').val(99)
+#     Execute Javascript    $('#btn-add-cart').click()
+#     Should Not Match    //*[@id="main-content"]/div[2]/div[2]/div[4]/div[2]/div[2]    *จำกัดการซื้อสูงสุด x ชิ้นต่อครั้ง
+
+# TC_WLS_02240
+#     [Documentation]    Product is Dealzapp and limit not equal 0 : by ignore product in cart
+#     [Tags]    Regression    High    Wemall-Web    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_everyday_limitbuy}
+#     Execute Javascript    $('.product-cname').eq(0).click()
+#     Execute Javascript    $('.inner-option').eq(0).click()
+#     Execute Javascript    $('#product_quantity_input').val(4)
+#     Execute Javascript    $('#btn-add-cart').click()
+#     ${count_match}    Execute Javascript    return $('.lvd-alert-box').eq(2).text()
+#     Should Be Equal    ${count_match}    *จำกัดการซื้อสูงสุด 3 ชิ้นต่อครั้ง
+
+# TC_WLS_02244
+#     [Documentation]    Product is Dealzapp and limit not equal 0 : by interested product in cart
+#     [Tags]    Regression    High    Wemall-Web    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_everyday_limitbuy}
+#     Execute Javascript    $('.product-cname').eq(0).click()
+#     Execute Javascript    $('.inner-option').eq(0).click()
+#     Execute Javascript    $('#product_quantity_input').val(1)
+#     Execute Javascript    $('#btn-add-cart').click()
+#     Execute Javascript    $('a.cursor-pointer').click()
+#     Sleep    3s
+#     Execute Javascript    $('.product-cname').eq(1).click()
+#     Execute Javascript    $('.inner-option').eq(1).click()
+#     Execute Javascript    $('#product_quantity_input').val(3)
+#     Execute Javascript    $('#btn-add-cart').click()
+#     ${count_match}    Execute Javascript    return $('.lvd-alert-box').eq(2).text()
+#     Should Be Equal    ${count_match}    *จำกัดการซื้อสูงสุด 3 ชิ้นต่อครั้ง
+
+# TC_WLS_02286
+#     [Documentation]    Tab Refund detail
+#     [Tags]    Regression    High    Wemall-Web    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_everyday_limitbuy}
+#     Execute Javascript    $('.at-view-tab4').click()
+#     Element Should Not Be Visible    //*[@id="main-content"]/div[3]/div/div/div/div[2]/div
+
+# TC_WLS_02287
+#     [Documentation]    Tab ExchangeProduct detail
+#     [Tags]    Regression    High    Wemall-Web    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_everyday_limitbuy}
+#     Execute Javascript    $('.at-view-tab5').click()
+#     Element Should Not Be Visible    //*[@id="main-content"]/div[3]/div/div/div/div[2]
+
+# TC_WLS_03130
+#     [Documentation]    Shop have status beware product show on levelD
+#     [Tags]    Regression    High    Queue    mock
+#     WMS Switch Project    wm
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+#     Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+#     #Element Should Be Visible    //div[@class='lvd-shop-info']
+#     Element Should Be Visible    //div[@class='product-detail']
+#     #    ${portal_url}    Get Location
+#     Go to    ${URL_WMS}
+#     Change Shop Product Status    shop    ${seller_s_001_id}    beware
+#     #    ${wms_location}    Get Location
+#     #    Select Window    url=${portal_url}
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Element Should Be Visible    //div[@class='lvd-shop-info']
+#     # Element Should Be Visible    //div[@class='product-detail']
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Element Should Be Visible    //div[@class='product-detail']
+#     Go to    ${URL_WMS}
+#     Change Shop Product Status    shop    ${seller_s_001_id}    normal
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Element Should Be Visible    //div[@class='product-detail']
+
+# TC_WLS_03145
+#     [Documentation]    Shop have status warning product not show on levelD
+#     [Tags]    Regression    High    Queue    mock
+#     WMS Switch Project    wm
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Sleep    1s
+#     ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+#     Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+#     #Element Should Be Visible    //div[@class='lvd-shop-info ']
+#     Element Should Be Visible    //div[@class='product-detail']
+#     #    ${portal_url}    Get Location
+#     Go to    ${URL_WMS}
+#     Change Shop Product Status    shop    ${seller_s_001_id}    warning
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Element Should Be Visible    //div[@class='box-no-result']
+#     Element Should Contain    //p[@class='no-result-title']    ไม่พบหน้านี้ในระบบ
+#     Go to    ${URL_WMS}
+#     Change Shop Product Status    shop    ${seller_s_001_id}    normal
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Sleep    1s
+#     # Element Should Be Visible    //div[@class='lvd-shop-info ']
+#     # Element Should Be Visible    //div[@class='product-detail']
+#     Element Should Be Visible    //div[@class='product-detail']
+
+# TC_WLS_03161
+#     [Documentation]    Shop have status blocked product not show on levelD
+#     [Tags]    Regression    High    Queue    mock
+#     WMS Switch Project    wm
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Sleep    1s
+#     ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+#     Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+#     #Element Should Be Visible    //div[@class='lvd-shop-info ']
+#     Element Should Be Visible    //div[@class='product-detail']
+#     # ${portal_url}    Get Location
+#     Go to    ${URL_WMS}
+#     Change Shop Product Status    shop    ${seller_s_001_id}    blocked
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # ${wms_location}    Get Location
+#     # Select Window    url=${portal_url}
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Element Should Be Visible    //div[@class='box-no-result']
+#     # Element Should Contain    //p[@class='no-result-title']    ไม่พบหน้านี้ในระบบ
+#     Element Should Be Visible    //div[@class='box-no-result']
+#     Element Should Contain    //p[@class='no-result-title']    ไม่พบหน้านี้ในระบบ
+#     Go to    ${URL_WMS}
+#     Change Shop Product Status    shop    ${seller_s_001_id}    normal
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Sleep    1s
+#     # Element Should Be Visible    //div[@class='lvd-shop-info ']
+#     # Element Should Be Visible    //div[@class='product-detail']
+#     # Element Should Be Visible    //div[@class='lvd-shop-info ']
+#     Element Should Be Visible    //div[@class='product-detail']
+
+# TC_WLS_03177
+#     [Documentation]    Product have status ปิด by admin product not show on levelD
+#     [Tags]    Regression    High    Queue    mock
+#     WMS Switch Project    wm
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Sleep    1s
+#     ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+#     Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+#     Element Should Be Visible    //div[@class='product-detail']
+#     # ${portal_url}    Get Location
+#     Go to    ${URL_WMS}
+#     Change Shop Product Status    product    ${robot_stg_store1_1attr_1inv}    ปิด
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # ${wms_location}    Get Location
+#     # Select Window    url=${portal_url}
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Element Should Be Visible    //div[@class='box-no-result']
+#     # Element Should Contain    //p[@class='no-result-title']    ไม่พบหน้านี้ในระบบ
+#     Element Should Be Visible    //div[@class='box-no-result']
+#     Element Should Contain    //p[@class='no-result-title']    ไม่พบหน้านี้ในระบบ
+#     Go to    ${URL_WMS}
+#     Change Shop Product Status    product    ${robot_stg_store1_1attr_1inv}    แสดง
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Sleep    3
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Sleep    1s
+#     # Element Should Be Visible    //div[@class='product-detail']
+#     Element Should Be Visible    //div[@class='product-detail']
+
+# TC_WLS_03193
+#     [Documentation]    Product have status ไม่ผ่านการตรวจสอบ product not show on levelD
+#     [Tags]    Regression    High    Queue    mock
+#     WMS Switch Project    wm
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Sleep    1s
+#     ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+#     Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+#     Element Should Be Visible    //div[@class='product-detail']
+#     # ${portal_url}    Get Location
+#     Go to    ${URL_WMS}
+#     Change Shop Product Status    product    ${robot_stg_store1_1attr_1inv}    ไม่ผ่านการตรวจสอบ
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # ${wms_location}    Get Location
+#     # Select Window    url=${portal_url}
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Element Should Be Visible    //div[@class='box-no-result']
+#     # Element Should Contain    //p[@class='no-result-title']    ไม่พบหน้านี้ในระบบ
+#     Element Should Be Visible    //div[@class='box-no-result']
+#     Element Should Contain    //p[@class='no-result-title']    ไม่พบหน้านี้ในระบบ
+#     Go to    ${URL_WMS}
+#     Change Shop Product Status    product    ${robot_stg_store1_1attr_1inv}    ผ่านการตรวจสอบ
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Sleep    3
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Sleep    1s
+#     # Element Should Be Visible    //div[@class='product-detail']
+#     Element Should Be Visible    //div[@class='product-detail']
+
+# TC_WLS_03209
+#     [Documentation]    Product have status close shop
+#     [Tags]    Regression    High    Portal-Web    mock
+#     Clear Active Login
+#     Go To Login    ${blockstore_email2}    ${blockstore_password2}
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Sleep    1s
+#     ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+#     Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+#     Element Should Be Visible    //div[@class='product-detail']
+#     Go To    ${URL_STORE}/${seller_name001}/admin
+#     Sleep    3s
+#     ${check} =    Get Value    //input[@id="openshop_status_old"]
+#     Run Keyword If    "${check}" == "true"    Execute Javascript    $('#btn_openshop_sidebar').click()
+#     Sleep    1s
+#     Execute Javascript    $('.modal-footer .btn-primary').click();
+#     Sleep    3s
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Element Should Be Visible    //div[@class='shop-close']
+#     # Element Should Contain    //div[@class='shop-close']    ร้านค้าอยู่ระหว่างการปรับปรุงบริการ
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     #Element Should Be Visible    //div[@class='shop-close']
+#     #Element Should Contain    //div[@class='shop-close']    ร้านค้าอยู่ระหว่างการปรับปรุงบริการ
+#     Go To    ${URL_STORE}/${seller_name001}/admin
+#     Sleep    3s
+#     ${check} =    Get Value    //input[@id="openshop_status_old"]
+#     Run Keyword If    "${check}" == "false"    Execute Javascript    $('#btn_openshop_sidebar').click()
+#     Sleep    1s
+#     Execute Javascript    $('.modal-footer .btn-primary').click();
+#     Sleep    3s
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Sleep    0.5s
+#     # Element Should Be Visible    //div[@class='lvd-shop-info ']
+#     # Element Should Be Visible    //div[@class='product-detail']
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Element Should Be Visible    //div[@class='product-detail']
+#     Clear Active Login
+
+# TC_WLS_03213
+#     [Documentation]    Hided product
+#     [Tags]    Regression    High    Queue    mock
+#     Clear Active Login
+#     Go To Login    ${seller_user_001}    ${seller_pwd_001}
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Sleep    1s
+#     ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+#     Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+#     Element Should Be Visible    //div[@class='product-detail']
+#     Go To    ${URL_STORE}/${seller_name001}/admin/product
+#     Sleep    3s
+#     Input Text    //*[@id="search"]    ${robot_stg_store1_1attr_1inv}
+#     Press Key    //*[@id="search"]    \\13
+#     Sleep    1
+#     Execute Javascript    $('.icon-q-editpd').click()
+#     Execute Javascript    $('.status-icon.icon-eye-show-green.tooltip-grey').click()
+#     Execute Javascript    $('.quick-save').click()
+#     Sleep    3
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Element Should Be Visible    //div[@class='box-no-result']
+#     # Element Should Contain    //p[@class='no-result-title']    ไม่พบหน้านี้ในระบบ
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     Element Should Be Visible    //div[@class='box-no-result']
+#     Element Should Contain    //p[@class='no-result-title']    ไม่พบหน้านี้ในระบบ
+#     Go To    ${URL_STORE}/${seller_name001}/admin/product
+#     Sleep    3s
+#     # Input Text    //input[@id='search']    ${robot_stg_store1_1attr_1inv}
+#     # Press Key    //input[@id='search']    \\13
+#     # Sleep    1
+#     # Execute Javascript    $('.icon-q-editpd').click()
+#     # Execute Javascript    $('.status-icon.icon-eye-hide.tooltip-grey').click()
+#     Execute Javascript    $('.checkbox-select').click()
+#     Execute Javascript    $('#btn_visible').click()
+#     Sleep    0.5s
+#     Execute Javascript    $('.btn.btn-primary').click()
+#     # Execute Javascript    $('.quick-save').click()
+#     Sleep    3
+#     # Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     # Sleep    0.5s
+#     # Element Should Be Visible    //div[@class='lvd-shop-info']
+#     # Element Should Be Visible    //div[@class='product-detail']
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}?refresh=changeme
+#     #Element Should Be Visible    //div[@class='product-detail']
+#     Clear Active Login
+
+# TC_WLS_03214
+#     [Documentation]    Hided product some inventory
+#     [Tags]    Regression    Medium    Portal-API    mock
+#     Clear Active Login
+#     Go To Login    ${seller_user_001}    ${seller_pwd_001}
+#     Go to    ${URL_LEVEL_D}/${robot_blockstore2_1attr_3inv}?refresh=changeme
+#     ${product_status}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_itemname}
+#     Run Keyword If    '${product_status}' == 'False'    Pass Execution    Message : Exit Testcase because product is not available.
+#     Element Should Be Visible    //div[@option-title='ขาว']
+#     Go To    ${URL_STORE}/${seller_name001}/admin/product
+#     Element Should Be Visible    //input[@id='search']
+#     Input Text    //input[@id='search']    ${robot_blockstore2_1attr_3inv}
+#     Press Key    //input[@id='search']    \\13
+#     Element Should Be Visible    ${pictuer_product_list}
+#     Execute Javascript    $('.icon-q-editpd').click()
+#     Execute Javascript    $('.status-icon.icon-eye-show-green.tooltip-grey').eq(0).click()
+#     Execute Javascript    $('.quick-save').click()
+#     Element Should Be Visible    ${pictuer_product_list}
+#     Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_blockstore2_1attr_3inv}?refresh=changeme
+#     Element Should Not Be Visible    //div[@option-title='ขาว']
+#     #Go to    ${URL_LEVEL_D}/${robot_blockstore2_1attr_3inv}?refresh=changeme
+#     #: FOR    ${index}    IN RANGE    0    10
+#     #\    Sleep    5s
+#     #\    ${status}    Run Keyword And Return Status    Element Should Not Be Visible    //div[@option-title='ดำ']
+#     #\    Run Keyword If    '${status}' == 'True'    Element Should Not Be Visible    //div[@option-title='ดำ']
+#     #\    Run Keyword If    '${status}' == 'True'    Exit For Loop
+#     #\    Run Keyword If    '${status}' == 'False'    Go to    ${URL_LEVEL_D}/${robot_blockstore2_1attr_3inv}?refresh=changeme
+#     #Element Should Not Be Visible    //div[@option-title='ดำ']
+#     Go To    ${URL_STORE}/${seller_name001}/admin/product
+#     Element Should Be Visible    //input[@id='search']
+#     Input Text    //input[@id='search']    ${robot_blockstore2_1attr_3inv}
+#     Press Key    //input[@id='search']    \\13
+#     Element Should Be Visible    ${pictuer_product_list}
+#     Execute Javascript    $('.icon-q-editpd').click()
+#     Execute Javascript    $('.status-icon.icon-eye-hide.tooltip-grey').eq(0).click()
+#     Execute Javascript    $('.quick-save').click()
+#     Execute Javascript    $('.checkbox-select').click()
+#     Execute Javascript    $('#btn_visible').click()
+#     Element Should Be Visible    //div[@class="bootbox modal fade in"]
+#     Execute Javascript    $('.btn.btn-primary').click()
+#     Repeat Keyword    1 times    Go to    ${URL_LEVEL_D}/${robot_blockstore2_1attr_3inv}?refresh=changeme
+#     Element Should Be Visible    //div[@option-title='ขาว']
+#     #Go to    ${URL_LEVEL_D}/${robot_blockstore2_1attr_3inv}?refresh=changeme
+#     #: FOR    ${index}    IN RANGE    0    10
+#     #\    Sleep    5s
+#     #\    ${status}    Run Keyword And Return Status    Element Should Not Be Visible    //div[@option-title='ดำ']
+#     #\    Run Keyword If    '${status}' == 'False'    Element Should Be Visible    //div[@option-title='ดำ']
+#     #\    Run Keyword If    '${status}' == 'False'    Exit For Loop
+#     #\    Run Keyword If    '${status}' == 'True'    Go to    ${URL_LEVEL_D}/${robot_blockstore2_1attr_3inv}?refresh=changeme
+#     #Element Should Be Visible    //div[@option-title='ดำ']
+#     Clear Active Login
+
+# TC_WLS_03243
+#     [Documentation]    Products has more promocodes set status hide some promocode and input text
+#     [Tags]    Regression    Medium    Portal-API    mock
+#     WMS Switch Project    wm
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_promocode2}
+#     Element Should Be Visible    //div[@ng-controller="couponController"]//li[1]
+#     Go to    ${URL_WMS}
+#     Hide Promocode    258550    Test hide    ซ่อน
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_promocode2}?refresh=changeme
+#     Element Should Contain    //div[@ng-controller="couponController"]//li[1]    Test hide
+#     Hide Promocode    258550    Test hide    แสดง
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_promocode2}
+#     Element Should Be Visible    //div[@ng-controller="couponController"]//li[1]
+
+# TC_WLS_03244
+#     [Documentation]    Products has more promocodes set status hide some promocode no text
+#     [Tags]    Regression    Medium    Portal-API    mock
+#     WMS Switch Project    wm
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_promocode2}
+#     Element Should Be Visible    //div[@ng-controller="couponController"]//li[2]
+#     Go to    ${URL_WMS}
+#     Hide Promocode No Text    258551    ซ่อน
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_promocode2}?refresh=changeme
+#     Element Should Not Be Visible    //div[@ng-controller="couponController"]//li[2]
+#     Hide Promocode No Text    258551    แสดง
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_promocode2}?refresh=changeme
+#     Element Should Be Visible    //div[@ng-controller="couponController"]//li[2]
+
+# TC_WLS_03245
+#     [Documentation]    Promocode expried
+#     [Tags]    Regression    Medium    Portal-Web    mock
+#     WMS Switch Project    wm
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_promocode2}
+#     Element Should Not Contain    //div[@ng-controller="couponController"]//li[@ng-repeat="item in coupons"]    ใส่โค้ด EXPRIED
+#     Go to    ${URL_WMS}
+#     Expired Promocode    258538
+
+# TC_WLS_03295
+#     [Documentation]    Product Sold out
+#     [Tags]    Regression    High    Wemall-Web    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_sold_out}
+#     Element Should Be Visible    //*[@id="main-content"]/div[2]/div[1]/div/div[1]/span
+#     Element Should Contain    //*[@id="main-content"]/div[2]/div[2]/div[3]/button    ดูสินค้าอื่นของร้านนี้
+
+# TC_WLS_04760
+#     [Documentation]    On Desktop - verify CCW chanel product "อาหารเสริม" on Level D with open CCW chanel
+#     [Tags]    Regression    Medium    Portal-API    mock
+#     Go to WMS
+#     Wait Until Element Is Visible    navbar
+#     Go To    ${URL_WMS}/categorymanagement/edit/199
+#     ###    Open CCW chanel
+#     Wait Until Page Contains    เปิดใช้งานช่องทางบัตรเครดิต
+#     Select Radio Button    allow_ccw    true
+#     Click Button    Submit
+#     Wait Until Page Contains    บันทึกข้อมูลสำเร็จ
+#     ###    Select product in category "อาหารเสริม"
+#     Go to    ${URL_PORTAL}/อาหารเสริม-199
+#     Wait Until Element Is Visible    //ul[@class="items-list-box"]
+#     Click Element    //ul[@class="items-list-box"]//li[1]//img[@class="item-img"]
+#     ${location}    Get Location
+#     Go to    ${location}?refresh=changeme
+#     ###    Verify CCW chanel on product detail
+#     Wait Until Element Is Visible    //div[@class[contains(.,'product-shipment')]]
+#     Page Should Contain Element    //i[@class="icon-payment-credit"]
+#     ###    Verify CCW chanel on Payment Information
+#     Click Element    payment-tab
+#     Wait Until Element Is Visible    //div[@*="paymentChannel"]
+#     Page Should Contain Element    //div[@*="payWithCreditCard"]
+
+# TC_WLS_04761
+#     [Documentation]    On Desktop - verify CCW chanel on "Product detail" session with close CCW chanel
+#     Go to WMS
+#     Wait Until Element Is Visible    navbar
+#     Go To    ${URL_WMS}/categorymanagement/edit/199
+#     ###    Close CCW chanel
+#     Wait Until Page Contains    เปิดใช้งานช่องทางบัตรเครดิต
+#     Select Radio Button    allow_ccw    false
+#     Click Button    Submit
+#     Wait Until Page Contains    บันทึกข้อมูลสำเร็จ
+#     ###    Select product in category "อาหารเสริม"
+#     Go to    ${URL_PORTAL}/อาหารเสริม-199
+#     Wait Until Element Is Visible    //ul[@class="items-list-box"]
+#     Click Element    //ul[@class="items-list-box"]//li[1]//img[@class="item-img"]
+#     ${location}    Get Location
+#     Go to    ${location}?refresh=changeme
+#     ###    Verify CCW chanel on product detail
+#     Wait Until Element Is Visible    //div[@class[contains(.,'product-shipment')]]
+#     Page Should Not Contain Element    //i[@class="icon-payment-credit"]
+
+# TC_WLS_xxx1
+#     [Documentation]    LevelD hearder : Click หน้าหลัก menu follow by store
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_1inv}?refresh=changeme
+#     Click Element    //*[@id="wrapper"]/div[2]/div/ul/li[1]/a
+#     ${url}=   Get Location
+#     Should Be Equal    ${url}    ${URL_PORTAL}/${seller_name001}
+
+# TC_WLS_xxx2
+#     [Documentation]    LevelD hearder: Click สินค้า menu follow by store
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_1inv}?refresh=changeme
+#     Click Element    //*[@id="wrapper"]/div[2]/div/ul/li[2]/a
+#     ${url}=   Get Location
+#     Should Be Equal    ${url}    ${URL_PORTAL}/${seller_name001}/products
+
+# TC_WLS_xxx3
+#     [Documentation]    LevelD hearder : Click หมวดหมู่สินค้า menu follow by store >> select main category
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_1inv}?refresh=changeme
+#     Mouse Over    //*[@id="wrapper"]/div[2]/div/ul/li[3]/a
+#     ${cat_lvd_name}=    Get Text    //*[@id="wrapper"]/div[2]/div/ul/li[3]/ul/li[2]/a
+#     CLick Element    //*[@id="wrapper"]/div[2]/div/ul/li[3]/ul/li[2]/a
+#     ${cate_name}=     Execute Javascript    return $('.caption h2').text()
+#     Should Be Equal    ${cat_lvd_name}    ${cate_name}
+#     Element Should Be Visible    //*[@id="product-wrapper"]/ul/li[1]/div/div[2]/div[1]
+
+# TC_WLS_xxx4
+#     [Documentation]    LevelD hearder: Click หมวดหมู่สินค้า menu follow by store >> select sub category
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_1inv}?refresh=changeme
+#     Mouse Over    //*[@id="wrapper"]/div[2]/div/ul/li[3]/a
+#     Mouse Over    //*[@id="wrapper"]/div[2]/div/ul/li[3]/ul/li[17]/a
+#     CLick Element    //*[@id="wrapper"]/div[2]/div/ul/li[3]/ul/li[17]/ul/li/a
+#     Element Should Be Visible    //*[@id="product-wrapper"]/ul/li[1]/div/div[1]
+
+# TC_WLS_xxx5
+#     [Documentation]    LevelD hearder : Click หมวดหมู่สินค้า menu follow by store >> select main category
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_1inv}?refresh=changeme
+#     Mouse Over    //*[@id="wrapper"]/div[2]/div/ul/li[3]/a
+#     ${cat_lvd_name}=    Get Text    //*[@id="wrapper"]/div[2]/div/ul/li[3]/ul/li[1]/a
+#     CLick Element    //*[@id="wrapper"]/div[2]/div/ul/li[3]/ul/li[1]/a
+#     ${cate_name}=     Execute Javascript    return $('.caption h2').text()
+#     Element Should Be Visible    //*[@id="product-wrapper"]/ul/li[1]/div/div[2]/div[1]
+
+# TC_WLS_xxx6
+#     [Documentation]    LevelD hearder: Click โปรโมชั่นร้านค้า menu follow by store
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_1inv}?refresh=changeme
+#     CLick Element    //*[@id="wrapper"]/div[2]/div/ul/li[4]/a
+#     Element Should Be Visible    //*[@id="row-body"]/div/div/div/div[3]/div/div[2]
+
+# TC_WLS_xxx7
+#     [Documentation]    LevelD hearder: Click โปรโมชั่นร้านค้า menu follow by store incase no promotion
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_1inv}?refresh=changeme
+#     CLick Element    //*[@id="wrapper"]/div[2]/div/ul/li[4]/a
+#     Element Should Not Be Visible    //*[@id="row-body"]/div/div/div/div[3]/div/div[2]/div[4]
+
+# TC_WLS_xxx8
+#     [Documentation]    LevelD hearder Click ติดต่อร้านค้า menu follow by store
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_1inv}?refresh=changeme
+#     CLick Element    //*[@id="wrapper"]/div[2]/div/ul/li[5]/a
+#     ${store_email}=    Get Text    //*[@id="row-body"]/div/div/div/div[3]/div/div/div[5]/div[2]
+#     Element Should Not Be Visible    //*[@id="product-wrapper"]/ul/li[1]/div/div[2]/div[1]
+#     Should Be Equal    ${store_email}    ${seller_user_001}

@@ -1,0 +1,31 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Teardown     Close All Browsers
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+
+
+*** Test Cases ***
+TC_MC_11248
+    [Documentation]    Shop information [We Store] : don't have feedback
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme
+    Element Should Be Visible    ${shop_info}
+    Element Should Be Visible    //a[@id="store_url"]
+    Element Should Be Visible    ${leveld_shop_no_feedback}
+    Element Should Be Visible    ${shop_start}[1]
+    Element Should Be Visible    ${shop_start}[2]
+    Element Should Be Visible    ${shop_start}[3]
+    ${no_feedback}    Get Text    ${leveld_shop_no_feedback}
+    Should Be Equal    ${no_feedback}    รอคะแนนความพึงพอใจจากผู้ซื้อ
+
+TC_MC_11249
+    [Documentation]    Shop information [We Store] : have feedback
+    Go to    ${URL_LEVEL_D}/${robot_store_other_feedback}?refresh=changeme
+    Element Should Be Visible    ${shop_info}
+    Element Should Be Visible    //a[@id="store_url"]
+    Element Should Be Visible    ${leveld_shop_feedback}
+    Element Should Be Visible    ${shop_start}[1]
+    Element Should Be Visible    ${shop_start}[2]
+    Element Should Be Visible    ${shop_start}[3]

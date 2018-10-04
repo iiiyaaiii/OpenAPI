@@ -1,0 +1,69 @@
+*** Settings ***
+Suite Setup     Run Keywords    WMS Login    AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        WMS-Web    mock    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_BlockWordListing.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+
+*** Test Cases ***
+TC_MC_00613
+    [Documentation]    Add block word input text
+    [Tags]    Regression    High
+    Go to    ${URL_WMS}/blockword
+    Click Element    ${add_blockword}
+    Execute Javascript    ${blockword}
+    Select From List By Label    ${block_type}    คำหยาบ
+    Execute Javascript    ${click_cate}
+    Execute Javascript    ${select_cate}
+    Execute Javascript    ${click_cate}
+    Select From List By Label    ${status_type}    แสดงบนหน้าเว็บและรอการตรวจสอบ
+    Select From List By Label    ${block_level}    แสดงคำที่บล็อคบนหน้าเว็บ
+    Execute Javascript    ${comment}
+    Click Button    //button[@type="submit"]
+#delete_blockword
+    Go to    ${URL_WMS}/blockword
+    Wait Until Element Is Visible    //tbody//tr[1]//td[3]
+    Execute Javascript    $("div[class='form-group'] input[type='text']").val("QaTestBlockWord")
+    Wait Until Element Is Visible    //tbody//tr[1]//td[3]
+    Press Key    //tbody//tr[1]//td[3]//input    \\13
+    Execute Javascript    ${search_blockword}
+    Wait Until Element Contains    //tbody//tr[2]//td[3]    qatestblockword
+    Execute Javascript    ${delete_blockword}
+    Execute Javascript    ${comfirm_delete}
+    Wait Until Element Is Visible    //tbody//tr[1]//td[3]
+    Execute Javascript    $("div[class='form-group'] input[type='text']").val("QaTestBlockWord")
+    Wait Until Element Is Visible    //tbody//tr[1]//td[3]
+    Press Key    //tbody//tr[1]//td[3]//input    \\13
+    Execute Javascript    ${search_blockword}
+    Element Should Contain    //tbody//tr[2]    ไม่พบข้อมูล
+
+
+TC_MC_00615
+    [Documentation]    Add block word input text click ล้าง
+    [Tags]    Medium
+    Go to    ${URL_WMS}/blockword
+    Click Element    ${add_blockword}
+    Execute Javascript    ${blockword}
+    Select From List By Label    ${block_type}    คำหยาบ
+    Execute Javascript    ${click_cate}
+    Execute Javascript    ${select_cate}
+    Execute Javascript    ${click_cate}
+    Select From List By Label    ${status_type}    Non-Online
+    Select From List By Label    ${block_level}    แสดงทั้งหมด
+    Execute Javascript    ${comment}
+    Execute Javascript    ${reset}
+
+
+
+
+
+
+
+

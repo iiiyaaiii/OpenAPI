@@ -1,0 +1,361 @@
+*** Setting ***
+Suite Setup       Run Keywords    WMS Login
+...               AND    WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_WMS}/seller_product_property
+Force Tags        WMS-Web    mock
+Library           SeleniumLibrary
+Library           String
+Library           Collections
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Product.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/WMS_PropertyManagement.txt
+Resource          ../../../../Keyword/Common/Product.txt
+
+*** Variable ***
+${text_header}    รายการ คุณสมบัติสินค้า
+
+*** Test Case ***
+TC_MC_00610
+    [Documentation]    Verify after click add product property
+    [Tags]    Regression    Medium
+    Execute Javascript    $('.text-right a').eq(1).click()
+    ${title}    Execute Javascript    return ($('.widget-title').text()=="ประเภทของพร็อพเพอร์ตี้ที่ต้องการเพิ่ม")
+    Should be true    ${title}
+    ${dropdown}    Execute Javascript    return ($.trim($('.modal-body strong').eq(0).text())=="ตัวเลือก")
+    Should be true    ${dropdown}
+    ${fill_form}    Execute Javascript    return ($.trim($('.modal-body strong').eq(1).text())=="กรอกข้อมูล")
+    Should be true    ${fill_form}
+
+TC_MC_00614
+    [Documentation]    Add Property type dropdown : Click "Save & Add new Property" with blank value
+    [Tags]    Regression    Medium
+    Execute Javascript    $('.text-right a').eq(1).click()
+    Execute Javascript    window.location.assign($('.modal-footer a').eq(0).attr('href'));
+    sleep    1s
+    Execute Javascript    $('.add_property_new').click()
+    Execute Javascript    $('#btn_create_new_property').click()
+    ${required}    Execute Javascript    return ($('#property_value_title_th_1-error').text()=="This field is required.")
+    Should be true    ${required}
+
+TC_MC_00618
+    [Documentation]    Add Property type dropdown : click "Cancel" button
+    [Tags]    Medium
+    Execute Javascript    $('.text-right a').eq(1).click()
+    Execute Javascript    window.location.assign($('.modal-footer a').eq(0).attr('href'));
+    sleep    1s
+    Execute Javascript    $('#btn_cancel_frm_create_property').click()
+    sleep    1s
+    ${listing}    Execute Javascript    return ($.trim($('.table-header').text())=="รายการ พร็อพเพอร์ตี้สินค้า")
+    Should be true    ${listing}
+
+TC_MC_00620
+    [Documentation]    Add Property type dropdown : Click "Add value property" button
+    [Tags]    Regression    High
+    Execute Javascript    $('.text-right a').eq(1).click()
+    Execute Javascript    window.location.assign($('.modal-footer a').eq(0).attr('href'));
+    sleep    1s
+    Execute Javascript    $('.add_property_new').click()
+    ${can_add_value}    Execute Javascript    return ($('#property_value_th input').length == 3)
+    Should be true    ${can_add_value}
+
+TC_MC_00624
+    [Documentation]    Add Property type dropdown : click "Delete" button
+    [Tags]    Regression    Medium
+    Execute Javascript    $('.text-right a').eq(1).click()
+    Execute Javascript    window.location.assign($('.modal-footer a').eq(0).attr('href'));
+    sleep    1s
+    Execute Javascript    $('#table_report_property .add_property_new').click()
+    Execute Javascript    $('.box_th_2 a').click()
+    ${can_add_value_delete}    Execute Javascript    return ($(".box_th_2").length == 0)
+    Should be true    ${can_add_value_delete}
+
+TC_MC_00626
+    [Documentation]    Add Property type dropdown : After click "Save & Add new Property" with valid value
+    [Tags]    Regression    Medium
+    Execute Javascript    $('.text-right a').eq(1).click()
+    Execute Javascript    window.location.assign($('.modal-footer a').eq(0).attr('href'));
+    sleep    1s
+    Execute Javascript    $('.control-group').eq(0).find('input').val('TEST-1')
+    Execute Javascript    $('.control-group').eq(2).find('input').attr('checked','checked')
+    Execute Javascript    $('#table_report_property .add_property_new').click()
+    Execute Javascript    $('#property_value_th input').eq(0).val('TEST-1')
+    Execute Javascript    $('#property_value_th input').eq(1).val('TEST-2')
+    Execute Javascript    $('#property_value_th input').eq(2).val('TEST-3')
+    Execute Javascript    $('#btn_create_property').click()
+    sleep    1s
+    ${listing}    Execute Javascript    return ($.trim($('.table-header' ).text())=="รายการ พร็อพเพอร์ตี้สินค้า" || $.trim($('#notify-top').text())=="Duplicate data")
+    Should be true    ${listing}
+    Go To    ${URL_WMS}/seller_product_property?perpage=1000
+    sleep    1s
+    ${property_id}    Execute Javascript    return ($('#table_report td:contains(TEST-1)').closest('tr').find('input:checkbox').val())
+    sleep    1s
+    Execute Javascript    $('#table_report td:contains(TEST-1)').closest('tr').find('a:contains(จัดการกลุ่ม)').click()
+    Execute Javascript    $('#table_report td:contains(ALL)').length==0?window.location.assign($('#page-content a').eq(0).attr('href')):''
+    sleep    1s
+    Execute Javascript    $('input[name="group_name"]').val('ALL')
+    Execute Javascript    $('#parent_check_all').click()
+    Execute Javascript    $('button:contains(บันทึก)').click()
+    sleep    1s
+    Go To    ${URL_WMS}/seller_product_property/category
+    sleep    3s
+    Execute Javascript    $('.tree-folder-name:contains(งานอดิเรก)').find('span:last').click()
+    sleep    3s
+    Execute Javascript    $('.modal-content').find('.plaza_category_id_1938_${property_id}').closest('div').find('span').click()
+    sleep    3s
+    Execute Javascript    $('.modal-content').find('.area_group_1938_${property_id}').closest('form').find('div span:contains(ALL)').closest('label').find('input').is(':checked')?'':$('.modal-content').find('.area_group_1938_${property_id}').closest('form').find('div span:contains(ALL)').click()
+    ${checked}    Execute Javascript    return ($('.modal-content').find('.area_group_1938_${property_id}').closest('form').find('div span:contains(ALL)').closest('label').find('input').is(':checked'))
+    Should be true    ${checked}
+
+TC_MC_00630
+    [Documentation]    Add Property type dropdown : Add property name with existing
+    [Tags]    Medium
+    Execute Javascript    $('.text-right a').eq(1).click()
+    Execute Javascript    window.location.assign($('.modal-footer a').eq(0).attr('href'));
+    sleep    1s
+    Execute Javascript    $('.control-group').eq(0).find('input').val('แบรนด์')
+    Execute Javascript    $('#table_report_property .add_property_new').click()
+    Execute Javascript    $('#property_value_th input').eq(0).val('TEST-1')
+    Execute Javascript    $('#property_value_th input').eq(1).val('TEST-2')
+    Execute Javascript    $('#property_value_th input').eq(2).val('TEST-3')
+    Execute Javascript    $('#btn_create_property').click()
+    ${is_duplicate}    Execute Javascript    return ($.trim($('#notify-top').text())=="Duplicate data")
+    Should be true    ${is_duplicate}
+
+TC_MC_00792
+    [Documentation]    Add Property type Fill form : Click "Save & Add new Property" with blank value
+    [Tags]    Medium
+    Execute Javascript    $('.text-right a').eq(1).click()
+    Execute Javascript    window.location.assign($('.modal-footer a').eq(1).attr('href'));
+    sleep    1s
+    Execute Javascript    $('#btn_create_new_property').click()
+    ${required}    Execute Javascript    return ($('.form-group').hasClass('has-error'))
+    Should be true    ${required}
+
+TC_MC_00794
+    [Documentation]    Add Property type Fill form : click "Cancel" button
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    //a[@data-target="#create-type"]    ${EXPECT_LOADTIME}
+    CLick Element    //a[@data-target="#create-type"]
+    sleep    2s
+    CLick Element    //a[@href='seller_product_property/create-fill-form']
+    sleep    2s
+    Execute Javascript    $("button#btn_cancel_frm_create_property").click()
+    Element Should Contain    //div[@class='table-header']    ${text_header}
+
+TC_MC_00800
+    [Documentation]    Add Property type Fill form : Add property name with duplicate
+    [Tags]    Regression    Low
+    Wait Until Element Is Visible    //a[@data-target="#create-type"]    ${EXPECT_LOADTIME}
+    CLick Element    //a[@data-target="#create-type"]
+    sleep    2s
+    CLick Element    //a[@href='seller_product_property/create-fill-form']
+    sleep    2s
+    Input Text    //input[@name="title_th"]    Style
+    sleep    2s
+    Select From List By Value    //select[@ng-model="format"]    number
+    sleep    2s
+    Select From List By Value    //select[@ng-model="condition"]    equal
+    sleep    2s
+    Press Key    //input[@name="amount_input"]    11
+    Execute Javascript    $('button#btn_create_property').click()
+    sleep    2s
+    Element Should Contain    //div[@class='ui-notify']    Duplicate data
+
+TC_MC_00802
+    [Documentation]    Add Property type Fill form : with select "Require field"
+    [Tags]    Regression    Medium
+    Check Have Property    TestRequired
+    Wait Until Element Is Visible    //a[@data-target="#create-type"]    ${EXPECT_LOADTIME}
+    CLick Element    //a[@data-target="#create-type"]
+    sleep    2s
+    CLick Element    //a[@href='seller_product_property/create-fill-form']
+    sleep    2s
+    Input Text    //input[@name="title_th"]    TestRequired
+    sleep    2s
+    Execute Javascript    $('input[name="required"]').prop('checked', true)
+    sleep    2s
+    Select From List By Value    //select[@ng-model="format"]    number
+    sleep    2s
+    Select From List By Value    //select[@ng-model="condition"]    equal
+    Press Key    //input[@name="amount_input"]    11
+    Execute Javascript    $('button#btn_create_property').click()
+    sleep    2s
+    Execute Javascript    $('a:contains("TestRequired")')[0].click()
+    sleep    2s
+    ${location}=    Get Location
+    ${id}=    Remove String    ${location}    ${URL_WMS}/seller_product_property/edit-fill-form/
+    # Write Variable In File    ${id}
+    Go To    ${URL_WMS}/seller_product_property
+    sleep    2s
+    Click Element    //a[@class="btn btn-app btn-primary btn-xs"][1]
+    sleep    4s
+    Execute Javascript    $("div.tree-folder-name:contains('งานอดิเรก') > span > span.btn-xs").click()
+    Wait Until Element Is Visible    //span[@onclick="getOptionGroup('${id}','1938')"]    ${EXPECT_LOADTIME}
+    Click Element    //span[@onclick="getOptionGroup('${id}','1938')"]
+    sleep    3s
+    Execute Javascript    $('div.checkbox > label').first().click()
+    sleep    5s
+    Reload Page
+
+TC_MC_00804
+    [Documentation]    Add Property type Fill form : Select format "Number" and Condition "Equal to"
+    [Tags]    Regression    High
+    Check Have Property    TestNumberEqual
+    Wait Until Element Is Visible    //a[@data-target="#create-type"]    ${EXPECT_LOADTIME}
+    CLick Element    //a[@data-target="#create-type"]
+    sleep    2s
+    CLick Element    //a[@href='seller_product_property/create-fill-form']
+    sleep    2s
+    Input Text    //input[@name="title_th"]    TestNumberEqual
+    sleep    2s
+    Select From List By Value    //select[@ng-model="format"]    number
+    sleep    2s
+    Select From List By Value    //select[@ng-model="condition"]    equal
+    Press Key    //input[@name="amount_input"]    1
+    Execute Javascript    $('button#btn_create_property').click()
+    sleep    2s
+    Execute Javascript    $('a:contains("TestNumberEqual")')[0].click()
+    sleep    2s
+    ${location}=    Get Location
+    ${id}=    Remove String    ${location}    ${URL_WMS}/seller_product_property/edit-fill-form/
+    # Write Variable In File    ${id}
+    Go To    ${URL_WMS}/seller_product_property
+    sleep    2s
+    Click Element    //a[@class="btn btn-app btn-primary btn-xs"][1]
+    sleep    4s
+    Execute Javascript    $("div.tree-folder-name:contains('งานอดิเรก') > span > span.btn-xs").click()
+    Wait Until Element Is Visible    //span[@onclick="getOptionGroup('${id}','1938')"]    ${EXPECT_LOADTIME}
+    Click Element    //span[@onclick="getOptionGroup('${id}','1938')"]
+    sleep    3s
+    Execute Javascript    $('div.checkbox > label').first().click()
+    sleep    2s
+    Execute Javascript    $('a[data-action="close"]').click()
+    sleep    2s
+    Click Element    //button[@onclick="postOptionGroupMappingApply('1938')"]
+    sleep    15s
+    Reload Page
+    Go To    ${URL_PORTAL}/sitemap#/category
+    sleep    2s
+    Execute Javascript    $("strong > a:contains('งานอดิเรก')")[0].click()
+    sleep    2s
+    Element Should Not Contain    //div[@class='nav-left']    TestNumberEqual
+    sleep    2s
+    Close Browser
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    sleep    2s
+    Go To    ${url_product_add}
+    sleep    2s
+    Select Category Hobbies
+    Wait Until Element Is Visible    //input[@data-type="fill_form"][@data-format="number"][@data-require='no']    ${EXPECT_LOADTIME}
+    Press Key    //input[@data-type="fill_form"][@data-format="number"][@data-require='no']    1
+    Press Key    //input[@data-type="fill_form"][@data-format="number"][@data-require='no']    \\13
+
+TC_MC_00810
+    [Documentation]    Add Property type Fill form : Select format "Text" and Condition "Not more than"
+    [Tags]    Regression    Medium
+    Check Have Property    TestTextNotMoreThan
+    Wait Until Element Is Visible    //a[@data-target="#create-type"]    ${EXPECT_LOADTIME}
+    CLick Element    //a[@data-target="#create-type"]
+    sleep    2s
+    CLick Element    //a[@href='seller_product_property/create-fill-form']
+    sleep    2s
+    Input Text    //input[@name="title_th"]    TestTextNotMoreThan
+    sleep    2s
+    Select From List By Value    //select[@ng-model="format"]    text
+    sleep    2s
+    Select From List By Value    //select[@ng-model="condition"]    not_more_than
+    Press Key    //input[@name="amount_input"]    1
+    Execute Javascript    $('button#btn_create_property').click()
+    sleep    2s
+    Execute Javascript    $('a:contains("TestTextNotMoreThan")')[0].click()
+    sleep    2s
+    ${location}=    Get Location
+    ${id}=    Remove String    ${location}    ${URL_WMS}/seller_product_property/edit-fill-form/
+    # Write Variable In File    ${id}
+    Go To    ${URL_WMS}/seller_product_property
+    sleep    2s
+    Click Element    //a[@class="btn btn-app btn-primary btn-xs"][1]
+    sleep    4s
+    Execute Javascript    $("div.tree-folder-name:contains('งานอดิเรก') > span > span.btn-xs").click()
+    Wait Until Element Is Visible    //span[@onclick="getOptionGroup('${id}','1938')"]    ${EXPECT_LOADTIME}
+    Click Element    //span[@onclick="getOptionGroup('${id}','1938')"]
+    sleep    3s
+    Execute Javascript    $('div.checkbox > label').first().click()
+    sleep    2s
+    Execute Javascript    $('a[data-action="close"]').click()
+    sleep    2s
+    Click Element    //button[@onclick="postOptionGroupMappingApply('1938')"]
+    sleep    20s
+    Reload Page
+    Go To    ${URL_PORTAL}/sitemap#/category
+    sleep    2s
+    Execute Javascript    $("strong > a:contains('งานอดิเรก')")[0].click()
+    sleep    2s
+    Element Should Not Contain    //div[@class='nav-left']    TestTextNotMoreThan
+    sleep    2s
+    Close Browser
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    sleep    2s
+    Go To    ${url_product_add}
+    sleep    2s
+    Select Category Hobbies
+    Wait Until Element Is Visible    //input[@data-type="fill_form"][@data-format="text"][@data-require='no']    ${EXPECT_LOADTIME}
+    Press Key    //input[@data-type="fill_form"][@data-format="text"][@data-require='no']    a
+    Press Key    //input[@data-type="fill_form"][@data-format="text"][@data-require='no']    \\13
+
+TC_MC_00812
+    [Documentation]    Add Property type Fill form : Select format "Date" click "Save"
+    [Tags]    Regression    Medium
+    Check Have Property    TestDate
+    Wait Until Element Is Visible    //a[@data-target="#create-type"]    ${EXPECT_LOADTIME}
+    CLick Element    //a[@data-target="#create-type"]
+    sleep    2s
+    CLick Element    //a[@href='seller_product_property/create-fill-form']
+    sleep    2s
+    Input Text    //input[@name="title_th"]    TestDate
+    sleep    2s
+    Select From List By Value    //select[@ng-model="format"]    date
+    sleep    2s
+    Element Should Not Be Visible    //select[@ng-model="condition"]
+    Element Should Not Be Visible    //input[@name="amount_input"]
+    Execute Javascript    $('button#btn_create_property').click()
+    sleep    2s
+    Execute Javascript    $('a:contains("TestDate")')[0].click()
+    sleep    2s
+    ${location}=    Get Location
+    ${id}=    Remove String    ${location}    ${URL_WMS}/seller_product_property/edit-fill-form/
+    # Write Variable In File    ${id}
+    Go To    ${URL_WMS}/seller_product_property
+    sleep    2s
+    Click Element    //a[@class="btn btn-app btn-primary btn-xs"][1]
+    sleep    4s
+    Execute Javascript    $("div.tree-folder-name:contains('งานอดิเรก') > span > span.btn-xs").click()
+    Wait Until Element Is Visible    //span[@onclick="getOptionGroup('${id}','1938')"]    ${EXPECT_LOADTIME}
+    Click Element    //span[@onclick="getOptionGroup('${id}','1938')"]
+    sleep    3s
+    Execute Javascript    $('div.checkbox > label').first().click()
+    sleep    2s
+    Execute Javascript    $('a[data-action="close"]').click()
+    sleep    2s
+    Click Element    //button[@onclick="postOptionGroupMappingApply('1938')"]
+    sleep    20s
+    Reload Page
+    Go To    ${URL_PORTAL}/sitemap#/category
+    sleep    2s
+    Execute Javascript    $("strong > a:contains('งานอดิเรก')")[0].click()
+    sleep    2s
+    Element Should Not Contain    //div[@class='nav-left']    TestDate
+    sleep    2s
+    Close Browser
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    sleep    2s
+    Go To    ${url_product_add}
+    sleep    2s
+    Select Category Hobbies
+    Wait Until Element Is Visible    //input[@data-type="fill_form"][@data-format="date"][@data-require='no']    ${EXPECT_LOADTIME}
+    Press Key    //input[@data-type="fill_form"][@data-format="date"][@data-require='no']    2016-09-05
+    Press Key    //input[@data-type="fill_form"][@data-format="date"][@data-require='no']    \\13

@@ -1,0 +1,75 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    #${BROWSER}
+#...               AND    Reset Store/Product Status
+Suite Teardown    Close All Browsers
+Test Setup        Go to    ${URL_PORTAL}
+Force Tags        Account-Web
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Checkout.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/LevelD.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+
+*** Test Cases ***
+TC_MC_00003
+   [Documentation]    Checkout with already logon
+   [Tags]    Regression    High    mock
+   Check Login And Logout    ${seller_user_001}    ${seller_pwd_001}
+   Delete All Product In Cart
+   Go To LevelD Product On Wemall Web    ${robot_store1_instock_type_new}
+   Click Add to Cart and go to Cart
+   Click Go To Checkout
+   Verify Icon Step When Login Already
+   Go to    ${URL_PORTAL}#
+
+TC_MC_00005
+   [Documentation]    Checkout without logon
+   [Tags]    Regression    High    mock
+   Clear Active Login
+   Delete All Product In Cart
+   Go To LevelD Product On Wemall Web    ${robot_store1_instock_type_new}
+   Click Add to Cart and go to Cart
+   Click Go To Checkout
+   Verify Iconn Step When Not Login
+   Key Login Checkout    ${buyer_checkout}    ${buyer_checkout_pass}
+   Click Login Checkout
+   Verify Icon Step When Login Already
+   Go to    ${URL_PORTAL}#
+
+
+*** Keyword ***
+Reset Store/Product Status
+   Clear Active Login
+   Go To Login    ${blockstore_email1}    ${blockstore_password1}
+   Go To    ${URL_STORE}/${blockstore_url1}/admin
+   Sleep    3s
+   ${check} =    Get Value    //input[@id="openshop_status_old"]
+   Run Keyword If    "${check}" == "false"    Execute Javascript    $('#btn_openshop_sidebar').click()
+   Go To    ${URL_STORE}/${blockstore_url1}/admin/product
+   Sleep    3s
+   Select From List By Label    id=inv_status    ซ่อนสินค้า
+   Execute Javascript    $('.checkbox-select').click()
+   Execute Javascript    $('#btn_visible').click()
+   Sleep    0.5s
+   Execute Javascript    $('.btn.btn-primary').click()
+   Clear Active Login
+   BuyerKeyword.WMS Login
+   Change Shop Product Status    shop    ${blockstore_id1}    normal
+   Change Shop Product Status    product    ${robot_blockstore1_instock_type_new}    แสดง
+   Change Shop Product Status    product    ${robot_blockstore1_instock_type_new}    ผ่านการตรวจสอบ
+   Go to    ${URL_PORTAL}
+
+Check Login And Logout
+    [Arguments]    ${user}    ${password}
+   ${result}=    Check Element    ${icn_widget_account}
+   Run Keyword If    '${result}'=='FAIL'    Go to Login    ${user}    ${password}
+

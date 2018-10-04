@@ -1,0 +1,396 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Check and Reset Seller Login    ${category_shopname2}    ${category_user_002}    ${category_pwd_002}    AND    Check And Set Category    [Test]FixCategory1    [Test]FixCategory2    test123
+Test Setup        Go To    ${URL_STORE}/${category_shopname2}/admin/category
+Suite Teardown    Close Browser
+Force Tags        feature-StoreAdmin    Store-Web    ListCategory    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Category.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Backend_Category.txt
+
+*** Keywords ***
+Check And Set Category
+    [Arguments]    ${categoryname}    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบข้อมูล
+    Run Keyword If    ${Result} == True    Create Category    ${categoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    ${category_id}    Get Element Attribute    //*[@class="table-catlist-body"]//ul[1]//li[1]@id
+    ${category_id}    Remove String    ${category_id}    category_id_
+    Set Suite Variable    ${category_id}
+#    [return]    ${category_id}
+    Input Text    search    ${categoryname2}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบข้อมูล
+    Run Keyword If    ${Result} == True    Create category have subcate    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname2}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    ${category_id2}    Get Element Attribute    //*[@class="table-catlist-body"]//ul[1]//li[1]@id
+    ${category_id2}    Remove String    ${category_id2}    category_id_
+    Set Suite Variable    ${category_id2}
+#    [return]    ${category_id2}
+
+Create Category
+    [Arguments]    ${categoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/create
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('.row-fluid .btn-primary').click()
+    Display Alert Footer
+
+Create category have subcate
+    [Arguments]    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/create
+    Input Text    ${input_category_name}    ${categoryname2}
+    Execute Javascript    $('a#subcategory_alter_add').click()
+    Execute Javascript    $('#input-name').val('${subcategoryname}')
+    #Execute Javascript    $('#btn_select_photo').click()
+    #Choose Image From Gallery Correct2
+    #Sleep    2s
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${categoryname2}
+    Execute Javascript    $('i.icon-plus-sign-alt').click()
+
+*** Test Cases ***
+TC_MC_01254
+    [Documentation]    [Welove] Verify Hide button. Incase Cancel change category status
+    ${status}    ${value} =    Run Keyword And Ignore Error    Check Top Record Status Is Show
+    Run Keyword If    '${status}' == 'PASS'    Change Status Category To Hide
+    Change Status Category To Show
+
+TC_MC_01258
+    [Documentation]    [Welove] Verify Show button. Incase Cancel change category status
+    [Tags]    Regression    Medium
+    Show Category Have Product    เสื้อยืดผู้ชาย
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product
+    Execute Javascript    $(".row-filter select option").filter(function(){ return this.text == 'เสื้อยืดผู้ชาย'; }).attr('selected', true).change();
+    Sleep    3s
+    Element Should Not Be Visible    //*[@id="table_report"]/tbody/tr/td[3]/div[3]/span
+
+TC_MC_01260
+    [Documentation]    [Welove] Verify Show button. Incase Change category status
+    ${status}    ${value} =    Run Keyword And Ignore Error    Check Top Record Status Is Hide
+    Run Keyword If    '${status}' == 'PASS'    Change Status Category To Show
+    Execute Javascript    ${check_record}.first().click();
+    Execute Javascript    $('#btn_hide_cat').click()
+    Click Cancel Alert Box
+    Check Top Record Status Is Show
+
+TC_MC_01262
+    [Documentation]    [Welove] Change category status SHOW to HIDE
+    ${status}    ${value} =    Run Keyword And Ignore Error    Check Top Record Status Is Hide
+    Run Keyword If    '${status}' == 'PASS'    Change Status Category To Show
+    Execute Javascript    ${check_record}.first().click();
+    Execute Javascript    $('#btn_hide_cat').click()
+    Click OK Alert Box V2
+    Check Top Record Status Is Hide
+
+TC_MC_01264
+    [Documentation]    [Welove] Change category status HIDE to SHOW
+    ${status}    ${value} =    Run Keyword And Ignore Error    Check Top Record Status Is Show
+    Run Keyword If    '${status}' == 'PASS'    Change Status Category To Hide
+    Sleep    1s
+    Execute Javascript    ${check_record}.first().click();
+    Execute Javascript    $('#btn_visible_cat').click()
+    Click Cancel Alert Box V2
+    Check Top Record Status Is Hide
+    #Re-Status
+    Change Status Category To Show
+
+TC_MC_01266
+    [Documentation]    [Welove] Verify search / Found category by enter character.
+    Search By Keyword Found Result    กระโปรงแฟชั่น
+
+TC_MC_01268
+    [Documentation]    [Welove] Verify search / Found category by enter special character.
+    Add Category No Image    !@#$%^&*()
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Search By Keyword Found Result    !@#$%^&*()
+
+TC_MC_01270
+    [Documentation]    [Welove] Verify search / Found category by enter numeric.
+    Add Category No Image    1234567890
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Search By Keyword Found Result    1234567890
+
+TC_MC_01272
+    [Documentation]    [Welove] Verify search / Not found category matching keyword
+    Input Text    ${input_keyword}    xxtestxx
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    3s
+    ${alert_not_found}    Execute Javascript    return $('.noresult-box span').text()
+    Should Be Equal    ${alert_not_found}    ไม่พบข้อมูล
+
+TC_MC_01274
+    [Documentation]    [Welove] Verify disable and enable button. Incase Not checked a checkbox
+    Element Should Be Disabled    ${btn_hide}
+    Element Should Be Disabled    ${btn_show}
+    Element Should Be Disabled    ${btn_del}
+
+TC_MC_01276
+    [Documentation]    [Welove] Verify disable and enable button. Incase Does not have category
+    Element Should Be Disabled    ${btn_hide}
+    Element Should Be Disabled    ${btn_show}
+    Element Should Be Disabled    ${btn_del}
+
+TC_MC_01278
+    [Documentation]    [Welove] Verify disable and enable button. Incase Checked a checkbox
+    Execute Javascript    $('.checkbox-select').first().click()
+    Element Should Be Enabled    ${btn_hide}
+    Element Should Be Enabled    ${btn_show}
+    Element Should Be Enabled    ${btn_del}
+
+TC_MC_01280
+    [Documentation]    [Welove] Verify filter hide main category.
+    [Tags]    Regression    Medium
+    ${count}    Execute Javascript    return ${num_hide}.text()
+    Click Element    ${filter_hide_category}
+    ${log}    Log Location
+    Should Be Equal    ${log}    ${URL_STORE}/${category_shopname2}/admin/category?status=false
+
+TC_MC_01282
+    [Documentation]    [Welove] Verify filter show main category.
+    [Tags]    Regression    Medium
+    ${count}    Execute Javascript    return ${num_show}.text()
+    Click Element    ${filter_show_category}
+    ${log}    Log Location
+    Should Be Equal    ${log}    ${URL_STORE}/${category_shopname2}/admin/category?status=true
+
+TC_MC_01284
+    [Documentation]    [Welove] Verify Filter Category All
+    [Tags]    Medium
+    ${count}    Execute Javascript    return ${num_all}.text()
+    Click Element    ${filter_all_category}
+    ${log}    Log Location
+    Should Be Equal    ${log}    ${URL_STORE}/${category_shopname2}/admin/category
+
+TC_MC_01286
+    [Documentation]    [Welove] Verify Column number of product / main category
+    [Tags]    Regression    Medium
+    Search By Keyword Found Result    กระโปรงแฟชั่น
+    ${num_all_c}    Get Text    //*[@id="frm_category_sel"]/div/div[2]/ul/li/div/div[3]
+    ${num_all_c_int}    Convert To Integer    ${num_all_c}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product
+    Select From List By Label    //select[@name="filter"]    กระโปรงแฟชั่น
+    Wait Until Element Is Visible    ${num_all_product}    ${EXPECT_LOADTIME}
+    ${num_all_p}    Get Text    ${num_all_product}
+    ${num_all_p_int}    Convert To Integer    ${num_all_p}
+    Should Be Equal    ${num_all_p_int}    ${num_all_c_int}
+
+TC_MC_01288
+    [Documentation]    [Welove] Verify Column Status SHOW/HIDE of Category
+    [Tags]    Regression    Medium
+    ${num_show}    Execute Javascript    return ${num_show}.text()
+    ${num_hide}    Execute Javascript    return ${num_hide}.text()
+    ${record_show}    Get Matching Xpath Count    //i[@class="icon-eye-show-green tooltip-grey"]
+    ${rocord_hide}    Get Matching Xpath Count    //i[@class="icon-eye-hide-grey tooltip-grey"]
+    ${num_show_int}    Convert To Integer    ${num_show}
+    ${num_hide_int}    Convert To Integer    ${num_hide}
+    ${record_show_int}    Convert To Integer    ${record_show}
+    ${rocord_hide_int}    Convert To Integer    ${rocord_hide}
+    Should Be Equal    ${num_show_int}    ${record_show_int}
+    Should Be Equal    ${num_hide_int}    ${rocord_hide_int}
+
+TC_MC_01290
+    [Documentation]    [Welove] Verify Number of All Category
+    [Tags]    Regression    Medium
+    ${num_all}    Execute Javascript    return ${num_all}.text()
+    ${num_all_all_int}    Convert To Integer    ${num_all}
+    Execute Javascript    return ${check_all}.click()
+    ${num_all_cate}    Execute Javascript    return ${check_record}.size()
+    ${num_all_child}    Execute Javascript    return ${check_record_child}.size()
+    ${num_all_cate_int}    Convert To Integer    ${num_all_cate}
+    ${num_all_child_int}    Convert To Integer    ${num_all_child}
+    ${num_all_sum}=    Evaluate    ${num_all_cate_int}+${num_all_child_int}
+    Should Be Equal    ${num_all_all_int}    ${num_all_sum}
+
+TC_MC_01292
+    [Documentation]    [Welove] Verify move up - down button /move up first sequence (main category)
+    [Tags]    moveCategory
+    ${css_pointer}    Execute Javascript    return $('ul.tb-body-list li:first div.cat-lv1 div.col-table-5 a.btn-drag-up').css('pointer-events')
+    Should Be Equal    ${css_pointer}    none
+    Log Location
+
+TC_MC_01294
+    [Documentation]    [Welove] Verify move up - down button /move up other sequence only same level (Main category)
+    [Tags]    moveCategory
+    ${title_second_before}    Execute Javascript    return $('.col-table-2').eq(3).text().trim()
+    Click Element    ${moveup_second}
+    Display Alert Footer
+    ${title_second_after}    Execute Javascript    return $('.col-table-2').eq(2).text().trim()
+    Should Contain    ${title_second_before}    ${title_second_after}
+    #Re-Move
+    Click Element    ${movedown_top}
+    Display Alert Footer
+    ${title_second_after}    Execute Javascript    return $('.col-table-2').eq(3).text().trim()
+    Should Contain    ${title_second_before}    ${title_second_after}
+
+TC_MC_01296
+    [Documentation]    [Welove] Verify move up - down button /move up while search
+    [Tags]    moveCategory
+    Search By Keyword Found Result    กระโปรงแฟชั่น
+    Click OK Alert Box V2
+    ${css_pointer}    Execute Javascript    return $('ul.tb-body-list li:first div.cat-lv1 div.col-table-5 a.btn-drag-up').css('pointer-events')
+    Should Be Equal    ${css_pointer}    none
+    Log Location
+
+TC_MC_01298
+    [Documentation]    [Welove] Verify move up - down button /move down first sequence
+    [Tags]    moveCategory
+    ${title_top_before}    Execute Javascript    return $('.col-table-2').eq(2).text().trim()
+    Click Element    ${movedown_top}
+    Display Alert Footer
+    ${title_top_after}    Execute Javascript    return $('.col-table-2').eq(3).text().trim()
+    Should Contain    ${title_top_before}    ${title_top_after}
+    Click Element    ${moveup_second}
+    Display Alert Footer
+    ${title_top}    Execute Javascript    return $('.col-table-2').eq(2).text().trim()
+    Should Contain    ${title_top}    ${title_top_before}
+
+TC_MC_01300
+    [Documentation]    [Welove] Verify move up - down button /move down other sequence
+    [Tags]    moveCategory
+    ${title_second_before}    Execute Javascript    return $('.col-table-2').eq(3).text().trim()
+    Click Element    ${movedown_second}
+    Display Alert Footer
+    ${title_second_after}    Execute Javascript    return $('.col-table-2').eq(4).text().trim()
+    Should Contain    ${title_second_before}    ${title_second_after}
+    #Re-Move
+    Click Element    //*[@id="frm_category_sel"]/div/div[2]/ul/li[3]/div/div[5]/a[1]
+    Display Alert Footer
+    ${title_second}    Execute Javascript    return $('.col-table-2').eq(3).text().trim()
+    Should Contain    ${title_second_before}    ${title_second}
+
+TC_MC_01302
+    [Documentation]    [Welove] Verify move up - down button /move down while search
+    [Tags]    moveCategory
+    Search By Keyword Found Result    กระโปรงแฟชั่น
+    Click OK Alert Box V2
+    ${css_pointer}    Execute Javascript    return $('ul.tb-body-list li:first div.cat-lv1 div.col-table-5 a.btn-drag-down').css('pointer-events')
+    Should Be Equal    ${css_pointer}    none
+    Log Location
+
+TC_MC_01304
+    [Documentation]    [Welove] Verify filter hide category. Does not move-up category.
+    [Tags]    moveCategory
+    Wait Until Element Is Visible    ${filter_hide_category}    ${EXPECT_LOADTIME}
+    Click Element    ${filter_hide_category}
+    ${css_pointer}    Execute Javascript    return $('ul.tb-body-list li:first div.cat-lv1 div.col-table-5 a.btn-drag-up').css('pointer-events')
+    Should Be Equal    ${css_pointer}    none
+    Log Location
+
+TC_MC_01306
+    [Documentation]    [Welove] Verify filter hide category. Does not move-down category.
+    [Tags]    moveCategory
+    Wait Until Element Is Visible    ${filter_hide_category}    ${EXPECT_LOADTIME}
+    Click Element    ${filter_hide_category}
+    ${css_pointer}    Execute Javascript    return $('ul.tb-body-list li:first div.cat-lv1 div.col-table-5 a.btn-drag-down').css('pointer-events')
+    Should Be Equal    ${css_pointer}    none
+    Log Location
+
+TC_MC_01308
+    [Documentation]    [Welove] Verify filter show category. Does not move-up category.
+    [Tags]    moveCategory
+    Wait Until Element Is Visible    ${filter_show_category}    ${EXPECT_LOADTIME}
+    Click Element    ${filter_show_category}
+    ${css_pointer}    Execute Javascript    return $('ul.tb-body-list li:first div.cat-lv1 div.col-table-5 a.btn-drag-up').css('pointer-events')
+    Should Be Equal    ${css_pointer}    none
+    Log Location
+
+TC_MC_01310
+    [Documentation]    [Welove] Verify filter show category. Does not move-down category.
+    Wait Until Element Is Visible    ${filter_show_category}    ${EXPECT_LOADTIME}
+    Click Element    ${filter_show_category}
+    ${css_pointer}    Execute Javascript    return $('ul.tb-body-list li:first div.cat-lv1 div.col-table-5 a.btn-drag-down').css('pointer-events')
+    Should Be Equal    ${css_pointer}    none
+    Log Location
+
+TC_MC_01330
+    [Documentation]    [Welove] Verify Hide/show button. Incase change per sub category status
+    [Tags]    Low
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('.ace-switch-show').click()
+    Sleep   2s
+    ${message_error}    Execute Javascript    return $('.modal-body .modal-desc-box .text-left').text()
+    Should Contain    ${message_error}    คุณยืนยันที่จะแสดงหมวดหมู่หรือไม่?
+    Should Contain    ${message_error}    - หากหมวดหมู่หลักมีหมวดหมู่ย่อย จะมีผลทำให้ หมวดหมู่ย่อยถูกแสดงโดยอัตโนมัติ
+    Should Contain    ${message_error}    - หากในหมวดหมู่มีสินค้า จะมีผลทำให้ สินค้าถูกแสดงโดยอัตโนมัติ
+    Sleep   2s
+    Execute Javascript    $(':contains("ตกลง")').click()
+    Sleep   2s
+    Execute Javascript    $('.ace-switch-show').click()
+    Sleep   2s
+    Execute Javascript    $(':contains("ตกลง")').click()
+    Execute Javascript    $(':contains("บันทึก")').click()
+    Wait Until Element Is Visible    //*[@id="search"]
+
+TC_MC_01332
+    [Documentation]    [Welove] Verify Hide/Show button. Incase change main category and all sub category status
+    [Tags]    Regression    Low    mock
+    Execute Javascript    $('#cat_sel_${category_id2}').first().click()
+    Execute Javascript    $('#btn_hide_cat').click()
+    ${message_error}    Execute Javascript    return $('.modal-body .modal-desc-box .text-left').text()
+    Should Contain    ${message_error}    คุณยืนยันที่จะซ่อนหมวดหมู่หรือไม่? หากหมวดหมู่หลักมีหมวดหมู่ย่อย จะมีผลทำให้ หมวดหมู่ย่อยถูกซ่อนโดยอัตโนมัติ
+
+TC_MC_01334
+    [Documentation]    [Welove] Verify Hide/Show button. Incase change main category status have product
+    [Tags]    Medium    mock
+    Execute Javascript    $('#cat_sel_${category_id}').first().click()
+    Execute Javascript    $('#btn_hide_cat').click()
+    ${message_error}    Execute Javascript    return $('.modal-body .modal-desc-box .text-left').text()
+    Should Contain    ${message_error}    คุณยืนยันที่จะซ่อนหมวดหมู่หรือไม่?
+    Should Contain    ${message_error}    - หากหมวดหมู่หลักมีหมวดหมู่ย่อย จะมีผลทำให้ หมวดหมู่ย่อยถูกซ่อนโดยอัตโนมัติ
+    Should Contain    ${message_error}    - หากในหมวดหมู่มีสินค้า จะมีผลทำให้ สินค้าถูกซ่อนโดยอัตโนมัติ
+
+TC_MC_01336
+    [Documentation]    [Welove] Verify Hide/Show button. Incase change per sub category status have product
+    [Tags]    Medium    mock
+    Execute Javascript    $('[aria-controls^=main_cat_${category_id2}]').click()
+    Execute Javascript    $('#cat_sel_${category_id}').first().click()
+    Execute Javascript    $('#btn_hide_cat').click()
+    ${message_error}    Execute Javascript    return $('.modal-body .modal-desc-box .text-left').text()
+    Should Contain    ${message_error}    คุณยืนยันที่จะซ่อนหมวดหมู่หรือไม่?
+    Should Contain    ${message_error}    - หากหมวดหมู่หลักมีหมวดหมู่ย่อย จะมีผลทำให้ หมวดหมู่ย่อยถูกซ่อนโดยอัตโนมัติ
+    Should Contain    ${message_error}    - หากในหมวดหมู่มีสินค้า จะมีผลทำให้ สินค้าถูกซ่อนโดยอัตโนมัติ
+
+TC_MC_01338
+    [Documentation]    [Welove] Hide/Show main and all sub cate have product
+    Execute Javascript    $('#cat_sel_${category_id2}').first().click()
+    Execute Javascript    $('#btn_hide_cat').click()
+    ${message_error}    Execute Javascript    return $('.modal-body .modal-desc-box .text-left').text()
+    Should Contain    ${message_error}    คุณยืนยันที่จะซ่อนหมวดหมู่หรือไม่?
+    Should Contain    ${message_error}    - หากหมวดหมู่หลักมีหมวดหมู่ย่อย จะมีผลทำให้ หมวดหมู่ย่อยถูกซ่อนโดยอัตโนมัติ
+    Should Contain    ${message_error}    - หากในหมวดหมู่มีสินค้า จะมีผลทำให้ สินค้าถูกซ่อนโดยอัตโนมัติ
+
+TC_MC_01340
+    [Documentation]    [Welove] Verify filter hide sub category.
+    [Tags]    Regression    Medium
+    Execute Javascript    $('.nav-cat li a').eq(2)[0].click()
+    sleep    2s
+    Element Should Not Be Visible    Execute Javascript    return $('.col-table-4').find('.icon-eye-show-green')
+
+TC_MC_01342
+    [Documentation]    [Welove] Verify filter show sub category.
+    [Tags]    Regression    Medium
+    Execute Javascript    $('.nav-cat li a').eq(1)[0].click()
+    sleep    2s
+    Element Should Not Be Visible    Execute Javascript    return $('.col-table-4').find('.icon-eye-hide-grey')
+
+TC_MC_01344
+    [Documentation]    [Welove] Verify Column number of product / sub category
+    [Tags]    Regression    Medium
+    Execute Javascript    $('#search').val('กระโปรงแฟชั่น')
+    Execute Javascript    $('.btn-primary').eq(0).click()
+    sleep    2s
+    ${text_from_search}    Execute Javascript    return $('.col-table-2 a').text()
+    Should Be Equal    ${text_from_search}    กระโปรงแฟชั่น

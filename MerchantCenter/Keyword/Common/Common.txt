@@ -1,0 +1,233 @@
+*** Settings ***
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           OperatingSystem
+Library           ../PythonLibrary/_customkeyword.py
+Resource          Backend_Category.txt
+Resource          WMS_MonitoringListing.robot
+Resource          ../../Resource/WeMall/WebElement/WMS_MonitoringListing.txt
+
+*** Keywords ***
+Open Custom Browser
+    [Arguments]    ${url}    ${browser}=gc
+    ## Prepare Test Suite
+    ${path}    Replace String    ${CURDIR}    Common    UserLibrary
+    ${selenium_jar}    Catenate    SEPARATOR=    ${path}    ${/}selenium-server-standalone-2.53.0.jar
+    Set Environment Variable    SELENIUM_SERVER_JAR    ${selenium_jar}
+    ${options}=    Get Chrome Mobile Options    Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4
+    Run Keyword If    '${browser}' == 'Mobile'    Create Webdriver    Chrome    chrome_options=${options}
+    Run Keyword If    '${browser}' != 'Mobile' and '${browser}' != 'Safari'    Open Browser    ${url}    ${browser}
+    Run Keyword If    '${browser}' != 'Mobile' and '${browser}' == 'Safari'    Create Webdriver    ${browser}
+    Run Keyword If    '${browser}' != 'Mobile' and '${browser}' != 'Safari'    Set Selenium Speed    0.5s
+    Run Keyword If    '${browser}' != 'Mobile' and '${browser}' != 'Safari'    Set Browser Implicit Wait    0.5s
+    Run Keyword If    '${browser}' != 'Mobile' and '${browser}' == 'Safari'    Set Selenium Speed    1s
+    Run Keyword If    '${browser}' != 'Mobile' and '${browser}' == 'Safari'    Set Browser Implicit Wait    1s
+    Run Keyword If    '${browser}' == 'Mobile'    Set Window Size    375    667
+    ...    ELSE    Set Window Size    1440    900
+    Run Keyword If    '${browser}' == 'Mobile'    Set Selenium Speed    0.7s
+    Run Keyword If    '${browser}' == 'Mobile'    Set Browser Implicit Wait    0.7s
+    Run Keyword If    '${browser}' == 'Mobile' or '${browser}' == 'Safari'    Go To    ${url}
+    Run Keyword If    '${browser}' != 'Mobile'    Maximize Browser Window
+
+Clear All Test
+    [Documentation]    Use for close all browser when already run suite
+    Run Keyword If    '${TEST_ENV}' == 'PROD'    Opened/Closed Shop    close    ${storename}
+    Close All Browsers
+
+Opened/Closed Shop
+    [Documentation]    Use for open shop when start testsuite and close shop when end testsuite
+    [Arguments]    ${action}    ${storename}
+    Clear Active Login
+    Go to Login    ${login_user}    ${login_pass}
+    Go To    ${URL_STORE}/${storename}/admin
+    ${check} =    Get Value    //input[@id="openshop_status_old"]
+    Run Keyword If    "${check}" == "false" and '${action}' == 'open'    Execute Javascript    $('#btn_openshop_sidebar').click();
+    Run Keyword If    "${check}" == "true" and '${action}' == 'close'    Execute Javascript    $('#btn_openshop_sidebar').click();
+    Execute Javascript    $('.modal-footer .btn-primary').click()
+
+Check Element
+    [Arguments]    ${locator}
+    @{element}=    Run Keyword And Ignore Error    Wait Until Element Is Visible    ${locator}
+    [Return]    @{element}[0]
+
+WMS Switch Project
+    [Arguments]    ${Project}
+    ${Project}    Convert To Lowercase    ${Project}
+    Member_SignIn.WMS Login
+    ${Project} =    Set Variable If    '${Project}' == 'wls'    westore    ${Project}
+    ${Project} =    Set Variable If    '${Project}' == 'wm'    wemall    ${Project}
+    ${WMS_GetCurrentBU}    Get Matching Xpath Count    //li[@class="light-blue user-min"][1]/a//img[contains(@src,'logo_${Project}.png')]
+    Run Keyword If    '${WMS_GetCurrentBU}' == '0'    Change Project    ${Project}
+
+Change Project
+    [Arguments]    ${Project}
+    Click Element    //li[@class="light-blue user-min"][1]/a//img
+    Wait Until Element Is Visible    //li[@class="light-blue user-min open"]
+    Click Element    //li[@class="light-blue user-min open"][1]/ul//img
+    Wait Until Element Is Visible    //li[@class="light-blue user-min"][1]/a//img[contains(@src,'logo_${Project}.png')]
+
+Click Button Save And Display Alert
+    [Documentation]    Action Click Button Save And Display Alert
+    [Arguments]    ${message}
+    Execute Javascript    $('.row-fluid .btn-primary').click()
+    Check input value
+    Sleep    5s
+    ${msg_footer}    Execute Javascript    return $('.notify').text()
+    Should Be Equal    ${msg_footer}    ${message}
+
+Click OK Alert Box
+    Sleep    1s
+    ${msg_alert}    Execute Javascript    return $('.bootbox .modal-body').text()
+    Execute Javascript    $('.bootbox .modal-footer .btn-primary').click()
+    Sleep    3s
+    ${msg_alert}    Execute Javascript    return $('.notify').text()
+
+Click Cancel Alert Box
+    Sleep    1s
+    ${msg_alert}    Execute Javascript    return $('.bootbox .modal-body').text()
+    Execute Javascript    $('.bootbox .modal-footer .null').click()
+
+Display Alert Footer
+    ${msg_alert}    Execute Javascript    return $('.notify').text()
+    ${msg_alert_str}    Convert To String    ${msg_alert}
+
+Click Accept Alert Box
+    Sleep    1s
+    ${msg_alert}    Execute Javascript    return $('.bootbox .modal-body').text()
+    Execute Javascript    $('.bootbox .modal-footer .btn-primary').click()
+
+Go to next page
+    [Documentation]    Go to next page
+    Wait Until Element Is Visible    //ul[@*="pagination"]
+    ${CurrentPage}    Get Text    //ul[@*="pagination"]//li[@class="active"]//span
+    ${NextPage}    Evaluate    ${CurrentPage} + 1
+    ${CheckNextPage}    Get Matching Xpath Count    //a[text()='${NextPage}']
+    Run Keyword If    '${CheckNextPage}' == '1'    Click Element    //a[text()='${NextPage}']
+
+Click Button Save
+    [Documentation]    Click button save
+    Execute Javascript    $('.row-fluid .btn-primary').click()
+    Sleep    2s
+
+Add Operation
+    [Arguments]    ${num1}    ${num2}
+    ${result}=    Evaluate    ${num1} + ${num2}
+    Return From Keyword    ${result}
+
+Get shop name
+    ${shop_name}    Get Location
+    ${shop_name}    Remove String    ${shop_name}    ${URL_STORE}/
+    Log To Console    ${shop_name}
+    ${shop_name}    Fetch From Left    ${shop_name}    /
+    Set Suite Variable    ${shop_name}
+    # ${shop_name}    Execute Javascript    return $('.w-log-shop a[title="ร้านค้าของฉัน"]').attr("href");
+    # @{shop_name} =  Split String    ${shop_name}    /
+    # ${Length}    Get Length    ${shop_name}
+    # Set Suite Variable    ${shop_name}    ${shop_name[${Length}-4]}
+
+Check and Open Shop
+    ${check} =    Get Value    //input[@id="openshop_status_old"]
+    Run Keyword If    "${check}" == "false"    Execute Javascript    $('#btn_openshop_sidebar').click();
+    Sleep    1s
+    Execute Javascript    $('.modal-footer .btn-primary').click();
+    Sleep    3s
+
+Scroll Element Into View
+    [Arguments]     ${locator}
+    ${elem}=    Get Webelement  ${locator}
+    ${instance}=    Get Library Instance    name=SeleniumLibrary
+    ${script}=  Set Variable    arguments[0].scrollIntoView()
+    Evaluate    $instance._current_browser().execute_script($script, $elem)
+    Wait Until Element Is Visible   ${locator}
+
+Check Element Is Visible
+    [Documentation]    Use for check element is visible
+    [Arguments]    ${locator}
+    Wait Until Element Is Visible    ${locator}    60
+
+Click Button
+    [Documentation]    Use for click muti ship button on waitshipping tab
+    [Arguments]    ${locator_button}
+    Click Element    ${locator_button}
+
+Check Location
+    [Documentation]    Use for ckeck location bulktracking page
+    [Arguments]    ${location}
+    Location Should Be    ${location}
+
+Check Text Page Should Contain
+    [Documentation]    Use for check text that text visible in page
+    [Arguments]    ${text}
+    Page Should Contain    ${text}
+
+Check Text
+    [Documentation]    Use for check error message
+    [Arguments]    ${locator}    ${text}
+    Element Should Contain    ${locator}    ${text}
+
+Get File Path
+    [Documentation]    Use for get file path image
+    ${file_path}    Replace String    ${CURDIR}    ${/}Keyword${/}Common    ${/}Resource${/}${BU}${/}Image
+    Return From Keyword    ${file_path}
+
+Element Is Visible
+    [Documentation]    Use for check element
+    [Arguments]    ${locator}
+    Element Should Be Visible    ${locator}
+
+Clear Cache API Feedback
+    [Documentation]    Use for clear cache api feedback
+    Go to    ${URL_API_FEEDBACK}/v1/cache/clear
+
+Clear Cache Store Font
+    [Documentation]    Use for clear cache store font
+    Go to    ${URL_STORE}/system/clear?path=path
+
+Check Element Is Not Visible
+    [Documentation]    Use for check element is not visible
+    [Arguments]    ${locator}
+    Wait Until Element Is Not Visible    ${locator}
+
+Click Element Contain Text
+   [Arguments]    ${web_elements}    ${text_contain}
+   @{elements_list}=    Get WebElements    ${web_elements}
+   :FOR    ${element}    IN    @{elements_list}
+   \    ${passed}=    Run Keyword And Return Status    Element Should Contain    ${element}    ${text_contain}
+   \    Run Keyword If    ${passed}    Scroll Element Into View    ${element}
+   \    Run Keyword If    ${passed}    Click Element    ${element}
+   \    Exit For Loop If    ${passed}
+
+Open and close shop
+    [Documentation]    Use for open shop when start testsuite and close shop when end testsuite
+    [Arguments]    ${action}    ${storename}
+    Go To    ${URL_STORE}/${storename}/admin
+    ${check} =    Get Value    ${tgl_shop_status}
+    Run Keyword If    "${check}" == "false" and '${action}' == 'open'    Click Element    ${btn_openshop_sidebar}
+    Run Keyword If    "${check}" == "true" and '${action}' == 'close'    Run Keywords    Click Element    ${btn_openshop_sidebar}    AND    Click Element    //div[@class="modal-footer"]//a[@class="btn btn-primary"]
+
+Go To WMS And Login
+    [Documentation]    Use for login WMS Page
+    [Arguments]    ${project}
+    Go to    https://wms.weloveshopping.com/login
+    ${title}    Get Title
+    Run Keyword If    '${title}' == 'Authentication'    Input Text    name=email    ${user_wms}
+    Run Keyword If    '${title}' == 'Authentication'    Input Password    name=password    ${pass_wms}
+    Run Keyword If    '${title}' == 'Authentication'    Click Button    //button[@type="submit"]
+    ${project} =    Set Variable If    '${project}' == 'wls'    westore    ${project}
+    ${project} =    Set Variable If    '${project}' == 'wm'    wemall    ${project}
+    ${WMS_GetCurrentBU}    Get Matching Xpath Count    //li[@class="light-blue user-min"][1]/a//img[contains(@src,'logo_${project}.png')]
+    Run Keyword If    '${WMS_GetCurrentBU}' == '0'    Change Project    ${project}
+
+Approve Wemall Product By Product Id
+    [Arguments]    ${productid}
+    WMS Switch Project    wm
+    Go To Monitoring Page
+    Input Text    ${txt_product_id}    ${productid}
+    Click Element    ${btn_click_Search}
+    Click Element    ${lbl_first_product_record}
+    Select Window    NEW
+    Wait Until Element Is Visible    ${btn_approve_product}    ${EXPECT_LOADTIME}
+    Click Element    ${btn_approve_product}
+
+
+

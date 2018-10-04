@@ -1,0 +1,29 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Delete All Product In Cart
+Test Setup        Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Delete All Product In Cart
+Suite Teardown    Close All Browsers
+Test Teardown     Close All Browsers
+Force Tags        Portal-Web    Ligo    Sprint2017MC8    mc-wls
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Cart.txt
+
+*** Test Cases ***
+TC_MC_08340
+    [Documentation]    Decrease product quantity
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new3}?refresh=changeme
+    Repeat Keyword    4 times    Execute Javascript    ${leveld_increase_js}.click()
+    ${name}=    Get Text    ${leveld_itemname}
+    ${price}=    Get Text    ${leveld_itemprice}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Product In Cart    ${shopname}    ${name}    ${quantity}    ${price}
+    : FOR    ${i}    IN RANGE    0    5
+    \    Execute Javascript    ${cart_decrease_btn}[0].click()
+    ${new_quantity}=    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    Verify Product In Cart    ${shopname}    ${name}    ${new_quantity}    ${price}

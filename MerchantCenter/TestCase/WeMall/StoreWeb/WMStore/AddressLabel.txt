@@ -1,0 +1,123 @@
+*** Settings ***
+Suite Setup       Run Keywords    Go to Login and Check Seller Login    ${URL_PORTAL}    ${BROWSER}    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}    AND        Set Selenium Speed    0.2
+Suite Teardown    Clear All Test
+Force Tags        API-Order    feature-order
+Library           SeleniumLibrary
+Library           String
+Library           OperatingSystem
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/ManageOrder.txt
+Resource          ../../../../Keyword/Common/Account_History.txt
+Resource          ../../../../Keyword/Common/Account_Detail.txt
+Resource          ../../../../Keyword/Common/Store_History.txt
+Resource          ../../../../Keyword/Common/Store_Detail.txt
+Resource          ../../../../Keyword/Common/Bulktracking.txt
+Resource          ../../../../Resource/WeMall/WebElement/Store_Detail.txt
+Resource          ../../../../Resource/Wemall/WebElement/Checkout.txt
+Resource          ../../../../Resource/Wemall/WebElement/Cart.txt
+Resource          ../../../../Resource/Wemall/WebElement/Bulktracking.txt
+
+*** Test Cases ***
+TC_MC_04829
+    [Documentation]    WMStore Print Shipping Fillter Invoice (Defult 14 Order)
+    [Tags]    Regression    Low    Store-Web
+    Go To Order List Waitshipping Tab Store Page    ${storename_slug_wemall}
+    Click Element    ${chk_all_waitingshipping}
+    Click Element    ${btn_print_label}
+    Wait Until Element Is Visible    ${dlg_print}
+    Click Element    ${rdo_shipping}
+    Click Element    ${btn_confirm_print}
+    Go to print preview page    ${storename_slug_wemall}
+    Element Should Contain    ${lbl_print_total}    แสดงตัวอย่าง ที่อยู่จัดส่ง จำนวน 14 รายการ
+
+TC_MC_04833
+    [Tags]    High    Store-Web
+    [Documentation]    WMStore Address Label Print Label : View
+    Set Selenium Speed    0.1
+    Check and Reset Seller Login    trustmall    wmrecon@gmail.com    Escrow@1234
+    Go To    ${URL_STORE}/trustmall/admin/orders?status=waitshipping&sort-by-pay=ASC
+    ${is_contain}    Execute Javascript    return ($('.nav-tabs li.active a').text().match('รอการแจ้งจัดส่งสินค้า') != null)
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return ($('a[href=#shipCompany]').eq(0).text().match('แจ้งจัดส่งสินค้า') != null)
+    Should Be True    ${is_contain}
+    Element Should Contain    //*[@id="allorder"]/div[2]/div    รายการสั่งซื้อที่เลือก : 0 ตัวเลือกการพิมพ์
+    ${is_contain}    Execute Javascript    return ($('.table-order input.check-item').length == 14)
+    Should Be True    ${is_contain}
+
+TC_MC_04835
+    [Documentation]    WMStore Address Label : View รายการสั่งซื้อที่เลือก : 14
+    [Tags]    Regression    High    Store-Web
+    Go To Order List Waitshipping Tab Store Page    ${storename_slug_wemall}
+    Click Element    ${chk_all_waitingshipping}
+    Element Should Contain    ${lbl_print_selected}    รายการสั่งซื้อที่เลือก : 14 ตัวเลือกการพิมพ์
+
+TC_MC_04837
+    [Tags]    Medium    Store-Web
+    [Documentation]    WMStore Address Label : View รายการสั่งซื้อที่เลือก : 3
+    Set Selenium Speed    0.1
+    Check and Reset Seller Login    trustmall    wmrecon@gmail.com    Escrow@1234
+    Go To    ${URL_STORE}/trustmall/admin/orders?status=waitshipping&sort-by-pay=ASC
+    ${is_contain}    Execute Javascript    return $('.table-order input.check-item').eq(0).click()
+    ${is_contain2}    Execute Javascript    return $('.table-order input.check-item').eq(1).click()
+    ${is_contain3}    Execute Javascript    return $('.table-order input.check-item').eq(2).click()
+    Element Should Contain    //*[@id="allorder"]/div[2]/div    รายการสั่งซื้อที่เลือก : 3 ตัวเลือกการพิมพ์
+
+TC_MC_04838
+    [Documentation]    WMStore Address Label : Check Page 2
+    [Tags]    Regression    High    Store-Web
+    Go To Order List Waitshipping Tab Store Page    ${storename_slug_wemall}
+    Click Element    ${chk_all_waitingshipping}
+    Go to other page    ${storename_slug_wemall}    2
+    Element Should Contain    ${lbl_print_selected}    รายการสั่งซื้อที่เลือก : 14 ตัวเลือกการพิมพ์
+
+TC_MC_04839
+    [Tags]    High    Store-Web
+    [Documentation]    WMStore Address Label : View Pop Up ตัวเลือกการพิมพ์
+    Set Selenium Speed    0.1
+    Check and Reset Seller Login    trustmall    wmrecon@gmail.com    Escrow@1234
+    Go To    ${URL_STORE}/trustmall/admin/orders?status=waitshipping&sort-by-pay=ASC
+    Click Element    id=selectall
+    sleep    1
+    Click Element    //*[@class="btn btn-small btn-primary show-print"]
+    sleep    1
+    ${is_contain}    Execute Javascript    return ($('#print h3').text().match('ตัวเลือกการพิมพ์') != null)
+    Should Be True    ${is_contain}
+    ${is_contain3}    Execute Javascript    return $('button.close').click()
+    Element Should Contain    //*[@id="allorder"]/div[2]/div    รายการสั่งซื้อที่เลือก : 14 ตัวเลือกการพิมพ์
+
+TC_MC_04841
+    [Documentation]    WMStore Address Label : View พิมพ์เฉพาะที่อยู่ผู้ซื้อ ที่อยู่จัดส่ง 1 Label
+    [Tags]    Regression    Medium    Store-Web
+    Go To Order List Waitshipping Tab Store Page    ${storename_slug_wemall}
+    Click Element    ${chk_check_item}
+    Click Element    ${btn_print_label}
+    Wait Until Element Is Visible    ${dlg_print}
+    Click Element    ${rdo_shipping}
+    Click Element    ${btn_confirm_print}
+    Go to print preview page    ${storename_slug_wemall}
+    Wait Until Element Is Visible    id=print-type
+    Element Should Contain    ${lbl_title}    กรุณาส่ง
+    Element Should Contain    ${lbl_title_name}    คุณ
+    Element Should Contain    ${lbl_shipping}    วิธีการจัดส่ง
+    Element Should Contain    ${lbl_order_id}    Order ID
+    Element Should Contain    ${lbl_print_one_item}    แสดงตัวอย่าง ที่อยู่จัดส่ง จำนวน 1 รายการ
+
+TC_MC_04851
+    [Tags]    Medium    Store-Web
+    [Documentation]    WMStore Address Label : Print Label : View (Defult 14 Order)
+    Set Selenium Speed    0.1
+    Check and Reset Seller Login    trustmall    wmrecon@gmail.com    Escrow@1234
+    Go To    ${URL_STORE}/trustmall/admin/orders?status=waitshipping&sort-by-pay=ASC
+    Click Element    id=selectall
+    sleep    1
+    Click Element    //*[@class="btn btn-small btn-primary show-print"]
+    sleep    1
+    Click Element    id=print-type-2
+    Click Element    //*[@class="btn btn-small btn-primary printlable"]
+    Select Window    url=${teamtrust_url_sellerorder}/print-preview
+    Wait Until Element Is Visible    id=print-type
+    Element Should Contain    xpath=/html/body/div[1]/div[1]/div[1]    แสดงตัวอย่าง ที่อยู่จัดส่ง จำนวน 14 รายการ
+

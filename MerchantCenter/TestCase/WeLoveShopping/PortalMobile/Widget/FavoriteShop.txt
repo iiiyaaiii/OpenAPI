@@ -1,0 +1,37 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Open Custom Browser    ${URL_PORTAL}    Mobile
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Test Timeout      2 minutes
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Force Tags        Portal-Mobile    mc-wls
+
+*** Variables ***
+${BROWSER}    Mobile
+
+*** Test Cases ***
+TC_WLS_01753
+    [Documentation]    Click Favorite menu at widget when do login already (Home page)
+    [Tags]    Regression    favorite    Medium    Portal-Mobile
+    Go to    ${URL_PORTAL}
+    Mobile Login    ${buyer_mobile}    ${buyer_mobile_pass}
+    Click Element    ${h_fav_icon}
+    Sleep    3
+    Element Should Contain    ${responsive_menu_name}    ร้านค้าโปรด
+    Element Should Contain    ${bar_title}    ร้านค้าโปรด
+    Clear Mobile Login
+
+TC_WLS_01754
+    [Documentation]    Click Favorite menu at widget when do not login (Home page)
+    [Tags]    Regression    favorite    Medium    Portal-Mobile
+    Go to    ${URL_PORTAL}
+    Click Element    ${h_fav_icon}
+    Sleep    3
+    Location Should Be    ${URL_ACCOUNT}/login

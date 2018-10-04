@@ -1,0 +1,236 @@
+*** Settings ***
+Library           SeleniumLibrary
+Library           String
+Library           OperatingSystem
+Library           Collections
+
+*** variable ***
+${id_product}    L91200240
+### Locator ###
+${btn_add_collection}    //button[@class="btn btn-success"]
+${product_name}    //li[1]//div[@class="col-3"]//div[@class="pdname-box"]
+${search_id}    //input[@ng-model="search_ids"]
+${leveld_breadcrumb}    //ul[@class="breadcrumb-box"]
+${product_image}    //img[@style="width:50px; height:50px;"]
+
+*** Keywords ***
+Check Have Collection
+    [Documentation]    Check Have Collection
+    ${btn}    Execute Javascript    return $('button.btn-success').prop('disabled')
+    [Return]    ${btn}
+
+Delete Collection
+    [Documentation]    Delete Collection
+    Click Element    id=check_all
+    Click Element    id=btn_delete
+    Page Should Contain    ต้องการลบใช่หรือไม่
+    Click Element    //div[@class="modal-footer"]/a[@class="btn btn-primary"]
+    Page Should Contain    ลบข้อมูลเรียบร้อย
+
+Test Add Collection And Cancel
+    [Documentation]    Test Add Collection And Cancel
+    Click Element    ${btn_add_collection}
+    Sleep    2s
+    Execute Javascript    $('div.tool-top-button > button')[0].click()
+    Sleep    2s
+    Element Should Contain    //div[@id="alertbefore-cancel"]/div[@class='modal-body']    ยกเลิกการเพิ่มกลุ่มสินค้าแนะนำของร้าน
+    Execute Javascript    $("button[ng-click='submitCancel()']")[0].click()
+    ${check_btn_add}    Check Have Collection
+    Should Be True    '${check_btn_add}' == 'False'
+
+Test Validate Add Collection
+    [Documentation]    Test Validate Add Collection
+    Click Element    ${btn_add_collection}
+    Sleep    2s
+    Execute Javascript    $("button[ng-click='validate()']")[0].click()
+    Sleep    2s
+    Page Should Contain    กรุณากรอกชื่อกลุ่มสินค้าแนะนำ
+
+Test Add Collection Without Product
+    [Documentation]    Test Add Collection Without Product
+    Click Element    ${btn_add_collection}
+    Press Key    //input[@id="collection_name"]    testaddwithoutproduct
+    Execute Javascript    $("button[ng-click='validate()']")[0].click()
+    Element Should Contain    //div[@id="alertbefore-submit"]/div[@class='modal-body']    ยืนยันการเพิ่มกลุ่มสินค้าแนะนำของร้าน
+    Execute Javascript    $("button[ng-click='submitConfirm()']")[0].click()
+    Wait Until Page Contains    testaddwithoutproduct
+
+Test Add Collection With Product
+    [Documentation]    Test Add Collection With Product
+    [Arguments]    ${item}
+    Click Element    ${btn_add_collection}
+    Sleep    2s
+    Press Key    //input[@id="collection_name"]    testaddwithproduct
+    Checkbox Collection Product OutSideProduct    ${item}
+    Sleep    2s
+    Execute Javascript    $('button[ng-click="addToCollection()"]')[0].click()
+    Validate Product OutSideProduct Perpage
+    Validate Product Button Action    ${item}
+    Execute Javascript    $("button[ng-click='validate()']")[0].click()
+    Sleep    2s
+    Element Should Contain    //div[@id="alertbefore-submit"]/div[@class='modal-body']    ยืนยันการเพิ่มกลุ่มสินค้าแนะนำของร้าน
+    Sleep    2s
+    Execute Javascript    $("button[ng-click='submitConfirm()']")[0].click()
+    Sleep    2s
+    #Page Should Contain    testaddwithproduct
+    Element Should Contain    //table[@id="table_report"]/tbody/tr/td[3]/span    ${item}
+
+Search Product By Sub Category
+    [Documentation]    Test Search By Sub Category
+    [Arguments]    ${variable}
+    Click Element    ${btn_add_collection}
+    Sleep    2s
+    Select From List By Label    category_filter    ${variable}
+    Sleep    2s
+    ${count}    Execute Javascript    return $("input.plist").length
+    Should Be True    ${count} > 0
+
+Test Search By Keyword
+    [Documentation]    Test Search By Keyword
+    [Arguments]    ${Keyword}
+    Click Element    ${btn_add_collection}
+    Sleep    2s
+    Press Key    //input[@ng-model='search_keyword']    ${Keyword}
+    Sleep    2s
+    Press Key    //input[@ng-model='search_keyword']    \\13
+    Sleep    4s
+    ${count}    Execute Javascript    return $("input.plist").length
+    Should Be True    ${count} > 0
+
+Validate Product OutSideProduct Perpage
+    [Documentation]    Validate Product OutSideProduct Perpage
+    [Arguments]    ${variable}=50
+    ${count}    Execute Javascript    return $("input.plist").length
+    Should Be True    ${count} == ${variable}
+
+Validate Product Button Action
+    [Documentation]    Validate Product Button Action
+    [Arguments]    ${variable}
+    ${count_delete}    Execute Javascript    return $("a[ng-click='removeFromCollection(product)']").length
+    Should Be True    ${count_delete} == ${variable}
+    ${count_drag}    Execute Javascript    return $("a.btn-move").length
+    Should Be True    ${count_drag} == ${variable}
+
+Checkbox Collection Product OutSideProduct
+    [Documentation]    Checkbox Collection Product OutSideProduct
+    [Arguments]    ${variable}
+    : FOR    ${index}    IN RANGE    0    ${variable}
+    \    Execute Javascript    $("input.plist")[${index}].click()
+
+Search Product By Main Category
+    [Documentation]    Test Search By Main Category
+    [Arguments]    ${variable}
+    Click Element    ${btn_add_collection}
+    Select From List By Label    category_filter    ${variable}
+    ${count}    Execute Javascript    return $("input.plist").length
+    Should Be True    ${count} > 0
+
+Test Search By PID
+    [Documentation]    Test Search By PID
+    [Arguments]    ${variable}
+    Click Element    ${btn_add_collection}
+    Press Key    //input[@ng-model='search_ids']    ${variable}
+    Press Key    //input[@ng-model='search_ids']    \\13
+    Wait Until Element Is Not Visible    //li[@class="promotion-loading ng-scope"]
+    ${count}    Get Matching Xpath Count    //ul[@class="list-table"]/li
+    Should Be True    ${count} >= 5
+
+Validate Edit Is Require Minimum 1 Product
+    [Documentation]    Validate Edit Is Require Minimum 1 Product
+    Execute Javascript    $('div.highlight-name-list > a')[0].click()
+    Sleep    2s
+    ${count}    Execute Javascript    return $("input.sp").length
+    Run Keyword IF    ${count} > 0    Remove All Product Collection
+    Execute Javascript    $("button[ng-click='validate()']")[0].click()
+    Sleep    2s
+    Element Should Contain    //span[@class='txt-error']    กรุณาเลือกสินค้าเข้ากลุ่มสินค้าแนะนำ
+
+Remove All Product Collection
+    [Documentation]    Remove All Product Collection
+    Execute Javascript    $('input[check-all="selectedProducts"]').click()
+    Sleep    3s
+    Execute Javascript    $('button[ng-click="removeFromCollection()"]').click()
+    Sleep    2s
+
+Test Remove All Product Collection
+    [Documentation]    Test Remove All Product Collection
+    Execute Javascript    $('div.highlight-name-list > a')[0].click()
+    Sleep    2s
+    ${count}    Execute Javascript    return $("input.sp").length
+    Run Keyword IF    ${count} > 0    Remove All Product Collection
+    ${count}    Execute Javascript    return $("input.sp").length
+    Should Be True    ${count} == 0
+
+Check Breadcrumb
+    [Documentation]    Check Breadcrumb
+    ${text1}    Execute Javascript    return $('#breadcrumbs > ul > li').eq(0).text()
+    Should Contain    ${text1}    หน้าหลัก
+    ${text2}    Execute Javascript    return $('#breadcrumbs > ul > li').eq(1).text()
+    Should Contain    ${text2}    กลุ่มสินค้าแนะนำ
+    ${text3}    Execute Javascript    return $('#breadcrumbs > ul > li').eq(2).text()
+    Should Contain    ${text3}    เพิ่มกลุ่มสินค้าแนะนำ
+
+Check Top Record Status Is Hide
+    [Documentation]    verify check top record of category status is hide
+    ${status}    Execute Javascript    return $("#table_report_category tbody tr:eq(0) td:eq(3), .icon-eye-hide-grey").is(':visible');
+    Return From Keyword    ${status}
+
+Check Top Record Status Is Show
+    [Documentation]    verify check top record of category status is show
+    ${status}    Execute Javascript    return $("#table_report_category tbody tr:eq(0) td:eq(3), .icon-eye-show-green").is(':visible');
+    Return From Keyword    ${status}
+
+Go To next page StoreFront
+    [Documentation]    Go To next page StoreFront
+    Wait Until Element Is Visible    //div[@*="pagination-wls-jan"]
+    ${Page}    Execute Javascript    return $('.page.active').text();
+    ${CurrentPage}    Convert to String    ${Page}
+    ${NextPage}    Evaluate    ${CurrentPage} + 1
+    ${CheckNextPage}    Get Matching Xpath Count    //a[text()='${NextPage}']
+    ${loc}    Get Location
+    Run Keyword If    '${CurrentPage}' == '1'    Go To    ${loc}?page=${NextPage}
+
+Check Parent Category By Name
+    [Documentation]    Test Search By PID
+    [Arguments]    ${variable}
+    ${isHasSymbol}    Execute Javascript    return ($('.shop-left-submenu li:contains("${variable} ")').hasClass('sub2'))
+    Return From Keyword    ${isHasSymbol}
+
+Get Category Url By Name
+    [Documentation]    Test Search By PID
+    [Arguments]    ${variable}
+    ${url}    Execute Javascript    return ($('.shop-left-submenu li:contains("${variable} ") a').attr('href'))
+    Return From Keyword    ${url}
+
+Get SubCategory Url By Name
+    [Documentation]    Test Search By PID
+    [Arguments]    ${variable}
+    ${url}    Execute Javascript    return ($('.shop-left-submenu-lv2 li:contains("${variable} ") a').attr('href'))
+    Return From Keyword    ${url}
+
+Get Category Total Product
+    [Documentation]    Test Search By PID
+    ${amount_product}    Execute Javascript    return ($('.product-list li').length)
+    Return From Keyword    ${amount_product}
+
+Click Add Collection
+    Click Element    ${btn_add_collection}
+
+Search Product In Collection Page
+    Input Text    ${search_id}    ${id_product}
+    Press Key    ${search_id}    \\13
+
+Click Product Name In Collection Page
+    Click Element    ${product_name}
+
+Click Product Image In Collection Page
+    Click Element    ${product_image}
+
+Verify Link Redirect To LevelD
+    [Documentation]    verify link redirect to level d when click product name at select product to collection page
+    Select Window    title=Robot_addtest__1511247725-WeMall-qamcautomate001
+    ${loc}    Get Location
+    Should Be Equal    ${loc}    https://www.wemall-dev.com/d/${id_product}
+
+
+

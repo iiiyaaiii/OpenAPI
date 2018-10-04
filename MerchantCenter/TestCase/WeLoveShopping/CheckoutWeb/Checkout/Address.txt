@@ -1,0 +1,94 @@
+*** Settings ***
+Suite Setup       Data Preparation    ${store_email1}    ${store_password1}
+Suite Teardown    Run Keywords    Delete All Product In Cart    AND    Close All Browsers
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Test Setup        Go to    ${URL_PORTAL}
+Force Tags        Checkout-Web    Ligo    Sprint2017MC9    mc-wls
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Cart.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/ManageProfile.txt
+Resource          ../../../../Keyword/Common/LevelD.txt
+
+*** Test Cases ***
+TC_MC_04145
+    [Documentation]    [Welove] เพิ่มที่อยู่ใหม่ - Edit - Delete
+    [Tags]    Regression    High    mock
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    Click Add to Cart and go to Cart
+    Click Checkout Button
+    ${btn_Add_address} =    Get Matching Xpath Count    ${btn_selectaddr}
+    Click Add Address
+    Sleep    1
+    Execute Javascript    $('#firstname').val('Checkout')
+    Execute Javascript    $('#lastname').val('ADR')
+    Execute Javascript    $('#address').val('fl.19 AIA Capital Tower')
+    Click Element    ${address_bkk}
+    Sleep    1
+    Click Element    ${chk_out_city}
+    Click Element    ${chk_out_district}
+    Input Text    ${address_zipcode}    10400
+    Input Text    ${edit_phone}    0810000010
+    Input Text    ${address_shippingemail}    buyer_test10@mailinator.com
+    Execute Javascript    $('.btn.btn-add-address').click()
+    Page Should Contain    Checkout ADR
+    Page Should Contain    fl.19 AIA Capital Tower
+    Page Should Contain    คลองเตย
+    Page Should Contain    โทรศัพท์ : 0810000010
+    Page Should Contain    อีเมล : buyer_test10@mailinator.com
+    Execute Javascript    $('.icon-pencil').click()
+    ${x2} =    Get Matching Xpath Count    ${btn_selectaddr}
+    ${btn_Add_address} =    Evaluate    ${btn_Add_address} + 1
+    ${btn_Add_address} =    Convert To String    ${btn_Add_address}
+    Should Be Equal    ${btn_Add_address}    ${x2}
+    Click Element    //li[@data-firstname="Checkout"]//button[@class="btn btn-action-address update_address"]
+    Execute Javascript    $('#firstname').val('Checkout1')
+    Execute Javascript    $('#lastname').val('ADR1')
+    Execute Javascript    $('.btn.btn-add-address').click()
+    Page Should Contain    Checkout1
+    Page Should Contain    ADR1
+    Execute Javascript    $('.icon-pencil').click()
+    Click Element    //li[@data-firstname="Checkout1"]//button[@class="btn btn-action-address delete_address"]
+    Confirm Action
+    ${delete_address} =    Get Matching Xpath Count    ${btn_selectaddr}
+    Should Be True    ${btn_Add_address} > ${delete_address}
+
+TC_MC_04209
+    [Documentation]    [Welove] Edit shipping address when specify invalid email
+    [Tags]    High
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    Click Add to Cart and go to Cart
+    Click Checkout Button
+    ${btn_Add_address} =    Get Matching Xpath Count    ${btn_selectaddr}
+    Run Keyword If    ${btn_Add_address} == '0'    Click Add Address
+    Run Keyword If    ${btn_Add_address} == '0'     Input Address Checkout Step 1    Checkout    Address    fl.19 AIA Capital Tower    กรุงเทพมหานคร    จตุจักร    จันทรเกษม    10400    0810000010    ABC001@mailinator
+    Click Edit Address
+    Input Address Checkout Step 1    Checkout    Address    fl.19 AIA Capital Tower    กรุงเทพมหานคร    จตุจักร    จันทรเกษม    10400    0810000010    ABC001@mailinator
+    Verify Error Message
+
+TC_MC_04211
+    [Documentation]    [Welove] Edit shipping address when specify valid email
+    [Tags]    High
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    Click Add to Cart and go to Cart
+    Click Checkout Button
+    ${btn_Add_address} =    Get Matching Xpath Count    ${btn_selectaddr}
+    Run Keyword If    ${btn_Add_address} == '0'    Click Add Address
+    Run Keyword If    ${btn_Add_address} == '0'     Input Address Checkout Step 1    Checkout    Address    fl.19 AIA Capital Tower    กรุงเทพมหานคร    จตุจักร    จันทรเกษม    10400    0810000010    ABC001@mailinator
+    Click Edit Address
+    Input Address Checkout Step 1    Checkout    Address    fl.19 AIA Capital Tower    กรุงเทพมหานคร    จตุจักร    จันทรเกษม    10400    0810000010    ABC001@mailinator.com
+    Verify After Save
+
+*** Keywords ***
+Data Preparation
+    [Arguments]    ${username}    ${password}
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Clear Active Login
+    Go to Login    ${username}    ${password}

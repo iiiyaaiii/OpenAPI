@@ -1,0 +1,20 @@
+*** Variables ***
+&{Month}          01=มี.ค.    02=ก.พ.    03=มี.ค.    04=เม.ย.    05=พ.ค.    06=มิ.ย.    07=ก.ค.
+...               08=ส.ค.    09=ก.ย.    10=ต.ค.    11=พ.ย.    12=ธ.ค.
+${select_type_all}    xpath=//label/input
+${save_on_top}    xpath=//div/button[2]
+${alert_promotion}    //tr[td[3][contains(.,"0")]]//div[4]
+${confirm_Hide&Show_popup}    //div[@class="bootbox modal fade in"]
+${icon_green_eye}    //td[5]//i[@class="icon-eye-show-green tooltipstered show_status ng-scope"]
+${icon_gray_eye}    //td[5]//i[@class="icon-eye-hide-grey tooltipstered hide_status ng-scope"]
+${promotion_list_box}    //div[@class="promotion-list-box"]
+${highlight_menu}    //tr//ul[@style="display: block;"]//a[contains(text(),"เลือกสินค้าไฮไลท์")]
+${ConfirmCancel}    //button[@ng-click="submitCancel()"]
+${ConfirmCancel_Popup}    //div[@id="alertbefore-cancel" and @class="modal modal-bluetheme hide fade in"]
+
+###storefront###
+${input_period}    xpath=//*[@id="period"]
+${select_display}    xpath=/html/body/div[2]/div[3]/div[2]/form/div[2]/div[1]/div[2]/div[1]/div/label/input
+${button_submit}    xpath=/html/body/div[2]/div[3]/div[2]/form/div[2]/div[2]/button[2]
+${home_landing}    xpath=/html/body/div[4]/div[1]/div/div[2]/div[3]/div[2]
+${first_promotion}    //div[@class="promotion-name-seller"]/a

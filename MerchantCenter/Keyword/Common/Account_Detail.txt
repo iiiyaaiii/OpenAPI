@@ -1,0 +1,56 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../../Resource/WeMall/WebElement/Account_History.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/AccountHistory.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/AccountDetail.txt
+
+*** Keywords ***
+Go to account order detail page
+    [Documentation]    Use for open account order detail page
+    [Arguments]    ${order_id}
+    Go to    ${URL_ACCOUNT}/profile/report/orderdetail/${order_id}
+
+Check status order on account detail page
+    [Documentation]    Use for check status order on account detail page
+    [Arguments]    ${status}
+    Element Should Contain    ${element_main_status_order_detail}    ${status}
+
+Check countdown payment time text on account detail page
+    [Documentation]    Use for check countdown time text on account detail page
+    [Arguments]    ${countdown_time_text}
+    ${countdown_time}    Get Text    ${countdown_time_text}
+    Should Not Match Regexp    ${countdown_time}    คุณต้องชำระเงินภายใน\n([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})
+
+Check item status in product order detail table
+    [Documentation]    Use for check item status in product order detail table
+    [Arguments]    ${element_item_status}    ${status}
+    Element Should Contain    ${element_item_status}    ${status}
+
+Check countdown ship time text on account detail page
+    [Documentation]    Use for check countdown time text on account detail page
+    [Arguments]    ${countdown_time_text}
+    ${countdown_time}    Get Text    ${countdown_time_text}
+    Should Not Match Regexp    ${countdown_time}    ร้านค้าจะต้องแจ้งส่งสินค้าให้คุณภายใน\n([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})
+
+Check countdown refund time text on account detail page
+    [Documentation]    Use for check countdown time text on account detail page
+    [Arguments]    ${countdown_time_text}
+    ${countdown_time}    Get Text    ${countdown_time_text}
+    Should Not Match Regexp    ${countdown_time}    ร้านค้าจะดำเนินการตอบกลับคุณ\nภายใน\n([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})
+
+Check countdown decline time text on account detail page
+    [Documentation]    Use for check countdown time text on account detail page
+    [Arguments]    ${countdown_time_text}
+    ${countdown_time}    Get Text    ${countdown_time_text}
+    Should Not Match Regexp    ${countdown_time}    คุณสามารถทำรายการขอเงินคืนใหม่ภายใน\n([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})
+
+Get val form refund again button on refund page
+    ${url}    Get Element Attribute    //*[@id="content-container"]/div/div/div[2]/div[2]/div[2]/div[2]/div[2]/a[2]@href
+    Return From Keyword    ${url}
+
+
+
+
+
+
+

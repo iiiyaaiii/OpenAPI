@@ -1,0 +1,451 @@
+*** Settings ***
+Suite Setup       Open and Prepare Data
+Suite Teardown    Close All Browsers
+Force Tags        Wemall-Web    Ligo
+Test Setup        Run Keywords    Go to    ${URL_PORTAL}    AND    Execute Javascript    $('#home_modal').css("display", "none")    AND    Execute Javascript    $('.modal-backdrop.fade.in').hide()
+Test Timeout      2 minutes
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Library           Collections
+Library           ../../../../Keyword/PythonLibrary/_customkeyword.py
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/WMS_CampaignAdminTool.robot
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+
+*** Test Cases ***
+TC_MC_05989
+    [Documentation]    [WeMall] [Lv.C] Entry Point: Main Manu - Everyday Wow icon
+    [Tags]    Smoke    Regression    High
+    Campaign.Open Wemall Portal page on Desktop
+    Campaign.Focus Mainmenu Everyday WOW
+    Campaign.Click Mainmenu Everyday WOW
+
+TC_MC_05990
+    [Documentation]    [WeMall] [Lv.C] Entry Point: Everyday Wow section - Everyday Wow icon
+    [Tags]    Regression    High
+    Campaign.Open Wemall Portal page on Desktop
+    Campaign.Focus Box Home Everyday WOW
+    Campaign.Click Icon Everyday WoW
+
+TC_MC_05991
+    [Documentation]    [WeMall] [Lv.C] Entry Point: Everyday Wow section - Everyday Wow link
+    [Tags]    Regression    High
+    Campaign.Open Wemall Portal page on Desktop
+    Campaign.Focus Box Home Everyday WOW
+    Campaign.Click Link Everyday WOW
+
+TC_MC_05992
+    [Documentation]    [WeMall] [Lv.C] Sorting: Now Wow - Sorting
+    [Tags]    Regression    High
+    Campaign.Go To LevelC Everyday WOW NOW
+    Campaign.Sort Product by Percent Discount
+    Campaign.Products should be sorted by percent discount
+    Campaign.Sort Product by lowest price
+    Campaign.Products should be sorted by lowest price
+    Campaign.Sort Product by Highest Price
+    Campaign.Products should be sorted by higest price
+
+TC_MC_05995
+    [Documentation]    [WeMall] [Lv.C] Sidebar: Now Wow - De-select option
+    [Tags]    Regression    Low
+    Campaign.Go To LevelC Everyday WOW NOW
+    Campaign.Select Category On Everyday WOW
+    Campaign.De select Category On Everyday WOW
+
+TC_MC_05996
+    [Documentation]    [WeMall] [Lv.C] Sidebar: Now Wow - Remove option
+    [Tags]    Regression    Low
+    Campaign.Go To LevelC Everyday WOW NOW
+    Campaign.Select Category On Everyday WOW
+    Campaign.Remove Option On Everyday WOW
+
+TC_MC_05997
+    [Documentation]    [WeMall] [Lv.C] Sidebar: Now Wow - Clear All option
+    [Tags]    Regression    Low
+    Campaign.Go To LevelC Everyday WOW NOW
+    Campaign.Select Category On Everyday WOW
+    Campaign.Clear All Option On Everyday WOW
+
+TC_MC_05998
+    [Documentation]    [WeMall] [Lv.C] Sorting: Next Wow - Sorting
+    [Tags]    Regression    High
+    Campaign.Go To LevelC Everyday WOW NEXT
+    Campaign.Sort Product by lowest price
+    Campaign.Products should be sorted by lowest price
+    Campaign.Sort Product by Highest Price
+    Campaign.Products should be sorted by higest price
+
+TC_MC_06001
+    [Documentation]    [WeMall] [Lv.C] Sidebar: Next Wow - De-select option
+    [Tags]    Regression    Low
+    Campaign.Go To LevelC Everyday WOW NEXT
+    Campaign.Select Category On Everyday WOW
+    Campaign.De select Category On Everyday WOW
+
+TC_MC_06002
+    [Documentation]    [WeMall] [Lv.C] Sidebar: Next Wow - Remove option
+    [Tags]    Regression    Low
+    Campaign.Go To LevelC Everyday WOW NEXT
+    Campaign.Select Category On Everyday WOW
+    Campaign.Remove Option On Everyday WOW
+
+TC_MC_06003
+    [Documentation]    [WeMall] [Lv.C] Sidebar: Next Wow - Clear All option
+    [Tags]    Regression    Low
+    Campaign.Go To LevelC Everyday WOW NEXT
+    Campaign.Select Category On Everyday WOW
+    Campaign.Clear All Option On Everyday WOW
+
+TC_MC_08226
+    [Documentation]    Home have Everyday WOW on time
+    [Tags]    Regression    SmokeTest    High
+    Go to    ${URL_PORTAL}
+    Page Should Contain Element    ${home_flashsale}
+    : FOR    ${i}    IN RANGE    0    4
+    \    ${index}=    Evaluate    ${i} + 1
+    \    Element Should Be Visible    //ul[@class='items-list-box']//li[${index}]//div[@class='item-detail']//div//div[@class='col-price']//span[@class='price']
+    \    Element Should Be Visible    //ul[@class='items-list-box']//li[${index}]//div[@class='item-detail']//div//div[@class='col-price']//span[@class='compare']
+
+TC_MC_08252
+    [Documentation]    Show Filter and Sorting on Everyday WOW next time
+    [Tags]    Low
+    Go to    ${URL_PORTAL}/everyday-wow?nextwow=1
+    ${is_contain}    Execute Javascript    return $('.dz-counter-next').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(0).find('.checkbox:contains("ทุกประเภท") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${has_contain}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').is(':visible')
+    Should Be True    ${has_contain}
+    ${has_contain}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').is(':visible')
+    Should Be True    ${has_contain}
+    ${has_contain}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Gadget") input').is(':visible')
+    Should Be True    ${has_contain}
+    ${has_contain}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').is(':visible')
+    Should Be True    ${has_contain}
+    Execute Javascript    $('#select_order').click()
+    ${has_contain}    Execute Javascript    return $('#select_order .dropdown-menu a:eq(0):contains("สินค้ายอดฮิต")').is(':visible')
+    Should Be True    ${has_contain}
+    ${has_contain}    Execute Javascript    return $('#select_order .dropdown-menu a:eq(1):contains("ส่วนลดสูงสุด")').is(':visible')
+    Should Be True    ${has_contain}
+    ${has_contain}    Execute Javascript    return $('#select_order .dropdown-menu a:eq(2):contains("ราคาต่ำสุด")').is(':visible')
+    Should Be True    ${has_contain}
+    ${has_contain}    Execute Javascript    return $('#select_order .dropdown-menu a:eq(3):contains("ราคาสูงสุด")').is(':visible')
+    Should Be True    ${has_contain}
+
+TC_MC_08254
+    [Documentation]    Sorting product Everyday WOW by Price as ASC on Tab Everyday WOW on time
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/everyday-wow
+    Click Element    ${select_order}
+    Execute javascript    $('#select_order ul li').eq(2).find('a')[0].click();
+    Sleep    2s
+    Element Should Contain    ${selected_sort}    ราคาต่ำสุด
+    : FOR    ${i}    IN RANGE    1    3
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/div/div/div/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/div/div/div/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} <= ${price_next}
+
+TC_MC_08256
+    [Documentation]    Sorting product Everyday WOW by Price as DESC on Tab Everyday WOW on time
+    [Tags]    Medium
+    Go to    ${URL_PORTAL}/everyday-wow
+    Click Element    ${select_order}
+    Execute javascript    $('#select_order ul li').eq(3).find('a')[0].click();
+    Sleep    2s
+    Element Should Contain    ${selected_sort}    ราคาสูงสุด
+    : FOR    ${i}    IN RANGE    1    3
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/div/div/div/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/div/div/div/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} <= ${price_next}
+
+TC_MC_08260
+    [Documentation]    Sorting product Everyday WOW by Discount maximum product on Tab Everyday WOW on time
+    [Tags]    Medium
+    Go to    ${URL_PORTAL}/everyday-wow
+    Click Element    ${select_order}
+    Execute javascript    $('#select_order ul li').eq(1).find('a')[0].click();
+    Sleep    2s
+    Element Should Contain    ${selected_sort}    เปอร์เซนต์ส่วนลดสูงสุด
+    : FOR    ${i}    IN RANGE    1    3
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/a/div/div/div[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/a/div/div/div[1]
+    # \    ${price_now}    Remove String Using Regexp    ${price_now}    %\n+[A-Z]+
+    # \    ${price_next}    Remove String Using Regexp    ${price_next}    %\n+[A-Z]+
+    \    Should Be True    ${price_now} >= ${price_next}
+
+TC_MC_08262
+    [Documentation]    Filtering product Everyday WOW by Category on Everyday WOW on time
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/everyday-wow
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').click();
+    sleep    2s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("แฟชั่น")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').click();
+    sleep    2s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    2s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('.items-list-box li').eq(0).find('a')[0].click();
+    sleep    2s
+    ${is_contain}    Execute Javascript    return $('.breadcrumb-box:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+
+TC_MC_08264
+    [Documentation]    Filtering product Everyday WOW by Sub-Campiagn on Everyday WOW on time
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/everyday-wow
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("ราคาเดียว 99 บาท") input').click();
+    sleep    2s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("ราคาเดียว 99 บาท") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("ราคาเดียว 99 บาท")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("ราคาเดียว 99 บาท") input').click();
+    sleep    2s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("บาทเดียวทุกชิ้น") input').click();
+    sleep    2s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("บาทเดียวทุกชิ้น") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("บาทเดียวทุกชิ้น")').is(':visible')
+    Should Be True    ${is_contain}
+
+TC_MC_08266
+    [Documentation]    Filtering and sorting product Everyday WOW on Everyday WOW on time
+    [Tags]    Regression    High    SmokeTest
+    Go to    ${URL_PORTAL}/everyday-wow
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("ราคาเดียว 99 บาท") input').click();
+    sleep    1s
+    Execute javascript    $('#select_order ul li').eq(2).find('a')[0].click();
+    Sleep    2s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("แฟชั่น")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("ราคาเดียว 99 บาท")').is(':visible')
+    Should Be True    ${is_contain}
+    Element Should Contain    ${selected_sort}    ราคาต่ำสุด
+    ${count}    Execute Javascript    return $('.items-list-box > li').length
+    : FOR    ${i}    IN RANGE    1    ${count}
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/div/div/div/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/div/div/div/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} <= ${price_next}
+    Execute javascript    $('.items-list-box li').eq(0).find('a')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.breadcrumb-box:contains("แฟชั่น")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.inner-dealzapp:contains("เหลือเวลาอีก")').is(':visible')
+    Should Be True    ${is_contain}
+
+TC_MC_08268
+    [Documentation]    De-selected filter from side bar on Everyday WOW on time
+    [Tags]    Regression    Low
+    Go to    ${URL_PORTAL}/everyday-wow
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("ราคาเดียว 99 บาท") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("แฟชั่น")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("ราคาเดียว 99 บาท")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("ราคาเดียว 99 บาท") input').is(':checked')
+    Should Be True    ${is_checked}
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("ราคาเดียว 99 บาท") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("แฟชั่น")').length
+    Should Be Equal    '${is_contain}'    '0'
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("ราคาเดียว 99 บาท")').length
+    Should Be Equal    '${is_contain}'    '0'
+
+TC_MC_08270
+    [Documentation]    De-selected filter from filter bar on Everyday WOW on time
+    [Tags]    Regression    Low
+    Go to    ${URL_PORTAL}/everyday-wow
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("ราคาเดียว 99 บาท") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("แฟชั่น")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("ราคาเดียว 99 บาท")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("ราคาเดียว 99 บาท") input').is(':checked')
+    Should Be True    ${is_checked}
+    Execute javascript    $('.sort-option-list-box .sort-active').eq(0).find('a')[0].click();
+    sleep    1s
+    Execute javascript    $('.sort-option-list-box .sort-active').eq(0).find('a')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("แฟชั่น")').length
+    Should Be Equal    '${is_contain}'    '0'
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("ราคาเดียว 99 บาท")').length
+    Should Be Equal    '${is_contain}'    '0'
+
+TC_MC_08272
+    [Documentation]    De-selected all filter from filter bar on Everyday WOW on time
+    [Tags]    Regression    Low
+    Go to    ${URL_PORTAL}/everyday-wow
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("ราคาเดียว 99 บาท") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("แฟชั่น")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("ราคาเดียว 99 บาท")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("แฟชั่น") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("ราคาเดียว 99 บาท") input').is(':checked')
+    Should Be True    ${is_checked}
+    Execute javascript    $('.sort-option-list-box .remove-sort-all')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("แฟชั่น")').length
+    Should Be Equal    '${is_contain}'    '0'
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("ราคาเดียว 99 บาท")').length
+    Should Be Equal    '${is_contain}'    '0'
+
+TC_MC_08283
+    [Documentation]    Filtering product Everyday WOW by Sub-Campiagn on Everyday WOW next time
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/everyday-wow?nextwow=1&refresh=changeme
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Gadget") input').click();
+    sleep    1s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Gadget") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Gadget")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Gadget") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').click();
+    sleep    1s
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').is(':visible')
+    Should Be True    ${is_contain}
+
+TC_MC_08286
+    [Documentation]    Filtering and sorting product Everyday WOW on Everyday WOW next time
+    [Tags]    Regression    High
+    Go to    ${URL_PORTAL}/everyday-wow?nextwow=1
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').click();
+    sleep    1s
+    Execute javascript    $('#select_order ul li').eq(2).find('a')[0].click();
+    Sleep    2s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').is(':visible')
+    Should Be True    ${is_contain}
+    Element Should Contain    ${selected_sort}    ราคาต่ำสุด
+    : FOR    ${i}    IN RANGE    1    3
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/div/div/div/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/div/div/div/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} <= ${price_next}
+    Execute javascript    $('.items-list-box li').eq(0).find('a')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.breadcrumb-box:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.inner-dealzapp:contains("เริ่มเวลา 10:00 น.")').is(':visible')
+    Should Be True    ${is_contain}
+
+TC_MC_08287
+    [Documentation]    De-selected filter from side bar on Everyday WOW next time
+    [Tags]    Regression    Low
+    Go to    ${URL_PORTAL}/everyday-wow?nextwow=1
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').is(':checked')
+    Should Be True    ${is_checked}
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').length
+    Should Be Equal    '${is_contain}'    '0'
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').length
+    Should Be Equal    '${is_contain}'    '0'
+
+TC_MC_08289
+    [Documentation]    De-selected filter from filter bar on Everyday WOW next time
+    [Tags]    Regression    Low
+    Go to    ${URL_PORTAL}/everyday-wow?nextwow=1
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').is(':checked')
+    Should Be True    ${is_checked}
+    Execute javascript    $('.sort-option-list-box .sort-active').eq(0).find('a')[0].click();
+    sleep    1s
+    Execute javascript    $('.sort-option-list-box .sort-active').eq(0).find('a')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').length
+    Should Be Equal    '${is_contain}'    '0'
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').length
+    Should Be Equal    '${is_contain}'    '0'
+
+TC_MC_08291
+    [Documentation]    De-selected all filter from filter bar on Everyday WOW next time
+    [Tags]    Regression    Low
+    Go to    ${URL_PORTAL}/everyday-wow?nextwow=1
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').click();
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("สุขภาพและความงาม") input').is(':checked')
+    Should Be True    ${is_checked}
+    ${is_checked}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust').eq(2).find('.checkbox:contains("Best Sport ware") input').is(':checked')
+    Should Be True    ${is_checked}
+    Execute javascript    $('.sort-option-list-box .remove-sort-all')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("สุขภาพและความงาม")').length
+    Should Be Equal    '${is_contain}'    '0'
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("Best Sport ware")').length
+    Should Be Equal    '${is_contain}'    '0'

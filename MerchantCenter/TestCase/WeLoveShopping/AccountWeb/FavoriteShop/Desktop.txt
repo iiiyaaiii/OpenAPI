@@ -1,0 +1,68 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Force Tags        Account-Web    mc-wls
+Test Timeout      3 minutes
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/ManageProfile.txt
+
+*** Test Cases ***
+TC_MC_00116
+    [Documentation]    Favorite menu at widget show list favorite shop (Have favorite shop)
+    [Tags]    SmokeTest    Regression    Medium
+    [Setup]    Add New Favorite Shop For Specific Product    ${buyer_account}    ${buyer_account_pass}    ${robot_store1_instock_type_use}
+    Go to My Favorite Shop Page    ${buyer_account}    ${buyer_account_pass}
+    My Favorite Shop Should Be Appeared    ${store_name1}
+    Recommended Shop Should Not Be Appeared
+    [Teardown]    Removed Favorite Shop    ${store_name1}
+
+TC_MC_00117
+    [Documentation]    Favorite menu at widget show list favorite shop (No favorite shop)
+    [Tags]    Regression    Medium
+    Go to My Favorite Shop Page    ${buyer_account}    ${buyer_account_pass}
+    Recommended Shop Section Should Be Appeared
+
+*** Keywords ***
+Go to My Favorite Shop Page
+    [Arguments]    ${username}    ${password}
+    Go to Login    ${username}    ${password}
+    Execute JavaScript    ${myacc}.mouseover()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Execute Javascript    ${widget_favshop}.click()
+    Element Should Contain    ${bar_title}    ร้านค้าโปรด
+
+Add Favorite Shop
+    ${result}=    Run Keyword And Return Status    Element Is Visible    //button[@ng-click='addFavorite()']//following::*[text()='ร้านค้าโปรด']
+    Run Keyword If    '${result}' == 'False'    Click Element    //button[@ng-click='addFavorite()']//following::*[text()='เพิ่มร้านค้าโปรด']
+
+Add New Favorite Shop For Specific Product
+    [Arguments]    ${username}    ${password}    ${productID}
+    Go to Login    ${username}    ${password}
+    Go to    ${URL_LEVEL_D}/${productID}&refresh=changeme
+    Add Favorite Shop
+    Clear Active Login
+
+My Favorite Shop Should Be Appeared
+    [Arguments]    ${shopName}
+    ${locator}=    String.Replace String    //a[text()[contains(.,'_shopName')]]    _shopName    ${shopName}
+    Element Should Be Visible    ${locator}
+
+Removed Favorite Shop
+    [Arguments]    ${shopName}
+    ${locator}=    String.Replace String    //a[text()[contains(.,'_shopName')]]//following::*[@class='wrap-icon-heart']    _shopName    ${shopName}
+    Click Element    ${locator}
+
+Recommended Shop Section Should Be Appeared
+    Element Should Be Visible    //div[@class='shop-recommend']
+
+Recommended Shop Should Not Be Appeared
+    Element Should Not Be Visible    //div[@class='shop-recommend']
+

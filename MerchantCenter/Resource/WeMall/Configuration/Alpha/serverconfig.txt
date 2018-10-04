@@ -1,0 +1,34 @@
+*** variable ***
+
+${BROWSER}    gc
+${EXPECT_LOADTIME}    60
+${ENV}    Alpha
+### Locator ####
+${URL_ACCOUNT}    https://alpha-account.wemall-dev.com
+${URL_STORE}    https://alpha-store.wemall-dev.com
+${URL_WMS}    https://alpha-wms.wls-aws.com
+${URL_PORTAL}    https://alpha-www.wemall-dev.com
+${URL_API}    https://alpha-api-order.wls-aws.com
+${URL_API_FEEDBACK}    https://alpha-api-feedback.wls-aws.com
+${URL_BILL_COUNTERSERVICE}    https://alpha-account.wemall-dev.com/billing/counter_service/
+${URL_DASHBOARD}    https://alpha-store.wemall-dev.com/${storename}/admin/dashboard/summary
+${URL_NODATA}    https://alpha-store.wemall-dev.com/prodtest50/admin/dashboard/summary
+${URL_API_ORDER}    https://alpha-api-order.wls-aws.com
+${URL_ORDER}    https://alpha-order.wls-aws.com
+${URL_IMAGE}    https://alpha-cdn-a.wls-aws.com/themes/responsive/assets/images/SmilingSuccess.png
+${URL_FB}    https://www.facebook.com
+${URL_TRACKING}    https://alpha-wms.wls-aws.com/order
+${URL_OFFLINE}    ${URL_WMS}/orderoffline
+${URL_REFUND}    https://alpha-wms.wls-dev.com/orderrequestrefund
+${URL_MOBILE}    https://alpha-m.wemall-dev.com
+${URL_OLD_BLOG}    http://alpha-blog.wls-aws.com
+${BLOG_PROXY_URL}    https://alpha-blog-proxy.wls-aws.com
+${URL_RESIZE}    https://alpha-res.wls-aws.com
+${REQ_RESIZE}    alpha-res.wls-aws.com
+${URL_EAGLEEYE}    https://alpha-eagleeye.wls-aws.com${URL_CHECKOUT}    https://checkout.wls-dev.com
+${URL_CHECKOUT}    https://alpha-checkout.wemall-dev.com
+${URL_ORDER_FOR_API}    alpha-api-order.wls-aws.com
+${URL_LEVEL_D}    ${URL_PORTAL}/d
+${URL_SHOP}    https://alpha-www.wemall-dev.com
+### TRUST ###
+${TEST_ENV}    SERVER

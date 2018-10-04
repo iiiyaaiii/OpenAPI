@@ -1,0 +1,191 @@
+*** Setting ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+Force Tags        Store-Web
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Backend_Sellerpromotion.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Backend_Promotion.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Case ***
+TC_MC_01731
+    [Documentation]    Change promotion name
+    Wait Until Element Is Visible    jquery=.promotion-name-seller a
+    Execute Javascript    $(".promotion-name-seller a").get(0).click();
+    Execute Javascript    $("input.span12").val('Promotion E').trigger('input');
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 3 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+    ${value}    Execute Javascript    return $(".promotion-name-seller a").eq(0).text().trim();
+    Should Contain    ${value}    Promotion E
+
+TC_MC_01733
+    [Documentation]    Change Type "discount baht" to "discount %"
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    ${searchbar}
+    Input Text    ${searchbar}    Promotion discount baht
+    Press Key    ${searchbar}    \\13
+    Execute Javascript    $(".promotion-name-seller a").get(0).click();
+    ${val}    Execute JavaScript    return $('select[name="discount_type"]').prop("disabled");
+    Should Be True    ${val} == True
+
+TC_MC_01735
+    [Documentation]    Change Type "discount %" to "discount baht"
+    Execute Javascript    $(".promotion-name-seller a").get(0).click();
+    ${val}    Execute JavaScript    return $('select[name="discount_type"]').prop("disabled");
+    Should Be True    ${val} == True
+
+TC_MC_01737
+    [Documentation]    Change start date
+    Wait Until Element Is Visible    jquery=.promotion-name-seller a
+    Execute Javascript    $(".promotion-name-seller a").get(0).click();
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 3 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+    ${value}    Execute Javascript    return $(".promotion-desc").eq(0).text().trim();
+    Should Be Equal    ${value}    ซื้อสินค้าตั้งแต่ 500 บาทขึ้นไป ลดเพิ่ม 10% ลดสูงสุดไม่เกิน 100 บาท
+
+TC_MC_01739
+    [Documentation]    Change end date
+    Execute Javascript    $(".promotion-name-seller a").get(0).click();
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 3 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+    ${value}    Execute Javascript    return $(".promotion-desc").eq(0).text().trim();
+    Should Be Equal    ${value}    ซื้อสินค้าตั้งแต่ 500 บาทขึ้นไป ลดเพิ่ม 10% ลดสูงสุดไม่เกิน 100 บาท
+
+TC_MC_01743
+    [Documentation]    Change condition promotion "discount baht"
+    Execute Javascript    $(".promotion-name-seller > a:contains(Promotion discount baht)").get(0).click();
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('1000').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('500').trigger('input');
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 5 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+    Input Text    //*[@id="search"]    Promotion discount baht
+    Execute Javascript    $(':contains("ค้นหา")').click()
+    Sleep    3s
+    ${value}    Execute Javascript    return $(".promotion-desc").eq(0).text().trim();
+    Should Be Equal    ${value}    ซื้อสินค้าตั้งแต่ 1,000 บาทขึ้นไป ลดเพิ่ม 500 บาท
+
+TC_MC_01745
+    [Documentation]    Change condition promotion "discount %"
+    Execute Javascript    $(".promotion-name-seller > a:contains(Promotion discount Percent)").get(0).click();
+    Execute Javascript    $("select[name='discount_type']").val('percent').change();
+    Execute Javascript    $('.input-mini').eq(0).val('600').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('10').trigger('input');
+    Execute Javascript    $('.input-mini').eq(2).val('100').trigger('input');
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 3 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+    Input Text    //*[@id="search"]    Promotion discount Percent
+    Execute Javascript    $(':contains("ค้นหา")').click()
+    Sleep    3s
+    ${value}    Execute Javascript    return $(".promotion-desc").eq(0).text().trim();
+    Should Be Equal    ${value}    ซื้อสินค้าตั้งแต่ 600 บาทขึ้นไป ลดเพิ่ม 10% ลดสูงสุดไม่เกิน 100 บาท
+
+TC_MC_01747
+    [Documentation]    Cancel Edit. Incase user click Cancel button.
+    Execute Javascript    $(".promotion-name-seller a").get(0).click();
+    Execute Javascript    $('.input-mini').eq(0).val('600').trigger('input');
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    ${textold}    Execute Javascript    return $("div[class='modal-header']").eq(2).text().trim();
+    Execute Javascript    ${cancel_popup}
+    ${textcheck}    Execute Javascript    return $("div[class='modal-header']").eq(2).text().trim();
+    Should Contain    ${textcheck}    ${textold}
+
+
+TC_MC_01761
+    [Documentation]    Click delete product to selected
+    [Tags]    Regression    Medium    mock
+    Sleep    2
+    ${count_data}=    Execute Javascript    return $('.checkbox-select').length
+    Run Keyword If    ${count_data} == 0    Pass Execution    No Data
+    Run Keyword If    ${count_data} > 0    Execute Javascript    $('div.promotion-manage-menu span a')[0].click()
+    ${checked}=    Execute Javascript    return $("[name='source_products']").prop('checked')
+    Run Keyword If    ${checked} == False    Execute Javascript    $("[name='source_products']").prop('checked', true)
+    Execute Javascript    $("[name='source_products']").click()
+    Sleep    2
+    ## check selected
+    ${selected_item}=    Execute Javascript    return $(".sp").length
+    Run Keyword If    ${selected_item} > 0    Remove Selected Promotion Item
+    ## validate result 1
+    ${product_list}=    Execute Javascript    return $(".plist").length
+    Should Be True    ${product_list} == 20
+    Execute Javascript    $('input[check-all="products"]')[0].click()
+    Execute Javascript    $('[ng-click="addToPromotion()"]')[0].click()
+    Sleep    2
+    ## validate result selected
+    ${selected}=    Execute Javascript    return $(".sp").length
+    Should Be True    ${selected} == 20
+    ## remove product 1 selected
+    Execute Javascript    $("a.btn-danger")[0].click()
+    ## validate result after remove 1 product selected
+    ${selected}=    Execute Javascript    return $(".sp").length
+    Should Be True    ${selected} == 19
+    Execute Javascript    $(".tool-top-button button[name='save']").click()
+    ## validate result 3
+    Sleep    2
+    Wait Until Element Is Visible    //div[@id='alertbefore-submit']/div[@class='modal-body']    ${EXPECT_LOADTIME}
+    Execute Javascript    $("div#alertbefore-submit button[name='save']").click()
+    Wait Until Element Is Visible    //*[@id='cat_filter']    ${EXPECT_LOADTIME}
+    Wait Until Element Is Visible    //table[@id='table_report']/tbody/tr[1]    ${EXPECT_LOADTIME}
+    ${product_list_hi}=    Execute Javascript    return $("input.checkbox-select").length
+    Should Be True    ${product_list_hi} == 19
+
+
+TC_MC_01765
+    [Documentation]    Cancel Edit. Incase user click Cancel button.
+    Get shop name
+    Go To    ${URL_STORE}/${shop_name}/admin/promotion
+    Wait Until Page Contains    จัดการโปรโมชั่น
+    ${count_product_1}    Execute Javascript    return $('.promo-unit-box').eq(0).text();
+    Click Element    ${manage_product}
+    Execute Javascript    ${selectproduct_item}
+    Execute Javascript    ${select_all}
+    Execute Javascript    ${selectproduct_to_rigth}
+    Execute Javascript    ${cancel}
+    Wait Until Element Is Visible    ${confirmcancel_popup}
+    Click Element    ${confirmcancel}
+    Sleep    10s
+    Go To    ${URL_STORE}/${shop_name}/admin/promotion
+    Wait Until Page Contains    จัดการโปรโมชั่น
+    ${count_product_2}    Execute Javascript    return $('.promo-unit-box').eq(0).text();
+    Should Be Equal    ${count_product_1}    ${count_product_2}
+

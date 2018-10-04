@@ -1,0 +1,1130 @@
+*** Settings ***
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           OperatingSystem
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeLoveShopping/WebElement/Cart.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/Checkout.txt
+Resource          ../../Resource/Wemall/WebElement/Cart.txt
+Resource          ../../Resource/Wemall/WebElement/Checkout.txt
+Resource          ../../Resource/Wemall/WebElement/Member_SignIn.txt
+Resource          ../../Resource/Wemall/WebElement/Member_SignUp.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/AccountHistory.txt
+
+*** Variables ***
+&{checkoutDict}    shopCheckOut=xpath=//div[@name='_shopName']//following-sibling::button[@class='btn btn-buy']
+
+*** Keywords ***
+Check User Login
+    ${result}=    Check Element    ${txa_my_account}
+    Run Keyword If    '${result}'=='FAIL'    Go to Login    ${buyer_checkout}    ${buyer_checkout_pass}
+
+Create order credit card channel
+    [Documentation]    Clear product in cart and create new order by credit card channel
+    [Arguments]    ${store_name}    ${product_name}    ${select_address}    ${shipping_post}    ${payment_channel}
+    Delete All Product In Cart
+    Add Product To Cart by product name on Store    ${URL_SHOP}/${store_name}    ${product_name}
+    Place Order    ${select_address}    ${shipping_post}    ${payment_channel}
+    Perform payment by Credit Card
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+
+Create order offline channel
+    [Documentation]    Clear product in cart and create new order by offline channel
+    [Arguments]    ${store_name}    ${product_name}    ${select_address}    ${shipping_post}    ${payment_channel}    ${lbl_order_id}
+    Delete All Product In Cart
+    Add Product To Cart by product name on Store    ${URL_SHOP}/${store_name}    ${product_name}
+    Place Order    ${select_address}    ${shipping_post}    ${payment_channel}
+    Click Element    ${btn_confirm_placeorder}
+    Get order id offline from thankyou page    ${lbl_order_id}
+    Get substring order id offline from thankyou page    ${order_id}
+
+Create order ewallet channel
+    [Documentation]    Clear product in cart and create new order by ewallet
+    [Arguments]    ${store_name}    ${product_name}    ${select_address}    ${shipping_post}    ${payment_channel}
+    Delete All Product In Cart
+    Add Product To Cart by product name on Store    ${URL_SHOP}/${store_name}    ${product_name}
+    Place Order    ${select_address}    ${shipping_post}    ${payment_channel}
+    Click Element    ${btn_confirm_placeorder}
+    Check Element Visible    ${wallet_cancel}    ${expect_load_time}
+    Click Element    ${wallet_cancel}
+    Check Element Visible    ${btn_view_order_detail_thankyou_page}    ${expect_load_time}
+    Click Element    ${btn_view_order_detail_thankyou_page}
+    ${url_detail}    Get Location
+    ${order_id}    Remove String    ${url_detail}    ${URL_ACCOUNT}/profile/report/orderdetail/
+    Set Test Variable    ${order_id}
+
+Create order two products
+    [Documentation]    Clear product in cart and create new order two products by credit card channel
+    [Arguments]    ${store_name}    ${product_first}    ${product_second}    ${select_address}    ${shipping_post}    ${payment_channel}
+    Delete All Product In Cart
+    Add Product To Cart by product name on Store    ${URL_SHOP}/${store_name}    ${product_first}
+    Add Product To Cart by product name on Store    ${URL_SHOP}/${store_name}    ${product_second}
+    Place Order    ${select_address}    ${shipping_post}    ${payment_channel}
+    Perform payment by Credit Card
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+
+Reconcline the order payment success
+    [Documentation]    Use for reconcline the order payment success
+    [Arguments]    ${ref_1}    ${order_id}    ${price}
+    #${price}=    Get Text    ${element_total_price_account_detail}
+    ${yyyy}    Get year
+    ${mm}    Get month
+    ${dd}    Get day
+    ${dateFile}=    Set Variable    ${dd}${mm}${yyyy}
+    ${dateReconcile}=    Set Variable    ${yyyy}-${mm}-${dd}
+    ${file_path}    Replace String    ${CURDIR}    ${/}TestCase${/}WeLoveShopping${/}AccountWeb${/}WLSAccount    ${/}Resource${/}${BU}${/}Image
+    #Create Valid SCB Mid Day Bank Text File    ${file_path}${/}SCB_TexFile.txt     ${dateFile}    ${order_id}    ${NAME_20CHARS}    ${ref_1}    ${order_id}
+    #...    CSH    ${price}
+    ${scb_header}=    Set SCB Transaction Header Date    ${scb_mid_day_header}    ${dateFile}
+    Create File    ${file_path}${/}SCB_TexFile.txt    ${scb_header}${\n}    ${default_encoding}
+    ${transaction_line}=    Set Transaction Payer Name    ${scb_mid_day_content}    ${NAME_20CHARS}
+    ${transaction_line}=    Set Transaction Date    ${transaction_line}    ${dateFile}
+    ${sequence_num}=    Generate Random String    6    [NUMBERS]
+    ${transaction_line}=    Set SCB Transaction Sequence Number    ${transaction_line}    ${sequence_num}
+    ${transaction_line}=    Set Transaction Ref1    ${transaction_line}    ${ref1}
+    ${transaction_line}=    Set Transaction Ref2    ${transaction_line}    ${order_id}
+    ${transaction_line}=    Set SCB Mid Day Payment Method    ${transaction_line}    CSH
+    ${transaction_line}=    Set SCB Mid Day Transaction Amount    ${transaction_line}    ${price}
+    Append To File    ${file_path}${/}SCB_TexFile.txt    ${transaction_line}${\n}    ${default_encoding}
+    Append To File    ${file_path}${/}SCB_TexFile.txt    ${scb_mid_day_tailing}${\n}    ${default_encoding}
+    Set Test Variable    ${file_path}
+    Set Test Variable    ${dateReconcile}
+    Offline Upload And Reconcile    ${order_id}    ${file_path}${/}SCB_TexFile.txt     ${dateReconcile}
+
+Delete All Product In Cart
+    Go to    ${URL_PORTAL}/cart
+    Run Keyword And Ignore Error    Wait Until Element Is Visible    ${delete_product_cart}
+    ${count}=    Get Matching Xpath Count    ${delete_product_cart}
+    : FOR    ${a}    IN RANGE    0    ${count}
+    \    Wait Until Element Is Visible    ${delete_product_cart}
+    \    Log    ${a}
+    \    Click Element    ${delete_product_cart}
+    \    Confirm Action
+    Wait Until Page Contains    ไม่มีสินค้าในตะกร้าของท่าน
+
+Delete All Product In Cart Mobile
+    Click Element    ${h_cart_icon}
+    Wait Until Page Contains    All Rights Reserved
+    ${count}=    Get Matching Xpath Count    ${m_cart_delete_item}
+    ${index}    Evaluate    ${count} + 1
+    : FOR    ${i}    IN RANGE    0    ${count}
+    \    Execute Javascript    $('.delete-item')[0].click()
+    \    Sleep    0.3s
+
+Click Add Address
+    Click Element    ${cart_addaddress}
+
+Click Edit Address
+    Click Element    //button[@class[contains(.,'update_address')]]
+
+Input Address Checkout Step 1
+    [Arguments]    ${TxtFirstName}=Checkout    ${TxtLastName}=Address    ${TxtAddress}=fl.19 AIA Capital Tower    ${Province}=กรุงเทพมหานคร    ${City}=จตุจักร    ${District}=จันทรเกษม    ${TxtZipCode}=10400    ${TxtPhone}=0810000010    ${TxtEmail}=buyer_test10@mailinator.com
+    Wait Until Element Is Visible    frm_address
+    Execute Javascript    $('#firstname').val('${TxtFirstName}')
+    Execute Javascript    $('#lastname').val('${TxtLastName}')
+    Execute Javascript    $('#address').val('${TxtAddress}')
+    Select From List By Label    province    ${Province}
+    Select From List By Label    city    ${City}
+    Select From List By Label    district    ${District}
+    Input Text    ${address_zipcode}    ${TxtZipCode}
+    Input Text    ${edit_phone}    ${TxtPhone}
+    Input Text    ${address_shippingemail}    ${TxtEmail}
+    Execute Javascript    $('.btn.btn-add-address').click()
+    Set Test Variable    ${TxtFirstName}
+    Set Test Variable    ${TxtLastName}
+    Set Test Variable    ${TxtAddress}
+    Set Test Variable    ${Province}
+    Set Test Variable    ${City}
+    Set Test Variable    ${District}
+    Set Test Variable    ${TxtPhone}
+    Set Test Variable    ${TxtEmail}
+
+Verify Error Message
+    Wait Until Element Is Visible    shipping_email-error
+    Page Should Contain    อีเมลไม่ถูกต้อง
+
+Verify After Save
+    Page Should Contain    ${TxtFirstName}
+    Page Should Contain    ${TxtLastName}
+    Page Should Contain    ${TxtAddress}
+    Page Should Contain    ${Province}
+    Page Should Contain    ${City}
+    Page Should Contain    ${District}
+    Page Should Contain    ${TxtPhone}
+    Page Should Contain    ${TxtEmail}
+
+Inpage Credit Card
+    [Documentation]    Inpage Credit Card
+    Wait Until Element Is Visible    //input[@id='card_number_1']
+    Input Text    //input[@id='card_number_1']    ${visa1}
+    Input Text    //input[@id='card_number_2']    ${visa2}
+    Input Text    //input[@id='card_number_3']    ${visa3}
+    Input Text    //input[@id='card_number_4']    ${visa4}
+    Input Text    //input[@id='card_name']    WLS Buyer
+    Select From List By Label    card_expiry_month    10
+    Select From List By Label    card_expiry_year    2019
+    Input Text    //input[@id='card_cvn']    123
+
+Perform payment by Credit Card
+    [Documentation]    Inpage Credit Card
+    Wait Until Element Is Visible    ${rdo_credit_card}
+    Click Element    ${rdo_credit_card}
+    Input Text    ${txt_card_number_1}    ${lbl_credit1}
+    Input Text    ${txt_card_number_2}    ${lbl_credit2}
+    Input Text    ${txt_card_number_3}    ${lbl_credit3}
+    Input Text    ${txt_card_number_4}    ${lbl_credit4}
+    Input Text    ${txt_card_name}    QA WLS
+    Select From List By Label    card_expiry_month    ${month}
+    Select From List By Label    card_expiry_year    ${year}
+    Input Text    ${txt_card_cvn}    ${cnv}
+    Click Confirm Checkout Button
+
+Verify Thankyou Page Order Status
+   [Documentation]    Verify Thankyou Page Order Status
+   [Arguments]    ${payment}=none    ${status}=none
+   Wait Until Page Contains Element    //div[@class='thk-payment-status']    ${EXPECT_LOADTIME}    Payment Channel : ${payment} is not available
+   Run Keyword If    '${payment}'=='Credit' and '${status}'=='Success' or '${payment}'=='eWallet' and '${status}'=='Success'    Element Should Contain    ${thx_title_success}    ชำระเงินเรียบร้อย
+   Run Keyword If    '${payment}'=='Credit' and '${status}'=='Cancel' or '${payment}'=='eWallet' and'${status}'=='Cancel'    Element Should Contain    ${thx_title_cancel}    ชำระเงินไม่สำเร็จ
+   Run Keyword If    '${payment}'=='ATM' or '${payment}'=='BANKCOUNTER' or '${payment}' == 'IBANKING' or '${payment}' == 'CS'    Element Should Contain    ${thx_title_wait}    รอการชำระเงิน
+   Run Keyword If    '${payment}' == 'COD'    Element Should Contain    ${thx_title_success}    สั่งซื้อสินค้าสำเร็จ
+   Verify Thankyou Page Status Detail    ${payment}    ${status}
+   Run Keyword If    '${payment}' == 'CS'    Element Text Should Be    ${thx_title_cs_payment_ref}    เลขอ้างอิงการชำระเงิน
+   Run Keyword If    '${payment}' == 'CS'    Wait Until Element Is Visible    ${number_for_sc_barcode_thankyou}
+   ${cs_payment_ref_thankyou}=    Run Keyword If    '${payment}' == 'CS'    Get Text    ${number_for_sc_barcode_thankyou}
+   Run Keyword If    '${payment}' == 'CS'    Click Element    ${payment_form_button}
+   Run Keyword If    '${payment}' == 'CS'    Select Window    title=ใบแจ้งยอดชำระสินค้า
+   ${cs_payment_ref_form}=    Run Keyword If    '${payment}' == 'CS'    Get text    ${number_for_sc_barcode_form}
+   Run Keyword If    '${payment}' == 'CS'    Should Be String    ${cs_payment_ref_thankyou}    ${cs_payment_ref_form}
+
+Get Amount Before
+    [Documentation]    Get Amount Before
+    Wait Until Element Is Visible    ${item_total}
+    ${exclude_shipping}=    Get Text    ${item_total}
+    ${exclude_shipping}=    Get Substring    ${exclude_shipping}    \    -4
+    ${exclude_shipping}=    Remove String    ${exclude_shipping}    ,
+    ${exclude_shipping}=    Convert To Number    ${exclude_shipping}
+    [Return]    ${exclude_shipping}
+
+Get Amount After
+    [Documentation]    Get Amount After
+    ${include_shipping}=    Get Text    ${order_total}
+    ${include_shipping}=    Get Substring    ${include_shipping}    \    -4
+    ${include_shipping}=    Remove String    ${include_shipping}    ,
+    ${include_shipping}=    Convert To Number    ${include_shipping}
+    [Return]    ${include_shipping}
+
+Checkout Verify Shipping Address
+    [Documentation]    Checkout Verify Shipping Address
+    [Arguments]    ${adr_raw}
+    ${adr_mod}=    Remove String    ${adr_raw}    ${\n}
+    ${adr_mod}=    Remove String    ${adr_mod}    เบอร์    โทร    ศัพท์    อีเมล
+    ...    แก้ไข    :    ${SPACE}    .
+    ${adr_mod}=    Remove String Using Regexp    ${adr_mod}    \n+
+    [Return]    ${adr_mod}
+
+Check Shipping Cost
+    [Documentation]    Check Shipping Cost
+    [Arguments]    ${cost}
+    ${shipping_cost}=    Run Keyword And Return If    '${cost}'!='ฟรี'    Get Substring    ${cost}    \    -4
+    ${shipping_cost}=    Run Keyword And Return If    '${cost}'=='ฟรี'    Set Variable    0
+    ${shipping_cost}    Convert To Integer    ${shipping_cost}
+    [Return]    ${shipping_cost}
+
+Verify Thankyou Page Status Detail
+    [Documentation]    Verify Thankyou Page Status Detail
+    [Arguments]    ${payment}=none    ${status}=none
+    Run Keyword If    '${payment}'=='Credit' and '${status}'=='Success' or '${payment}'=='eWallet' and '${status}'=='Success'    Element Should Contain    ${thx_status_detail}    ร้านค้าได้รับคำสั่งซื้อของคุณแล้ว หมายเลขการสั่งซื้อ    ระบบได้ส่ง sms และอีเมลยืนยันรายการสั่งซื้อให้คุณเรียบร้อย
+    Run Keyword If    '${payment}'=='Credit' and '${status}'=='Cancel' or '${payment}'=='eWallet' and '${status}'=='Cancel'    Element Should Contain    ${thx_status_detail}    เกิดความผิดพลาดในการชำระเงิน    กรุณาทำรายการสั่งซื้อใหม่อีกครั้ง
+    Run Keyword If    '${payment}'=='ATM' or '${payment}'=='BANKCOUNTER' or '${payment}' == 'IBANKING' or '${payment}' == 'CS'    Element Should Contain    ${thx_status_detail}    กรุณาชำระเงินภายใน    ระบบได้ส่งรายละเอียดการชำระเงินไปยังอีเมลของคุณแล้ว
+    Run Keyword If    '${payment}'=='COD'    Element Should Contain    ${thx_status_detail}    ร้านค้าจะดำเนินการจัดส่งสินค้า และเก็บเงินปลายทาง    ระบบได้ส่ง sms และอีเมลยืนยันรายการสั่งซื้อให้คุณเรียบร้อย
+
+Verify Thankyou Page Order Summary
+    [Documentation]    Verify Thankyou Page Order Summary
+    [Arguments]    ${order_summary}=none    ${promotion_type}=none    ${promotion_name}=none    ${promotion_discount}=none    ${shipping}=none
+    Log    promotion_type : ${promotion_type}|promotion : ${promotion_name}|promotion_discount : ${promotion_discount}
+    ${order_before_net}=    Get Element Attribute    ${thx_order_sum}@textContent
+    ${order_before_net}=    Remove String    ${order_before_net}    ,
+    ${order_before_net}    ${decimal}=    Split String    ${order_before_net}    .
+    ${order_summary}=    Convert To String    ${order_summary}
+    ${order_summary}    ${decimal}=    Split String    ${order_summary}    .
+    Should Contain    ${order_before_net}    ${order_summary}
+    ${shipping_display}    Convert To String    ${shipping}
+    Run Keyword If    '${promotion_type}'=='Promotion'    Get Promotion Description
+    Run Keyword If    '${promotion_type}'=='Promotion'    Get Promotion Discount
+    ${thx_promocode_desc_text}    Run Keyword If    '${promotion_type}'=='Promocode'    Get Text    ${thx_promocode_desc}
+    ${thx_promocode_desc_text}    Run Keyword If    '${promotion_type}'=='Promocode'    Remove String Using Regexp    ${thx_promocode_desc_text}    \n+
+    Run Keyword If    '${promotion_type}'=='Promocode'    Should Contain    ${thx_promocode_desc_text}    ${promotion_name}
+    Run Keyword If    '${promotion_type}'=='Promotion'    Should Match    '${promotion_desc}'    '${promotion_name}'
+    ${promotion_dc}=    Run Keyword If    '${promotion_type}'=='Promotion' or '${promotion_type}'=='Promocode'    Get Text    ${thx_promotion_discount}
+    ${promotion_dc}=    Run Keyword If    '${promotion_type}'=='Promotion' or '${promotion_type}'=='Promocode'    Evaluate    abs(${promotion_dc})
+    Run Keyword If    '${promotion_type}'=='Promotion' or '${promotion_type}'=='Promocode'    Should Be Equal As Integers    ${promotion_dc}    ${promotion_discount}
+    Run Keyword If    '${promotion_type}'!='None' and '${shipping}' != '0'    Element Should Contain    ${thx_ship}    ${shipping_display}
+    Run Keyword If    '${promotion_type}'=='None' and '${shipping}' != '0'    Element Should Contain    ${thx_ship_nopromo}    ${shipping_display}
+    ${order_before_net}    Convert To Number    ${order_before_net}
+    ${shipping}    Remove String    ${shipping_display}    .00    ${SPACE}    บาท
+    ${order_net_amt}    Calculate Checkout Net Total Include Shipping    ${order_before_net}    ${shipping}    ${promotion_discount}
+    ${order_net_amt}=    Convert To String    ${order_net_amt}
+    Run Keyword If    '${promotion_type}'!='None' and '${shipping}' != '0'    Verify Order Amount With Promotion And Shipping    ${order_net_amt}
+    Run Keyword If    '${promotion_type}'!='None' and '${shipping}' == '0'    Verify Order Amount With No Promotion or Shipping    ${order_net_amt}
+    Run Keyword If    '${promotion_type}'=='None' and '${shipping}' != '0'    Verify Order Amount With No Promotion or Shipping    ${order_net_amt}
+    Run Keyword If    '${promotion_type}'=='None' and '${shipping}' == '0'    Verify Total Amount Of Order On Thankyou Page    ${order_net_amt}
+    [Return]    ${order_net_amt}
+
+Get Promotion Description
+    ${promotion_desc}=    Get Element Attribute    ${thx_promotion_desc}@textContent
+    ${promotion_desc}=    Strip String    ${promotion_desc}    mode=both
+    Set Suite Variable    ${promotion_desc}
+
+Get Promotion Discount
+    ${promotion_dc}=    Get Element Attribute    ${thx_promotion_discount}@textContent
+    ${promotion_dc}=    Remove String    ${promotion_dc}    -
+    ${promotion_dc}    ${decimal}=    Split String    ${promotion_dc}    .
+    ${promotion_dc}=    Strip String    ${promotion_dc}
+    Set Suite Variable    ${promotion_dc}
+
+Verify Order Reference
+    [Documentation]    Verify Order Reference
+    [Arguments]    ${net_amount}=none    ${payment}=none    ${status}=none
+    Run Keyword If    '${payment}'=='Credit' and '${status}' == 'Success'    Element Should Contain    ${order_ref_online}    ร้านค้าจะแจ้งจัดส่งสินค้าให้คุณ    ภายในวันที่
+    Run Keyword If    '${payment}'=='COD'    Element Should Contain    ${order_ref_online}    ร้านค้าจะแจ้งจัดส่งสินค้าให้คุณ    ภายในวันที่
+    Run Keyword If    '${payment}'=='ATM'    Element Should Contain    ${order_ref_payment}    ชำระผ่าน ตู้ ATM
+    Run Keyword If    '${payment}'=='BANKCOUNTER'    Element Should Contain    ${order_ref_payment}    ชำระผ่าน เคาน์เตอร์ธนาคาร
+    Run Keyword If    '${payment}'=='IBANKING'    Element Should Contain    ${order_ref_payment}    ชำระผ่าน อินเตอร์เน็ตแบงค์กิ้ง
+    Run Keyword If    '${payment}'=='CS'    Element Should Contain    ${order_ref_payment}    ชำระผ่าน เคาน์เตอร์เซอร์วิส
+    Run Keyword If    '${payment}'=='CS'    Page Should Contain    เลขอ้างอิงการชำระเงิน
+    Run Keyword If    '${payment}'=='CS' or '${payment}'=='BANKCOUNTER'    Element Should Be Visible    ${btn_form_print}
+    Run Keyword If    '${payment}'=='Credit' or '${payment}'=='eWallet' or '${payment}'=='CS'    Page Should Not Contain    รหัสอ้างอิง 1 (Ref.1 / Customer No.)
+    Run Keyword If    '${payment}'=='Credit' or '${payment}'=='eWallet' or '${payment}'=='CS'    Page Should Not Contain    รหัสอ้างอิง 2 (Ref.2)
+    Run Keyword If    '${payment}'=='ATM' or '${payment}'=='BANKCOUNTER' or '${payment}' == 'IBANKING'    Page Should Contain    รหัสอ้างอิง 1 (Ref.1 / Customer No.)
+    Run Keyword If    '${payment}'=='ATM' or '${payment}'=='BANKCOUNTER' or '${payment}' == 'IBANKING'    Page Should Contain    รหัสอ้างอิง 2 (Ref.2)
+    ${order_ref_amt}=    Set Variable    none
+    ${order_ref_amt_raw}=    Run Keyword If    '${payment}'=='ATM' or '${payment}'=='BANKCOUNTER' or '${payment}' == 'IBANKING' or '${payment}' == 'CS'    Get Text    ${order_ref_netamt}
+    ${order_ref_amt_temp}=    Run Keyword If    '${payment}'=='ATM' or '${payment}'=='BANKCOUNTER' or '${payment}' == 'IBANKING' or '${payment}' == 'CS'    Get Substring    ${order_ref_amt_raw}    \    -4
+    ${order_ref_amt_last}=    Run Keyword If    '${payment}'=='ATM' or '${payment}'=='BANKCOUNTER' or '${payment}' == 'IBANKING' or '${payment}' == 'CS'    Remove String    ${order_ref_amt_temp}    ,
+    ${net_amount}=    Convert To String    ${net_amount}
+    Run Keyword If    '${payment}'=='ATM' or '${payment}'=='BANKCOUNTER' or '${payment}' == 'IBANKING' or '${payment}' == 'CS'    Should Contain    ${order_ref_amt_last}    ${net_amount}
+
+Verify Order Amount With Promotion And Shipping
+    [Documentation]    Verify Order Amount With Promotion And Shipping
+    [Arguments]    ${amt}
+    ${thx_net_amt_value}=    Get Text    ${thx_net_amt}
+    ${thx_net_amt_value}=    Remove String    ${thx_net_amt_value}    ,
+    ${amt}    Convert To String    ${amt}
+    Should Contain    ${thx_net_amt_value}    ${amt}
+
+Verify Order Amount With No Promotion or Shipping
+    [Documentation]    Verify Order Amount With No Promotion or Shipping
+    [Arguments]    ${amt}
+    # ${thx_net_amt_value}=    Get Text    ${thx_net_amt_nopromo}
+    ${thx_net_amt_value}=    Get Element Attribute    ${thx_net_amt_nopromo}@textContent
+    ${thx_net_amt_value}=    Remove String    ${thx_net_amt_value}    ,
+    ${amt}    Convert To String    ${amt}
+    Should Contain    ${thx_net_amt_value}    ${amt}
+
+Verify Order Amount With No Promotion And Shipping
+    [Documentation]    Verify Order Amount With No Promotion And Shipping
+    [Arguments]    ${amt}
+    ${thx_net_amt_value}=    Get Text    ${thx_net_amt_nopromo_shipping}
+    ${thx_net_amt_value}=    Remove String    ${thx_net_amt_value}    ,
+    ${amt}    Convert To String    ${amt}
+    Should Contain    ${thx_net_amt_value}    ${amt}
+
+Selected Attribute
+    [Documentation]    Selected Attribute
+    [Arguments]    ${option_type}    ${option_value}
+    Run Keyword If    '${option_type}'=='สี'    Execute Javascript    $("div[option-title='${option_value}']").click()
+    Run Keyword If    '${option_type}'=='ขนาด'    Execute Javascript    $("div[data-option-title='${option_value}']").click()
+    [Return]    ${option_type} : ${option_value}
+
+Verify Step Summary
+    [Documentation]    Verify Step Summary
+    [Arguments]    ${promotion}=none    ${discount}=none    ${item_detail}=none
+    Wait Until Element Is Visible    //ul[@class='box-table-product-list']//li
+    ${product}=    Get Matching Xpath Count    //ul[@class='box-table-product-list']//li
+    ${uindex}=    Get Matching Xpath Count    //ul[@class='box-table-product-list']//li
+    #${item_shopname}=    Get From Dictionary    ${item_detail}    shopname
+    #Element Should Contain    ${order_summary_step_shopname}    ${item_shopname}
+    ${ordertotal}=    Set Variable    0
+    ${qty_item}=    Set Variable    0
+    : FOR    ${x}    IN RANGE    0    ${product}
+    \    ${index}    Evaluate    ${x} + 1
+    \    ${item_name}    Get Text    //ul[@class='box-table-product-list']//li[${index}]${order_summary_step_itemdetail}
+    \    ${item_name}    Remove String    ${item_name}    ${SPACE}
+    \    ${sel_item_name}    Get From Dictionary    ${item_detail}    itemname${uindex}
+    \    ${sel_item_name}    Remove String    ${sel_item_name}    ${SPACE}
+    \    Should Contain    ${item_name}    ${sel_item_name}
+    \    ${item_attr}    Get From Dictionary    ${item_detail}    itemattr${uindex}
+    \    Run Keyword If    '${item_attr}' != 'None'    Should Contain    ${item_name}    ${item_attr}
+    \    ${item_type}    Get From Dictionary    ${item_detail}    itemtype${uindex}
+    \    Run Keyword If    '${item_type}' == 'flashsale'    Element Should Be Visible    //ul[@class='box-table-product-list']//li[${index}]${order_summary_step_itemdetail}${order_summary_step_flashsale}
+    \    Run Keyword If    '${item_type}' == 'flashsale'    Element Should Contain    //ul[@class='box-table-product-list']//li[${index}]${order_summary_step_itemdetail}${order_summary_step_flashsale}    Flash Sale
+    \    Run Keyword If    '${item_type}' == 'None'    Element Should Not Be Visible    //ul[@class='box-table-product-list']//li[${index}]${order_summary_step_itemdetail}${order_summary_step_flashsale}
+    \    Run Keyword If    '${item_type}' == 'None'    Element Should Not Be Visible    //ul[@class='box-table-product-list']//li[${index}]${order_summary_step_itemdetail}${order_summary_step_promotion}
+    \    Run Keyword If    '${item_type}' != 'None' and '${item_type}' != 'flashsale'    Element Should Be Visible    //ul[@class='box-table-product-list']//li[${index}]${order_summary_step_itemdetail}${order_summary_step_promotion}
+    \    Run Keyword If    '${item_type}' != 'None' and '${item_type}' != 'flashsale'    Element Should Contain    //ul[@class='box-table-product-list']//li[${index}]${order_summary_step_itemdetail}${order_summary_step_promotion}    ${item_type}
+    \    ${item_quantity}    Get From Dictionary    ${item_detail}    itemqty${uindex}
+    \    ${qty_item}    Evaluate    ${qty_item} + ${item_quantity}
+    \    ${item_quantity}    Convert To String    ${item_quantity}
+    \    Element Should Contain    //ul[@class='box-table-product-list']//li[${index}]${order_summary_step_itemquantity}    ${item_quantity}
+    \    ${item_total}    Get From Dictionary    ${item_detail}    itemtotal${uindex}
+    \    ${order_summary_itemprice}    Get Text    //ul[@class='box-table-product-list']//li[${index}]${order_summary_step_itemprice}
+    \    ${order_summary_itemprice}    Remove String    ${order_summary_itemprice}    ,
+    \    ${order_summary_itemprice}    Convert To Number    ${order_summary_itemprice}
+    \    Should Be Equal    ${order_summary_itemprice}    ${item_total}
+    \    ${ordertotal}    Evaluate    ${ordertotal} + ${item_total}
+    \    ${uindex}    Evaluate    ${product} - 1
+    ${calculate_total_before_net}    Convert To String    ${ordertotal}
+    ${checkout_before_net}    Get Text    ${order_summary_step}
+    ${checkout_before_net}    Remove String    ${checkout_before_net}    ,
+    Should Contain    ${checkout_before_net}    ${calculate_total_before_net}
+    ${checkout_net_total}    Get Text    ${order_total_step}
+    ${checkout_net_total}    Remove String    ${checkout_net_total}    ,
+    ${checkout_net_total}    ${decimal}=    String.Split String    ${checkout_net_total}    .
+    ${calculate_net_total}    Calculate Checkout Net Total    ${ordertotal}    ${discount}
+    ${calculate_net_total}    Convert To String    ${calculate_net_total}
+    ${calculate_net_total}    ${decimal}=    String.Split String    ${calculate_net_total}    .
+    ${discount}    Convert To String    ${discount}
+    Run Keyword If    '${calculate_total_before_net}' != '${calculate_net_total}'    Element Should Contain    ${order_summary_step_promotion}    ${promotion}
+    Run Keyword If    '${calculate_total_before_net}' != '${calculate_net_total}'    Element Should Contain    ${order_summary_step_discount}    ${discount}
+    # Should Contain    ${checkout_net_total}    ${calculate_net_total}
+    BuiltIn.Should Be True    ${checkout_net_total} <= ${calculate_net_total}
+    ${qty_summary}    Get Text    //*[@class="col-sm-5 text-right"]
+    ${qty_summary}    Remove String    ${qty_summary}    ชิ้น ในตะกร้า
+    ${qty_summary}    Execute Javascript    return $.trim("${qty_summary}");
+    ${qty_summary}    Convert To Integer    ${qty_summary}
+    Should Be Equal    ${qty_summary}    ${qty_item}
+
+Select product by product name
+    [Documentation]    Use for select product by name when placeorder
+    [Arguments]    ${product_name}
+    Execute Javascript    $("img[alt='${product_name}']").click()
+
+Select product by product Sku
+    [Documentation]    Use for select product by sku when placeorder
+    [Arguments]    ${sku_product}
+    #${url_product}=    Execute JavaScript    return $('.product-box.${sku_product}.domFS .product-detail .product-name-box a').attr("href")
+    #${url_product_false}=    Remove String    ${url_product}    "
+    #${url_product_true}=    Replace String  ${url_product_false}    product    d
+    #Go To    ${url_product_true}
+    Execute Javascript    $("img[alt='${sku_product}']").click()
+
+Add Product To Cart by product name on Store
+    [Documentation]    Use for user select one product which select product one piece to cart
+    [Arguments]    ${store_url}    ${product_name}
+    Go To    ${store_url}
+    Select product by product name    ${product_name}
+    Wait Until Element Is Visible    ${Button_AddToCart}    ${EXPECT_LOADTIME}
+    Click Element    ${Button_AddToCart}
+    Wait Until Element Is Visible    ${btn_order}    ${EXPECT_LOADTIME}
+    Click Element    ${btn_order}
+
+Get Promotion Discount Price Condition
+    [Documentation]    Get Promotion Discount Price Condition
+    ${count_condition}    Get Matching Xpath Count    ${leveld_promotion_condition}//li
+    ${condition_list}    Create Dictionary
+    : FOR    ${i}    IN RANGE    0    ${count_condition}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${full_condition}    Get Text    ${leveld_promotion_condition}//li[${index}]
+    \    ${discount}    Get Text    ${leveld_promotion_condition}//li[${index}]//strong
+    \    ${condition}    Remove String    ${full_condition}    ซื้อสินค้าตั้งแต่${SPACE}    ${SPACE}บาทขึ้นไป${SPACE}    ${discount}
+    \    ...    ,
+    \    ${condition}    Remove String    ${condition}    ${SPACE}    ชิ้นขึ้นไป
+    \    ${discount}    Remove String    ${discount}    ลดเพิ่ม${SPACE}    ${SPACE}บาท    ,
+    \    Set To Dictionary    ${condition_list}    condition${index}=${condition}    discount${index}=${discount}
+    \    Log Dictionary    ${condition_list}
+    [Return]    ${condition_list}
+
+Verify Promotion Discount Price Detail
+    [Arguments]    ${type}=none    ${promotion_name}=none    ${promotion_condition}=none
+    [Documentation]    Verify Promotion Discount Price Detail
+    Element Should Contain    ${cart_box_promotion}//div[@class='pm-col-left']//strong    ${promotion_name}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 2
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    ${cart_promotion_text}    Get Text    ${cart_box_promotion}//div[@class='pm-col-right']//ul//li[${index}]
+    \    ${cart_promotion_text}    Remove String    ${cart_promotion_text}    .00
+    \    Run Keyword If    '${type}'=='price'    Should Be True    '${cart_promotion_text}' == '${condition} บาทขึ้นไป ลดเพิ่ม ${discount} บาท'
+    \    Run Keyword If    '${type}'=='piece'    Should Be True    '${cart_promotion_text}' == '${condition} ชิ้นขึ้นไป ลดเพิ่ม ${discount} บาท'
+
+Get Promotion Discount Percent Condition
+    [Documentation]    Get Promotion Discount Percent Condition
+    ${count_condition}    Get Matching Xpath Count    ${leveld_promotion_condition}//li
+    ${condition_list}    Create Dictionary
+    : FOR    ${i}    IN RANGE    0    ${count_condition}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${full_condition}    Get Text    ${leveld_promotion_condition}//li[${index}]
+    \    ${discount}    Get Text    ${leveld_promotion_condition}//li[${index}]//strong
+    \    ${condition_str}    Remove String    ${full_condition}    ซื้อสินค้าตั้งแต่    ${discount}    ${SPACE}
+    \    ...    บาทขึ้นไป    ,    บาท
+    \    ${condition_str}    Remove String    ${condition_str}    ${SPACE}    ชิ้นขึ้นไป
+    \    ${temp_condition}    Create List
+    \    ${temp_condition}    Split String    ${condition_str}    ลดสูงสุดไม่เกิน
+    \    ${discount}    Remove String    ${discount}    ลดเพิ่ม    ${SPACE}
+    \    ${condition}    Get From List    ${temp_condition}    0
+    \    ${max_discount}    Get From List    ${temp_condition}    1
+    \    Set To Dictionary    ${condition_list}    condition${index}=${condition}    discount${index}=${discount}    max_discount${index}=${max_discount}
+    \    Log Dictionary    ${condition_list}
+    [Return]    ${condition_list}
+
+Verify Promotion Discount Percent Detail
+    [Documentation]    Verify Promotion Discount Percent Detail
+    [Arguments]    ${type}=none    ${promotion_name}=none    ${promotion_condition}=none
+    Element Should Contain    ${cart_box_promotion}//div[@class='pm-col-left']//strong    ${promotion_name}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 3
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    ${max_discount}    Get From Dictionary    ${promotion_condition}    max_discount${index}
+    \    ${cart_promotion_text}    Get Text    ${cart_box_promotion}//div[@class='pm-col-right']//ul//li[${index}]
+    \    ${cart_promotion_text}    Remove String    ${cart_promotion_text}    .00
+    \    Run Keyword If    '${type}'=='price'    Should Be True    '${cart_promotion_text}' == '${condition} บาทขึ้นไป ลดเพิ่ม ${discount} ลดไม่เกิน ${max_discount} บาท'
+    \    Run Keyword If    '${type}'=='piece'    Should Be True    '${cart_promotion_text}' == '${condition} ชิ้นขึ้นไป ลดเพิ่ม ${discount} ลดไม่เกิน ${max_discount} บาท'
+
+Verify Promotion Discount Price
+    [Documentation]    Verify Promotion Discount Price
+    [Arguments]    ${promotion_condition}    ${item_amount}    ${promotion_name}
+    ${store_id}    Execute Javascript    return ${cart_shopid}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 2
+    ${match_discount}    Set Variable    0
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${condition}    Convert To Integer    ${condition}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    ${discount}    Convert To Integer    ${discount}
+    \    ${match_discount}    Get Discount Price    ${condition}    ${item_amount}    ${discount}    ${match_discount}
+    Run Keyword If    ${match_discount} == 0    Element Should Not Be Visible    //div[@class='box-overflow promotion-${store_id}']
+    Run Keyword If    ${match_discount} != 0    Element Should Be Visible    //div[@class='box-overflow promotion-${store_id}']
+    Run Keyword If    ${match_discount} != 0    Element Should Contain    //div[@class='box-overflow promotion-${store_id}']//div[2]    -${match_discount}
+    Run Keyword If    ${match_discount} != 0    Element Should Contain    //div[@class='box-overflow promotion-${store_id}']//div[1]//span    ${promotion_name}
+    [Return]    ${match_discount}
+
+Verify Promotion Discount Percent
+    [Documentation]    Verify Promotion Discount Percent
+    [Arguments]    ${promotion_condition}    ${item_amount}    ${promotion_name}
+    ${store_id}    Execute Javascript    return ${cart_shopid}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 3
+    ${match_discount}    Set Variable    0
+    ${cart_summary}    Get Promotion Price Summary
+    ${promotion_summary}    Get From Dictionary    ${cart_summary}    promotion
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${condition}    Convert To Integer    ${condition}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    ${discount}    Remove String    ${discount}    %
+    \    ${discount}    Convert To Integer    ${discount}
+    \    ${max_discount}    Get From Dictionary    ${promotion_condition}    max_discount${index}
+    \    ${max_discount}    Convert To Integer    ${max_discount}
+    \    ${match_discount}    Get Discount From Percent    ${condition}    ${item_amount}    ${promotion_summary}    ${discount}
+    \    ...    ${max_discount}    ${match_discount}
+    Run Keyword If    ${match_discount} == 0    Element Should Not Be Visible    //div[@class='box-overflow promotion-${store_id}']
+    Run Keyword If    ${match_discount} != 0    Element Should Be Visible    //div[@class='box-overflow promotion-${store_id}']
+    Run Keyword If    ${match_discount} != 0    Element Should Contain    //div[@class='box-overflow promotion-${store_id}'][1]//div[2]    -${match_discount}
+    Run Keyword If    ${match_discount} != 0    Element Should Contain    //div[@class='box-overflow promotion-${store_id}'][1]//div[1]//span    ${promotion_name}
+    [Return]    ${match_discount}
+
+Get Promotion Price Match Condition
+    [Documentation]    Get Promotion Price Match Condition
+    [Arguments]    ${promotion_condition}    ${promotion_summary}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 2
+    ${match_condition}    Set Variable    None
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${full_condition}    Get Text    ${leveld_promotion_condition}//li[${index}]
+    \    ${full_condition}    Remove String    ${full_condition}    ,
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${condition}    Convert To Integer    ${condition}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    ${discount}    Remove String    ${discount}    %
+    \    ${discount}    Convert To Integer    ${discount}
+    \    ${match_condition}    Get Match Discount Condition    ${condition}    ${promotion_summary}    ${discount}    ${full_condition}
+    \    ...    ${match_condition}
+    [Return]    ${match_condition}
+
+Get Promotion Percent Match Condition
+    [Documentation]    Get Promotion Percent Match Condition
+    [Arguments]    ${promotion_condition}    ${promotion_summary}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 3
+    ${match_condition}    Set Variable    None
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${full_condition}    Get Text    ${leveld_promotion_condition}//li[${index}]
+    \    ${full_condition}    Remove String    ${full_condition}    ,
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${condition}    Convert To Integer    ${condition}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    ${discount}    Remove String    ${discount}    %
+    \    ${discount}    Convert To Integer    ${discount}
+    \    ${match_condition}    Get Match Discount Condition    ${condition}    ${promotion_summary}    ${discount}    ${full_condition}
+    \    ...    ${match_condition}
+    [Return]    ${match_condition}
+
+Get Promotion Discount Price Condition Mobile
+    [Documentation]    Get Promotion Discount Price Condition Mobile
+    ${count_condition}    Get Matching Xpath Count    //ul[@class='box-promotion-list ng-scope']
+    ${condition_list}    Create Dictionary
+    : FOR    ${i}    IN RANGE    0    ${count_condition}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${full_condition}    Get Text    //ul[@class='box-promotion-list ng-scope'][${index}]//li
+    \    ${discount}    Get Text    //ul[@class='box-promotion-list ng-scope'][${index}]//li//strong
+    \    ${condition}    Remove String    ${full_condition}    ซื้อสินค้าตั้งแต่${SPACE}    ${SPACE}บาทขึ้นไป${SPACE}    ${discount}
+    \    ...    ,
+    \    ${condition}    Remove String    ${condition}    ${SPACE}    ชิ้นขึ้นไป
+    \    ${discount}    Remove String    ${discount}    ลดเพิ่ม${SPACE}    ${SPACE}บาท    ,
+    \    Set To Dictionary    ${condition_list}    condition${index}=${condition}    discount${index}=${discount}
+    \    Log Dictionary    ${condition_list}
+    [Return]    ${condition_list}
+
+Get Promotion Discount Percent Condition Mobile
+    [Documentation]    Get Promotion Discount Percent Condition Mobile
+    ${count_condition}    Get Matching Xpath Count    //ul[@class='box-promotion-list ng-scope']
+    ${condition_list}    Create Dictionary
+    : FOR    ${i}    IN RANGE    0    ${count_condition}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${full_condition}    Get Text    //ul[@class='box-promotion-list ng-scope'][${index}]//li
+    \    ${discount}    Get Text    //ul[@class='box-promotion-list ng-scope'][${index}]//li//strong
+    \    ${condition_str}    Remove String    ${full_condition}    ซื้อสินค้าตั้งแต่    ${discount}    ${SPACE}
+    \    ...    บาทขึ้นไป    ,    บาท
+    \    ${condition_str}    Remove String    ${condition_str}    ${SPACE}    ชิ้นขึ้นไป
+    \    ${temp_condition}    Create List
+    \    ${temp_condition}    Split String    ${condition_str}    ลดสูงสุดไม่เกิน
+    \    ${discount}    Remove String    ${discount}    ลดเพิ่ม    ${SPACE}
+    \    ${condition}    Get From List    ${temp_condition}    0
+    \    ${max_discount}    Get From List    ${temp_condition}    1
+    \    Set To Dictionary    ${condition_list}    condition${index}=${condition}    discount${index}=${discount}    max_discount${index}=${max_discount}
+    \    Log Dictionary    ${condition_list}
+    [Return]    ${condition_list}
+
+Get Promotion Price Summary Mobile
+    [Documentation]    Get Promotion Price Summary Mobile
+    ${promotion_product}=    Get Matching Xpath Count    //div[@class='box-promotion-wrap ng-scope']//ul[@class='box-list-items']//li
+    ${sum_promotion_amount}=    Set Variable    0
+    : FOR    ${a}    IN RANGE    0    ${promotion_product}
+    \    ${index}=    Evaluate    ${a} + 1
+    \    ${item_sumprice}    Get Text    //div[@ng-show="group.opened === true"]/div[${index}]/div/ul/li/div[@class="cart-item-wrap"]/div[@class='price']/span[@class='text-price']
+    \    ${item_sumprice}    Remove String    ${item_sumprice}    ,    ${SPACE}    บาท
+    \    ${item_sumprice}    Convert To Number    ${item_sumprice}
+    \    ${item_qty}    Get Text    //div[@ng-show="group.opened === true"]/div[${index}]/div//ul[@class='box-list-items']//li//span[@class='input-select ng-binding']
+    \    ${item_qty}    Convert To Number    ${item_qty}
+    \    ${item_sumprice}    Evaluate    ${item_sumprice} * ${item_qty}
+    \    ${sum_promotion_amount}=    Evaluate    ${sum_promotion_amount} + ${item_sumprice}
+    \    Log    ${sum_promotion_amount}
+    ${normal_product}=    Get Matching Xpath Count    //ul[@class='box-list-items ng-scope']//li
+    ${sum_normal_amount}=    Set Variable    0
+    : FOR    ${a}    IN RANGE    0    ${normal_product}
+    \    ${index}=    Evaluate    ${a} + 1
+    \    ${item_sumprice}    Get Text    //div[@class='ng-scope']//ul[@class='box-list-items ng-scope']//li[${index}]//div[@class="cart-item-wrap"]//div//div[@class='price']//span[@class='text-price']
+    \    ${item_sumprice}    Remove String    ${item_sumprice}    ,    ${SPACE}    บาท
+    \    ${item_sumprice}    Convert To Number    ${item_sumprice}
+    \    ${item_qty}    Get Text    //div[@class='ng-scope']//ul[@class='box-list-items ng-scope']//li[${index}]//span[@class='input-select ng-binding']
+    \    ${item_qty}    Convert To Number    ${item_qty}
+    \    ${item_sumprice}    Evaluate    ${item_sumprice} * ${item_qty}
+    \    ${sum_normal_amount}=    Evaluate    ${sum_normal_amount} + ${item_sumprice}
+    \    Log    ${sum_normal_amount}
+    ${summary}=    Create Dictionary    promotion=${sum_promotion_amount}    nonpromotion=${sum_normal_amount}
+    [Return]    ${summary}
+
+Get Promotion Quantity Summary Mobile
+    [Documentation]    Get Promotion Quantity Summary Mobile
+    ${promotion_product}=    Get Matching Xpath Count    //div[@class='box-promotion-wrap ng-scope']//ul[@class='box-list-items']//li
+    ${sum_promotion_amount}=    Set Variable    0
+    : FOR    ${a}    IN RANGE    0    ${promotion_product}
+    \    ${index}=    Evaluate    ${a} + 1
+    \    ${item_qty}    Get Text    //div[@class='box-promotion-wrap ng-scope']//ul[@class='box-list-items']//li[${index}]//span[@class='input-select ng-binding']
+    \    ${item_qty}    Convert To Number    ${item_qty}
+    \    ${sum_promotion_amount}=    Evaluate    ${sum_promotion_amount} + ${item_qty}
+    \    Log    ${sum_promotion_amount}
+    ${normal_product}=    Get Matching Xpath Count    //ul[@class='box-list-items ng-scope']//li
+    ${sum_normal_amount}=    Set Variable    0
+    : FOR    ${a}    IN RANGE    0    ${normal_product}
+    \    ${index}=    Evaluate    ${a} + 1
+    \    ${item_qty}    Get Text    //div[@class='ng-scope']//ul[@class='box-list-items ng-scope']//li[${index}]//span[@class='input-select ng-binding']
+    \    ${item_qty}    Convert To Number    ${item_qty}
+    \    ${sum_normal_amount}=    Evaluate    ${sum_normal_amount} + ${item_qty}
+    \    Log    ${sum_normal_amount}
+    ${summary}=    Create Dictionary    promotion=${sum_promotion_amount}    nonpromotion=${sum_normal_amount}
+    [Return]    ${summary}
+
+Get Promotion Price Summary
+    [Documentation]    Get Promotion Price Summary
+    ${promotion_product}=    Get Matching Xpath Count    ${cart_shop}[1]${cart_product_list}${cart_promotion_product}[1]${cart_product}${cart_itempromotion_total}
+    ${sum_promotion_amount}=    Set Variable    0
+    : FOR    ${a}    IN RANGE    0    ${promotion_product}
+    \    ${index}=    Evaluate    ${a} + 1
+    \    ${item_sumprice}    Get Text    ${cart_shop}[1]${cart_product_list}${cart_promotion_product}[1]${cart_product}[${index}]${cart_itempromotion_total}
+    \    ${item_sumprice}    Remove String    ${item_sumprice}    ,
+    \    ${item_sumprice}    Convert To Number    ${item_sumprice}
+    \    ${sum_promotion_amount}=    Evaluate    ${sum_promotion_amount} + ${item_sumprice}
+    \    Log    ${sum_promotion_amount}
+    ${normal_product}=    Get Matching Xpath Count    ${cart_shop}[1]${cart_product_list}${cart_product}${cart_boxitemtotal}${cart_itemtotal}
+    ${sum_normal_amount}=    Set Variable    0
+    : FOR    ${a}    IN RANGE    0    ${normal_product}
+    \    ${index}=    Evaluate    ${a} + 1
+    \    ${item_sumprice}    Get Text    ${cart_shop}[1]${cart_product_list}${cart_product}[${index}]${cart_boxitemtotal}${cart_itemtotal}
+    \    ${item_sumprice}    Remove String    ${item_sumprice}    ,
+    \    ${item_sumprice}    Convert To Number    ${item_sumprice}
+    \    ${sum_normal_amount}=    Evaluate    ${sum_normal_amount} + ${item_sumprice}
+    \    Log    ${sum_normal_amount}
+    ${summary}=    Create Dictionary    promotion=${sum_promotion_amount}    nonpromotion=${sum_normal_amount}
+    [Return]    ${summary}
+
+Get Promotion Quantity Summary
+    [Documentation]    Get Promotion Quantity Summary
+    ${promotion_product}=    Get Matching Xpath Count    ${cart_shop}[1]${cart_product_list}${cart_promotion_product}[1]${cart_product}${cart_itempromotion_total}
+    ${sum_promotion_amount}=    Set Variable    0
+    : FOR    ${a}    IN RANGE    0    ${promotion_product}
+    \    ${index}=    Evaluate    ${a} + 1
+    \    ${item_qty}    Get Value    ${cart_shop}[1]${cart_product_list}${cart_promotion_product}[1]${cart_product}[${index}]${cart_boxitempiece}${cart_itempiece}
+    \    ${sum_promotion_amount}=    Evaluate    ${sum_promotion_amount} + ${item_qty}
+    \    Log    ${sum_promotion_amount}
+    ${normal_product}=    Get Matching Xpath Count    ${cart_shop}[1]${cart_product_list}${cart_product}${cart_boxitemtotal}${cart_itemtotal}
+    ${sum_normal_amount}=    Set Variable    0
+    : FOR    ${a}    IN RANGE    0    ${normal_product}
+    \    ${index}=    Evaluate    ${a} + 1
+    \    ${item_qty}    Get Value    ${cart_shop}[1]${cart_product_list}${cart_product}[${index}]${cart_boxitempiece}${cart_itempiece}
+    \    ${sum_normal_amount}=    Evaluate    ${sum_normal_amount} + ${item_qty}
+    \    Log    ${sum_normal_amount}
+    ${summary}=    Create Dictionary    promotion=${sum_promotion_amount}    nonpromotion=${sum_normal_amount}
+    [Return]    ${summary}
+
+Verify Thankyou Page Product Summary
+    [Documentation]    Verify Thankyou Page Status Detail
+    [Arguments]    ${promotion}=none    ${item_detail}=none
+    ${thx_product}=    Get Matching Xpath Count    ${thx_product_list}
+    : FOR    ${x}    IN RANGE    0    ${thx_product}
+    \    ${index}=    Evaluate    ${x} + 1
+    \    ${item_name}=    Get Text    ${thx_product_list}[${index}]${thx_product_item}${thx_itemdetail}${thx_item_name}
+    \    ${item_name}=    Remove String    ${item_name}    ${SPACE}
+    \    ${sel_item_name}    Get From Dictionary    ${item_detail}    itemname${thx_product}
+    \    ${sel_item_name}    Remove String    ${sel_item_name}    ${SPACE}
+    \    Should Contain    ${item_name}    ${sel_item_name}
+    \    ${item_type}    Get From Dictionary    ${item_detail}    itemtype${thx_product}
+    \    Run Keyword If    '${item_type}' == 'flashsale'    Element Should Be Visible    ${thx_product_list}[${index}]${thx_product_item}${thx_itemdetail}${thx_item_flashsale}
+    \    Run Keyword If    '${item_type}' == 'flashsale'    Element Should Contain    ${thx_product_list}[${index}]${thx_product_item}${thx_itemdetail}${thx_item_flashsale}    Flash Sale
+    \    Run Keyword If    '${item_type}' == 'None'    Element Should Not Be Visible    ${thx_product_list}[${index}]${thx_product_item}${thx_itemdetail}${thx_item_flashsale}
+    \    Run Keyword If    '${item_type}' == 'None'    Element Should Not Be Visible    ${thx_product_list}[${index}]${thx_product_item}${thx_itemdetail}${thx_item_promotion}
+    \    Run Keyword If    '${item_type}' != 'None' and '${item_type}' != 'flashsale'    Element Should Be Visible    ${thx_product_list}[${index}]${thx_product_item}${thx_itemdetail}${thx_item_promotion}
+    \    Run Keyword If    '${item_type}' != 'None' and '${item_type}' != 'flashsale'    Element Should Contain    ${thx_product_list}[${index}]${thx_product_item}${thx_itemdetail}${thx_item_promotion}    ${item_type}
+    \    ${item_quantity}    Get From Dictionary    ${item_detail}    itemqty${thx_product}
+    \    ${item_quantity}    Convert To String    ${item_quantity}
+    \    Element Should Contain    ${thx_product_list}[${index}]${thx_item_qty}    ${item_quantity}
+    \    ${item_total}    Get From Dictionary    ${item_detail}    itemtotal${thx_product}
+    \    ${item_total}=    Convert To String    ${item_total}
+    \    ${order_summary_itemprice}=    Get Text    ${thx_product_list}[${index}]${thx_item_amt}
+    \    ${order_summary_itemprice}=    Remove String    ${order_summary_itemprice}    ,
+    \    ${item_total}=    Convert To String    ${item_total}
+    \    Should Contain    ${order_summary_itemprice}    ${item_total}
+    \    ${thx_product}=    Evaluate    ${thx_product} - 1
+
+Verify Promotion Discount Price Mobile
+    [Documentation]    Verify Promotion Discount Price Mobile
+    [Arguments]    ${promotion_condition}    ${item_amount}    ${promotion_name}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 2
+    ${match_discount}    Set Variable    0
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${condition}    Convert To Integer    ${condition}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    ${discount}    Convert To Integer    ${discount}
+    \    ${match_discount}    Get Discount Price    ${condition}    ${item_amount}    ${discount}    ${match_discount}
+    Run Keyword If    ${match_discount} == 0    Element Should Not Be Visible    //div[@ng-repeat='sum_promo in group.promotion_summary.promotion']
+    Run Keyword If    ${match_discount} != 0    Element Should Be Visible    //div[@ng-repeat='sum_promo in group.promotion_summary.promotion']
+    Run Keyword If    ${match_discount} != 0    Element Should Contain    //div[@ng-repeat='sum_promo in group.promotion_summary.promotion']    -${match_discount}
+    Run Keyword If    ${match_discount} != 0    Element Should Contain    //div[@ng-repeat='sum_promo in group.promotion_summary.promotion']//div[@class='col-1']//span    ${promotion_name}
+    [Return]    ${match_discount}
+
+Verify Promotion Discount Percent Mobile
+    [Documentation]    Verify Promotion Discount Percent Mobile
+    [Arguments]    ${promotion_condition}    ${item_amount}    ${promotion_name}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 3
+    ${match_discount}    Set Variable    0
+    ${cart_summary}    Get Promotion Price Summary Mobile
+    ${promotion_summary}    Get From Dictionary    ${cart_summary}    promotion
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${condition}    Convert To Integer    ${condition}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    ${discount}    Remove String    ${discount}    %
+    \    ${discount}    Convert To Integer    ${discount}
+    \    ${max_discount}    Get From Dictionary    ${promotion_condition}    max_discount${index}
+    \    ${max_discount}    Convert To Integer    ${max_discount}
+    \    ${match_discount}    Get Discount From Percent    ${condition}    ${item_amount}    ${promotion_summary}    ${discount}
+    \    ...    ${max_discount}    ${match_discount}
+    ${match_discount}    Convert To Integer    ${match_discount}
+    Run Keyword If    ${match_discount} == 0    Element Should Not Be Visible    //div[@ng-repeat='sum_promo in group.promotion_summary.promotion']
+    Run Keyword If    ${match_discount} != 0    Element Should Be Visible    //div[@ng-repeat='sum_promo in group.promotion_summary.promotion']
+    Run Keyword If    ${match_discount} != 0    Element Should Contain    //div[@ng-repeat='sum_promo in group.promotion_summary.promotion']    -${match_discount}
+    Run Keyword If    ${match_discount} != 0    Element Should Contain    //div[@ng-repeat='sum_promo in group.promotion_summary.promotion']//div[@class='col-1']//span    ${promotion_name}
+    [Return]    ${match_discount}
+
+Verify Promotion Discount Price Detail Mobile
+    [Documentation]    Verify Promotion Discount Price Detail Mobile
+    [Arguments]    ${type}=none    ${promotion_name}=none    ${promotion_condition}=none
+    Click Element    //div[@class='promotion-title']
+    Element Should Contain    //div[@class='modal-cart-promotion']//span    ${promotion_name}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 2
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    Run Keyword If    '${type}'=='price'    Element Should Contain    //ul[@ng-show='promotionCondition.detail'][${index}]//li    ซื้อสินค้าตั้งแต่ ${condition} บาทขึ้นไป ลดเพิ่ม ${discount} บาท
+    \    Run Keyword If    '${type}'=='piece'    Element Should Contain    //ul[@ng-show='promotionCondition.detail'][${index}]//li    ซื้อสินค้าตั้งแต่ ${condition} ชิ้นขึ้นไป ลดเพิ่ม ${discount} บาท
+    Click Element    //div[@class='btn-close-pop']
+
+Verify Promotion Discount Percent Detail Mobile
+    [Documentation]    Verify Promotion Discount Percent Detail Mobile
+    [Arguments]    ${type}=none    ${promotion_name}=none    ${promotion_condition}=none
+    Click Element    //div[@class='promotion-title']
+    Element Should Contain    //div[@class='modal-cart-promotion']//span    ${promotion_name}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 3
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    ${max_discount}    Get From Dictionary    ${promotion_condition}    max_discount${index}
+    \    Run Keyword If    '${type}'=='price'    Element Should Contain    //ul[@ng-show='promotionCondition.detail'][${index}]//li    ซื้อสินค้าตั้งแต่ ${condition} บาทขึ้นไป ลดเพิ่ม ${discount} ลดสูงสุดไม่เกิน ${max_discount} บาท
+    \    Run Keyword If    '${type}'=='piece'    Element Should Contain    //ul[@ng-show='promotionCondition.detail'][${index}]//li    ซื้อสินค้าตั้งแต่ ${condition} ชิ้นขึ้นไป ลดเพิ่ม ${discount} ลดสูงสุดไม่เกิน ${max_discount} บาท
+
+Get Promotion Price Match Condition Mobile
+    [Documentation]    Get Promotion Price Match Condition Mobile
+    [Arguments]    ${promotion_condition}    ${promotion_summary}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 2
+    ${match_condition}    Set Variable    None
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${full_condition}    Get Text    //ul[@class='box-promotion-list ng-scope'][${index}]//li
+    \    ${full_condition}    Remove String    ${full_condition}    ,
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${condition}    Convert To Integer    ${condition}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    ${discount}    Remove String    ${discount}    %
+    \    ${discount}    Convert To Integer    ${discount}
+    \    ${match_condition}    Get Match Discount Condition    ${condition}    ${promotion_summary}    ${discount}    ${full_condition}
+    \    ...    ${match_condition}
+    [Return]    ${match_condition}
+
+Get Promotion Percent Match Condition Mobile
+    [Documentation]    Get Promotion Percent Match Condition Mobile
+    [Arguments]    ${promotion_condition}    ${promotion_summary}
+    ${length}    Get Length    ${promotion_condition}
+    ${condition_discount_price}    Evaluate    ${length} / 3
+    ${match_condition}    Set Variable    None
+    : FOR    ${i}    IN RANGE    0    ${condition_discount_price}
+    \    ${index}    Evaluate    ${i} + 1
+    \    ${full_condition}    Get Text    //ul[@class='box-promotion-list ng-scope'][${index}]//li
+    \    ${full_condition}    Remove String    ${full_condition}    ,
+    \    ${condition}    Get From Dictionary    ${promotion_condition}    condition${index}
+    \    ${condition}    Convert To Integer    ${condition}
+    \    ${discount}    Get From Dictionary    ${promotion_condition}    discount${index}
+    \    ${discount}    Remove String    ${discount}    %
+    \    ${discount}    Convert To Integer    ${discount}
+    \    ${match_condition}    Get Match Discount Condition    ${condition}    ${promotion_summary}    ${discount}    ${full_condition}
+    \    ...    ${match_condition}
+    [Return]    ${match_condition}
+
+Set Shipping Type
+    [Documentation]    Set Shipping Type
+    [Arguments]    ${type}=none    ${value}=none    ${price}=none
+    Get shop name
+    Go to    ${URL_STORE}/${shop_name}/admin/shipping
+    Run Keyword If    '${type}'=='postflat'    Execute Javascript    $('#thai_land_post_standard_type')[0].click()
+    Run Keyword If    '${type}'=='postflat' and '${value}'=='free'    Execute Javascript    $('#thai_land_post_standard_flat')[0].click()
+    Run Keyword If    '${type}'=='postflat' and '${value}'!='free'    Execute Javascript    $('#thai_land_post_standard_cost')[0].click()
+    Run Keyword If    '${type}'=='postflat' and '${value}'!='free'    Input Text    //input[@name='thai_land_post_standard[flat_price]']    35
+    Run Keyword If    '${type}'=='postweight'    Run Keywords    Execute Javascript    $('#thai_land_post_standard_type_weight')[0].click()    AND    Select From List By Label    //*[@ng-class="{'rate_range_error':rate.rang=='to' && company['thailandpost']['service']['standard'].status=='true' && company['thailandpost']['service']['standard']['use'] =='weight' && $last,'lastest':rate.rang=='andup' && company['thailandpost']['service']['standard']['use'] =='weight' && $last}"]    ขึ้นไป    AND    Input Text    thai_land_post_standard[weight][price][0]    ${price}
+    Run Keyword If    '${type}'=='postprice'    Run Keywords    Execute Javascript    $('#thai_land_post_standard_type_price')[0].click()    AND    Select From List By Label    //*[@ng-class="{'rate_range_error':rate.rang=='to' && company['thailandpost']['service']['standard'].status=='true' && company['thailandpost']['service']['standard']['use'] =='price' && $last,'lastest':rate.rang=='andup' && company['thailandpost']['service']['standard']['use'] =='price' && $last}"]    ขึ้นไป    AND    Input Text    thai_land_post_standard[price][price][0]    ${price}
+    Run Keyword If    '${type}'=='postamount'    Run Keywords    Execute Javascript    $('#thai_land_post_standard_type_amount')[0].click()    AND    Select From List By Label    //*[@ng-class="{'rate_range_error':rate.rang=='to' && company['thailandpost']['service']['standard'].status=='true' && company['thailandpost']['service']['standard']['use'] =='amount' && $last,'lastest':rate.rang=='andup' && company['thailandpost']['service']['standard']['use'] =='amount' && $last}"]    ขึ้นไป    AND    Input Text    thai_land_post_standard[amount][price][0]    ${price}
+    Run Keyword If    '${type}'=='emsflat'    Execute Javascript    $('#thai_land_post_ems_type_flat')[0].click()
+    Run Keyword If    '${type}'=='emsflat' and '${value}'=='free'    Execute Javascript    $('#thai_land_post_ems_free')[0].click()
+    Run Keyword If    '${type}'=='emsflat' and '${value}'!='free'    Execute Javascript    $('#thai_land_post_ems_cost')[0].click()
+    Run Keyword If    '${type}'=='emsflat' and '${value}'!='free'    Input Text    //input[@name='thai_land_post_ems[flat_price]']    50
+    Run Keyword If    '${type}'=='emsweight'    Run Keywords    Execute Javascript    $('#thai_land_post_ems_type_weight')[0].click()    AND    Select From List By Label    //*[@ng-class="{'rate_range_error':rate.rang=='to' && company['thailandpost']['service']['ems'].status=='true' && company['thailandpost']['service']['ems']['use'] =='weight' && $last,'lastest':rate.rang=='andup' && company['thailandpost']['service']['ems']['use'] =='weight' && $last}"]    ขึ้นไป    AND    Input Text    thai_land_post_ems[weight][price][0]    ${price}
+    Run Keyword If    '${type}'=='emsprice'    Run Keywords    Execute Javascript    $('#thai_land_post_ems_type_price')[0].click()    AND    Select From List By Label    //*[@ng-class="{'rate_range_error':rate.rang=='to' && company['thailandpost']['service']['ems'].status=='true' && company['thailandpost']['service']['ems']['use'] =='price' && $last,'lastest':rate.rang=='andup' && company['thailandpost']['service']['ems']['use'] =='price' && $last}"]    ขึ้นไป    AND    Input Text    thai_land_post_ems[price][price][0]    ${price}
+    Run Keyword If    '${type}'=='emsamount'    Run Keywords    Execute Javascript    $('#thai_land_post_ems_type_amount')[0].click()    AND    Select From List By Label    //*[@ng-class="{'rate_range_error':rate.rang=='to' && company['thailandpost']['service']['ems'].status=='true' && company['thailandpost']['service']['ems']['use'] =='amount' && $last,'lastest':rate.rang=='andup' && company['thailandpost']['service']['ems']['use'] =='amount' && $last}"]    ขึ้นไป    AND    Input Text    thai_land_post_ems[amount][price][0]    ${price}
+    Click Button    ${btn_save}
+    Sleep    3s
+    #Myacc Logout
+
+Place Order
+    [Arguments]    ${email}    ${shipping}    ${payment_type}
+    [Documentation]    Use for payment order by online or offline channel
+    Go to    ${URL_PORTAL}/cart
+    Wait Until Element Is Visible    ${btn_place_order}    ${EXPECT_LOADTIME}
+    Execute Javascript    window.scrollTo(0,300)
+    Click Button    ${btn_place_order}
+    Wait Until Element Is Visible    //button[@class="btn btn-default btn-xs btn-add new_address"]    ${EXPECT_LOADTIME}
+    Focus    //button[@class="btn btn-default btn-xs btn-add new_address"]
+    Execute Javascript    ${email}
+    Execute Javascript    ${shipping}.click()
+    Execute Javascript    ${payment_type}.click()
+
+Select First Address
+    [Documentation]    Use for payment order
+    Go to    ${URL_PORTAL}/cart
+    Wait Until Element Is Visible    ${btn_place_order}    ${EXPECT_LOADTIME}
+    Click Button    ${btn_place_order}
+    Wait Until Element Is Visible    ${btn_add_new_address}    ${EXPECT_LOADTIME}
+    Focus    ${btn_add_new_address}
+    Click Element    ${btn_address}
+
+Place Order Online Offline Wemall
+    [Arguments]    ${email}    ${payment_type}
+    [Documentation]    Use for payment order by offline channel
+    Go to    ${url_portal_cart}
+    Wait Until Element Is Visible    ${btn_order}    ${EXPECT_LOADTIME}
+    Click Button    ${btn_order}
+    Wait Until Element Is Visible    //button[@class="btn btn-default btn-xs btn-add new_address"]    ${EXPECT_LOADTIME}
+    Focus    //button[@class="btn btn-default btn-xs btn-add new_address"]
+    Execute Javascript    ${email}
+    Execute Javascript    ${payment_type}.click()
+    Click Element    ${Button_BuyConfirm}
+
+Click Checkout Button
+    Wait Until Element Is Visible       ${btn_checkout}
+    Focus    ${btn_checkout}
+    Click Element    ${btn_checkout}
+    Wait Until Element Is Visible    //*[@class="boxstep step2 active"]
+
+Click Confirm Checkout Button
+    Click Element    ${btn_confirm_checkout}
+    Confirm Action
+
+Payment Ewallet
+    [Arguments]    ${User_Wallet}    ${Pass_Wallet}
+    Wait Until Element Is Visible    email-form    15
+    Input Text    form-email    ${User_Wallet}
+    Input Text    form-password    ${Pass_Wallet}
+    Click Element    walletSignOn
+
+Get order id online from thankyou page
+    [Documentation]    Use for get order id online on thankyou page
+    Check Element Is Visible    ${text_order_id_thankyou_page}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+    Set Test Variable    ${order_id}
+
+Get substring order id online from thankyou page
+    [Documentation]    Use for get substring order id online form thankyou page
+    [Arguments]    ${order_id}
+    ${order_id_sub}    Get Substring    ${order_id}    4    12
+    Set Test Variable    ${order_id_sub}
+
+Get order id offline from thankyou page
+    [Documentation]    Use for get order id offline on thankyou page
+    [Arguments]    ${lbl_order_id}
+    Check Element Visible    ${lbl_order_id}    ${expect_load_time}
+    ${order_id}    Get Text    ${lbl_order_id}
+    Set Test Variable    ${order_id}
+
+Get order id by cs channel from thankyou page
+    [Documentation]    Use for get order id offline on thankyou page
+    Check Element Visible    //span[@id="payment_ref2_number"]    ${expect_load_time}
+    ${order_id}    Get Text    //span[@id="payment_ref2_number"]
+    Set Test Variable    ${order_id}
+
+Get substring order id offline from thankyou page
+    [Documentation]    Use for get substring order id offline form thankyou page
+    [Arguments]    ${order_id}
+    ${order_id_sub}    Get Substring    ${order_id}    4    12
+    Set Test Variable    ${order_id_sub}
+
+Add Product To Cart And Go Checkout
+    Wait Until Element Is Visible    ${Button_AddToCart}
+    Click Button    ${Button_AddToCart}
+    Wait Until Element Is Visible    ${popup_goCheckout}    ${expect_load_time}
+    Click Element    ${popup_goCheckout}
+
+Your Cart Page Should Be Appeared
+    Wait Until Element Is Visible    //div[@class='text-tile-cart']
+
+Checkout On The Selected Shop
+    [Arguments]    ${shopName}
+    ${locator}=    String.Replace String    &{checkoutDict}[shopCheckOut]    _shopName    ${shopName}
+    Click Element    ${locator}
+
+Register Page On Checkout Step Should Be Appeared
+    Wait Until Element Is Visible    //div[@class='register_checkout_box']
+
+Use Promotion Code
+    [Documentation]    Use promotion code checkout step 3
+    [Arguments]    ${code}
+    Input Text    //input[@id="coupon_code"]    ${code}
+    Click Element    //button[@id="coupon_btn"]
+    Wait Until Element Is Visible    //span[@id="coupon_condition"]    ${EXPECT_LOADTIME}
+
+Request Tax Invoice
+    [Documentation]    Select checkbox ต้องการใบเสร็จรับเงิน/ใบกำกับภาษี
+    Click Element    ${chk_billing}
+
+Select Tax Invoice For
+    [Arguments]    ${tax_type}
+    Select From List    ${ddl_type_bill}    ${tax_type}
+
+Add The Billing Address For Individual
+    [Arguments]    ${first_name}    ${sur_name}    ${id_card}
+    Wait Until Element Is Visible    ${txt_billing_fristname}
+    Input Text     ${txt_billing_fristname}    ${first_name}
+    Input Text     ${txt_billing_lastname}    ${sur_name}
+    Input Text     ${txt_billing_idcard}    ${id_card}
+    Click Element    ${chk_add_billing_address}
+    Click To Submit The Request
+
+Add The Billing Address For Corporate Head Office
+    [Arguments]    ${id_card}
+    Wait Until Element Is Visible    ${txt_billing_company}
+    Input Text     ${txt_billing_company}    Asend Robot Company
+    Select Radio Button    billing_branch    00000
+    Input Text     ${txt_tax_no}    ${id_card}
+    Click Element    ${chk_add_billing_address}
+    Click To Submit The Request
+
+Add The Billing Address For Corporate Branch
+    [Arguments]    ${branch_number}    ${id_card}
+    Wait Until Element Is Visible    ${txt_billing_company}
+    Input Text     ${txt_billing_company}    Asend Robot Company
+    Select Radio Button    billing_branch    1
+    Input Text    ${txt_billing_branch_code}    ${branch_number}
+    Input Text    ${txt_tax_no}    ${id_card}
+    Click Element    ${chk_add_billing_address}
+    Click To Submit The Request
+    Set Test Variable    ${branch_number}
+
+Click To Submit The Request
+    [Documentation]    Click ดำเนินการต่อ button
+    Wait Until Element Is Enabled    ${btn_submit}
+    Click Element    ${btn_submit}
+
+Check Fields For Tax Invoice
+    [Documentation]    Verify fields in ที่อยู่ในการออกใบเสร็จรับเงิน/ใบกำกับภาษี popup
+    Element Should Be Visible    ${ddl_type_bill}
+    Element Should Be Visible    ${chk_addBillingAddress}
+    Element Should Be Visible    ${txt_address1}
+    Element Should Be Visible    ${txt_province}
+    Element Should Be Visible    ${ddl_city}
+    Element Should Be Visible    ${ddl_district}
+    Element Should Be Visible    ${txt_postcode}
+
+Check Warning Message For Corporate
+    [Documentation]    Verify warning message when submit without fill the required fields
+    Element Should Contain    ${lbl_billing_company_error}    กรุณากรอกชื่อบริษัท
+    Element Should Contain    ${lbl_billing_branch_code_error}    กรุณาเลือกสาขา
+    Element Should Contain    ${lbl_tax_no_error}    กรุณากรอกหมายเลขประจำตัวผู้เสียภาษี 13 หลัก
+    Element Should Contain    ${lbl_address1_error}    กรุณากรอกที่อยู่ในการจัดส่งใบเสร็จ
+    Element Should Contain    ${lbl_province_error}    กรุณาเลือกจังหวัด
+    Element Should Contain    ${lbl_city_error}    กรุณากรอกเขต/อำเภอ
+    Element Should Contain    ${lbl_district_error}    กรุณากรอกแขวง/ตำบล
+    Element Should Contain    ${lbl_postcode_error}    กรุณากรอกรหัสไปรษณีย์
+
+Check Warning Message For Individual
+    [Documentation]    Verify warning message when submit without fill the required fields
+    Element Should Contain    ${lbl_billing_fristname_error}    กรุณากรอกชื่อ
+    Element Should Contain    ${lbl_billing_lastname_error}    กรุณากรอกนามสกุล
+    Element Should Contain    ${lbl_billing_idcard_error}    กรุณากรอกหมายเลขประจำตัวประชาชน 13 หลัก
+    Element Should Contain    ${lbl_address1_error}    กรุณากรอกที่อยู่ในการจัดส่งใบเสร็จ
+    Element Should Contain    ${lbl_province_error}    กรุณาเลือกจังหวัด
+    Element Should Contain    ${lbl_city_error}    กรุณากรอกเขต/อำเภอ
+    Element Should Contain    ${lbl_district_error}    กรุณากรอกแขวง/ตำบล
+    Element Should Contain    ${lbl_postcode_error}    กรุณากรอกรหัสไปรษณีย์
+
+Verify That The Individual Billing Address Displays Correctly
+    Element Should Contain    ${lbl_billing_address}    ที่อยู่ในการออกใบเสร็จรับเงิน/ใบกำกับภาษี
+
+Verify That The Corporate Billing Address Displays Correctly
+    [Arguments]    ${corporate_check}
+    Element Should Contain    ${lbl_billing_address}    ที่อยู่ในการออกใบเสร็จรับเงิน/ใบกำกับภาษี
+    Run Keyword if    '${corporate_check}'=='Head Office'    Element Should Contain    ${lbl_billing_corporate}    (สำนักงานใหญ่)
+    ...  ELSE    Element Should Contain    ${lbl_billing_corporate}     สาขา : ${branch_number}
+
+Check The Address On Thankyou Page Displays Correctly
+    [Arguments]    ${type}=individual
+    Wait Until Element Is Visible    ${thx_title_success}    ${EXPECT_LOADTIME}
+    ${address}    Get Text    ${lbl_thankyou_billing_address}
+    Should Contain    ${address}    เลขประจำตัวผู้เสียภาษี
+    Run Keyword if    '${type}'=='Head Office'    Should Contain    ${address}    (สำนักงานใหญ่)
+    Run Keyword if    '${type}'=='Branch'    Should Contain    ${address}    สาขา
+
+Select address for placeorder
+    [Arguments]    ${email}
+    ${locator}=    Replace String    ${btn_buyer_address}    emailName    ${email}
+    Click Element    ${locator}
+
+Add To Cart Many Items
+    [Documentation]    Use for add to cart and place order
+    [Arguments]    ${products}    ${store_name}
+    Delete All Product In Cart
+    :FOR    ${var}    IN    @{products}
+    \    Add Product To Cart by product name on Store    ${URL_SHOP}/${store_name}    ${var}
+
+Input Data Of Credit Card
+    [Documentation]    Use for input create data
+    [Arguments]    ${data}
+    Wait Until Element Is Visible    ${txt_card_number_1}
+    Input Text    ${txt_card_number_1}    @{data}[0]
+    Input Text    ${txt_card_number_2}    @{data}[1]
+    Input Text    ${txt_card_number_3}    @{data}[2]
+    Input Text    ${txt_card_number_4}    @{data}[3]
+    Input Text    ${txt_card_name}    @{data}[4]
+    Select From List By Label    card_expiry_month    @{data}[5]
+    Select From List By Label    card_expiry_year    @{data}[6]
+    Input Text    ${txt_card_cvn}    @{data}[7]
+
+Input MC Code
+    [Documentation]    Use for input mc code on checkout page
+    [Arguments]    ${code}
+    Input Text    ${txt_coupon_code}    ${code}
+    Click Element    ${btn_use_coupon}
+
+Click Go To Checkout
+    Click Element    ${btn_checkout}
+
+Verify Icon Step When Login Already
+    Wait Until Element Is Visible    ${icn_step_checkout}
+    Element Should Be Visible    ${icn_step2_checkout}
+
+Verify Iconn Step When Not Login
+    Wait Until Element Is Visible    ${icn_step_not_login}
+    Element Should Be Visible    ${icn_step2_not_login}
+
+Key Login Checkout
+    [Arguments]    ${email}    ${pass}
+    Input Text    ${lbl_user_login}    ${email}
+    Input Text    ${lbl_password_login}    ${pass}
+
+Click Login Checkout
+    Click Element    ${btn_login}
+
+Key Register Checkout
+    [Arguments]    ${pass}
+    Wait Until Element Is Visible    ${lbl_regis_pass}
+    Input Text    ${lbl_regis_pass}    ${pass}
+    Click Element    ${lbl_condition}
+
+Key Register Checkout Confirm
+    [Arguments]    ${confirm}
+    Input Text    ${regis_checkout_confirmpass}    ${confirm}
+    Click Element    ${lbl_condition}
+
+Key Register Checkout Mobile Number
+    [Arguments]    ${number}
+    Wait Until Element Is Visible    ${lbl_regis_pass}
+    Input Text    ${regis_checkout_phone}    ${number}
+    Click Element    ${lbl_condition}

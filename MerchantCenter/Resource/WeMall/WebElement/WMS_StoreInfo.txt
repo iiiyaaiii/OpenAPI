@@ -1,0 +1,9 @@
+*** Variables ***
+### locator ###
+${btn_storeid_search}    //input[@class="btn btn-sm btn-primary margin-bottom-5 "]
+${txt_storeid}    id=storeid
+${btn_url_save}    id=btnsavexx
+${txt_url_name}    id=store_slug
+${btn_ok}    //button[@class="btn btn-primary"]
+${noti_fail_message}    //div[@class="text-center alert alert-danger ui-notify-message ui-notify-message-style"]
+${noti_success_message}    //div[@class="text-center alert alert-success ui-notify-message ui-notify-message-style"]

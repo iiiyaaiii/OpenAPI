@@ -1,0 +1,112 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Force Tags        Account-Web    Member    SignUp    Ligo
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignUp.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+
+*** Test Cases ***
+TC_MC_00137
+	[Documentation]    [Wemall] Register - Register new member with invalid member name format "xxx@"
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Execute Javascript    ${register}.click()
+    Input Text    ${regis_email}    xxx@
+    Input Password    ${regis_pass}    Ab123456
+    Input Password    ${regis_passconfirm}    Ab123456
+    Input Text    ${regis_phone}    0811111111
+    Click Element    ${regis_accept}
+    Click Element    ${submit}
+    Element Should Be Visible    ${regis_emailerror}
+    Element Text Should Be    ${regis_emailerror}    กรุณากรอกอีเมลให้ถูกต้อง
+    Element Should Be Visible    ${submit}
+
+TC_MC_00139
+    [Documentation]    [WeMall] Register - Register new member with invalid member name that contains special charactor "xxx*@truecorp.com"
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Go to    ${URL_PORTAL}
+    Execute Javascript    ${register}.click()
+    Input Text    ${regis_email}    xxx*@truecorp.com
+    Input Password    ${regis_pass}    123456
+    Input Password    ${regis_passconfirm}    123456
+    Input Text    ${regis_phone}    0811234567
+    Click Element    ${regis_accept}
+    Click Element    ${submit}
+    Element Should Contain    //*[@id="email-error"]    กรุณากรอกอีเมลให้ถูกต้อง
+    Element Should Contain    //*[@id="password_register-error"]    กรุณากรอกอย่างน้อย 8 ตัวอักษร
+    Element Should Contain    //*[@id="password_confirmation-error"]    กรุณากรอกอย่างน้อย 8 ตัวอักษร
+    Element Should Contain    //*[@id="pwd-container"]/div[2]    รหัสผ่านต้องมีความยาวตั้งแต่ 8 ตัว ขึ้นไป ประกอบด้วย
+    Element Should Contain    //*[@id="pwd-container"]/div[2]    - ตัวอักษร (A-Z) ตัวใหญ่ อย่างน้อย 1 ตัว
+    Element Should Contain    //*[@id="pwd-container"]/div[2]    - ตัวอักษร (a-z) ตัวเล็ก อย่างน้อย 1 ตัว
+    Element Should Contain    //*[@id="pwd-container"]/div[2]    - ตัวเลข อย่างน้อย 1 ตัว
+    Element Should Be Visible    ${submit}
+
+TC_MC_00141
+	[Documentation]    [Wemall] Register member with email that has already registed
+    [Tags]    Regression    Sprint2017MC5    High
+    Execute Javascript    ${register}.click()
+    Input Text    ${regis_email}    ${buyer_account}
+    Input Password    ${regis_pass}    P@ssw0rd
+    Input Password    ${regis_passconfirm}    P@ssw0rd
+    Input Text    ${regis_phone}    0811111111
+    Click Element    ${regis_accept}
+    Click Element    ${submit}
+    Element Should Be Visible    ${regis_emailalreadyuse}
+    Element Text Should Be    ${regis_emailalreadyuse}    อีเมลนี้ถูกใช้งานแล้ว
+    Element Should Be Visible    ${submit}
+
+TC_MC_00153
+	[Documentation]    [Wemall] Register - Register new member with invalid password, Data Deficient 8 words "123456"
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Execute Javascript    ${register}.click()
+    Input Password    ${regis_pass}    123456
+    Execute Javascript    ${regis_pass_js}.focusout()
+    Element Should Be Visible    ${regis_form_err}
+    Element Should Contain    ${regis_pass_errmsg}    กรุณากรอกอย่างน้อย 8 ตัวอักษร
+
+TC_MC_00157
+	[Documentation]    [Wemall] Register - Register new member with invalid password format "12345678"
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Execute Javascript    ${register}.click()
+    Input Password    ${regis_pass}    12345678
+    Execute Javascript    ${regis_pass_js}.focusout()
+    Element Should Contain    ${regis_pass_errmsg}    กรุณาใส่รหัสผ่านที่คาดเดาได้ยาก
+
+TC_MC_00159
+	[Documentation]    [Wemall] Register - Register new member with invalid password, comfirm password format "12345678"
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Execute Javascript    ${register}.click()
+    Input Password    ${regis_pass}    12345678
+    Input Text    ${regis_passconfirm}    12346732
+    Execute Javascript    ${regis_passconfirm_js}.focusout()
+    Element Should Contain    ${regis_confirmpass_errmsg}    กรุณากรอกให้ตรงกับรหัสผ่าน
+
+TC_MC_00161
+	[Documentation]    [Wemall] Register - Register new member with invalid mobile number format "01234567"
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Execute Javascript    ${register}.click()
+    Input Text    ${regis_phone}    01234567
+    Execute Javascript    ${regis_phone_js}.focusout()
+    Element Should Contain    ${regis_phone_errmsg}    กรุณากรอกเบอร์โทรศัพท์มือถือ 10 หลัก
+
+TC_MC_00163
+	[Documentation]    [Wemall] Register - Register new member with invalid mobile number format "1234567890"
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Execute Javascript    ${register}.click()
+    Input Text    ${regis_phone}    1234567890
+    Execute Javascript    ${regis_phone_js}.focusout()
+    Element Should Contain    ${regis_phone_errmsg}    หมายเลขโทรศัพท์ต้องขึ้นต้นด้วย 0 เท่านั้น
+
+TC_MC_00165
+	[Documentation]    [Wemall] Register - Register new member with invalid mobile number format "กกกขขขคคค"
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Execute Javascript    ${register}.click()
+    Input Text    ${regis_phone}    กกกขขขคคคก
+    Execute Javascript    ${regis_phone_js}.focusout()
+    Element Should Contain    ${regis_phone_errmsg}    เบอร์โทรศัพท์มือถือไม่ถูกต้อง

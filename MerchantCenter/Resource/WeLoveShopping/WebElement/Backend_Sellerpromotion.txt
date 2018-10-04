@@ -1,0 +1,20 @@
+*** Variables ***
+### Locator ###
+${promotion_list_box}    //div[@class="promotion-list-box"]
+${alert_promotion}    //tr[td[3][contains(.,"0")]]//div[3]
+${icon_green_eye}    //td[5]//i[@class="icon-eye-show-green tooltipstered show_status ng-scope"]
+${icon_gray_eye}    //td[5]//i[@class="icon-eye-hide-grey tooltipstered hide_status ng-scope"]
+${icon_hide}    $("#btn_hide").click();
+${icon_show}    $("#btn_visible").click();
+${select_all}    $('[class="ng-isolate-scope"]').click();
+${comfim}    $('[class="btn btn-primary"]').eq(0).click()
+${select_type_all}    xpath=//label/input
+${save_on_top}    xpath=//div/button[2]
+${cancel_popup}    $(".btn-small").get(0).click();
+${confirmcancel_popup}    //div[@id="alertbefore-cancel" and @class="modal modal-bluetheme hide fade in"]
+${confirmcancel}    //button[@ng-click="submitCancel()"]
+${manage_product}    //*[@id="table_report"]/tbody/tr/td[2]/div/div[4]/span[1]/a
+${selectproduct_item}    $("input[value='item']").click();
+${selectproduct_to_rigth}    $("button[class='btn btn-success']").click()
+${cancel}    $(".form-actions-footer .delete_button").get(0).click();
+

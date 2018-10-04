@@ -1,0 +1,37 @@
+*** variable ***
+${tbl_report}               table_report
+${ddl_check_all}            check_all
+${btn_delete}               id=btn_delete
+${fre_gallery}              //div[@class="row-fluid list-albums clear-fix"]
+${fre_album}                //div[@class="album-detail"]
+${upl_input}                id=fileuploadinput
+${upl_input_banner}         id=id-input-file-1
+${txt_title_album}          //span[@data-title="ไม่มีไฟล์..."]
+${ddl_checked}              //div[@class="row-fluid list-albums clear-fix"]/div[1]/div/div[1]/input
+${frm_popup}                //div[@class="bootbox modal fade in"]
+${img_gallery}              //ul[@class="ace-thumbnails"]//img
+${btn_value_shop}           //input[@id="openshop_status_old"]
+${btn_open_shop}            //ul[@class="notific-box"]//form[@id="frm_openshop_sidebar"]
+${btn_confirm_shop}         //div[@class="modal-footer"]//a[@class="btn btn-primary"]
+${btn_add_image}	        id=btn_select_photo
+${tbc_category_column}	    //div[@class="col-table-2"]
+${chk_check_all}		    id=check_all
+${btn_delete_cat}		    id=btn_delete_cat
+${btn_confirm}			    //button[contains(text(),'ยืนยัน')]
+${btn_confirm_promotion}    //button[@class="button-submit btn btn-primary btn-save"]
+${lnk_first_category}	    //li[1]//div[2]//a
+${btn_quick_edit}		    id=step_quickedit
+${txt_sale_price}		    //input[@name="price"]
+${txt_normal_price}		    //input[@name="compare_at_price"]
+${txt_quantity}			    //input[@name="quantity"]
+${btn_confirm_quick_edit}   //button[@class="btn btn-small btn-primary quick-save btn-save"]
+${btn_search_product}	    //button[@class="btn btn-primary btn-search"]
+${lbl_first_product}	    //div[@class="pd-list-name"]/a[@class="title"]
+${btn_cancel}	    	    //button[@type="reset"]
+${lnk_pampers_category} 	    //span[contains(text(),'ผ้าอ้อม')]
+${fre_highlight_product}	//div[@class="row-fluid add-img-thumb"]
+${obj_highlight_product}    //ul[@class="highlight-list-2"]
+${tbl_highlight_product}    //div[@class="product-highlight-wrapper-2"]
+${rdo_category_highlight}   //div[@class="promotion-tab-box promotion-bycat-box"]//input
+${tbl_promotion_product}    //table//tbody//tr
+${btn_edit_save_sellerpromotion}    //div[@class="form-actions-footer"]/button[@class="btn btn-primary btn-save"]

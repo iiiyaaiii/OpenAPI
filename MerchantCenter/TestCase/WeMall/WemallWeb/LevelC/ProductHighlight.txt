@@ -1,0 +1,115 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Force Tags        WeMall-Web    Ligo
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Category.txt
+Resource          ../../../../Resource/WeMall/WebElement/Product_Highlight.txt
+Resource          ../../../../Resource/WeMall/WebElement/Search.txt
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeMall/WebElement/Search.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+
+*** Test Cases ***
+TC_MC_03237
+    [Documentation]    [Level C- Product highligh - Search] : Display - Number of result
+    [Tags]    Regression     Ligo    Medium
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Delete All Cookies
+    Maximize Browser Window
+    Wait Until Element Is Visible    ${viewall_producthighlight}
+    Click Element    ${viewall_producthighlight}
+    Location Should Be    https://www.wemall-dev.com/recommended
+    Wait Until Element Is Visible    ${titlename}
+    Element Should Contain    ${titlename}    สินค้าแนะนำ
+    Element Should Be Visible    ${detailshowproduct}
+    Element Should Be Visible    ${detail_priceproduct}
+    Element Should Be Visible    ${sidebar_wemall}
+    ${count_category}    Get Matching Xpath Count    ${sidebar_wemall}
+    ${count_category}    Convert To Integer    ${count_category}
+    Should Be True    ${count_category} > 0
+    ## 48 item
+    ${count_match}    Get Matching Xpath Count    //div[contains(@class,'item-detail')]
+    ${count_match}    Convert To Integer    ${count_match}
+    Should Be True    ${count_match} >= 1
+    ## num show
+    Element Should Be Visible    ${detail_priceproduct}
+    ${text_show}=    Get Text    ${detailshowproduct}
+    ${result_count}=    Get Text    ${detail_priceproduct}
+    ${result_count}    Remove String    ${result_count}    ,
+    ${int_result_count}    Convert To Integer    ${result_count}
+    Element Should Contain    ${detailshowproduct}    ${text_show}
+    Should Be True    ${int_result_count} > 0
+
+TC_MC_06413
+    [Documentation]    Level C- Product highligh : Display - Number of result on portrait mode (related category product)
+    [Tags]    Regression     Ligo    Medium
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Delete All Cookies
+    Maximize Browser Window
+    Go to    ${URL_LEVEL_D}/${robot_join_camapign_limit3}
+    Element Should Contain    ${breadcrumb_new}    กระโปรงสั้น
+    Go to    ${URL_PORTAL}
+    Wait Until Element Is Visible    ${viewall_producthighlight}
+    Click Element    ${viewall_producthighlight}
+    Location Should Be    https://www.wemall-dev.com/recommended
+    Wait Until Element Is Visible    ${titlename}
+    Element Should Contain    ${titlename}    สินค้าแนะนำ
+    Element Should Be Visible    ${detailshowproduct}
+    Element Should Be Visible    ${detail_priceproduct}
+    Element Should Be Visible    ${sidebar_wemall}
+    ${count_category}    Get Matching Xpath Count    ${sidebar_wemall}
+    ${count_category}    Convert To Integer    ${count_category}
+    Should Be True    ${count_category} > 0
+    ## 48 item
+    ${count_match}    Get Matching Xpath Count    //div[contains(@class,'item-detail')]
+    ${count_match}    Convert To Integer    ${count_match}
+    Should Be True    ${count_match} >= 1
+    ## num show
+    Element Should Be Visible    ${detail_priceproduct}
+    ${text_show}=    Get Text    ${detailshowproduct}
+    ${result_count}=    Get Text    ${detail_priceproduct}
+    Element Should Contain    ${detailshowproduct}    ${text_show}
+    Should Be True    ${result_count} > 0
+    Click Element    //ul[@class="items-list-box"]//li[1]//div[@class="item-detail"]//a
+    Element Should Contain    ${breadcrumb_new}    กระโปรงสั้น
+
+TC_MC_03285
+    [Documentation]    [Wemall] Verify sequence of sidebar
+    [Tags]    Regression     Ligo,Sprint2017MC10    High
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Maximize Browser Window
+    Go To    ${URL_PORTAL}/c/1945
+    Element Should Contain    ${breadcrumb_new}    กระเป๋า
+    Element Should Contain    ${lvc_search_title}    กระเป๋า
+    ${count_box_sidebar}    Get Matching Xpath Count    //div[@class='nav-left']/div
+    Should Be True    ${count_box_sidebar} >= 2
+    ## First Box - Category
+    ${result_category}=    Run Keyword And Ignore Error    Get Webelements    //div[@class='nav-left']/div[1]/*[1]
+    Run Keyword if    '${result_category[0]}' == 'PASS'    Element Should Contain    //div[@class='nav-left']/div[1]/*[1]    หมวดหมู่สินค้า
+    ## Second Box - Price Range
+    ${result_category}=    Run Keyword And Ignore Error    Get Webelements    //div[@class='nav-left']/div[2]/*[1]
+    Run Keyword if    '${result_category[0]}' == 'PASS'    Element Should Contain    //div[@class='nav-left']/div[2]/*[1]    ช่วงราคา
+
+TC_MC_03286
+    [Documentation]    [Wemall] Verify resulted levelc-category page
+    [Tags]    Regression     Ligo,Sprint2017MC10    High
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Maximize Browser Window
+    Go To    ${URL_PORTAL}/c/1942
+    Element Should Contain    ${breadcrumb_new}    กระโปรงสั้น
+    Element Should Contain    ${lvc_search_title}    กระโปรงสั้น
+    Element Should Be Visible    //div[@class='col-left']
+    Element Should Be Visible    ${lvc_search_title}
+    Element Should Be Visible    //div[@class='list-box']
+    Element Should Be Visible    //span[@class='highlight_num']
+    ${text_show}=    Get Text    //div[@class='list-box']
+    ${result_count}=    Get Text    //span[@class='highlight_num']
+    Element Should Contain    //div[@class='list-box']    ${text_show}
+    Should Be True    ${result_count} > 0
+
+

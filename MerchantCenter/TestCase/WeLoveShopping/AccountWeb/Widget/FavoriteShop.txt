@@ -1,0 +1,34 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Force Tags        Account-Web    mc-wls
+Test Timeout      2 minutes
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00114
+    [Documentation]    Click Favorite menu at widget when do login already (Home page)
+    [Tags]    Regression    SmokeTest    Medium
+    Go to    ${URL_PORTAL}
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Execute Javascript    ${widget_favshop}.click()
+    Element Should Be Visible    //ul[@class='nav navbar-nav myprofile-menu']/li[contains(@title,'ร้านค้าโปรด') and contains(@class,'active')]
+    Element Should Contain    ${bar_title}    ร้านค้าโปรด
+    Clear Active Login
+
+TC_MC_00115
+    [Documentation]    Click Favorite menu at widget when do not login (Home page)
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}
+    Execute Javascript    ${widget_favshop}.click()
+    Location Should Be    ${URL_ACCOUNT}/login
+
+

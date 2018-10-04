@@ -1,0 +1,50 @@
+*** Variables ***
+### Data ###
+
+### Locator ###
+${element_content_bubble_bottom}    //div[@id="content_bubble_bottom"]
+${accept_refund_button}    //a[@class="btn btn-small btn-primary btn_request_refund"]
+${accept_refund_modal}    //form[@id="frm_request_accept"]
+${ok_button_confirm_accept_modal}    //button[@id="confirm_modal_ok"]
+${go_to_detail_button}    //a[@class="btn btn-small btn-default"]
+${decline_refund_button}    //a[@class="btn btn-small btn-default btn_request_refund"]
+${element_description_decline}    //textarea[@id="request_description"]
+${element_browse_file_decline}    //input[@id="refund_upload"]
+${confirm_decline_button}    //button[@class="btn btn-small btn-primary request_decline"]
+${ok_button_confirm_decline_modal}    //button[@id="confirm_decline_ok"]
+${btn_shipping}    //*[@id="frm_order"]/table/tbody/tr[2]/td[4]/div[3]/a
+${btn_shipping_custom}    //*[@id="btn_submit_shipCus"]
+${btn_input_tracking}    //*[@id="btn_submit_ship"]
+${element_shipping_detail}    //div[@class="order-detail-coundown"]/p/a
+${input_tracking}    //*[@id="tracking_number"]
+${input_tracking_custom}    //*[@id="tracking_desc"]
+${input_url_custom}    //*[@id="tracking_url"]
+${input_url_custom_2}    //*[@id="tracking_url_2"]
+${input_custom_file}    //input[@id="tracking_file"]
+${btn_confirm_ship}    //*[@id="btn_submit_trackingCom"]
+${btn_request_refund}    $('.order__process-refund a')[0]
+${txt_reason_area}    //*[@id="request_description"]
+${btn_confirm_request_refund}    //*[@id="btn_request_refund"]
+${order_product_name_detail}    //*[@id="product_detail_list"]/tbody/tr[1]/td[2]/div[1]/a
+${order_product2_name_detail}    //*[@id="product_detail_list"]/tbody/tr[2]/td[2]/div[1]/a
+${order_countdown_detail_main}    //*[@id="page-content"]/div[4]/table[1]/tbody/tr[1]/td[3]/div/div[2]
+${order_status_detail}    //div[@class="text-center"]/div[@class="headline"]
+${order_status_detail_product}    //*[@class="order-detail-status"]
+${order_status_detail_product1}    //*[@id="product_detail_list"]/tbody/tr[1]/td[3]/div[1]
+${order_status_detail_product2}    //*[@id="product_detail_list"]/tbody/tr[2]/td[3]/div
+${order_detail_custom_url1}    //div[@class="link-tracking"]//li[1]
+${order_detail_custom_url2}    //div[@class="link-tracking"]//li[2]
+${order_refund_txt}    //*[@class="order-list-refund"]
+${order_detail_shipping}    //*[@id="product_detail_list"]/tbody/tr[1]/td[3]/strong
+${btn_shipping_detail}    //*[@class="order-detail-button"]
+${confirm_custom_button}    //button[@id="btn_submit_trackingCus"]
+${input_search_orderID}    //*[@id="keyword"]
+${btn_search_store_history}    //*[@class="btn btn-es-search btn-mini btn-primary"]
+${view_order_request_refund}    //a[@class="btn btn-small"][1]
+${select_list_refund_name}    order_request_reasons_code
+${countdown_product}    //*[@class="order-detail-coundown"]
+${store_text_status_decline_on_refund_table}    //table//tbody//tr[1]//td[@class="center"][6]
+${order_detail_partial_ship}    //div[@class="shipby-item-status text-center"]
+${lbl_payment_channel_store_detail_page}    //td[@class=no-border-top"]
+${lnk_view_refund_detail}    //a[contains(text(),'ดูรายละเอียดการขอเงินคืน')]
+${chk_ship_product}    //input[@data-name="productname"]

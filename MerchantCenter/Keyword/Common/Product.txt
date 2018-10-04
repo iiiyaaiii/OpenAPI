@@ -1,0 +1,1203 @@
+*** Settings ***
+Library           SeleniumLibrary
+Library           String
+Library           OperatingSystem
+Library           Collections
+Resource          ../../Keyword/Common/Common.txt
+Resource          ../../Keyword/Common/Gallery.txt
+Resource          ../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../Keyword/Common/WMS_Blockproduct.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/Backend_Dashboard.txt
+Resource          ../../Resource/WeMall/WebElement/Store_Dashboard.txt
+Resource          ../../Resource/WeMall/WebElement/Product.txt
+Resource          ../../Resource/WeMall/WebElement/Manageshop.txt
+
+*** variable ***
+${ENTER}    \\13
+
+*** Keywords ***
+Add 5 Product for new shop
+    [Documentation]    To ensure the system displays addproduct icon. Incase store add product 5 listing already
+    [Arguments]    ${shopname}
+    Set Selenium Speed    .4
+    Go To    ${URL_STORE}/${shopname}/admin/product/create
+    Add Product Status Instock    ${same_wls}    download1.png
+    Add Product Status Instock With Attribute    ${same_wls}    download2.jpg
+    Add Product status Pre-order, Not Use Stock    ${same_wls}    download3.jpg
+    Add Product status Pre-order, Use Stock    ${same_wls}    download4.png
+    Add Product Status Pre-order, Use Stock, Empty Can Buy    ${same_wls}    download5.jpg
+    Sleep    4s
+    Go To    ${URL_STORE}/${shopname}/admin
+
+Add New Product for Wemall shop
+    [Documentation]    To ensure the system displays addproduct icon. Incase store add product 5 listing already
+    [Arguments]    ${shopname}
+    Set Selenium Speed    .4
+    Click Element    ${btn_add_product}
+    Go To    ${URL_STORE}/${shopname}/admin/product/create
+    Add Product MC    download1.png
+    Sleep    4s
+    Go To    ${URL_STORE}/${shopname}/admin
+
+Select Category Fashion Skirt
+    [Documentation]    Select Category Fashion Skirt
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'แฟชั่น'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'เสื้อผ้า'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'เสื้อผ้าผู้หญิง'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'กระโปรง'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'กระโปรงสั้น'; }).attr('selected', true).change();
+    Sleep    2s
+
+Select Category Fashion Clothes
+    [Documentation]    Select Category Fashion Clothes
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'แฟชั่น'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'เสื้อผ้า'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'เสื้อผ้าผู้หญิง'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'เสื้อ'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'เสื้อยืด'; }).attr('selected', true).change();
+    Sleep    2s
+
+Select Category Fashion Bag
+    [Documentation]    Select Category Fashion Bag
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'แฟชั่น'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'กระเป๋า'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'กระเป๋าเอกสาร'; }).attr('selected', true).change();
+    Sleep    2s
+
+Select Category Fashion Shoes
+    [Documentation]    Select Category Fashion Shoes
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'แฟชั่น'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'รองเท้า'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'รองเท้าผู้หญิง'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'รองเท้าส้นสูง'; }).attr('selected', true).change();
+    Sleep    2s
+
+Select Category Cosmetics
+    [Documentation]    Select Category Cosmetics
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'สุขภาพและความงาม'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'เครื่องสำอาง'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'ตา'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'ดินสอเขียนคิ้ว'; }).attr('selected', true).change();
+    Sleep    2s
+
+Select Category Perfume
+    [Documentation]    Select Category Perfume
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'สุขภาพและความงาม'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'น้ำหอม'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'น้ำหอมผู้หญิง'; }).attr('selected', true).change();
+    Sleep    2s
+
+Select Category Glasses
+    [Documentation]    Select Category Glasses
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'แฟชั่น'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'เครื่องแต่งกาย'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'เครื่องแต่งกายผู้หญิง'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'แว่นตา'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'แว่นกันแดด'; }).attr('selected', true).change();
+    Sleep    2s
+
+Select Category Hobbies
+    [Documentation]    Select Category Hobbies
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'งานอดิเรก'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'ของเก่าและของสะสม'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'พระเครื่อง'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'พระผง'; }).attr('selected', true).change();
+
+Select Fashion category
+    Sleep    2s
+    Select From List By Label    category    แฟชั่น
+    Sleep    2s
+    Select From List By Label    category2    เสื้อผ้า
+    Sleep    2s
+    Select From List By Label    category3    เสื้อผ้าผู้ชาย
+    Sleep    4s
+    Select From List By Label    category4    เสื้อผู้ชาย
+    Sleep    2s
+    Select From List By Label    category5    เสื้อยืดผู้ชาย
+    Sleep    2s
+
+Select Electronic category - Staging
+    Sleep    2s
+    Select From List By Label    category    เครื่องใช้ไฟฟ้า
+    Sleep    2s
+    Select From List By Label    category2    เครื่องเสียง เครื่องเล่นหนัง
+    Sleep    2s
+    Select From List By Label    category3    หูฟัง
+    Sleep    4s
+
+Select Electronic category - Alpha
+    Sleep    2s
+    Select From List By Label    category    แก็ดเจ็ต
+    Sleep    2s
+    Select From List By Label    category2    เครื่องเสียง
+    Sleep    2s
+    Select From List By Label    category3    หูฟัง
+    Sleep    4s
+
+Store Add Product By Add Photo
+    [Arguments]    ${shop_category}    ${image}    ${name}    ${des}    ${type}    ${price}
+    ...    ${weight}    ${attr}    ${inv}    ${index}
+    Run Keyword If    '${shop_category}' == 'fashion'    Select Fashion category
+    Run Keyword If    '${shop_category}' == 'electronic' and '${ENV}' == 'Staging'    Select Electronic category - Staging
+    Run Keyword If    '${shop_category}' == 'electronic' and '${ENV}' == 'Alpha'    Select Electronic category - Alpha
+    ${time}    Get Time    epoch
+    #    ${p_name}    Catenate    Product - พร้อมส่ง
+    ${p_sku}    Catenate    robot-${index}
+    Input Text    ${input_product_name}    ${name}
+    Input Text    ${input_product_desc}    ${des}
+    #    Input Text    //textarea[@id='body_html_th']    ${des}
+    Run Keyword If    '${type}'=='New'    Execute Javascript    ${product_type_new}.click()
+    Run Keyword If    '${type}'!='New'    Execute Javascript    ${product_type_used}.click()
+    Execute Javascript    ${status_instock}.click()
+    Input Product Stock WeMall    80
+    Input Text    ${txt_sku_product}    ${p_sku}
+    Input Text    ${txt_price_product}    ${price}
+    Input Text    ${input_product_weight}    ${weight}
+    Input Text    ${unit_instock}    10
+    Input Text    ${d_width}    30
+    Input Text    ${d_length}    30
+    Input Text    ${d_height}    15
+    Input Text    ${input_product_tag}    กระโปรง
+    Run Keyword If    ${attr} > 0    Click Element    //div[@class="checkbox"]/label/span[@class="lbl"]
+    Run Keyword If    ${attr} == 1 and ${inv} == 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Color WM    1
+    Run Keyword If    ${attr} == 1 and ${inv} != 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Color WM    ${inv}
+    Run Keyword If    ${attr} == 2 and ${inv} == 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Size and Color WM    1
+    Run Keyword If    ${attr} == 2 and ${inv} != 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Size and Color WM    ${inv}
+    Run Keyword If    ${attr} == 1 and ${inv} == 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Color    1
+    Run Keyword If    ${attr} == 1 and ${inv} != 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Color    ${inv}
+    Run Keyword If    ${attr} == 2 and ${inv} == 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Size and Color    1
+    Run Keyword If    ${attr} == 2 and ${inv} != 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Size and Color    ${inv}
+
+#    Click Element    ${btn_browse_image}
+    Upload Product Image    ${image}
+    Sleep    2
+    #    Click Element    //*[@id="product_create"]/div[10]/button[3]
+    Execute Javascript    $("button[value='s']").click()
+    Sleep    2
+    ${product_id}    Get Text    //table[@id='table_report']//tbody//tr[1]//td[2]//a[2]
+    # Append To File    ${CURDIR}/temp_data.yaml    ${des}: ${product_id}${\n}    ${default_encoding}
+    Write Variable to File    ${des}    ${product_id}
+
+Store Add Product By Select Photo
+    [Arguments]    ${shop_category}    ${image}    ${name}    ${des}    ${type}    ${price}
+    ...    ${weight}    ${attr}    ${inv}    ${index}
+    Run Keyword If    '${shop_category}' == 'fashion'    Select Fashion category
+    Run Keyword If    '${shop_category}' == 'electronic' and '${ENV}' == 'Staging'    Select Electronic category - Staging
+    Run Keyword If    '${shop_category}' == 'electronic' and '${ENV}' == 'Alpha'    Select Electronic category - Alpha
+    ${time}    Get Time    epoch
+    ${p_sku}    Catenate    robot-${index}
+    Input Text    ${input_product_name}    ${name}
+    Input Text    ${input_product_desc}    ${des}
+    Run Keyword If    '${type}'=='New'    Execute Javascript    ${product_type_new}.click()
+    Run Keyword If    '${type}'!='New'    Execute Javascript    ${product_type_used}.click()
+    Execute Javascript    ${status_instock}.click()
+    Input Product Stock WeMall    80
+    Input Text    ${txt_sku_product}    ${p_sku}
+    Input Text    ${txt_price_product}    ${price}
+    Input Text    ${input_product_weight}    ${weight}
+    Input Text    ${unit_instock}    10
+    Input Text    ${d_width}    20
+    Input Text    ${d_length}    20
+    Input Text    ${d_height}    15
+    Input Text    ${input_product_tag}    กระโปรง
+    Run Keyword If    ${attr} > 0    Click Element    id=switch-option)
+    Run Keyword If    ${attr} == 1 and ${inv} == 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Color WM    1
+    Run Keyword If    ${attr} == 1 and ${inv} != 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Color WM    ${inv}
+    Run Keyword If    ${attr} == 2 and ${inv} == 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Size and Color WM    1
+    Run Keyword If    ${attr} == 2 and ${inv} != 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Size and Color WM    ${inv}
+    Run Keyword If    ${attr} == 1 and ${inv} == 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Color    1
+    Run Keyword If    ${attr} == 1 and ${inv} != 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Color    ${inv}
+    Run Keyword If    ${attr} == 2 and ${inv} == 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Size and Color    1
+    Run Keyword If    ${attr} == 2 and ${inv} != 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Size and Color    ${inv}
+    Click Element    ${btn_choose_image}
+    Wait Until Element is visible    //a[@data-name='${image}']
+    Execute Javascript    $("a[data-name='${image}']").eq(0).click()
+    Sleep    2
+    Execute Javascript    $('.btn.btn-primary.save_photo')[2].click()
+    Sleep    2
+    #    Click Element    //*[@id="product_create"]/div[10]/button[3]
+    Execute Javascript    $("button[value='s']").click()
+    Sleep    2
+    # ${product_id}    Get Text    //table[@id='table_report']//tbody//tr[1]//td[2]//a[2]
+    # Append To File    ${CURDIR}/temp_data.yaml    ${des}: ${product_id}${\n}    ${default_encoding}
+    ${product_id}    Get Text    //table[@id='table_report']//tbody//tr[1]//td[2]//a[2]
+    # Append To File    ${CURDIR}/temp_data.yaml    ${des}: ${product_id}${\n}    ${default_encoding}
+    Write Variable to File    ${des}    ${product_id}
+
+Store Add Product Pre-Order By Select Photo
+    [Arguments]    ${shop_category}    ${image}    ${name}    ${des}    ${type}    ${price}
+    ...    ${weight}    ${attr}    ${inv}    ${index}    ${use}    ${allow}
+    Run Keyword If    '${shop_category}' == 'fashion'    Select Fashion category
+    Run Keyword If    '${shop_category}' == 'electronic' and '${ENV}' == 'Staging'    Select Electronic category - Staging
+    Run Keyword If    '${shop_category}' == 'electronic' and '${ENV}' == 'Alpha'    Select Electronic category - Alpha
+    ${time}    Get Time    epoch
+    ${p_sku}    Catenate    robot-${index}
+    Input Text    ${input_product_name}    ${name}
+    Input Text    ${input_product_desc}    ${des}
+    #    Input Text    //textarea[@id='body_html_th']    ${des}
+    Run Keyword If    '${type}'=='New'    Execute Javascript    ${product_type_new}.click()
+    Run Keyword If    '${type}'!='New'    Execute Javascript    ${product_type_used}.click()
+    Execute Javascript    ${status_preorder}.click()
+    Execute Javascript    $('#new-product-inventory-management').val(0).change()
+    Input Text    ${shipping_in}    15
+    Run Keyword If    '${use}' == 'Y'    Execute Javascript    $('#new-product-inventory-management').val(1).change()
+    #    Run Keyword If    '${use}' == 'Y'    Input Text    ${unit_preorder}    50
+    Run Keyword If    '${use}' == 'Y'    Input Text    ${unit_preorder}    50
+    Run Keyword If    '${use}' == 'Y' and '${allow}' == 'Y'    Select Checkbox    ${empty_canbuy}
+    Input Text    ${txt_sku_product}    ${p_sku}
+    Input Text    ${input_selling_price}    ${price}
+    Run Keyword If    ${weight} != 0    Input Text    ${input_product_weight}    ${weight}
+    #    Input Text    ${input_product_tag}    กระโปรง
+    Run Keyword If    ${attr} > 0    Click Element    id=switch-option)
+    Run Keyword If    ${attr} == 1 and ${inv} == 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Color WM    1
+    Run Keyword If    ${attr} == 1 and ${inv} != 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Color WM    ${inv}
+    Run Keyword If    ${attr} == 2 and ${inv} == 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Size and Color WM    1
+    Run Keyword If    ${attr} == 2 and ${inv} != 1 and '${BU}' != 'WeLoveShopping'    Add Attribute Size and Color WM    ${inv}
+    Run Keyword If    ${attr} == 1 and ${inv} == 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Color    1
+    Run Keyword If    ${attr} == 1 and ${inv} != 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Color    ${inv}
+    Run Keyword If    ${attr} == 2 and ${inv} == 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Size and Color    1
+    Run Keyword If    ${attr} == 2 and ${inv} != 1 and '${BU}' == 'WeLoveShopping'    Add Attribute Size and Color    ${inv}
+    Click Element    ${btn_choose_image}
+    Sleep    3
+    Execute Javascript    $("a[data-name='${image}']").eq(0).click()
+    Sleep    2
+    Execute Javascript    $('.btn.btn-primary.save_photo')[2].click()
+    Sleep    2
+    #    Click Element    //*[@id="product_create"]/div[10]/button[3]
+    Execute Javascript    $("button[value='s']").click()
+    Sleep    2
+    ${product_id}    Get Text    //table[@id='table_report']//tbody//tr[1]//td[2]//a[2]
+    Write Variable to File    ${des}    ${product_id}
+
+Add Attribute Color
+    [Arguments]    ${inv}
+    : FOR    ${i}    IN RANGE    0    ${inv}
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_wls_color}    ดำ
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_wls_color}    ครีม
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_wls_color}    ขาว
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_wls_color}    เหลือง
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_wls_color}    แดง
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_wls_color}    ฟ้า
+    \    Press Key    ${txt_wls_color}    ${ENTER}
+
+Add Attribute Color WM
+    [Arguments]    ${inv}
+    : FOR    ${i}    IN RANGE    0    ${inv}
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_color}    ดำ
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_color}    ครีม
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_color}    ขาว
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_color}    เหลือง
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_color}    แดง
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_color}    ฟ้า
+    \    Press Key    ${txt_color}    ${ENTER}
+
+
+Add Attribute Size and Color
+    [Arguments]    ${inv}
+    : FOR    ${i}    IN RANGE    0    ${inv}
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_wls_color}    ดำ
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_wls_color}    แดง
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_wls_color}    เหลือง
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_wls_color}    ครีม
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_wls_color}    ขาว
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_wls_color}    ฟ้า
+    \    Press Key    ${txt_wls_color}    ${ENTER}
+    : FOR    ${i}    IN RANGE    0    ${inv}
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_attr}    S
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_attr}    M
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_attr}    L
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_attr}    XL
+    \    Press Key    ${txt_attr}    ${ENTER}
+
+Add Attribute Size and Color WM
+    [Arguments]    ${inv}
+    : FOR    ${i}    IN RANGE    0    ${inv}
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_color}    ดำ
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_color}    แดง
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_color}    เหลือง
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_color}    ครีม
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_color}    ขาว
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_color}    ฟ้า
+    \    Press Key    ${txt_color}    ${ENTER}
+    : FOR    ${i}    IN RANGE    0    ${inv}
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_size}    S
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_size}    M
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_size}    L
+    \    Run Keyword If    ${i} == 2    Input Text    ${txt_size}    XL
+    \    Press Key    ${txt_size}    ${ENTER}
+
+Add Product Status Instock
+    [Documentation]    Action add product have status instock
+    [Arguments]    ${shop_category}    ${image}
+    Select product catagory
+    Select Property
+    ${time}    Get Time    epoch
+    ${p_name}    Catenate    [Test]Product Instock${time}
+    ${p_sku}    Catenate    sku-${time}
+    Input Text    ${input_product_name}    ${p_name}
+    Input Text    ${input_product_desc}    Product Test
+    Execute Javascript    ${product_type_new}
+    Execute Javascript    ${status_instock}.click()
+    Input Text    ${unit_instock}    10
+   Input Text    ${d_width}    30
+   Input Text    ${d_length}    30
+   Input Text    ${d_height}    15
+    Input Text    ${input_product_sku}    ${p_sku}
+    Input Text    ${input_selling_price}    1
+    Input Text    ${input_product_weight}    1
+    Input Text    ${input_product_tag}    กระโปรง
+    Upload Product Image    ${image}
+    Click Element    ${btn_saved}
+    Wait Until Element Is Visible    //*[@id="title_th"]    8s
+
+Add Product Status Instock With Attribute
+    [Documentation]    Action add product have status instock with attribute
+    [Arguments]    ${shop_category}    ${image}
+    Select product catagory
+    ${time}    Get Time    epoch
+    ${p_name}    Catenate    [Test]Product Instock with att${time}
+    ${p_sku}    Catenate    sku-${time}
+    Input Text    ${input_product_name}    ${p_name}
+    Input Text    ${input_product_desc}    Product Test
+    Execute Javascript    ${product_type_used}
+    Execute Javascript    ${status_instock}.click()
+    Input Text    ${unit_instock}    10
+    Input Text    ${d_width}    30
+    Input Text    ${d_length}    30
+    Input Text    ${d_height}    15
+    Input Text    ${input_product_sku}    ${p_sku}
+    Input Text    ${input_selling_price}    2
+    Input Text    ${input_product_weight}    1
+    Click Element    id=switch-option
+    Wait Until Element Is Visible    ${box_attribute}    ${EXPECT_LOADTIME}
+    Select Attribute
+    Input price and stock into product attribute
+    Input Text    ${input_product_tag}    กระโปรง
+    Upload Product Image    ${image}
+    Click Element    ${btn_saved}
+    Wait Until Element Is Visible    //*[@id="title_th"]    8s
+
+Add Product status Pre-order, Not Use Stock
+    [Documentation]    Action add product have status pre-order (Not use stock)
+    [Arguments]    ${shop_category}    ${image}
+    Select product catagory
+    ${time}    Get Time    epoch
+    ${p_name}    Catenate    [Test]Product Pre notuse stock ${time}
+    ${p_sku}    Catenate    sku-${time}
+    Input Text    ${input_product_name}    ${p_name}
+    Input Text    ${input_product_desc}    Product Test
+    Execute Javascript    ${product_type_used}
+    Execute Javascript    ${status_preorder}.click()
+    Execute Javascript    $('#new-product-inventory-management').val(0).change()
+    Input Text    ${input_product_sku}    ${p_sku}
+    Input Text    ${d_width}    30
+    Input Text    ${d_length}    30
+    Input Text    ${d_height}    15
+    Input Text    ${input_selling_price}    3
+    Input Text    ${input_product_weight}    1
+    Input Text    ${input_product_tag}    กระโปรง
+    Upload Product Image    ${image}
+    Click Element    ${btn_saved}
+    Wait Until Element Is Visible    //*[@id="title_th"]    8s
+
+Add Product status Pre-order, Use Stock
+    [Documentation]    Action add product have status pre-order (Use stock)
+    [Arguments]    ${shop_category}    ${image}
+    Select product catagory
+    ${time}    Get Time    epoch
+    ${p_name}    Catenate    [Test]preorder usestock${time}
+    ${p_sku}    Catenate    sku-${time}
+    Input Text    ${input_product_name}    ${p_name}
+    Input Text    ${input_product_desc}    Product Test
+    Execute Javascript    ${product_type_used}
+    Execute Javascript    ${status_preorder}.click()
+    Execute Javascript    $('#new-product-inventory-management').val(1).change()
+    Input Text    ${unit_preorder}    10
+    Input Text    ${d_width}    30
+    Input Text    ${d_length}    30
+    Input Text    ${d_height}    15
+    Input Text    ${input_product_sku}    ${p_sku}
+    Input Text    ${input_selling_price}    1
+    Input Text    ${input_normal_price}    2
+    Input Text    ${input_product_weight}    1
+    Input Text    ${input_product_tag}    กระโปรง
+    Upload Product Image    ${image}
+    Click Element    ${btn_saved}
+    Wait Until Element Is Visible    //*[@id="title_th"]    8s
+
+Add Product Status Pre-order, Use Stock, Empty Can Buy
+    [Documentation]    Action add product have status pre-order (Empty can buy)
+    [Arguments]    ${shop_category}    ${image}
+    Select product catagory
+    ${time}    Get Time    epoch
+    ${p_name}    Catenate    [Test]preorder usestock empty${time}
+    ${p_sku}    Catenate    sku-${time}
+    Input Text    ${input_product_name}    ${p_name}
+    Input Text    ${input_product_desc}    Product Test
+    Execute Javascript    ${product_type_used}
+    Execute Javascript    ${status_preorder}.click()
+    Execute Javascript    $('#new-product-inventory-management').val(1).change()
+    Input Text    ${unit_preorder}    10
+    Select Checkbox    ${empty_canbuy}
+    Input Text    ${d_width}    30
+    Input Text    ${d_length}    30
+    Input Text    ${d_height}    15
+    Input Text    ${input_product_sku}    ${p_sku}
+    Input Text    ${input_selling_price}    4
+    Input Text    ${input_product_tag}    กระโปรง
+    Upload Product Image    ${image}
+    Click Element    ${btn_saved}
+    Wait Until Element Is Visible    //a[contains(text(),"${p_name}")]    8s
+
+Select product catagory
+    [Documentation]    Action Select product catagory
+    Select From List By Label    category    แฟชั่น
+    Select From List By Label    category2    กระเป๋า
+    Select From List By Label    category3    กระเป๋าเอกสาร
+
+Select Property
+    [Documentation]    Select Property
+    ${Count_property}    Execute Javascript    return $('[class="controls properties-control"]').length;
+    : FOR    ${index}    IN RANGE    1    ${Count_property} +1
+    \    ${Row}    Evaluate    ${index} - 1
+    \    ${Count_Prop}    Execute Javascript    return $('.properties-control:eq(0) option').length;
+    \    ${random} =    Evaluate    random.randint(0, ${Count_Prop})    random
+    \    Execute Javascript    $('.properties-control').eq(${Row}).find('option:eq(${random})').attr('selected','true').trigger("liszt:updated");
+
+Upload Product Image
+    [Documentation]    Upload Product by Image
+    [Arguments]    ${image}
+    Common.Scroll Element Into View    ${btn_browse_image}
+    Click Element    ${btn_browse_image}
+    Execute Javascript    $('#dropzone div').css('display','block')
+    Sleep    1s
+    Execute Javascript    $('#fileuploadinput').css('visibility','visible')
+    ${IMG_DIR}=    Replace String Using Regexp    ${CURDIR}    Keyword$    Image
+    ${CUR_IMG_DIR}=    Remove String    ${IMG_DIR}    ${/}Keyword${/}Common
+    ${file}=    Catenate    SEPARATOR=${/}    ${CUR_IMG_DIR}${/}Resource/${BU}${/}Image    ${image}
+    Choose File    ${input_upload_file}    ${file}
+    Wait Until Element Is Visible    ${thumb_from_browse}    ${EXPECT_LOADTIME}
+    Click Element    ${btn_save_browse}
+
+Select Attribute
+    [Documentation]    Select attribute of product
+    ${Count_Attr}    Execute Javascript    return $('.opttitle').length;
+    : FOR    ${index}    IN RANGE    1    ${Count_Attr} + 1
+    \    ${Row}    Evaluate    ${index} - 1
+    \    Execute Javascript    $('.chzn-select').eq(${Row}).find('option:eq(0)').attr('selected','selected').trigger("liszt:updated");
+    \    Execute Javascript    $('.chzn-select').eq(${Row}).find('option:eq(1)').attr('selected','selected').trigger("liszt:updated");
+    Execute Javascript    $('.chzn-select').trigger("change");
+    Wait Until Page Does Not Contain Element    //td[contains(.,'default')]
+
+Input price and stock into product attribute
+    [Documentation]    Input price and stock into product attribute
+    ${Number}    Set Variable    1
+    ${Total}    Set Variable    0
+    ${Count_Attr}    Execute Javascript    return $('#cross-sub-attr > tbody > tr').length
+    : FOR    ${index}    IN RANGE    0    ${Count_Attr}
+    \    Input Text    //*[@id="optrow${index}"]/td[5]/span/input    ${Number}
+    \    ${Number}    Evaluate    ${Number} + 1
+    \    Input Text    //*[@id="optrow${index}"]/td[6]/span/input    ${Number}
+    \    ${Number}    Evaluate    ${Number} + 1
+    \    Input Text    //*[@id="optrow${index}"]/td[7]/span/input    100
+    : FOR    ${index}    IN RANGE    0    ${Count_Attr}
+    \    ${Stock}    Get Value    inventory[${index}][quantity]
+    \    ${Total}    Evaluate    ${Total} + ${Stock}
+    ${Total}    Convert To String    ${Total}
+    Set Test Variable    ${Total}    ${Total}
+    ${Number}    Evaluate    ${Number} - 2
+    ${Original_Price}    Evaluate    ${Number} + 1
+    ${Original_Price}    Convert To String    ${Original_Price}
+    ${Price}    Catenate    1    -    ${Number}
+    Set Test Variable    ${Price}    ${Price}
+    Set Test Variable    ${Original_Price}    ${Original_Price}
+    Set Test Variable    ${Count_Attr}    ${Count_Attr}
+
+Add Product MC
+    [Documentation]    Action add product have status instock
+    [Arguments]    ${image}
+    Wait Until Element Is Visible    ${input_product_name}
+    Select From List By Label    category    โทรศัพท์มือถือ
+    ${time}    Get Time    epoch
+    ${p_name}    Catenate    [Test Do not Delete] Product MC${time}
+    ${p_sku}    Catenate    sku-${time}
+    Input Text    ${input_product_name}    ${p_name}
+    Input Text    ${input_product_desc}    Product Test MC${time}
+    Input Product Stock WeMall    100
+    Input Text    ${input_product_weight}    1
+    Input Text    ${input_selling_price}    999
+    Input Text    ${d_width}    1
+    Input Text    ${d_length}    1
+    Input Text    ${d_height}    1
+    Input Text    ${txt_sku_product}    ${p_sku}
+    Input Text    ${input_product_tag}    กระโปรง
+    Upload Product Image    ${image}
+    Click Element    //button[@class="btn btn-success btn-small btn-save-add"]
+    Set Test Variable    ${p_name}
+
+Add Product MC Type MF Delete SKU
+    [Arguments]    ${sku}
+    Go To    ${url_product_add_MF}
+    Wait Until Element Is Visible    ${input_product_name}
+    Select From List By Label    category    โทรศัพท์มือถือ
+    ${time}    Get Time    epoch
+    ${p_name}    Catenate    [Test Do not Delete] Product MC${time}
+    ${p_sku}    Catenate    ${sku}
+    Input Text    ${input_product_name}    ${p_name}
+    Input Text    ${input_product_desc}    Product Test MC${time}
+    Input Product Stock WeMall    100
+    Input Text    ${input_product_weight}    1
+    Input Text    ${input_selling_price}    999
+    Input Text    ${d_width}    1
+    Input Text    ${d_length}    1
+    Input Text    ${d_height}    1
+    Input Text    ${txt_sku_product}    ${p_sku}
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+    Click Element    //button[@class="btn btn-success btn-small btn-save-add"]
+    Element Should Be Visible    //div[@id="sku-duplicate"]
+    Element Should Contain    //div[@id="sku-duplicate"]//h3    รหัสสินค้าของร้านซ้ำในระบบ
+    Element Should Contain    //div[@style="position:relative;width:100%;height:100%;"]//span[@id="notify-msg"]    รหัสสินค้าของร้านซ้ำในระบบ
+    #Element Should Contain    //div[@style="position:relative;width:100%;height:100%;"]//span[@id="notify-msg"]    บันทึกข้อมูลไม่สำเร็จ เนื่องจาก SKU ซ้ำ
+
+Add Product MC Type MF Dupicate SKU
+    [Arguments]    ${sku}
+    Go To    ${url_product_add_MF}
+    Wait Until Element Is Visible    ${input_product_name}
+    Select From List By Label    category    โทรศัพท์มือถือ
+    ${time}    Get Time    epoch
+    ${p_name}    Catenate    [Test Do not Delete] Product MC${time}
+    ${p_sku}    Catenate    ${sku}
+    Input Text    ${input_product_name}    ${p_name}
+    Input Text    ${input_product_desc}    Product Test MC${time}
+    Input Product Stock WeMall    100
+    Input Text    ${input_product_weight}    1
+    Input Text    ${input_selling_price}    999
+    Input Text    ${d_width}    1
+    Input Text    ${d_length}    1
+    Input Text    ${d_height}    1
+    Input Text    ${txt_sku_product}    ${p_sku}
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+    Click Element    //button[@class="btn btn-success btn-small btn-save-add"]
+    Element Should Contain    //div[@style="position:relative;width:100%;height:100%;"]//span[@id="notify-msg"]    บันทึกข้อมูลไม่สำเร็จ เนื่องจาก SKU ซ้ำ
+
+Edit Stock MC Type MF
+    [Arguments]    ${mfproduct_id}
+    Go To    ${url_product_edit_MF}/${mfproduct_id}
+    Wait Until Element Is Visible    ${input_product_name}
+    Element Should Be Disabled    ${box_stock}
+
+Fast Edit Stock MC Type MF
+    Go To    ${url_product_list_MF}
+    Click Element    ${icon_fast_editproduct}
+    Wait Until Element Is Visible    ${modal_fast_editproduct}
+    Element Should Not Be Visible    //div[@id="pd-form-l90585986"]//div[@class="row-body center"]//div[@class="col-4"]
+
+
+Genarate Product Name And SKU
+    [Arguments]    ${title}
+    ${time}    Get Time    epoch
+    ${p_name}    Catenate    Robot_${title}_${time}
+    ${p_sku}    Catenate    ${time}
+    Set Suite Variable    ${p_name}
+    Set Suite Variable    ${p_sku}
+
+Select Category
+    [Documentation]    Select Category
+    [Arguments]    ${type}    ${position}
+    Sleep    2
+    ${main_category_name}    Run Keyword If    '${type}'=='main'    Execute Javascript    return $('.nl-main-cat ').eq(${position}).text().trim()
+    ${sublv1_category_name}    Run Keyword If    '${type}'=='sublv1'    Execute Javascript    return $('.nl-cat-name').eq(${position}).text().trim()
+    ${sublv2_category_name}    Run Keyword If    '${type}'=='sublv2'    Execute Javascript    return $('.nl-sub-cat-list-lv-1 > li > a > span').eq(${position}).text().trim()
+    Run Keyword If    '${type}'=='main'    Click Element    //a[contains(@class,'nl-main-cat ') and contains(text(),'${main_category_name}')]
+    Run Keyword If    '${type}'=='sublv1'    Click Element    //span[contains(@class,'nl-cat-name') and contains(text(),'${sublv1_category_name}')]
+    Run Keyword If    '${type}'=='sublv2'    Click Element    //span[contains(@class,'nl-cat-name') and contains(text(),'${sublv2_category_name}')]
+    ${list_category}=    Create List    ${main_category_name}    ${sublv1_category_name}    ${sublv2_category_name}
+    [return]    ${list_category}
+
+Input Product Name
+    [Arguments]    ${p_name}=${p_name}
+    Input Text    ${input_product_name}    ${p_name}
+
+Input Description
+    [Arguments]    ${Description}=Producttest
+    Input Text    //div[@class="redactor-editor"]    ${Description}
+
+Edit Attribute
+    [Documentation]    Edit Attribute
+    : FOR    ${i}    IN RANGE    0    2
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_attr}    S
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_attr}    M
+    \    Press Key    ${txt_attr}    ${ENTER}
+    : FOR    ${i}    IN RANGE    0    2
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_wls_color}    ดำ
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_wls_color}    แดง
+    \    Press Key    ${txt_wls_color}    ${ENTER}
+
+Edit Attribute WM
+    [Documentation]    Edit Attribute
+    : FOR    ${i}    IN RANGE    0    2
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_size}    S
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_size}    M
+    \    Press Key    ${txt_size}    ${ENTER}
+    : FOR    ${i}    IN RANGE    0    2
+    \    Run Keyword If    ${i} == 0    Input Text    ${txt_color}    ดำ
+    \    Run Keyword If    ${i} == 1    Input Text    ${txt_color}    แดง
+    \    Press Key    ${txt_color}    ${ENTER}
+
+Select Attribute Size
+    [Documentation]    Select Attribute Size
+    Input Text    ${txt_attr}    S
+    Press Key    ${txt_attr}    ${ENTER}
+    Input Text    ${txt_attr}    M
+    Press Key    ${txt_attr}    ${ENTER}
+    Input Text    ${txt_attr}    L
+    Press Key    ${txt_attr}    ${ENTER}
+    Wait Until Page Does Not Contain Element    //td[contains(.,'default')]
+
+Select Attribute Size WM
+    [Documentation]    Select Attribute Size
+    Input Text    ${txt_size}    S
+    Press Key    ${txt_size}    ${ENTER}
+    Input Text    ${txt_size}    M
+    Press Key    ${txt_size}    ${ENTER}
+    Input Text    ${txt_size}    L
+    Press Key    ${txt_size}    ${ENTER}
+    Wait Until Page Does Not Contain Element    //td[contains(.,'default')]
+
+Select Attribute Color
+    [Documentation]    Select Attribute Color
+    Input Text    ${txt_wls_color}    ดำ
+    Press Key    ${txt_wls_color}    ${ENTER}
+    Input Text    ${txt_wls_color}    ครีม
+    Press Key    ${txt_wls_color}    ${ENTER}
+    Wait Until Page Does Not Contain Element    //td[contains(.,'default')]
+
+Select Attribute Color WM
+    [Documentation]    Select Attribute Color
+    Input Text    ${txt_color}    ดำ
+    Press Key    ${txt_color}    ${ENTER}
+    Input Text    ${txt_color}    ครีม
+    Press Key    ${txt_color}    ${ENTER}
+    Wait Until Page Does Not Contain Element    //td[contains(.,'default')]
+
+Select Attribute Color2
+    [Documentation]    Select Attribute Color2
+    Input Text    ${txt_wls_color}    ขาว
+    Press Key    ${txt_wls_color}    ${ENTER}
+    Input Text    ${txt_wls_color}    เหลือง
+    Press Key    ${txt_wls_color}    ${ENTER}
+    Input Text    ${txt_wls_color}    แดง
+    Press Key    ${txt_wls_color}    ${ENTER}
+    Wait Until Page Does Not Contain Element    //td[contains(.,'default')]
+
+Select Attribute Color2 WM
+    [Documentation]    Select Attribute Color2
+    Input Text    ${txt_color}    ขาว
+    Press Key    ${txt_color}    ${ENTER}
+    Input Text    ${txt_color}    เหลือง
+    Press Key    ${txt_color}    ${ENTER}
+    Input Text    ${txt_color}    แดง
+    Press Key    ${txt_color}    ${ENTER}
+    Wait Until Page Does Not Contain Element    //td[contains(.,'default')]
+
+
+Input price and stock into product attribute2
+    [Documentation]    Input price and stock into product attribute2
+    ${Number}    Set Variable    199
+    ${Total}    Set Variable    0
+    ${Count_Attr}    Execute Javascript    return $('#cross-sub-attr > tbody > tr').length
+    : FOR    ${index}    IN RANGE    1    ${Count_Attr}+1
+    \    #Input Text    //*[@id="cross-sub-attr"]/tbody/tr[${index}]/td[5]/span/input    ${Number}
+    \    Execute Javascript    $('#optrow${index} td:eq(4) input').val('${Number}').change();
+    : FOR    ${index}    IN RANGE    0    ${Count_Attr}
+    \    ${Stock}    Get Value    inventory[${index}][quantity]
+    \    ${Total}    Evaluate    ${Total} + ${Stock}
+    ${Total}    Convert To String    ${Total}
+    Set Test Variable    ${Total}    ${Total}
+
+Input price and stock into product attribute3
+    [Documentation]    Input price and stock into product attribute3
+    ${Number}    Set Variable    199
+    ${Total}    Set Variable    0
+    ${Count_Attr}    Execute Javascript    return $('#cross-sub-attr > tbody > tr').length
+    : FOR    ${index}    IN RANGE    1    ${Count_Attr}+1
+    \    Input Text    //*[@id="cross-sub-attr"]/tbody/tr[${index}]/td[5]/span/input    ${Number}
+
+Add product by input name
+    [Documentation]    Add product by input name
+    [Arguments]    ${p_name}
+    Go To    ${URL_STORE}/${shop_name}/admin/product/create
+    Wait Until Element Is Visible    title_th
+    Select Category Fashion Bag
+    Genarate Product Name And SKU    AddByRobot
+    Input Text    ${txt_product_name}    ${p_name}
+    Execute Javascript    $('div.redactor-editor').html('Producttest')
+    Execute Javascript    $('div.redactor-editor').keydown()
+    Execute Javascript    ${product_type_used}
+    Execute Javascript    ${status_instock}.click()
+    Execute Javascript    ${product_type_used}
+    Execute Javascript    ${status_instock}.click()
+    Input Product Stock WeMall    10
+    Input Text    ${prepare_shipping}    2
+    Input Product Stock WeMall    10
+    Input Text    ${txt_sku_product}    ${p_sku}
+    Input Text    ${input_selling_price}    49
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+    sleep    3s
+    Execute Javascript    $('.btn-save').eq(0).click()
+    Wait Until Page Does Not Contain    ${input_product_tag}
+
+Add Choose Size
+    [Arguments]    ${size}
+    Press Key    ${txt_size}    ${size}
+    ${size_selected}    Replace String    ${ddl_size_list}    replace_here    ${size}
+    Click Element    ${size_selected}
+    Add Image Inv    1
+
+Edit Image Inv
+    [Arguments]    ${variable}
+    ${i}=    Evaluate    ${variable}-1
+    ${str_i}    Convert To String    ${i}
+    ${txt_store_code2}    Replace String    ${txt_store_code}    replace_here    ${str_i}
+    ${code_store}    Get Value    ${txt_store_code2}
+    Set Focus To Element    ${txt_store_code2}
+    ${btn_delete_image2}    Replace String    ${btn_delete_image}    replace_here    ${code_store}
+    ${count_img_inv}=    Get Matching Xpath Count    ${img_logo}
+    Run Keyword if    ${count_img_inv} > 0    Click Element    ${btn_delete_image2}
+    ${btn_add_image2}    Replace String    ${btn_add_image}    replace_here    ${code_store}
+    Click Element    ${btn_add_image2}
+    Click Element    ${btn_select_album}
+    Wait Until Element Is Visible    ${img_first}
+    Click Element    ${img_first}
+    Click Element    ${btn_save_album}
+
+Delete Image Inv
+    [Arguments]    ${variable}
+    ${i}=    Evaluate    ${variable}-1
+    ${str_i}    Convert To String    ${i}
+    ${txt_store_code2}    Replace String    ${txt_store_code}    replace_here    ${str_i}
+    ${code_store}    Get Value    ${txt_store_code2}
+    Set Focus To Element    ${txt_store_code2}
+    ${btn_delete_image2}    Replace String    ${btn_delete_image}    replace_here    ${code_store}
+    ${count_img_inv}=    Get Matching Xpath Count    ${img_logo}
+    Run Keyword if    ${count_img_inv} == 0    Add Image Inv    ${variable}
+    Click Element    ${btn_delete_image2}
+
+Add Image Inv
+    [Arguments]    ${variable}
+    ${i}=    Evaluate    ${variable}-1
+    ${str_i}    Convert To String    ${i}
+    ${txt_store_code2}    Replace String    ${txt_store_code}    replace_here    ${str_i}
+    ${code_store}    Get Value    ${txt_store_code2}
+    ${btn_add_image2}    Replace String    ${btn_add_image}    replace_here    ${code_store}
+    Click Element    ${btn_add_image2}
+    Click Element    ${btn_select_album}
+    Wait Until Element Is Visible    ${img_first}
+    Click Element    ${img_first}
+    Click Element    ${btn_save_album}
+
+Add Image Inv Not Duplicate
+    [Documentation]    Add Image Inv Not Duplicate
+    [Arguments]    ${variable}
+    Set Selenium Speed    .4
+    # Execute Javascript    var k = 0; var i = ${variable} - 1; loopLi(); function loopLi() { if (i >= 0) { $('.img-btn').eq(0).click(); setTimeout(loopLi2, 2000); } } function loopLi2() { $('a#btn_select_photo_att').last().click(); setTimeout(loopLi3, 2000) } function loopLi3() { $('.widget-main-container').last().find('li img').eq(i).click(); setTimeout(loopLi4, 2000) } function loopLi4() { $('.save_photo').last()[0].click(); console.log(i); i--; setTimeout(loopLi, 2000) }
+    : FOR    ${i}    IN RANGE    0    ${variable}
+    \    Execute Javascript    $('.img-btn').eq(0).click()
+    \    Sleep    2s
+    \    Click Element    id=btn_select_photo_att
+    \    Sleep    2s
+    \    Execute Javascript    $('.widget-main-container').last().find('li img').eq(0).click();
+    \    Sleep    2s
+    \    Execute Javascript    $('.save_photo').last()[0].click();
+    \    Sleep    2s
+
+
+Check Image In Gallery
+    [Documentation]    Check Image In Gallery
+    ${size}=    Execute Javascript    return $('ul.ace-thumbnails li').length
+    Return From Keyword    ${size}
+
+#Click Button
+#    [Arguments]    ${BtnName}
+#    Click Element    //button[contains(.,'${BtnName}')]
+
+Select Shop Category Main
+    [Documentation]    Select Shop Category Main
+    Execute Javascript    $("#input_shop_category select option").filter(function(){ return this.text == 'เสื้อยืด'; }).attr('selected', true).change();
+    Sleep    2s
+
+Select Shop Category Sub
+    [Documentation]    Select Shop Category Sub
+    Execute Javascript    $("#input_shop_category select option").filter(function(){ return this.text == 'กระเป๋าเอกสาร'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $("select#shop_sub_category option").filter(function(){ return this.text == 'กระเป๋าโน๊ตบุ๊ค'; }).attr('selected', true).change();
+    Sleep    2s
+
+Input Product Stock
+    [Arguments]    ${txt_prepare_shipping}    ${txt_unit_instock}
+    Execute Javascript    ${status_instock}.click()
+    Input Text    ${prepare_shipping}    ${txt_prepare_shipping}
+    Input Text    ${unit_instock}    ${txt_unit_instock}
+
+Input Product Stock WeMall
+    [Arguments]    ${txt_unit_instock}
+    Focus    ${txt_stock}
+    Input Text    ${txt_stock}    ${txt_unit_instock}
+
+Input Product Name WeMall
+    Focus    ${txt_product_name}
+    Input Text    ${txt_product_name}    ${p_name}
+
+Input Product Description WeMall
+    [Arguments]    ${description}
+    Focus    ${txt_description}
+    Input Text    ${txt_description}    ${description}
+
+Input Product Preorder Usestock
+    [Arguments]    ${txt_shipping_in}    ${txt_preorderunit}
+    Input Text    ${shipping_in}    ${txt_shipping_in}
+    Input Text    ${unit_preorder}    ${txt_preorderunit}
+
+Input SKU and Product Price
+    [Arguments]    ${txt_sku}    ${txt_price}    ${txt_normal_price}
+    Input Text    ${txt_sku_product}    ${txt_sku}
+    Input Text    ${txt_price_product}    ${txt_price}
+    Input Text    ${txt_compare_price}    ${txt_normal_price}
+
+Input SKU and Product Price Wemall
+    [Arguments]    ${sku}    ${price}    ${normal_price}
+    Input Text    ${txt_sku_product}    ${sku}
+    Input Text    ${txt_price_product}    ${price}
+    Input Text    ${txt_compare_price}    ${normal_price}
+
+Click Button Save Product
+    Execute Javascript    $('.btn-save').eq(0).click()
+
+Change Shop Product Status
+    [Arguments]    ${type}    ${id}    ${status}
+    [Documentation]    Change Shop Product Status
+    Run Keyword If    '${type}' == 'shop'    WMS_Blockshop.Block Shop    ${id}    ${status}
+    Run Keyword If    '${type}' == 'product' and '${status}' == 'ปิด'    WMS_Blockproduct.Block Product    ${id}    ${status}
+    Run Keyword If    '${type}' == 'product' and '${status}' == 'แสดง'    WMS_Blockproduct.Block Product    ${id}    ${status}
+    Run Keyword If    '${type}' == 'product' and '${status}' == 'ไม่ผ่านการตรวจสอบ'    WMS_Blockproduct.Monitoring Product    ${id}    ${status}
+    Run Keyword If    '${type}' == 'product' and '${status}' == 'ผ่านการตรวจสอบ'   WMS_Blockproduct.Monitoring Product    ${id}    ${status}
+
+Select Category Three Level
+    [Documentation]    Action select category three level
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'แฟชั่น'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'กระเป๋า'; }).attr('selected', true).change();
+    Sleep    2s
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'กระเป๋าเอกสาร'; }).attr('selected', true).change();
+    Sleep    2s
+
+Get stock
+    [Documentation]    Get stock
+    ${Get_Row}    Get Matching Xpath Count    //tr[@class="pdstock-tr"]
+    &{Stock}    Create Dictionary    Value = Key
+    : FOR    ${Row}    IN RANGE    1    ${Get_Row} + 1
+    \    ${HoldStock}    Get Text    //tr[${Row}][@class="pdstock-tr"]//td[2]
+    \    ${AvailableStock}    Get Text    //tr[${Row}][@class="pdstock-tr"]//td[3]
+    \    ${TotalStock}    Get Text    //tr[${Row}][@class="pdstock-tr"]//td[4]
+    \    &{Stock}    Create Dictionary    &{Stock}    Hold${Row} = ${HoldStock}    Available${Row} = ${AvailableStock}    Total${Row} = ${TotalStock}
+    Set Test Variable    &{Stock}
+
+Check Stock
+    [Documentation]    Check Stock
+    ${S_Total}    Execute Javascript    return $('span[class="total"]').text()
+    ${Stock_Total}    Convert to String    ${S_Total}
+    ${S_quantity}    Execute Javascript    return $('span[class="quantity"]').text()
+    ${Stock_quantity}    Convert to String    ${S_quantity}
+    ${S_Hold}    Execute Javascript    return $('span[class="hold"]').text()
+    ${Stock_Hold}    Convert to String    ${S_Hold}
+    ${Check1}    Evaluate    ${S_Total} - ${Stock_Hold}
+    Should Be Equal As Integers    ${S_quantity}    ${Check1}
+
+Go to previous page
+    [Documentation]    Go to previous page
+    Wait Until Element Is Visible    //ul[@*="pagination"]
+    ${CurrentPage}    Get Text    //ul[@*="pagination"]//li[@class="active"]//span
+    ${NextPage}    Evaluate    ${CurrentPage} - 1
+    ${CheckNextPage}    Get Matching Xpath Count    //a[text()='${NextPage}']
+    Run Keyword If    ${CheckNextPage} == 1    Click Element    //a[text()='${NextPage}']
+
+
+Select plaza category level1
+    [Arguments]    ${category}
+    Select From List By Label    category    ${category}
+
+Select plaza category level2
+    [Arguments]    ${category}
+    Select From List By Label    category2    ${category}
+
+Select plaza category level3
+    [Arguments]    ${category}
+    Select From List By Label    category3    ${category}
+
+Select plaza category level4
+    [Arguments]    ${category}
+    Select From List By Label    category4    ${category}
+
+Select plaza category level5
+    [Arguments]    ${category}
+    Select From List By Label    category5    ${category}
+
+Select plaza category level6
+    [Arguments]    ${category}
+    Select From List By Label    category6    ${category}
+
+Count value on product list
+    [Documentation]    Count value on product list
+    ${before_Count1}    Get Matching Xpath Count    //*[@id="table_report"]/tbody/tr/td[2]
+    ${paging}    Execute Javascript    return $('.pagination li').length;
+    ${Cur_page}    Evaluate    ${paging} - 3
+    : FOR    ${index}    IN RANGE    0    ${Cur_page}
+    \    Run Keyword If    ${Cur_page} < ${paging}    Click Element    //ul[@class='pagination']//li[${paging}]
+    \    Wait Until Element Is Visible    table_report
+    \    ${Count}    Get Matching Xpath Count    //*[@id="table_report"]/tbody/tr/td[2]
+    \    ${before_Count1}    Evaluate    ${before_Count1} + ${Count}
+    \    Exit For Loop If    ${Cur_page} >= ${paging}
+    Set Test Variable    ${before_Count1}
+
+Count product on product list have paging
+    [Documentation]    Count product on product list have paging
+    ${paging}    Execute Javascript    return $('.pagination li').length;
+    ${last_paging}    Evaluate    ${paging} - 1
+    ${last_paging}    Get Text    //ul[@class='pagination']//li[${last_paging}]//a
+    ${before_Count1}    Set Variable    0
+    : FOR    ${index}    IN RANGE    0    ${last_paging}
+    \    ${CountProduct}    Get Matching Xpath Count    //*[@id="table_report"]/tbody/tr/td[2]
+    \    ${before_Count1}    Evaluate    ${CountProduct} + ${before_Count1}
+    \    Go to next page
+    Set Test Variable    ${before_Count1}
+
+Count product on product list not have paging
+    [Documentation]    Count product on product list not have paging
+    ${before_Count1}    Get Matching Xpath Count    //*[@id="table_report"]/tbody/tr/td[2]
+    Set Test Variable    ${before_Count1}
+
+Click add/edit product button
+    [Documentation]    Use for click add/edit product button
+    Execute Javascript    $('button:contains(Add/Edit Product)').click()
+
+Search product
+    [Documentation]    Use for search product by productid
+    [Arguments]    ${product}
+    Wait Until Element Is Visible    search
+    Input Text    search    ${product}
+    Click Button    ${btn_search_product}
+    Wait Until Element Is Visible    table_report    ${EXPECT_LOADTIME}
+
+Select filter product by category
+    [Arguments]    ${categoryname}
+    Select From List By Label    filter    ${categoryname}
+
+Move product to category
+    [Arguments]    ${categoryname}
+    Click Element    //*[@id="tool_button_1"]/div/button
+    Execute Javascript    $( "a[data-original-title='Move to ${categoryname}']" ).click()
+    Sleep    1s
+    Click OK Alert Box
+
+Move product to subcategory
+    [Arguments]    ${categoryname}
+    Click Element    //*[@id="tool_button_1"]/div/button
+    Execute Javascript    $( "a[title='Move to ${categoryname}']" ).click()
+    Sleep    1s
+    Click OK Alert Box
+
+Click checkbox first product in list
+    Execute Javascript    $('input[type="checkbox"]').eq(2).click()
+
+Click first product for edit
+    Click Element    ${top_record_p_name}
+
+Click quick edit
+    Execute Javascript    $('.icon-q-editpd').eq(0).click()
+    Sleep    1s
+
+Filter product by status soldout
+    Execute Javascript    $(':contains(สินค้าหมด)').click()
+    Sleep    1s
+
+Filter product by status all product
+    Execute Javascript    $(':contains(สินค้าทั้งหมด)').click()
+    Sleep    1s
+
+Filter product by status approved
+    Execute Javascript    $('strong:contains(ผ่านการตรวจสอบ)').eq(0).click()
+    Sleep    1s
+
+Filter product by status pending
+    Execute Javascript    $(':contains(รอการตรวจสอบ)').click()
+    Sleep    1s
+
+Filter product by status reject
+    Execute Javascript    $(':contains(ไม่ผ่านการตรวจสอบ)').click()
+    Sleep    1s
+
+Search Product By Keyword Found Result
+    [Documentation]    Search Product By Keyword Found Result
+    [Arguments]    ${keyword}
+    Input Text    ${input_keyword}    ${keyword}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    1s
+    Wait Until Element Is Visible    table_report
+    ${title_product}    Execute Javascript    return $(".pd-list-name a").eq(0).text()
+    ${title_product_str}    Convert To String    ${title_product}
+    Should Contain    ${title_product_str}    ${keyword}
+
+Choose Image From Gallery Correct_ForAddProduct
+    [Documentation]    Choose Image From Gallery Correct_ForAddProduct
+    Wait Until Element Is Visible    //div[@class="span3 box-album"]    10s
+    Execute Javascript    $('.modal-addimg tbody tr').eq(0).click()
+    Sleep    2s
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    Sleep    2s
+    ${count_thumb_image}    Execute Javascript    return $('.wls-total-selected').text()
+    ${count}    Remove String    ${count_thumb_image}    0
+    Run Keyword If    '${count}' == '1'    Execute Javascript    $('.save_photo:visible').click()
+    #    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    #Should Be Equal    ${count}    1
+    #Execute Javascript    $('.save_photo').eq(1).click()
+    Wait Until Element Is Not Visible    //div[@class="span3 box-album"]    10s
+
+Checking status should be
+    [Arguments]    ${status}
+    Wait Until Element Is Visible    ${lbl_status_for_approval}
+    Element Should Contain    ${lbl_status_for_approval}    ${status}
+
+Product visibility should be
+    [Arguments]    ${visibility}
+    Run Keyword if    '${visibility}' == 'show'    Element Should Be Visible    ${icn_show_status}
+    ...  ELSE IF    '${visibility}' == 'hide'    Element Should Be Visible    ${icn_hide_status}
+
+Update Product Name On Quick Edit
+    [Arguments]    ${product_name}
+    ${old_name}    Get Value    ${txt_quick_product_name}
+    Run Keyword if    '${product_name}' != '${old_name}'    Input Text    ${txt_quick_product_name}    ${product_name}
+    ...  ELSE    Input Text    ${txt_quick_product_name}    Temporary Name
+    ${NEW_NAME}    Get Value    ${txt_quick_product_name}
+    Set Test Variable    ${NEW_NAME}
+    Click Element    ${btn_save_edit}
+
+Add Product Stock On Quick Edit
+    ${quantity}    Get Value    ${txt_quantity}
+    ${new_quantity}    Evaluate    ${quantity}+1
+    Input Text    ${txt_quantity}    ${new_quantity}
+    Click Element    ${btn_save_edit}
+
+Go To Pending Product Board
+    Wait Until Element Is Visible    ${lnk_pending_product}
+    Click Element    ${lnk_pending_product}
+
+Go To Edit Product Page
+    Wait Until Element Is Visible    ${lnk_edit_product}
+    Click Element    ${lnk_edit_product}
+
+Go To Approved Product Board
+    Wait Until Element Is Visible    ${lnk_approved_product}
+    Click Element    ${lnk_approved_product}
+
+Edit Product Information
+    ${description}    Get Text    ${lbl_product_info}
+    Input Text    ${txt_product_info}    ${description}d
+    Click Element    ${btn_saved}
+    Display Alert Footer
+
+Checking warning message should be
+    [Arguments]    ${warning_message}
+    Wait Until Element Is Visible    ${lbl_warning_message}
+    Element Should Contain    ${lbl_warning_message}    ${warning_message}
+
+Check Attribute Product On Stock Value
+    [Arguments]    ${stock}
+    Wait Until Element Is Visible    ${txt_stock_first_attr}
+    Textfield Value Should Be    ${txt_stock_first_attr}    ${stock}
+    Textfield Value Should Be    ${txt_stock_second_attr}    ${stock}
+    Textfield Value Should Be    ${txt_stock_third_attr}    ${stock}
+
+Go To Product List
+    [Arguments]    ${browser}    ${shopname}
+    Switch Browser    ${browser}
+    Go To    ${URL_STORE}/${shopname}/admin/product
+
+Search Product In Store By StoreID
+    [Arguments]    ${product}
+    Wait Until Element Is Visible    ${txt_search_rpoduct_id}
+    Input Text    ${txt_search_rpoduct_id}    ${product}
+    Click Element    ${btn_search_product_id}
+
+Click Show Product On Product List
+    Click Element    ${chk_select_product}
+    Click Element    ${btn_show_product}
+    Wait Until Element Is Visible    ${fre_pop-up_confirm}
+    Click Element    ${btn_ok_confirm}
+
+Go To LevelD Product On Wemall Web
+    [Arguments]    ${product}
+    Go to    ${URL_LEVEL_D}/${product}?refresh=changeme
+
+Verify Search Product
+    [Arguments]    ${store_name}    ${name_product}
+    Go To Product Admin    ${store_name}
+    Search product    ${name_product}
+    Element Should Contain    id=errortext    ไม่พบสินค้า
+
+Create Product Sanity
+    [Arguments]    ${shopname}
+    Go To    ${URL_STORE}/${shopname}/admin/product/create
+    Add Product MC Sanity    download1.png    TestAddproduct
+
+
+Add Product MC Sanity
+    [Documentation]    Action add product have status instock
+    [Arguments]    ${image}    ${p_name}
+    Wait Until Element Is Visible    ${input_product_name}
+    Select From List By Label    category    อื่นๆ
+    Input Text    ${input_product_name}    ${p_name}
+    Input Text    ${input_product_desc}    ${p_name}
+    Input Product Stock WeMall    100
+    Input Text    ${input_product_weight}    1
+    Input Text    ${input_selling_price}    999
+    Input Text    ${d_width}    1
+    Input Text    ${d_length}    2
+    Input Text    ${d_height}    3
+    Input Text    ${txt_sku_product}    ${p_name}
+    Upload Product Image    ${image}
+    Click Element    ${btn_saved}
+    Wait Until Element Is Visible    id=frm_product
+    Set Test Variable    ${p_name}
+
+

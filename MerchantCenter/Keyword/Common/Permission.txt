@@ -1,0 +1,386 @@
+*** Settings ***
+Library     SeleniumLibrary
+Resource    ../../Resource/WeMall/WebElement/permission.txt
+
+*** Keywords ***
+Click Edit Role
+    :FOR    ${Index}    IN RANGE    0    3
+    \    ${count}    Get Matching Xpath Count    ${GroupRole}
+    \    Run Keyword If    '${count}' == '0'    Click Element    //ul//a[contains(.,'2')]
+    \    Wait Until Element Is Visible    ${GroupRole}
+    \    Run Keyword If    '${count}' == '1'    Click Element    ${BtnEdit}
+    \    Exit For Loop If    '${count}' == '1'
+    Wait Until Element Is Visible    ListAllPermission
+    Focus    ListAllPermission
+
+Get Campaign ID
+    ${GetCampaignID}    Get Element Attribute    //table[@id="sample-table-2"]//tbody//tr[1]@id
+    ${GetCampaignID} =    Remove String    ${GetCampaignID}    row-
+    Set Test Variable    ${GetCampaignID}    ${GetCampaignID}
+
+Verify Campaign Permission
+    [Arguments]    ${PermissionRole}
+    Set Test Variable    ${PermissionRole}    ${PermissionRole}
+    Run Keyword If    "${PermissionRole}" == "เห็น" or "${PermissionRole}" == "All"    Verify Have Permission
+    Run Keyword If    "${PermissionRole}" == "manage-show-view" or "${PermissionRole}" == "approve-view" or "${PermissionRole}" == "campaign-view"    Go To    ${URL_WMS}/campaign/${PermissionRole}/${GetCampaignID}
+    Run Keyword If    "${PermissionRole}" == "export"    Go To    ${URL_WMS}/campaign/${PermissionRole}?campaign_id=${GetCampaignID}&campaign_type=1&promotion_type=0&config_order=custom&campaign_product_status=public
+    Run Keyword If    "${PermissionRole}" == "dealzapp" or "${PermissionRole}" == "collection-non-join" or "${PermissionRole}" == "collection-join" or "${PermissionRole}" == "promotion"    Verify Add Edit Manage Page
+    Sleep    3
+    Page Should Not Contain    Access Denied
+
+Verify Add Edit Manage Page
+    Create Campaign
+    Verify Have Permission
+    Manage Campaign
+    Verify Have Permission
+    Edit Campaign
+    Verify Have Permission
+
+Verify Have Permission
+    Page Should Not Contain    Access Denied
+
+Create Campaign
+    Go To    ${URL_WMS}/campaign/${PermissionRole}/create
+
+Manage Campaign
+    Go To    ${URL_WMS}/campaign/${PermissionRole}/manage-show/${GetCampaignID}
+
+Edit Campaign
+    Go To    ${URL_WMS}/campaign/${PermissionRole}/edit/${GetCampaignID}
+
+Click Unselect All Permission
+    [Arguments]    ${Group}
+    #Execute JavaScript    $('span:contains("${Group}"):visible').scroll();
+    ${CheckBox}    Execute JavaScript    return $('label:contains("${Group}") input[checked="checked"]').length;
+    Run Keyword If    '${CheckBox}' == '0'    Execute JavaScript    $('span:contains("${Group}"):visible').click();
+    Execute JavaScript    $('span:contains("${Group}"):visible').click();
+
+Click Select All Permission
+    [Arguments]    ${Group}
+    ${CheckBox}    Execute JavaScript    return $('label:contains("${Group}") input[checked="checked"]').length;
+    Run Keyword If    '${CheckBox}' != '1'    Execute JavaScript    $('span:contains("${Group}"):visible').click();
+
+Click Save Button
+    Click Button    บันทึก
+    Sleep    2
+
+Click Submit Button
+    Click Element    //button[@type="submit"]
+    Sleep    2
+
+Go To Campaign
+    Go To    ${URL_WMS}/campaign
+
+Selete Campaign Tab
+    [Arguments]    ${BtnCampaign}
+    Click Element    //button[@class="btn " and contains(.,'${BtnCampaign}')]
+    ${BtnCampaign} =    Set Variable If    "${BtnCampaign}" == "Non Join Campaign"    Non-Join Campaign    ${BtnCampaign}
+    Wait Until Element Is Visible    //li[contains(.,'${BtnCampaign}')]
+
+Verify Not Access Campaign
+    Page Should Not Contain    Campaign Management
+
+Click Select Role
+    [Arguments]    ${Group}    ${Permission}
+    Click Element    //div[@class="col-sm-4"][div[contains(.,'${Group}')]]//span[contains(.,'${Permission}')]
+
+Search email
+    [Arguments]    ${PermissionUser}
+    Input Text    full_search    ${PermissionUser}
+    Press Key    full_search    \\13
+    Wait Until Element Is Visible    //tr[1][contains(.,'${PermissionUser}')]
+
+Edit Account
+    Click Element    //div[@class=" action-buttons"]//i
+    Wait Until Page Contains    ข้อมูลส่วนตัว
+
+Clear Assign Project
+    ${GetProject}    Get Matching Xpath Count    //div[@class="form-group" and contains(.,'สิทธิการจัดการระบบ')]//li
+    : For    ${Index}    IN RANGE    1    ${GetProject}
+    \    Click Element    //div[@class="form-group" and contains(.,'สิทธิการจัดการระบบ')]//li//a
+
+Assign Project
+    [Arguments]    ${Project}
+    Input Text    ${TxtAssignProject}    ${Project}
+    Press Key    ${TxtAssignProject}    \\13
+    @{GetProject}    Create List    @{GetProject}    ${Project}
+    Set Test Variable    @{GetProject}    @{GetProject}
+
+Verify Project On List Page
+    ${Length}    Get Length    ${GetProject}
+    : FOR    ${Index}    IN RANGE    0    ${Length}
+    \    Page Should Contain    ${GetProject[${Index}]}
+    Set Test Variable    ${Length}    ${Length}
+
+Verify Project Menu
+    Click Element    //li[@class="light-blue user-min"]
+    Wait Until Element Is Visible    //li[@class="light-blue user-min open"]
+    Run Keyword If    '${Length}' == '2'    Verify Logo WLS WM
+    Run Keyword If    '${Length}' == '1' and '${GetProject[0]}' == 'wemall'    Verify Logo    westore
+    Run Keyword If    '${Length}' == '1' and '${GetProject[0]}' == 'westore'    Verify Logo    wemall
+
+Verify Logo WLS WM
+    Page Should Contain Element    //img[@src="${URL_WMS}/themes/default/assets/images/logo/logo_${GetProject[0]}.png"]
+    Page Should Contain Element    //img[@src="${URL_WMS}/themes/default/assets/images/logo/logo_${GetProject[1]}.png"]
+
+Verify Logo
+    [Arguments]    ${NotBu}
+    Page Should Contain Element    //img[@src="${URL_WMS}/themes/default/assets/images/logo/logo_${GetProject[0]}.png"]
+    Page Should Not Contain Element    //img[@src="${URL_WMS}/themes/default/assets/images/logo/logo_${NotBU}.png"]
+
+Verify error message incase not assign project
+    Wait Until Page Contains    ไม่พบสิทธิการจัดการระบบ
+    Page Should Contain    ไม่พบสิทธิการจัดการระบบ
+
+Add User ACL
+    [Documentation]    Add User ACL
+    [Arguments]    ${user_name}    ${last_name}    ${email}
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/user
+    Execute Javascript    $("#btn-add")[0].click();
+    Execute Javascript    $("#first_name").val('${user_name}');
+    Execute Javascript    $("#last_name").val('${last_name}');
+    Execute Javascript    $("#email").val('${email}');
+    Execute Javascript    $("#btn-check-email").click();
+    Sleep    3
+    ${help_inline}    Execute Javascript    return $('.help-inline').text();
+    Should Be Equal    ${help_inline}    พร้อมใช้งาน
+    Execute Javascript    $('#role_ids option').eq(1).attr('selected', 'selected').trigger("liszt:updated");
+    Execute Javascript    $(".btn-add-member-s").eq(1).click();
+
+Click Menu ACL User
+    Execute Javascript    ${menu_account}
+
+Click Menu ACL Role
+    Execute Javascript    ${menu_role}
+
+Click Add Permission
+    Execute Javascript    $("#btn-add")[0].click();
+
+Search Email For Verify In Permission Page
+    [Arguments]    ${emailpermission}
+    Execute Javascript    $("#email").val('${emailpermission}');
+    Execute Javascript    $("#btn-check-email").click();
+
+Search Name User Permission
+    [Arguments]    ${username}
+    Input Text    //input[@id="search"]    ${username}
+    Click Element    //button[@class="btn btn-primary"]
+    Element Should Contain    //tbody//tr//td[@class="member-name"]    ${username}
+
+Search Email User Permission
+    [Arguments]    ${useremail}
+    Input Text    search    ${useremail}
+    Execute Javascript    $(".col-right .btn-primary").click();
+    ${div_count}    Execute Javascript    return $(".member-email:contains('${useremail}')").length;
+    Should Be Equal As Integers    ${div_count}    1
+
+Verify Email Permission Dupilcate
+    ${help_inline}    Execute Javascript    return $('.help-inline').text();
+    Should Be Equal    ${help_inline}    อีเมลนี้ถูกผูกกับร้านค้าอื่นบนระบบแล้ว
+
+Verify Email Permission
+    ${help_inline}    Execute Javascript    return $('.help-inline').text();
+    Should Be Equal    ${help_inline}    อีเมลนี้ยังไม่เป็นสมาชิก WeMall
+
+Verify Email Permission WeLoveShopping
+    ${help_inline}    Execute Javascript    return $('.help-inline').text();
+    Should Be Equal    ${help_inline}    อีเมลนี้ยังไม่เป็นสมาชิก Weloveshopping
+
+Verify List Premission Have User Account
+    Execute Javascript    $("td:contains('${email_premission}')").parent().find('input[type="checkbox"]').click();
+    Execute Javascript    ${btn_delete}
+    Execute Javascript    $('div.bootbox a.btn-primary').click();
+    Sleep    2s
+    ${count_match}    Execute Javascript    return $('.member-name a:contains("permission test")').length
+    Run Keyword If    ${count_match}==0    Add User ACL    permission    test    ${email_premission}
+    Sleep    3s
+    ${member_email}    Execute Javascript    return $(".member-email").eq(1).text().trim();
+    Should Be Equal    ${member_email}    ${email_premission}
+
+Add User Permission To Shop Administrator
+    Execute Javascript    $("#search").val('${email_permission2}');
+    Execute Javascript    $(".col-right .btn-primary").click();
+    Sleep     2s
+    Execute Javascript    $("input#check_all").click();
+    Execute Javascript    $("#btn_delete").click();
+    Execute Javascript    $(".modal-footer .btn-primary").click();
+    Sleep    3s
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/user
+    Execute Javascript    $("#btn-add")[0].click();
+    Execute Javascript    $("#first_name").val('use_permission2');
+    Execute Javascript    $("#last_name").val('test');
+    Execute Javascript    $("#email").val('${email_permission2}');
+    Execute Javascript    $("#btn-check-email").click();
+    Sleep    3
+    ${help_inline}    Execute Javascript    return $('.help-inline').text();
+    Should Be Equal    ${help_inline}    พร้อมใช้งาน
+    Execute Javascript    $('#role_ids option').eq(1).attr('selected', 'selected').trigger("liszt:updated");
+    Execute Javascript    $(".btn-add-member-s").eq(1).click();
+    Sleep    3
+    ${div_count}    Execute Javascript    return $(".member-email:contains('${email_permission2}')").length;
+    Should Be Equal As Integers    ${div_count}    1
+
+Edit User Permission
+    ${count_match}    Execute Javascript    return $('.member-email:contains("${email_edit}")').length
+    Run Keyword If    ${count_match}==0    Add User ACL    aasinlar    test    ${email_edit}
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/user
+    Search Email User Permission    ${email_edit}
+    Click Element    //td[@class="member-name"]//a
+    # Execute Javascript    $(".member-name a")[0].click();
+    Execute Javascript    $("#first_name").val('user_falcon01');
+    Execute Javascript    $("#last_name").val('test01');
+    Execute Javascript    $(".btn-update-member").eq(1).click();
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/user
+    ${div_count}    Execute Javascript    return $(".member-name:contains('user_falcon01 test01')").length;
+    Should Be Equal As Integers    ${div_count}    1
+
+Delete User Permission
+    Search Email User Permission    ${email_edit}
+    Execute Javascript    $("input#check_all").click();
+    Execute Javascript    $("#btn_delete").click();
+    Execute Javascript    $(".modal-footer .btn-primary").click();
+
+Add Super Admin Permission
+    [Documentation]    Add Super Admin Permission
+    [Arguments]    ${rule_name}
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role/create
+    Sleep    1s
+    Input Text    ${input_rule_name}    ${rule_name}
+    : FOR    ${i}    IN RANGE    1    11
+    \    Execute Javascript    $("input[rel='main${i}']").click()
+    Execute Javascript    $('button[name="save"]').click()
+
+Add Manage Product Permission
+    [Documentation]    Add Manage Product Permission
+    [Arguments]    ${rule_name}
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role/create
+    Sleep    1s
+    Input Text    ${input_rule_name}    ${rule_name}
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(2).click()
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(3).click()
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(4).click()
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(6).click()
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(7).click()
+    Execute Javascript    $('button[name="save"]').click()
+
+Add View Report Permission
+    [Documentation]    Add View Report Permission
+    [Arguments]    ${rule_name}
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role/create
+    Sleep    1s
+    Input Text    ${input_rule_name}    ${rule_name}
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(1).click()
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(5).click()
+    Execute Javascript    $('button[name="save"]').click()
+
+Add Setup Store Permission
+    [Documentation]    Add Setup Store Permission
+    [Arguments]    ${rule_name}
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role/create
+    Sleep    1s
+    Input Text    ${input_rule_name}    ${rule_name}
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(1).click()
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(4).click()
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(6).click()
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(7).click()
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(8).click()
+    Execute Javascript    $('.permis-row-box [type="checkbox"]').eq(9).click()
+    Execute Javascript    $('button[name="save"]').click()
+
+Verify And Add Super Admin Permission
+    ${count_match}    Execute Javascript    return $('.permis-name a:contains("Super Admin")').length
+    Run Keyword If    ${count_match}==0    Add Super Admin Permission    Super Admin
+    Sleep    3s
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role
+    ${count_match_after}    Execute Javascript    return $('.permis-name a:contains("Super Admin")').length
+    Should Be True    ${count_match_after} == 1
+    Sleep    3s
+
+Verify And Add Manage Product Permission
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role
+    ${count_match1}    Execute Javascript    return $('.permis-name a:contains("Manage Product")').length
+    Run Keyword If    ${count_match1}==0    Add Manage Product Permission    Manage Product
+    Sleep    3s
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role
+    ${count_match_after1}    Execute Javascript    return $('.permis-name a:contains("Manage Product")').length
+    Should Be True    ${count_match_after1} == 1
+    Sleep    3s
+
+Verify And Add View Report Permission
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role
+    ${count_match2}    Execute Javascript    return $('.permis-name a:contains("View Report")').length
+    Run Keyword If    ${count_match2}==0    Add View Report Permission    View Report
+    Sleep    3s
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role
+    ${count_match_after2}    Execute Javascript    return $('.permis-name a:contains("View Report")').length
+    Should Be True    ${count_match_after2} == 1
+    Sleep    3s
+
+Verify And Add Setup Store Permission
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role
+    ${count_match3}    Execute Javascript    return $('.permis-name a:contains("Setup Store")').length
+    Run Keyword If    ${count_match3}==0    Add Setup Store Permission    Setup Store
+    Sleep    3s
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role
+    ${count_match_after3}    Execute Javascript    return $('.permis-name a:contains("Setup Store")').length
+    Should Be True    ${count_match_after3} == 1
+    Sleep    3s
+
+Create Role Permission
+    Go To    ${URL_STORE}/${shop_name_test}/admin/acl/role/create
+
+Click Save Role Button
+    Execute Javascript    $('button[name="save"]').click()
+
+Verify Message Alert Incase No Key Name ACL
+    ${result}    Execute Javascript    return $('.help-inline').text().trim()
+    Should Contain    ${result}    กรุณากรอกชื่อสิทธิ์การใช้งานให้ถูกต้อง
+
+Input Key Name ACL
+    Input Text    ${input_rule_name}    No permission role
+
+Verify Message Alert Incase No Select ACL
+    ${result}    Execute Javascript    return $('.text-left').text().trim()
+    Should Contain    ${result}    ยังไม่ได้เลือกสิทธิ์การใช้งาน คุณยืนยันที่จะบันทึกสิทธิ์การใช้งานนี้หรือไม่
+    Execute Javascript    $('.btn.btn-default').click()
+    Sleep    1s
+
+Select Role Name For Edit
+    Execute Javascript    $(".permis-name a")[3].click();
+
+Select Role Label
+    [Arguments]    ${label}
+    Click Element    //tr[${label}]//td[@class="center"]//label
+
+Delete Role
+    Execute Javascript    $("#btn_delete").click();
+
+Verify Pop-Up Message Delete
+    ${text_role}    Execute Javascript    return $(".in .modal-desc-box .text-center").text().trim();
+    Should Be Equal    ${text_role}    คุณยืนยันที่จะลบกลุ่มหรือไม่
+
+Verify Pop-Up Message Delete In Group
+    ${text_role}    Execute Javascript    return $(".in .modal-desc-box .text-center").text().trim();
+    Should Be Equal    ${text_role}    มีผู้ใช้งานอยู่ภายใต้กลุ่มนี้ คุณยืนยันที่จะลบหรือไม่
+
+Edit Role Name
+    [Arguments]    ${rolename}
+    Execute Javascript    $("#txtrole").val('${rolename}');
+    Execute Javascript    $("#chk9").click();
+    Execute Javascript    $(':contains("บันทึก")').click()
+
+Verify Edit Role Correct
+    ${text_role}    Execute Javascript    return $("#txtrole").val();
+    Should Be Equal    ${text_role}    View Report 2
+    ${div_count}    Execute Javascript    return $("#chk9:checked").length;
+    Should Be Equal As Integers    ${div_count}    1
+
+Verify User Permission Login And Disable Open/Close Shop Button
+    Go To    ${URL_STORE}/${shop_name_test}/admin/dashboard/summary
+    ${status_btn}    Execute Javascript    return $("#btn_openshop_sidebar").attr('disabled');
+    Should Be Equal    ${status_btn}    disabled
+
+Verify User Permission Login And No Permission Store Page
+    Go To    ${URL_STORE}/${shop_name_test}/admin/store
+    ${text_permis}    Execute Javascript    return $(".permission-notallow").text().trim();
+    Should Contain    ${text_permis}    ขออภัยค่ะ บัญชีผู้ใช้นี้ถูกจำกัดสิทธิ์การใช้งานในหน้านี้

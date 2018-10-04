@@ -1,0 +1,152 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Open Custom Browser    ${URL_PORTAL}    Mobile    AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wls
+Test Teardown     Run Keywords    Capture Page Screenshot    AND    Close All Browsers
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           DateTime
+Force Tags        Portal-Web    Ligo    Sprint2017MC8    mc-wls
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+
+*** Test Cases ***
+TC_MC_02842
+    [Documentation]    [Welove] To verify new knockprice campaign when insert product > 4 in knockprice campaign
+    [Tags]    Regression    High
+    #### Desktop Site ####
+    Switch Browser    1
+    Wait Until Element Is Visible    ${block_knock_price}
+    ${display_product}    Get Matching Xpath Count    ${knock_price_item}//li
+    Should Be True    ${display_product} == 4
+    #### Mobile Site ####
+    Switch Browser    2
+    Go to    ${URL_PORTAL}
+    Wait Until Element Is Visible    ${m_block_knock_price}
+    ${display_product}    Get Matching Xpath Count    ${m_knock_price_item}//li
+    Should Be True    ${display_product} - 1 == 4
+
+TC_MC_02843
+    [Documentation]    [Welove] To verify when insert product dealzapp in knockprice campaign (at the same time campaign)
+    [Tags]    Regression    High    mock
+    #### WMS Site ####
+    #Switch Browser    3
+    ${dealzapp_id}    Check Current Dealzapp
+    ${dealzapp_id}    Remove String    ${dealzapp_id}    row-
+    WMS Select Product to Campaign    dealzapp    ${dealzapp_id}    ${knockprice_product}    0    99
+    #### Desktop Site ####
+    Switch Browser    1
+    Go to    ${URL_PORTAL}
+    : For    ${i}    IN RANGE    0    4
+    \    Go to    ${URL_PORTAL}?refresh=changeme
+    \    ${result}    Run Keyword And Return Status    Element Should Be Visible    //div[@class='h-dealzapp-box']//ul//li//a[@href='${URL_LEVEL_D}/${knockprice_product}']
+    \    Exit For Loop If    '${result}' == 'True'
+    Element Should Be Visible    //div[@class='h-dealzapp-box']//ul//li//a[@href='${URL_LEVEL_D}/${knockprice_product}']
+    Element Should Not Be Visible    ${m_knock_price_item}//li//a[@href='${URL_LEVEL_D}/${knockprice_product}']
+    #### Mobile Site ####
+    Switch Browser    2
+    Open Custom Browser    ${URL_PORTAL}    Mobile
+    Go to    ${URL_PORTAL}
+    Wait Until Element Is Visible    //div[@class='h-dz-list']//following::div[@ng-click='linkTo("/product/${knockprice_product}")']
+    Element Should Not Be Visible    ${m_knock_price_item}//li//div//div[@ng-click='linkTo("/product/${knockprice_product}")']
+    Switch Browser    3
+    WMS Switch Project    wls
+    Remove Product from Campaign    ${dealzapp_id}    ${knockprice_product}    dealzapp
+
+TC_MC_02845
+    [Documentation]    [Welove] To verify when insert product (join campaign) in knockprice campaign
+    [Tags]    Regression    High    mock
+    #### WMS Site ####
+    # Switch Browser    3
+    WMS Select Product To Campaign    join    ${join_campaign_id}    ${knockprice_product}    0    99
+    #### Desktop Site ####
+    Switch Browser    1
+    Go to    ${URL_PORTAL}
+    : For    ${i}    IN RANGE    0    4
+    \    Go to    ${URL_PORTAL}?refresh=changeme
+    \    ${result}    Run Keyword And Return Status    Element Should Be Visible    //div[@class='h-knock-box']//ul//li//a[@href='${URL_LEVEL_D}/${knockprice_product}']
+    \    Exit For Loop If    '${result}' == 'True'
+    Element Should Be Visible    //div[@class='h-knock-box']//ul//li//a[@href='${URL_LEVEL_D}/${knockprice_product}']
+    #### Mobile Site ####
+    Switch Browser    2
+    Open Custom Browser    ${URL_PORTAL}    Mobile
+    Go to    ${URL_PORTAL}
+    Wait Until Element Is Visible    //div[@class='h-knock-list']//following::*[@ng-click='linkTo("/product/${knockprice_product}")']    60s
+    #### WMS Site ####
+    Switch Browser    3
+    WMS Switch Project    wls
+    Remove Product from Campaign    ${join_campaign_id}    ${knockprice_product}    join
+
+TC_MC_02846
+    [Documentation]    [Welove] To verify when insert product (non join campaign) in knockprice campaign
+    [Tags]    Regression    High    mock
+    #### WMS Site ####
+    #Switch Browser    3
+    WMS Select Product To Campaign    non-join    ${none_join_campaign_id}    ${knockprice_product}    0    99
+    #### Desktop Site ####
+    Switch Browser    1
+    Go to    ${URL_PORTAL}
+    : For    ${i}    IN RANGE    0    4
+    \    Go to    ${URL_PORTAL}?refresh=changeme
+    \    ${result}    Run Keyword And Return Status    Element Should Be Visible    //div[@class='h-knock-box']//ul//li//a[@href='${URL_LEVEL_D}/${knockprice_product}']
+    \    Exit For Loop If    '${result}' == 'True'
+    Element Should Be Visible    //div[@class='h-knock-box']//ul//li//a[@href='${URL_LEVEL_D}/${knockprice_product}']
+    #### Mobile Site ####
+    Switch Browser    2
+    Open Custom Browser    ${URL_PORTAL}    Mobile
+    Go to    ${URL_PORTAL}
+    Wait Until Element Is Visible    //div[@class='h-knock-list']//following::*[@ng-click='linkTo("/product/${knockprice_product}")']    60s
+    #### WMS Site ####
+    Switch Browser    3
+    WMS Switch Project    wls
+    Remove Product from Campaign    ${none_join_campaign_id}    ${knockprice_product}    non-join
+
+TC_MC_02848
+    [Documentation]    [Welove] To verify knockprice campaign when status = off
+    [Tags]    High    mock
+    Switch Browser    3
+    Update status    Off
+    Switch Browser    1
+    Go to    ${URL_PORTAL}?refresh=changeme
+    Element Should Not Be Visible    ${block_knock_price}
+    ${display_product}    Get Matching Xpath Count    ${knock_price_item}//li
+    Should Be True    ${display_product} == 0
+    Switch Browser    2
+    Go to    ${URL_PORTAL}
+    Element Should Not Be Visible    ${m_block_knock_price}
+    ${display_product}    Get Matching Xpath Count    ${m_knock_price_item}//li
+    Should Be True    ${display_product} == 0
+    Switch Browser    3
+    Update status    On
+
+TC_MC_02850
+    [Documentation]    [Welove] To verify edit deail knockprice campaign
+    [Tags]    High    mock
+    Switch Browser    3
+    Go to    ${URL_WMS}/campaign/collection-price-break/edit/${knock_price_id}
+    Input Text    //input[@id="campaign_name_th"]    ทุบราคา กระหน้ำ
+    Input Text    //input[@id='slug_th']    knockprice-test
+    Execute Javascript    $('form').submit();
+    Go to    ${URL_WMS}/campaign/campaign-view/${knock_price_id}
+    ${campaign_name}    Get value    //input[@id="campaign_name_th"]
+    Should Be True    '${campaign_name}' == 'ทุบราคา กระหน้ำ'
+    ${handleurl}    Get value    //input[@id='slug_th']
+    Should Be True    '${handleurl}' == 'knockprice-test'
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/promotion/knockprice-test-${knock_price_id}
+    Location Should Be    ${URL_PORTAL}/promotion/knockprice-test-${knock_price_id}
+    Element Should Contain    //div[@class='campaign-product-header']/h2    ทุบราคา กระหน้ำ
+    Switch Browser    2
+    Go to    ${URL_PORTAL}/promotion/knockprice-test-${knock_price_id}
+    Location Should Be    ${URL_MOBILE}/promotion/knockprice-test-${knock_price_id}
+    Element Should Contain    //span[@once-text='categoryTitle']   ทุบราคา กระหน้ำ
+    Switch Browser    3
+    Go to    ${URL_WMS}/campaign/collection-price-break/edit/${knock_price_id}
+    Input Text    //input[@id="campaign_name_th"]    ทุบราคา
+    Input Text    //input[@id='slug_th']    ทุบราคา
+    Execute Javascript    $('form').submit();

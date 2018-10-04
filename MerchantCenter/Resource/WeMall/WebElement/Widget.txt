@@ -1,0 +1,35 @@
+*** variable ***
+${myacc}    $("a[title='บัญชีของฉัน']")
+${mycart}    $("a[title='ตะกร้าของฉัน']")
+${widget_favshop}    $("a[title='ร้านค้าโปรด']")[0]
+${login}          $(".w-nologin > a")[0]
+${btn_mycart}     //div[@class='logo-mycart']
+${input_search}    //div[@class='box-group-search']//input
+${input_store_search}    //*[@id="row-body"]/div/div/div[2]/div[2]/div/div/div/form/input
+${search_type}    $('.box-search-type')
+${search_shop}    $("a[ng-bind='anotherSearch']")
+${suggestion_box}    //div[@class='search-suggestion']
+${suggest_keyword_search}    //div[@class='search-suggestion']//ul[1]//li
+${suggest_incat}    //div[@class='search-suggestion']//div[@class='keyincat']//ul//li
+${suggest_keyword}    //div[@class='search-suggestion']//ul[2]//li
+${button_search}    $('.at-header-search-btn')
+${button_store_search}    $('div.shop-searchinput-box .btn-shop-search')
+
+##WEMALL WIDGET
+${wemall_logo}      //div[@class='w-logo']
+${wemall_searchBox}    //div[@class='box-group-search']/input
+${wemall_searchIcon}    //div[@class='box-group-search']/button
+${wemall_cart}      //div[@class='w-col-right']/div[@class='w-ctrl-user w-log-cart']
+${wemall_register}  //a[contains(text(),'สมัครสมาชิกที่นี่')]
+${wemall_login}     //a[@ng-click="accountRefTo()"]
+${wemall_myAcc}     //div[@ng-if="isLogin"]
+${wemall_optReport}    //li[@ng-click="accountTo('profile/report')"]
+${wemall_optProfile}    //li[@ng-click="accountTo('profile')"]
+${wemall_optSignout}    //li[@ng-click="accountRefTo('logout')"]
+${wemall_myShop}    //div[@class='logo-myshop']
+${wemall_freeDelivery}  //div[(@class='w-text-proshipping')
+
+##WEMALL LOGIN FORM
+${wemall_username}  username
+${wemall_password}  password
+${login_btn}        //button[@class='btn-default btn-login']

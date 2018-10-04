@@ -1,0 +1,162 @@
+*** Variable ***
+${btn_addtocart}    //*[@id="btn-add-cart"]
+${continue_shopping}    $('a:contains(ดูสินค้าต่อ)')
+${gotocart}    $('.btn-popup-add-cart')
+${btn_checkout}    //button[@class='btn btn-buy']
+${btn_selectaddr}    //button[@class='btn btn-select-address select_address']
+${cart_addaddress}    //button[@class='btn btn-default btn-xs btn-add new_address']
+${address_detail_step2}    //li[@class='group_address'][1]//div[@class='box-address-detail']
+${address_detail_step3}    //div[@class='box-address']
+${chk_out_city}    //*[@id="city"]/option[2]
+${chk_out_district}    //*[@id="district"]/option[3]
+${btn_confirm_checkout}    //button[@id="btn_step3_confirm"]
+${status_ordercheckout}    //*[@id="wrapper"]/div/div/div/div/div[1]/div[1]
+${order_summary_step_shopname}    //div[@class='box-shop-title']
+${order_summary_step_orderitem}    //div[@class='col-sm-5 text-right']
+${order_summary_step_itemdetail}    //div[@class='pull-left']//div//div[@class='detail']
+${order_summary_step_flashsale}    //div[@class='text-flashsale']
+${order_summary_step_promotion}    //div[@class='text-promotion']
+${order_summary_step_itemquantity}    //div[@class='pull-left']//div//div[@class='piece']
+${order_summary_step_itemprice}    //div[@class='pull-left']//div//div[@class='price']
+${order_summary_step}    //div[@class='row box-sumary']//div//div[2]//span[@class='price']
+${order_summary_step_promotion}    //div[@class='box-overflow color-main']//div[1]//span[@class='sub-title']
+${order_summary_step_discount}    //div[@class='box-overflow color-main']//div[2]//span[@class='price color-main']
+${order_total_step}    //div[@class='row box-total']//div[2]
+${shipping_post}    $('.radio-box')[0]
+${shipping_ems}    $('.radio-box')[1]
+${shipping_kerry}    $('.radio-box')[2]
+${shipping_custom}    $('.radio-box')[3]
+${post_cost}    $("strong[class='font-14px color-wetrust']").eq(0)
+${ems_cost}    $("strong[class='font-14px color-wetrust']").eq(1)
+${kerry_cost}    $("strong[class='font-14px color-wetrust']").eq(2)
+${custom_cost}    $("strong[class='font-14px color-wetrust']").eq(3)
+${payment_credit_inpage}    $('#wetrust_CCW').find('.button-payment-inner')
+${payment_credit}    $('#wetrust_CCW > div > div')
+${payment_bankcounter}    $('#wetrust_BANKTRANS > div > div')
+${payment_Ibanks}    $('#wetrust_IBANK > div > div')
+${payment_ATM}    $('#wetrust_ATM > div > div')
+${payment_CS}    $('#wetrust_CS > div > div')
+${payment_EW}    $('#wetrust_EW > div > div')
+${btn_confirm_placeorder}    //button[@class='btn btn-con m-hide btn_step3_confirm']
+${payment_directpay}    //div[@payment-type="payshop"]
+${step1_complete}    //li[@class='boxstep step1 complete']
+${step1_active}    //li[@class='boxstep step1 active']
+${step2_complete}    //li[@class='boxstep step2 complete']
+${step2_active}    //li[@class='boxstep step2 active']
+${step3_complete}    //li[@class='boxstep step3 complete']
+${step3_active}    //li[@class='boxstep step3 active']
+${step4_complete}    //li[@class='boxstep step4 complete']
+${step4_active}    //li[@class='boxstep step4 active']
+${item_total}    //span[@id='item_total']
+${shipping_title}    //div[@class='col-sm-7 toggle-shipping']//span[@id='order_shipping_title']
+${shipping_price}    //span[@id='order_shipping']
+${order_total}    //div[@id='order_total']
+${input_coupon}    //input[@id='coupon_code']
+${coupon_btn}    //button[@id='coupon_btn']
+${coupon_error}    //p[@class='bg-danger coupon_error_text']
+${coupon_condition}    //div[@id='coupon_condition']
+${coupon_discount}    //span[@id='coupon_discount']
+${thx_title_success}    //div[@class='thk-payment-status']//p//strong[@class='payment-success']
+${thx_title_cancel}    //div[@class='thk-payment-status']//p//strong[@class='payment-fail']
+${thx_title_wait}    //div[@class='thk-payment-status']//p//strong[@class='payment-waiting']
+${thx_title_ref2}    //p[@class='order-info']
+${thx_title_cs_payment_ref}    //span[@id='cs_ref_number_txt']
+${number_for_sc_barcode_thankyou}    id:cs_barcode_number
+${payment_form_button}    //*[@class="btn btn-con"]
+${number_for_sc_barcode_form}    //*[@class="number-code"]
+
+
+${thx_status_detail}    //p[@class='text-center'][2]
+${thx_shopname}    //div[@class='order-detail-inner']//div[@class='row'][1]//div[@class='col-sm-9 font-12px']
+${thx_buyername}    //div[@class='order-detail-inner']//div[@class='row'][2]//div[@class='col-sm-9 font-12px']
+${thx_shippingadr}    //div[@class='order-detail-inner']//div[@class='row'][3]//div[@class='col-sm-9 font-12px']
+${thx_tel}    //div[@class='order-detail-inner']//div[@class='col-sm-2 font-12px']
+${thx_email}    //div[@class='order-detail-inner']//div[@class='col-sm-4 font-12px']
+${thx_buyer_info}    //div[@class='panel panel-default box-pay-summary']//div[2]//div//div[@class='row']//div[1]
+${thx_store_info}    //div[@class='panel panel-default box-pay-summary']//div[2]//div//div[@class='row']//div[2]
+${tbr_thx_box_pay_sum_js}    id=headingTwo
+
+
+#$('.panel.panel-default.box-pay-summary > div > h4 > a > i')
+
+
+
+${thx_product_list}    //div[@class='table-body']
+${thx_product_item}    //div[@class='items']
+${thx_itemdetail}    //div[@class='item-detail']
+${thx_item_promo}    //div[@class='tag-promocode']
+${thx_item_name}    //p[@class='item-name']
+${thx_item_flashsale}    //p[@class='item-promotion flashsale']
+${thx_item_promotion}    //p[@class='item-promotion']
+${thx_item_qty}    //div[@class='num']
+${thx_item_amt}    //div[@class='price']//p[@class='item-price']
+${thx_order_sum}    sub-total
+${thx_promocode_desc}    //div[@class='box-order-sum']//div[@class='thk-sum-detail']//div[@class='box-overflow'][2]//div[@class='col-1']
+${thx_promocode_discount}    //div[@class='box-order-sum']//div[@class='thk-sum-detail']//div[@class='box-overflow'][2]//div[@class='col-2 color-main']
+${thx_promotion_desc}    //div[@class='box-overflow']/div/span[2]
+# ${thx_promotion_desc}    //div[@class='box-order-sum']//div[@class='thk-sum-detail']//div[@class='box-overflow'][2]//div[@class='col-1']
+${thx_promotion_discount}    //div[@class='box-order-sum']//div[@class='thk-sum-detail']//div[@class='box-overflow'][2]//div[@class='col-2 color-main']
+${thx_ship}    //div[@class='box-order-sum']//div[@class='thk-sum-detail']//div[@class='box-overflow'][3]//div[@class='col-2 border1']
+${thx_net_amt}    //div[@class='box-order-sum']//div[@class='thk-sum-detail']//div[@class='box-overflow'][4]//div[@class='col-2 border2']
+${thx_ship_nopromo}    //*[@id="collapseTwo"]/div//div[@class='col-2 border1']
+${thx_net_amt_nopromo}    total
+${thx_net_amt_nopromo_shipping}    //div[@class='box-order-sum']//div[@class='thk-sum-detail']//div[@class='box-overflow'][2]//div[@class='col-2 border2']
+${order_ref_status}    //div[@class='order-ref']//strong[@class='font-14px'][1]
+${order_ref_payment}    //div[@class='box-pay-info']//div//div[1]//p[2]//strong
+${order_ref_ref1}    //div[@class='box-pay-info']//div//div[2]//p[1]//strong
+${order_ref_ref2}    //div[@class='box-pay-info']//div//div[2]//p[2]//strong
+${order_ref_netamt}    //div[@class='box-pay-info']//div//div[1]//p[1]//strong
+${order_ref_online}    //div[@class='box-pay-info']//div//div[1]//p
+${wallet_cancel}    //a[contains(text(),'ยกเลิกรายการ')]
+${gotohome}    //button[@class='btn btn-action-thank'][2]
+${gotohome_from_checkout}   //a[contains(@class,"btn") and contains(@class,"btn-action-sub")]
+${gotoorder_detail_from_checkout}   //a[contains(@class,"btn") and contains(@class,"btn-action-main")]
+${footer_bank}    //div[@class='bank-detail']//div[@class='col-sm-12 font-13px']
+${btn_print}    //a[@class='btn-print']
+${btn_form_print}    //a[contains(@class,'btn btn-con') and contains(text(),'แบบฟอร์มชำระเงิน')]
+${btn_you_print}    //button[@class='btn btn-con btn-print']
+${thx_promotion_detail}    //div[@class='box-order-sum']//div[@class='box-promotion-remark']//p[@class='box-promotion-text']
+${coupon_expired}    //div[@class="col-sm-12 coupon_error"]//p[@class="bg-danger coupon_error_text"]
+${inpage_error}    $("span[class='inpage-error']")
+${inpage_expire_error}    $("span[id='error_expire']")
+${mycart}    $("a[title='ตะกร้าของฉัน']")
+${profile_address}    //ul[@class='nav navbar-nav myprofile-menu']/li[contains(@title,'ที่อยู่จัดส่ง')]
+#PlaceOrder
+${Product_Quantity}    xpath=//*[@id="product_quantity_increase"]
+${Button_AddToCart}    //button[@id="btn-add-cart"]
+${Button_ViewCart}    xpath=//*[@class="btn btn-default btn-popup-add-cart"]
+${btn_order}     //div[@class="modal-content"]//a[@class="btn btn-default btn-popup-add-cart"]
+${Button_SelectAddress}    xpath=//*[@id="selected_48463"]/button[1]
+${DropDown_Shipping}    xpath=//*[@id="shipping_rate"]
+${Button_BuyConfirm}    xpath=//*[@id="btn_step3_confirm"]
+${RadioButton_ATM}    $('#wetrust_ATM').find('.button-payment-inner')
+${RadioButton_CS}    $('#wetrust_CS').find('.button-payment-inner')
+${RadioButton_EW}    $('#wetrust_EW').find('.button-payment-inner')
+${RadioButton_BANKTRANS}    $('#wetrust_BANKTRANS').find('.button-payment-inner')
+${RadioButton_IBANK}    $('#wetrust_IBANK').find('.button-payment-inner')
+${RadioButton_CCW}    $('#wetrust_CCW').find('.button-payment-inner')
+${text_pay_thankyou}    jquery=strong.font-14px:nth-child(2)
+${text_true_thankyou}    jquery=span.font-14px
+${text_type_thankyou}    jquery=strong.font-14px:nth-child(7)
+${select_address}    $('.select_address')[1].click()
+${popup_goCheckout}    //div[@id='modalAddCart']//a[contains(@class,'btn-popup-add-cart')]
+${popup_goShopping}    //div[@id='modalAddCart']//a[contains(@class,'cursor-pointer')]
+${status}    //div[@class="order-list-status"]
+${tgl_shop_status}    id=openshop_status_old
+${btn_openshop_sidebar}    id=btn_openshop_sidebar
+${lbl_payment_cs_ref2_number}    id=payment_ref2_number
+${lbl_payment_offline_ref2_number}    //p[contains(text(),'Ref.2')]/strong
+${btn_place_order}    //button[@class="btn btn-buy"] 
+${lbl_shipping_date}    //div[@class="col-xs-12"]
+${lbl_shipping_date_checkout}    //div[@class="preship-box"]
+${lbl_shipping_checkout}    //span[@class="box-subtitle"]
+${btn_place_order}    //button[@class="btn btn-buy"]
+${txt_card_number_1}    id=card_number_1
+${txt_card_number_2}    id=card_number_2
+${txt_card_number_3}    id=card_number_3
+${txt_card_number_4}    id=card_number_4
+${txt_card_name}    name=card_name
+${txt_card_cvn}    name=card_cvn
+${txt_coupon_code}    id=coupon_code
+${btn_use_coupon}    id=coupon_btn
+

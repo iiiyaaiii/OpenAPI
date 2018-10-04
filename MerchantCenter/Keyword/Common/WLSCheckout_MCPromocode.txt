@@ -1,0 +1,34 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../../Resource/WeLoveShopping/WebElement/WLSCheckout_MCPromocode.txt
+
+*** Keywords ***
+Click add to cart button on level d
+    [Documentation]    Use for add product to cart
+    Execute Javascript    $("button[id='btn-add-cart']").click()
+
+Click order button on pop up level d
+    [Documentation]    Use for click order button on pop up level d
+    Click Element    ${btn_order_level_d}
+
+Click order button on cart
+    [Documentation]    Use for click order button on cart
+    Execute Javascript    $("button[class='btn btn-buy']").click()
+
+Focus address button on checkout step 2
+    [Documentation]    Use for focus address button
+    Focus    ${btn_address}
+
+Select address on checkout step 2
+    [Documentation]    Use for select address for shipping
+    [Arguments]    ${index}
+    Execute Javascript   $('.select_address').eq(${index}).click()
+
+Input promotion code
+    [Documentation]    Use for input promotion code on checkout step3
+    [Arguments]    ${coupon_code}
+    Input Text    ${input_coupon_checkout_3}    ${coupon_code}
+
+Click use coupon code button
+    [Documentation]    Use for click use coupon button
+    Click Element    ${btn_use_coupon}

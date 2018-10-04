@@ -1,0 +1,101 @@
+*** Settings ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close Browser
+Test Setup        Go To    ${URL_STORE}/${user_s001}/admin/gallery
+Force Tags        Store-Web    DeleteGallery
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Gallery.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Manageshop.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Test Cases ***
+TC_MC_00442
+    [Documentation]    [Wemall] Verify delete folder. If delete album with edit button.
+    [Tags]    Regression    High
+    Wait Until Element Is Visible    //div[@class="row-fluid list-albums clear-fix"]
+    ${count_default}    Count Album in shop
+    Upload Image To Gallery    ${img_logo1}    ${upl_input}
+    Comment    Upload Image To Gallery (Windows)    $("#fileuploadinput")    ${img_logo1}    ${upl_input}
+    Sleep    2s
+    Wait Until Element Is Visible    //span[@data-title="ไม่มีไฟล์..."]
+    Go To    ${URL_STORE}/${user_s001}/admin/gallery
+    ${count_before}    Count Album in shop
+    Sleep    2s
+    Reload Page
+    Wait Until Element Is Visible    //ul[@class="ace-thumbnails"]//img
+    Go To    ${URL_STORE}/${user_s001}/admin/gallery
+    Execute Javascript    ${btn_edit_gallery}.click()
+    Sleep    3s
+    ${status_1}    Execute Javascript    return $('#tool_albume_delete').is(":disabled")
+    Should Be True    '${status_1}' == 'True'
+    Execute Javascript    $('.check_selected').eq(0).click()
+    sleep    2s
+    ${status_2}    Execute Javascript    return $('#tool_albume_delete').is(":enabled")
+    Sleep    3s
+    Should Be True    '${status_2}' == 'True'
+    Execute Javascript    ${btn_delete_album}.click()
+    Sleep    2s
+    Wait Until Element Is Visible    //div[@class="bootbox modal fade in"]
+    Click OK Alert Box
+    Sleep    2s
+    Wait Until Element Is Not Visible    //div[@class="bootbox modal fade in"]
+    Run Keyword If    ${count_default} == ${count_before}    Reload Page
+    Sleep    1s
+    Wait Until Element Is Visible    //ul[@class="ace-thumbnails"]//img
+    ${count_after}    Count Album in shop
+    Should Be True    ${count_after} < ${count_before}
+
+TC_MC_00448
+    [Documentation]    [Wemall] Verify delete folder. If delete album with edit button.
+    [Tags]    Regression    High
+    Upload Image To Gallery    ${img_logo1}    ${upl_input}
+    Sleep    2s
+    Reload Page
+    ${count_before}    Count Album in shop
+    Execute Javascript    ${btn_edit_gallery}.click()
+    ${status_1}    Execute Javascript    return $('#tool_albume_delete').is(":disabled")
+    Should Be True    '${status_1}' == 'True'
+    Execute Javascript    $('.check_selected').eq(0).click()
+    ${status_2}    Execute Javascript    return $('#tool_albume_delete').is(":enabled")
+    Should Be True    '${status_2}' == 'True'
+    Execute Javascript    ${btn_delete_album}.click()
+    Click OK Alert Box
+    Sleep    2s
+    Reload Page
+    ${count_after}    Count Album in shop
+    Should Be True    ${count_before} > ${count_after}
+
+TC_MC_00450
+    [Documentation]    [Wemall] Verify delete folder. If cancel delete album with edit button.
+    [Tags]    Regression    Medium
+    ${count_before}    Execute Javascript    return $('.list-albums .box-album:visible').length;
+    Execute Javascript    ${btn_edit_gallery}.click()
+    ${status_1}    Execute Javascript    return $('#tool_albume_delete').is(":disabled")
+    Should Be True    '${status_1}' == 'True'
+    Execute Javascript    $('.check_selected').eq(0).click()
+    ${status_2}    Execute Javascript    return $('#tool_albume_delete').is(":enabled")
+    Should Be True    '${status_2}' == 'True'
+    Execute Javascript    ${btn_delete_album}.click()
+    Click Cancel Alert Box
+    Sleep    3s
+    Reload Page
+    ${count_after}    Execute Javascript    return $('.list-albums .box-album:visible').length;
+    Should Be True    ${count_before} == ${count_after}
+
+TC_MC_00456
+    [Documentation]    [Wemall] Verify Delete all with select all button.
+    [Tags]    Regression    High
+    Execute Javascript    ${btn_edit_gallery}.click()
+    ${status_1}    Execute Javascript    return $('#tool_albume_delete').is(":disabled")
+    Should Be True    '${status_1}' == 'True'
+    Execute Javascript    ${select_all}.click()
+    ${status_2}    Execute Javascript    return $('#tool_albume_delete').is(":enabled")
+    Should Be True    '${status_2}' == 'True'
+    Execute Javascript    ${btn_delete_album}.click()
+    Click OK Alert Box

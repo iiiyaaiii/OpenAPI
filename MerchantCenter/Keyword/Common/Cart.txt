@@ -1,0 +1,239 @@
+*** Settings ***
+Resource    LevelD.txt
+Resource    ../../Resource/WeMall/WebElement/Cart.txt
+Resource    ../../Resource/WeLoveShopping/WebElement/Cart.txt
+
+*** Keywords ***
+Verify Product In Cart
+    [Documentation]    Verify product data on cart
+    [Arguments]    ${shopname}=none    ${item_name}=none    ${item_quantity}=none    ${item_price}=none    ${attribute1}=none    ${attribute2}=none
+    ...    ${attribute3}=none
+    Wait Until Element Is Visible    //span[@id='total_cart_product']
+    Element Should Contain    ${cart_shop}${cart_shopname}    ${shopname}
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitem}${cart_itemname}    ${item_name}
+    Run Keyword If    '${attribute1}'!='none'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitem}${cart_itemname}    ${attribute1}
+    Run Keyword If    '${attribute1}'!='none' and '${attribute2}'!='none'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitem}${cart_itemname}    ${attribute2}  ${attribute1}
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitemprice}${cart_itemprice}    ${item_price}
+    ${item_price}    Remove String    ${item_price}    ,
+    ${item_price}    Convert To Number    ${item_price}
+    ${cart_itemquantity}=    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    Should Be Equal    ${cart_itemquantity}    ${item_quantity}
+    ${item_sumprice}=    Evaluate    ${item_price} * ${item_quantity}
+    ${item_sumprice}=    Convert To String    ${item_sumprice}
+    ${get_item_total}    Get Text    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitemtotal}${cart_itemtotal}
+    ${get_item_total}    Remove String    ${get_item_total}    ,
+    Should Contain    ${get_item_total}    ${item_sumprice}
+    ${shop}=    Get Matching Xpath Count    ${cart_shop}${cart_shopname}
+    ${product}=    Get Matching Xpath Count    ${cart_shop}[1]${cart_product_list}${cart_product}${cart_boxitem}${cart_itemname}
+    ${sum_shop_amount}=    Set Variable    0
+    : FOR    ${a}    IN RANGE    0    ${product}
+    \    ${index}=    Evaluate    ${a} + 1
+    \    ${item_sumprice}=    Get Text    ${cart_shop}[1]${cart_product_list}${cart_product}[${index}]${cart_boxitemtotal}${cart_itemtotal}
+    \    ${item_sumprice}    Remove String    ${item_sumprice}    ,
+    \    ${item_sumprice}    Convert To Number    ${item_sumprice}
+    \    ${sum_shop_amount}=    Evaluate    ${sum_shop_amount} + ${item_sumprice}
+    ${sum_shop_amount}=    Convert To String    ${sum_shop_amount}
+    ${get_total}    Get Text    ${cart_shop_summary}${cart_netsummary}
+    ${get_total}    Remove String    ${get_total}    ,
+    Should Contain    ${get_total}    ${sum_shop_amount}
+    ${sum_product_in_cart}=    Set Variable    0
+    ${sum_product_in_cart}=    Get All Product In Cart    ${shop}
+    Reload Page
+    Element Should Contain    ${total_cart}    ตะกร้าสินค้าของท่าน : ${sum_product_in_cart} ชิ้น จาก ${shop} ร้าน
+    Verify Cart Noti    ${sum_product_in_cart}
+
+[WeMall] Verify Product In Cart
+    [Documentation]    Verify product data on cart
+    [Arguments]    ${shopname}=none    ${item_name}=none    ${item_quantity}=none    ${item_price}=none    ${attribute1}=none    ${attribute2}=none
+    ...    ${attribute3}=none
+    # Wait Until Element Is Visible    //span[@id='total_cart_product']    30s
+    : FOR    ${i}    IN RANGE    0    3
+    \    ${total_display}    Run Keyword and Return Status    Element Should Be Visible    //span[@id='total_cart_product']
+    \    Run Keyword If    '${total_display}' == 'True'    Exit FOR Loop    ELSE    Reload Page
+    \    Sleep    3s
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitem}${cart_itemname}    ${item_name}
+    Run Keyword If    '${attribute1}'!='none'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitem}${cart_itemname}    ${attribute1}
+    Run Keyword If    '${attribute1}'!='none' and '${attribute2}'!='none'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitem}${cart_itemname}    ${attribute2}  ${attribute1}
+    Element Should Contain    ${cart_shop}//div[@class='box-col-price']//span    ${item_price}
+    ${item_price}    Remove String    ${item_price}    ,
+    ${item_price}    Convert To Number    ${item_price}
+    ${cart_itemquantity}=    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    Should Be Equal    ${cart_itemquantity}    ${item_quantity}
+    ${item_sumprice}=    Evaluate    ${item_price} * ${item_quantity}
+    ${item_sumprice}=    Convert To String    ${item_sumprice}
+    ${get_item_total}    Get Text    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitemtotal}${cart_itemtotal}
+    ${get_item_total}    Remove String    ${get_item_total}    ,
+    Should Contain    ${get_item_total}    ${item_sumprice}
+    ${shop}=    Get Matching Xpath Count    ${cart_shop}${cart_shopname}
+    ${sum_shop_amount}=    Set Variable    0
+    ${Total_shop_amount}    Set Variable    0
+    : FOR    ${Index}    IN RANGE    0    ${shop}
+    \    ${sum_shop_amount}    Get price in 1 shop    ${Index}
+    \    ${Total_shop_amount}    Evaluate    ${sum_shop_amount} + ${Total_shop_amount}
+    ${sum_shop_amount}    Set Variable    ${Total_shop_amount}
+    ${Max_DC}    Execute Javascript    return $('.txt-discount').length;
+    Set Test Variable    ${Total_DC}    0
+    : FOR    ${Discount}    IN RANGE    0    ${Max_DC}
+    \    ${DC}    Execute Javascript    return $('.txt-discount:eq(${Discount}) div:eq(1)').attr("data-discount-promotion").trim();
+    \    ${Total_DC}    Evaluate    ${Total_DC} + ${DC}
+    ${sum_shop_amount}    Evaluate    ${sum_shop_amount} - ${Total_DC}
+    ${sum_shop_amount}=    Convert To String    ${sum_shop_amount}
+    ${get_total}    Execute Javascript    return $('#amount-change').text().trim().split(" ")[0];
+    ${get_total}    Remove String    ${get_total}    ,
+    ${get_total}    Convert To Number    ${get_total}
+    ${sum_shop_amount}    Convert To Number    ${sum_shop_amount}
+    Log To Console    Total : ${get_total}
+    Log To Console    Sum : ${sum_shop_amount}
+    should be equal    ${get_total}    ${sum_shop_amount}
+    ${CountQuality}=    Set Variable    0
+    ${sum_product_in_cart}=    Set Variable    0
+    ${CountShop}    Execute Javascript    return $('.input_qty').length;
+    : For    ${Index}    IN RANGE    0    ${CountShop}
+    \    ${CountQuality}=    Execute Javascript    return $('.input_qty:eq(${Index})').val();
+    \    ${sum_product_in_cart}=    Evaluate    ${CountQuality} + ${sum_product_in_cart}
+    #${sum_product_in_cart}=    Get All Product In Cart    ${shop}
+    Element Should Contain    ${total_cart}    ตะกร้าสินค้าของท่าน : ${sum_product_in_cart} ชิ้น จาก ${shop} ร้าน
+    Verify Cart Noti    ${sum_product_in_cart}
+
+Get All Product In Cart
+    [Documentation]    Get All Product In Cart
+    [Arguments]    ${shop}
+    ${shop_product_in_cart}=    Set Variable    0
+    ${sum_product_in_cart}=    Set Variable    0
+    : FOR    ${s}    IN RANGE    0    ${shop}
+    \    ${shop_index}=    Evaluate    ${s} + 1
+    \    ${shop_product_in_cart}=    Get Shop Product In Cart    ${shop_index}
+    \    ${sum_product_in_cart}=    Evaluate    ${sum_product_in_cart} + ${shop_product_in_cart}
+    [Return]    ${sum_product_in_cart}
+
+Get Shop Product In Cart
+    [Documentation]    Get Shop Product In Cart
+    [Arguments]    ${shop_index}
+    ${product}=    Get Matching Xpath Count    ${cart_shop}[${shop_index}]${cart_product_list}${cart_product}${cart_boxitem}${cart_itemname}
+    log    ${cart_shop}[${shop_index}]${cart_product_list}${cart_product}${cart_boxitem}${cart_itemname}
+    ${shop_product_in_cart}=    Set Variable    0
+    ${shop_product_in_cart}=    Evaluate    ${shop_product_in_cart} - ${shop_product_in_cart}
+    : FOR    ${a}    IN RANGE    0    ${product}
+    \    ${index}=    Evaluate    ${a} + 1
+    \    ${cart_itemquantity}=    Get Value    ${cart_shop}[${shop_index}]${cart_product_list}${cart_product}[${index}]${cart_boxitempiece}${cart_itempiece}
+    \    log    ${cart_shop}[${shop_index}]${cart_product_list}${cart_product}[${index}]${cart_boxitempiece}${cart_itempiece}
+    \    ${shop_product_in_cart}=    Evaluate    ${shop_product_in_cart} + ${cart_itemquantity}
+    [Return]    ${shop_product_in_cart}
+
+Verify Cart Popup
+    [Arguments]    ${item_name}=none    ${item_quantity}=none    ${item_price}=none    ${attribute1}=none    ${attribute2}=none    ${attribute3}=none
+    [Documentation]    Verify product data on popup
+    Element Should Contain    ${cart_popup_title}    เพิ่มสินค้า ${item_quantity} ชิ้น
+    Element Should Contain    ${cart_popup_productname}    ${item_name}
+    Run Keyword If    '${attribute1}'!='none'    Element Should Contain    ${cart_popup_quantity}    ${attribute1}
+    Run Keyword If    '${attribute2}'!='none'    Element Should Contain    ${cart_popup_quantity}    ${attribute2}
+    Element Should Contain    ${cart_popup_quantity}    จำนวน : ${item_quantity}
+#    ${item_price}    Convert To Integer    ${item_price}
+#    ${item_quantity}    Convert To Integer    ${item_quantity}
+    ${item_price}    Remove String    ${item_price}    ,
+    ${sum_price}=    Evaluate    ${item_price} * ${item_quantity}
+    ${sum_price}=    Convert To String    ${sum_price}
+    ${cart_price}    Get Text    ${cart_popup_sumprice}
+    ${cart_price}    Remove String    ${cart_price}    ,
+    Should Contain    ${cart_price}    ${sum_price}
+
+Verify Special Product In Cart
+    [Documentation]    Verify Special Product In Cart
+    [Arguments]    ${shop}=none    ${product}=none    ${type}=none    ${promotion_name}=none
+    Element Should Contain    ${cart_shop}${cart_shopname}    ${shop}
+    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}    ${product}
+    Run Keyword If    '${type}'=='flashsale'    Element Should Be Visible    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}${cart_flashsale}
+    Run Keyword If    '${type}'=='none'    Element Should Not Be Visible    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}${cart_promotion}
+    Run Keyword If    '${type}'=='promotion'    Element Should Be Visible    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}${cart_promotion}
+    Run Keyword If    '${type}'=='promotion'    Element Should Contain    ${cart_shop}${cart_product_list}${cart_product}[1]${cart_boxitem}${cart_itemname}${cart_promotion}    ${promotion_name}
+
+Get shopnname on cart
+    Wait Until Element Is Visible    ${shopname_tab}
+    ${shopname}    Execute Javascript    return $('.box-shop-name strong:eq(0)').text().trim()
+    Set Test Variable    ${shopname}
+
+Get price in 1 shop
+    [Arguments]    ${ShopNumber}
+    ${product}=    Execute Javascript    return $('.box-cart-wrapper:eq(0) .total_item_price').length;
+    ${sum_shop_amount}=    Set Variable    0
+    : FOR    ${index}    IN RANGE    0    ${product}
+    \    ${item_sumprice}=    Execute Javascript    return $('.box-cart-wrapper:eq(${ShopNumber}) .box-cart-product-detail:eq(${index}) .total_item_price').text().trim();
+    \    ${item_sumprice}    Remove String    ${item_sumprice}    ,
+    \    ${item_sumprice}    Convert To Number    ${item_sumprice}
+    \    ${sum_shop_amount}=    Evaluate    ${sum_shop_amount} + ${item_sumprice}
+    [Return]    ${sum_shop_amount}
+
+Verify Product Name In Cart
+    [Arguments]    ${product_name}
+    Element Should Contain    ${lbl_product_name}    ${product_name}
+
+Verify Tag Promotion In Cart
+    [Arguments]    ${promotion}
+    Element Should Contain    ${lbl_promotion}    ${promotion}
+    Element Should Be Visible    ${lbl_remark_cart}
+
+Verify Tag Promotion In Cart Fresh
+    [Arguments]    ${promotion}
+    Element Should Contain    ${lbl_promotion}    ${promotion}
+    Element Should Be Visible    ${lbl_remark_fresh_cart}
+
+Verify Remark Fresh In Cart
+    Element Should Be Visible    ${lbl_remark_fresh_cart}
+
+Verify Not Tag Promotion In Cart
+    Element Should Not Be Visible    ${lbl_promotion}
+
+Verify Section Promotion Freebie In Cart
+    Element Should Be Visible    ${tbr_freebie}
+
+Verify Headline In Cart
+    [Arguments]    ${headline}
+    Element Should Contain    ${text_headline_cart}    ${headline}
+
+Verify Headline Fresh In Cart
+    [Arguments]    ${headline_fresh}    ${text_time}
+    Element Should Contain    ${text_headline_fresh_cart}    ${headline_fresh}
+    Element Should Be Visible    ${lbl_text_time}    ${text_time}
+
+Verify Button Buy Nonefresh In Cart
+    [Arguments]    ${name_button}
+    Element Should Contain    ${btn_buy_nonefresh}    ${name_button}
+
+Verify Button Buy Fresh In Cart
+    [Arguments]    ${name_button}
+    Element Should Contain    ${btn_buy_fresh}    ${name_button}
+
+Verify Truepoint In Cart
+    [Arguments]    ${textcondition}    ${remarkcondition}
+    Wait Until Element Is Visible    ${lbl_product_name}
+    ${loc}    Get Location
+    Should Be Equal    ${loc}    https://www.wemall-dev.com/cart
+    Element Should Be Visible    ${txt_condition_truepoint_cart}
+    ${text}    Get Text    ${txt_condition_truepoint_cart}
+    Should Be Equal    ${text}    ${textcondition}
+    Element Should Be Visible    ${txt_remark_truepoint_cart}
+    ${remark}    Get Text    ${txt_remark_truepoint_cart}
+    Should Be Equal    ${remark}    ${remarkcondition}
+
+Verify Truepoint In Cart WeLoveShopping
+    [Arguments]    ${textcondition}    ${remarkcondition}
+    Wait Until Element Is Visible    ${lbl_product_name_wls}
+    ${loc}    Get Location
+    Should Be Equal    ${loc}    https://portal.wls-dev.com/cart
+    Element Should Be Visible    ${txt_condition_truepoint_cart_wls}
+    ${text}    Get Text    ${txt_condition_truepoint_cart_wls}
+    Should Be Equal    ${text}    ${textcondition}
+    Element Should Be Visible    ${txt_remark_truepoint_cart_wls}
+    ${remark}    Get Text    ${txt_remark_truepoint_cart_wls}
+    ${remark_after}    Remove String    ${remark}    หมายเหตุ :${SPACE}
+    Should Be Equal    ${remark_after}    ${remarkcondition}
+
+Verify NoneFresh And Fresh In Cart
+    [Arguments]    ${headline}    ${headline_fresh}
+    Page Should Contain Element    ${text_headline_fresh_cart}    ${headline_fresh}
+    Page Should Contain Element    ${text_headline_cart}    ${headline}
+
+Verify Fresh And Other Fresh In Cart
+    [Arguments]    ${headline_fresh}    ${headline}
+    Page Should Contain Element    ${text_headline_fresh_cart}    ${headline_fresh}
+    Page Should Not Contain Element    ${text_headline_cart}    ${headline}

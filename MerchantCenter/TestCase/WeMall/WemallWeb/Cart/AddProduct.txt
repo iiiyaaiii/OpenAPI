@@ -1,0 +1,73 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Reset Store/Product Status    wm
+Suite Teardown    Close All Browsers
+Force Tags        Wemall-Web    Cart    Ligo
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeMall/WebElement/Cart.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Cart.txt
+Resource          ../../../../Keyword/Common/LevelD.txt
+
+*** variable ***
+${promotion}    promotion
+${promotion_text}    Everyday WOW
+${product_name_everydaywow_freebie}    Wemall-Test - 1216 39CY4
+${productid_freebie_b}    L91201418
+${product_name_freebie_b}    KAMUB
+${productid_freebie_h}    L91201532
+${product_name_freebie_h}    KAMUH
+${product_name_sellerpromotion}    Seller Promotion2
+
+*** Test Cases ***
+TC_MC_03924
+    [Documentation]    No product in cart
+    [Tags]    Regression    Medium    Portal-Web    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Reload Page
+    ${text}=    Execute Javascript    return $('span.text-empty').text()
+    Element Should Contain    //span[@class='text-empty']    ไม่มีสินค้าในตะกร้าของท่าน
+    Element Should Contain    //a[@class='text-link']    กลับไปซื้อสินค้าต่อ
+    Wait Until Page Contains    กลับไปซื้อสินค้าต่อ
+
+TC_MC_10841
+    [Documentation]    [Desktop] Verify the freebie product on cart page when Everyday wow product have promotion freebie
+    [Tags]    Medium
+    Delete All Product In Cart
+    Go To LevelC Everyday WOW NOW
+    Select Product Everyday Wow Have Freebie    ${product_name_everydaywow_freebie}
+    Click Add to Cart and go to Cart
+    Verify Product Name In Cart    ${product_name_everydaywow_freebie}
+    Verify Tag Promotion In Cart    ${promotion_text}
+    Verify Section Promotion Freebie In Cart
+
+TC_MC_10843
+    [Documentation]    [Desktop] Verify buy product A1 get freebie product A2
+    [Tags]    Medium
+    Delete All Product In Cart
+    GoTo Lv D WeMall    ${productid_freebie_b}
+    Click Add to Cart and go to Cart
+    Verify Product Name In Cart    ${product_name_freebie_b}
+    Verify Not Tag Promotion In Cart
+    Verify Section Promotion Freebie In Cart
+
+TC_MC_10924
+    [Documentation]    [Desktop] Verify the freebie product on cart page when seller promotion product have promotion freebie
+    [Tags]    Medium
+    Delete All Product In Cart
+    GoTo Lv D WeMall    ${productid_freebie_h}
+    Click Add to Cart and go to Cart
+    Verify Product Name In Cart    ${product_name_freebie_h}
+    Verify Tag Promotion In Cart    ${product_name_sellerpromotion}
+    Verify Section Promotion Freebie In Cart

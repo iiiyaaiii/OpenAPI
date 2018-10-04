@@ -1,0 +1,402 @@
+*** Settings ***
+Suite Setup     Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        WMS-Web    mock
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** variable ***
+### Data ###
+${seller_user_tesco}    wls_tesco@mailinator.com
+${seller_pwd_tesco}    Welcome1
+${tesco_store_id}    926431
+${tesco_store_name}    wlstesco
+${tesco_product_id_1000}    90567485
+${tesco_product_id_10}    90567622
+
+*** Test Case ***
+TC_MC_00868
+    [Documentation]    First condition must start with price 0 baht and cannot edit start price
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/monitoringrule
+    Page Should Contain Element    //input[@name="conditions[0][start]"]
+    ${value}    Get Text    //input[@name="conditions[0][start]"]
+    ${value}    Convert To String    ${value}
+    Should Be True    "${value}" == "0.00"
+    Element Should Be Disabled    //input[@name="conditions[0][start]"]
+    Restore Conditions
+
+TC_MC_00870
+    [Documentation]    Start price of new condition must + 0.01 from end price of previous condition
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/monitoringrule
+    Remove All Conditions
+    Add First Condition
+    # Add A Condition
+    ${FirstConEnd}    Get Value    //input[@name="conditions[0][end]"]
+    ${SecondConStart}    Get Value    //input[@name="conditions[1][start]"]
+    ${diff}=    Evaluate    ${SecondConStart}-${FirstConEnd}
+    ${diff}    Convert To String    ${diff}
+    Should Be Equal    0.01    ${diff}
+    Restore Conditions
+
+TC_MC_00872
+    [Documentation]    Can add this condition
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/monitoringrule
+    Remove All Conditions
+    Add First Condition
+    # Add A Condition
+    ${SecondConStart}    Get Value    //input[@name="conditions[1][start]"]
+    ${SecondConEnd}=    Evaluate    ${SecondConStart}+1
+    ${SecondConEnd}    Convert To String    ${SecondConEnd}
+    # Input Text    //input[@name="conditions[1][end]"]    ${SecondConEnd}
+    # Press Key    //input[@name="conditions[0][end]"]    \\09
+    Execute Javascript    $("input[name='conditions[1][end]']").val(${SecondConEnd})
+    Press Key    //input[@name="conditions[1][end]"]    \\09
+    # Execute Javascript    $("input[name='conditions[1][value]']").val(2)
+    Input Text    //input[@name="conditions[1][value]"]    2
+    # Press Key    //input[@name="conditions[1][value]"]    \\09
+    Add A Condition
+    Choose Andup condition on    3
+    Input Text    //input[@name="conditions[2][value]"]    3
+    Submit
+    Save Success
+    Restore Conditions
+
+TC_MC_00874
+    [Documentation]    Add condition by start price must more than end price
+    Go to    ${URL_WMS}/monitoringrule
+    Remove All Conditions
+    # Input Text    //input[@name="conditions[0][end]"]    1000
+    # Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Input Text    //input[@name="conditions[0][value]"]    90
+    # Input Text    //input[@name="conditions[1][end]"]    900
+    # Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Input Text    //input[@name="conditions[1][value]"]    50
+    Change First Condition From Andup To Range
+    Execute Javascript    $("input[name='conditions[0][end]']").val(1000)
+    Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Input Text    //input[@name="conditions[0][value]"]    90
+    Execute Javascript    $("input[name='conditions[0][value]']").val(90)
+    Execute Javascript    $("input[name='conditions[1][end]']").val(900)
+    Press Key    //input[@name="conditions[1][end]"]    \\09
+    Input Text    //input[@name="conditions[1][value]"]    50
+    Submit    False
+    Element Should Be Visible    //div[contains(@class,"modal-content")]//div[contains(@class,"bootbox-body")]
+    Element Should Contain    //div[contains(@class,"modal-content")]//div[contains(@class,"bootbox-body")]    กรุณากรอกข้อมูลให้ถูกต้อง
+    Element Should Be Visible    //button[contains(@data-bb-handler,"ok")]
+    Click Element    //button[contains(@data-bb-handler,"ok")]
+    Restore Conditions
+
+TC_MC_00876
+    [Documentation]    Can edit price condition for last row of condition
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/monitoringrule
+    Remove All Conditions
+    # Input Text    //input[@name="conditions[0][end]"]    99
+    # Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Input Text    //input[@name="conditions[0][value]"]    99
+    Change First Condition From Andup To Range
+    Execute Javascript    $("input[name='conditions[0][end]']").val(99)
+    Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Input Text    //input[@name="conditions[0][value]"]    99
+    Execute Javascript    $("input[name='conditions[0][value]']").val(99)
+    : FOR    ${index}    IN RANGE    1    3
+    \    ${beforeIndex}=    Evaluate    ${index}-1
+    \    ${beforeIndex}    Convert To String    ${beforeIndex}
+    \    ${ConStart}    Get Value    //input[@name="conditions[${beforeIndex}][end]"]
+    \    ${ConEnd}=    Evaluate    ${ConStart}*10
+    \    ${ConEnd}    Convert To String    ${ConEnd}
+    \    ${Value}    Get Value    //input[@name="conditions[${beforeIndex}][value]"]
+    \    ${Value}=    Evaluate    ${Value}-30
+    \    ${Value}    Convert To String    ${Value}
+    # \    Input Text    //input[@name="conditions[${index}][end]"]    ${ConEnd}
+    # \    Input Text    //input[@name="conditions[${index}][value]"]    ${Value}
+    \    Execute Javascript    $("input[name='conditions[${index}][end]']").val(${ConEnd})
+    \    Press Key    //input[@name="conditions[${index}][end]"]    \\09
+    \    Input Text    //input[@name="conditions[${index}][value]"]    ${Value}
+    \    Add A Condition
+    Choose Andup condition on    4
+    Element Should Be Disabled    //input[@name="conditions[3][start]"]
+    Input Text    //input[@name="conditions[3][value]"]    19
+    # Execute Javascript    $("input[name='conditions[3][value]']").val(19)
+    Restore Conditions
+
+TC_MC_00878
+    [Documentation]    Can delete condition from buttom row to the top
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/monitoringrule
+    Remove All Conditions
+    # Input Text    //input[@name="conditions[0][end]"]    666
+    # Input Text    //input[@name="conditions[0][value]"]    666
+    Change First Condition From Andup To Range
+    Execute Javascript    $("input[name='conditions[0][end]']").val(100)
+    Press Key    //input[@name="conditions[0][end]"]    \\09
+    Execute Javascript    $("input[name='conditions[0][value]']").val(90)
+    : FOR    ${index}    IN RANGE    1    3
+    \    ${beforeIndex}=    Evaluate    ${index}-1
+    \    ${beforeIndex}    Convert To String    ${beforeIndex}
+    \    ${ConStart}    Get Value    //input[@name="conditions[${beforeIndex}][end]"]
+    \    ${ConEnd}=    Evaluate    ${ConStart}*10
+    \    ${ConEnd}    Convert To String    ${ConEnd}
+    \    ${Value}    Get Value    //input[@name="conditions[${beforeIndex}][value]"]
+    \    ${Value}=    Evaluate    ${Value}-30
+    \    ${Value}    Convert To String    ${Value}
+    # \    Input Text    //input[@name="conditions[${index}][end]"]    ${ConEnd}
+    # \    Input Text    //input[@name="conditions[${index}][value]"]    ${Value}
+    \    Execute Javascript    $("input[name='conditions[${index}][end]']").val(${ConEnd})
+    \    Press Key    //input[@name="conditions[${index}][end]"]    \\09
+    \    Input Text    //input[@name="conditions[${index}][value]"]    ${Value}
+    \    Add A Condition
+    Element Should Be Visible    //div[contains(@class,"buffer")][4]//span[contains(@class,"btn-danger")]
+    Remove A Condition
+    Element Should Be Visible    //div[contains(@class,"buffer")][3]//span[contains(@class,"btn-danger")]
+    Restore Conditions
+
+TC_MC_00880
+    [Documentation]    Cannot delete first condition
+    Go to    ${URL_WMS}/monitoringrule
+    Remove All Conditions
+    # Input Text    //input[@name="conditions[0][end]"]    555
+    # Input Text    //input[@name="conditions[0][value]"]    555
+    Change First Condition From Andup To Range
+    Execute Javascript    $("input[name='conditions[0][end]']").val(100)
+    Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Input Text    //input[@name="conditions[0][value]"]    80
+    Execute Javascript    $("input[name='conditions[0][value]']").val(80)
+    : FOR    ${index}    IN RANGE    1    3
+    \    ${beforeIndex}=    Evaluate    ${index}-1
+    \    ${beforeIndex}    Convert To String    ${beforeIndex}
+    \    ${ConStart}    Get Value    //input[@name="conditions[${beforeIndex}][end]"]
+    \    ${ConEnd}=    Evaluate    ${ConStart}*10
+    \    ${ConEnd}    Convert To String    ${ConEnd}
+    \    ${Value}    Get Value    //input[@name="conditions[${beforeIndex}][value]"]
+    \    ${Value}=    Evaluate    ${Value}-30
+    \    ${Value}    Convert To String    ${Value}
+    # \    Input Text    //input[@name="conditions[${index}][end]"]    ${ConEnd}
+    # \    Input Text    //input[@name="conditions[${index}][value]"]    ${Value}
+    \    Execute Javascript    $("input[name='conditions[${index}][end]']").val(${ConEnd})
+    \    Press Key    //input[@name="conditions[${index}][end]"]    \\09
+    \    Input Text    //input[@name="conditions[${index}][value]"]    ${Value}
+    \    Add A Condition
+    Remove All Conditions
+    Element Should Not Be Visible    //div[contains(@class,"buffer")]//span[contains(@class,"btn-danger")]
+    Restore Conditions
+
+TC_MC_00882
+    [Documentation]    Save price condition when last condition don't be 'greater than' condition
+    Go to    ${URL_WMS}/monitoringrule
+    Remove All Conditions
+    # Input Text    //input[@name="conditions[0][end]"]    555
+    # Input Text    //input[@name="conditions[0][value]"]    555
+    # Input Text    //input[@name="conditions[1][end]"]    666
+    # Input Text    //input[@name="conditions[1][value]"]    666
+    Change First Condition From Andup To Range
+    Execute Javascript    $("input[name='conditions[0][end]']").val(100)
+    Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Input Text    //input[@name="conditions[0][value]"]    80
+    Execute Javascript    $("input[name='conditions[0][value]']").val(80)
+    Execute Javascript    $("input[name='conditions[1][end]']").val(200)
+    Press Key    //input[@name="conditions[1][end]"]    \\09
+    Input Text    //input[@name="conditions[1][value]"]    90
+    Submit    False
+    Element Should Be Visible    //div[contains(@class,"modal-content")]//div[contains(@class,"bootbox-body")]
+    Element Should Contain    //div[contains(@class,"modal-content")]//div[contains(@class,"bootbox-body")]    กรุณาเลือกช่วงสุดท้ายให้เป็น "ขึ้นไป"
+    Element Should Be Visible    //button[contains(@data-bb-handler,"ok")]
+    Click Element    //button[contains(@data-bb-handler,"ok")]
+    Restore Conditions
+
+TC_MC_00884
+    [Documentation]    Don't display ' " + " button' if last condition is 'greater than'
+    Go to    ${URL_WMS}/monitoringrule
+    Remove All Conditions
+    # Input Text    //input[@name="conditions[0][end]"]    555
+    # Input Text    //input[@name="conditions[0][value]"]    555
+    # Input Text    //input[@name="conditions[1][value]"]    666
+    Change First Condition From Andup To Range
+    Execute Javascript    $("input[name='conditions[0][end]']").val(555)
+    Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Input Text    //input[@name="conditions[0][value]"]    80
+    Execute Javascript    $("input[name='conditions[0][value]']").val(80)
+    Input Text    //input[@name="conditions[1][value]"]    90
+    Choose Andup condition on    2
+    Element Should Not Be Visible    //div[contains(@class,"buffer")][1]//div[contains(@id,"notify_flash_success")]
+    Restore Conditions
+    # TC_WLS_05299
+    #    [Documentation]    Save price condition when last condition be 'greater than' condition and confirm ok
+    #    Un-automatable
+
+TC_MC_00888
+    [Documentation]    Save price condition when last condition be 'greater than' condition and confirm cancel
+    Go to    ${URL_WMS}/monitoringrule
+    Remove All Conditions
+    # Input Text    //input[@name="conditions[0][end]"]    555
+    # Input Text    //input[@name="conditions[0][value]"]    555
+    # Input Text    //input[@name="conditions[1][value]"]    666
+    Change First Condition From Andup To Range
+    Execute Javascript    $("input[name='conditions[0][end]']").val(555)
+    Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Input Text    //input[@name="conditions[0][value]"]    80
+    Execute Javascript    $("input[name='conditions[0][value]']").val(80)
+    Input Text    //input[@name="conditions[1][value]"]    90
+    Choose Andup condition on    2
+    Submit    False
+    Confirm Update    False
+    Reload Page
+    Element Should Not Be Visible    //input[contains(@name,"conditions[3][value]")]
+    Restore Conditions
+
+TC_MC_00890
+    [Documentation]    Display update date and update person when save condition
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/monitoringrule
+    ${updateTimeBefore}=    Get Text    //div[contains(@class,"footer-desc")]
+    Remove All Conditions
+    # Input Text    //input[@name="conditions[0][end]"]    11
+    # Input Text    //input[@name="conditions[0][value]"]    100
+    # Input Text    //input[@name="conditions[1][value]"]    50
+    Change First Condition From Andup To Range
+    Execute Javascript    $("input[name='conditions[0][end]']").val(11)
+    Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Input Text    //input[@name="conditions[0][value]"]    90
+    Execute Javascript    $("input[name='conditions[0][value]']").val(90)
+    Input Text    //input[@name="conditions[1][value]"]    60
+    Choose Andup condition on    2
+    Submit
+    Element Should Not Contain    //div[contains(@class,"footer-desc")]    ${updateTimeBefore}
+    Restore Conditions
+
+
+
+
+*** Keywords ***
+Save Success
+    Wait Until Page Contains Element    //div[contains(@id,"notify_flash_success")]
+
+Confirm Update
+    [Arguments]    ${Confirm}=True
+    Run Keyword If    ${Confirm}    Click Element    //div[contains(@class,"webix_popup_button")][1]/div
+    Run Keyword If    ${Confirm}==False    Click Element    //div[contains(@class,"webix_popup_button")][2]/div
+
+Submit
+    [Arguments]    ${Confirm}=True
+    Click Button    //button[contains(@class,"btn-info")]
+    Run Keyword If    ${Confirm}    Confirm Update
+
+Add First Condition
+    ${is_visible}    Run Keyword And Return Status    Element Should Be Visible    //input[@name="conditions[0][end]"]
+    Run Keyword If    '${is_visible}' == 'False'    Select From List By Value    //div[contains(@class, "buffer")][1]//select    to
+    Execute Javascript    $("input[name='conditions[0][end]']").val(100)
+    Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Sleep    0.5s
+    Execute Javascript    $("input[name='conditions[0][value]']").val(80)
+
+Add A Condition
+    # Click Element    //span[contains(@class,"btn-success")]
+    Click Element    //span[@class='btn btn-success btn-sm']
+
+Remove A Condition
+    Click Element    //span[contains(@class,"btn-danger")]
+
+Choose Andup condition on
+    [Arguments]    ${row}
+    Select From List By Value    //div[contains(@class, "buffer")][${row}]//select    andup
+
+Check Product Status
+    [Arguments]    ${id}    ${status}
+    Go to WMS
+    Go to    ${URL_WMS}/monitoringlisting/show/${tesco_store_id}/${id}
+    Sleep    1s
+    # Page Should Contain    ${status}
+
+Remove All Conditions
+    ${row}=    Get Matching Xpath Count    //div[contains(@class,"buffer")]
+    : FOR    ${INDEX}    IN RANGE    0    ${row}
+    \    ${btn_del}=    Run Keyword And Return Status    Element Should Be Visible    //span[contains(@class,"btn-danger")]
+    \    Run Keyword If    ${btn_del}==False    Continue For Loop
+    \    Run Keyword If    ${btn_del}    Remove A Condition
+    Choose Andup condition on    1
+    Submit
+
+Change First Condition From Andup To Range
+    ${is_visible}    Run Keyword And Return Status    Element Should Be Visible    //input[@name="conditions[0][end]"]
+    Run Keyword If    '${is_visible}' == 'False'    Select From List By Value    //div[contains(@class, "buffer")][1]//select    to
+
+Restore Conditions
+    Remove All Conditions
+    Change First Condition From Andup To Range
+    # Input Text    //input[@name="conditions[0][end]"]    100
+    Execute Javascript    $("input[name='conditions[0][end]']").val(100)
+    Press Key    //input[@name="conditions[0][end]"]    \\09
+    # Sleep    0.5s
+    Execute Javascript    $("input[name='conditions[0][value]']").val(80)
+    # Input Text    //input[@name="conditions[0][value]"]    80
+    # ${is_visible}    Run Keyword And Return Status    Element Should Be Visible    //input[@name="conditions[1][end]"]
+    # Run Keyword If    '${is_visible}' == 'False'    Add A Condition
+    : FOR    ${index}    IN RANGE    1    3
+    \    ${beforeIndex}=    Evaluate    ${index}-1
+    \    ${beforeIndex}    Convert To String    ${beforeIndex}
+    \    ${ConStart}    Get Value    //input[@name="conditions[${beforeIndex}][end]"]
+    \    ${ConEnd}=    Evaluate    ${ConStart}*10
+    \    ${ConEnd}    Convert To String    ${ConEnd}
+    \    ${Value}    Get Value    //input[@name="conditions[${beforeIndex}][value]"]
+    \    ${Value}=    Evaluate    ${Value}-30
+    \    ${Value}    Convert To String    ${Value}
+    # \    Input Text    //input[@name="conditions[${index}][end]"]    ${ConEnd}
+    \    Execute Javascript    $("input[name='conditions[${index}][end]']").val(${ConEnd})
+    \    Press Key    //input[@name="conditions[${index}][end]"]    \\09
+    \    Input Text    //input[@name="conditions[${index}][value]"]    ${Value}
+    \    Add A Condition
+    Choose Andup condition on    4
+    Input Text    //input[@name="conditions[3][value]"]    10
+    Submit
+
+Reset Monitoring on product
+    [Arguments]    ${id}
+    Go to WMS
+    Go to    ${URL_WMS}/monitoringlisting/show/${tesco_store_id}/${id}
+    Select Window    title=Monitoring Listing
+    Execute Javascript    $('.dd2-handle')[13].click()
+    Sleep    3s
+
+Update Product price
+    [Arguments]    ${id}    ${price}
+    Go to    ${URL_PORTAL}
+    Check and Reset Seller Login    ${tesco_store_name}    ${seller_user_tesco}    ${seller_pwd_tesco}
+    Goto    ${URL_STORE}/${tesco_store_name}/admin/product/edit/${id}
+    # Input Text    ${input_selling_price}    ${price}
+    Sleep    0.2s
+    Execute Javascript    $('#price').val(${price})
+    Sleep    0.2s
+    Execute Javascript    $('.btn-save').eq(0).click()
+
+Reset All
+    [Arguments]    ${id}    ${price}
+    #    1.Reset Conditions seting
+    #    2.Reset Product price
+    #    3.Reset Monitor Listing
+    Go to WMS
+    Goto    ${URL_WMS}/monitoringrule
+    Restore Conditions
+    # Close Window
+    Go to    ${URL_PORTAL}
+    Update Product price    ${id}    ${price}
+    Reset Monitoring on product    ${id}
+    Go to    ${URL_PORTAL}
+
+
+
+
+
+
+
+
+
+
+

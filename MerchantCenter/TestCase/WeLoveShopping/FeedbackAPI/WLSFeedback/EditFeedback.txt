@@ -1,0 +1,37 @@
+*** Setting ***
+Suite Setup       Go to Login and Check Seller Login    ${URL_PORTAL}    ${BROWSER}    ${storename_slug_feedback}    ${user_login_feedback}    ${pass_login_feedback}
+Suite Teardown    Clear All Test
+Test Setup        Create order credit card channel    ${storename_slug_feedback}    ${product_inpage}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+Force Tags        Feedback-API    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Account_History.txt
+Resource          ../../../../Keyword/Common/Account_Refund.txt
+Resource          ../../../../Keyword/Common/Store_History.txt
+Resource          ../../../../Keyword/Common/Account_Feedback.txt
+Resource          ../../../../Keyword/Common/ManageOrder.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/AccountHistory.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/AccountDetail.txt
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+
+*** Test Case ***
+TC_MC_05502
+    [Tags]    Medium    Feedback-API
+    [Documentation]    Auto edit feedback
+    Go To Store Order History    ${storename_slug_feedback}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    ${message}    Buyer receive the order
+    Run Keyword If    '${message}' == 'รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'    Fail    รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง
+    Login admin manage order web
+    API Order Manage Escrow Datetime    1     feedback_expired_time    เพิ่ม-ลด    -30    Day
+    Run Cron Auto Feedback on admin manage order web    ${order_id_sub}
+    API Order Manage Escrow Datetime    1    feedback_expired_time    เพิ่ม-ลด    -15    Day
+    Search order id on account order history    ${order_id}
+    Check Feedback After Give Score    ${feedback_good}    ปานกลาง
+    Check Text Feedback After Expire Give Feedback    ${order_id_sub}    คะแนนความพึงพอใจจากระบบ

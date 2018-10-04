@@ -1,0 +1,203 @@
+*** Settings ***
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+
+*** Keywords ***
+GoTo Lv D Weloveshopping
+    [Documentation]    Upload Image by Gallery
+    [Arguments]    ${ProductLvD}
+    Go to    ${URL_PORTAL}/product/${ProductLvD}
+    Wait Until Element Is Visible    btn-add-cart
+
+GoTo Lv D WeMall
+    [Documentation]    Upload Image by Gallery
+    [Arguments]    ${ProductLvD}
+    Run Keyword If    '${ProductLvD}' == 'product_id_with_truepoint_promotion'    Go to    ${URL_PORTAL}/d/${product_id_with_truepoint_promotion}
+    ...    ELSE IF    '${ProductLvD}' == 'product_id_with_truepoint_and_freebie_promotion'    Go to    ${URL_PORTAL}/d/${product_id_with_truepoint_and_freebie_promotion}
+    ...    ELSE IF    '${ProductLvD}' == 'product_id_multiple_sku_and_some_product_with_truepoint_product'    Go to    ${URL_PORTAL}/d/${product_id_multiple_sku_and_some_product_with_truepoint_product}
+    ...    ELSE    Go to    ${URL_PORTAL}/d/${ProductLvD}
+    Wait Until Element Is Visible    btn-add-cart
+
+Verify Cart Noti
+    [Documentation]    Verify Cart Noti
+    [Arguments]    ${sum_product}
+    ${sum_product}=    Convert To String    ${sum_product}
+    : FOR    ${i}    IN RANGE    0    3
+    \    ${cart_display}    Run Keyword and Return Status    Element Should Be Visible    //div[@class='w-ctrl-user w-log-cart']
+    \    Run Keyword If    '${cart_display}' == 'True'    Exit FOR Loop    ELSE    Reload Page
+    Run Keyword If    '${sum_product}' != '0' and '${sum_product}' != '99'    Element Should Contain    ${cart_noti}    ${sum_product}    ELSE    Element Should Contain    ${cart_noti_hide}    ${EMPTY}
+
+Go To Leveld Portal wemall
+    [Arguments]    ${ProductLvD}
+    Go to    ${URL_PORTAL}/d/${ProductLvD}
+
+Click Add to Cart and go to Cart
+    Click Element    ${addtocart}
+    Wait Until Element Is Visible    ${btn_addtocart}
+    Click Element    ${btn_addtocart}
+    Wait Until Page Does Not Contain Element    btn-add-cart
+
+Click Product to LevelD
+    Click Element    ${product_recommend1}
+    Wait Until Element Is Visible    ${header_mainmenu}
+    ${leveld_url}    Get Location
+    Element Should Be Visible    ${header_mainmenu}
+
+Click Header Mainmenu
+    Click Element    ${header_mainmenu}
+    Wait Until Element Is Visible    ${header_mainmenu}
+
+Click Header Productmenu
+    Click Element    ${header_productmenu}
+    Wait Until Element Is Visible    ${header_productmenu}
+    ${product_menu}    Get Text    ${breadcrumb_product}
+    ${product}    Convert To String    ${product_menu}
+    Should Be True    "${product}" == "สินค้า"
+
+Click Header Categorymenu
+    Click Element    ${header_categorymenu}
+    Mouse Over    ${header_categorymenu}
+    ${count_category}    Execute Javascript    return ${category_store}.length
+    Click Element    ${main_category1}
+    Wait Until Element Is Visible    ${breadcrumb_cate}
+
+Click Header Subcategory
+    Click Element    ${header_categorymenu}
+    Mouse Over    ${header_categorymenu}
+    Mouse Over    ${main_category2}
+    Click Element    ${subcategory}
+    Wait Until Element Is Visible    ${breadcrumb_cate}
+
+Click Header Promotionstore
+    Click Element    ${header_promotionstoremenu}
+    Wait Until Element Is Visible    ${header_promotionstoremenu}
+    ${promotion_menu}    Get Text    ${breadcrumb_product}
+    ${promotion}    Convert To String    ${promotion_menu}
+    Should Be True    "${promotion}" == "โปรโมชั่น"
+    Element Should Be Visible    ${message_no_promotion}
+    ${message}    Get Text    ${message_no_promotion}
+    ${message1}    Convert To String    ${message}
+    Should Be True    "${message1}" == "ร้านนี้ยังไม่มีโปรโมชั่นในช่วงเวลานี้"
+
+Click Header Contact
+    Click Element    ${header_contactmenu}
+    Wait Until Element Is Visible    ${header_contactmenu}
+    ${contact_menu}    Get Text    ${breadcrumb_product}
+    ${contact}    Convert To String    ${contact_menu}
+    Should Be True    "${contact}" == "ติดต่อร้านค้า"
+
+#### Verify LevelD Sim ####
+Verify To Landing Page
+    [Arguments]    ${url_sim1}
+    ${url_sim2}    Get Location
+    Wait Until Element Is Visible    //div[@class="super-number"]
+    Should Be Equal    ${url_sim2}    ${url_sim1}
+
+Verify To LevelD
+    [Arguments]    ${url_ohter_product1}
+    ${url_ohter_product2}    Get Location
+    Should Be Equal    ${url_ohter_product2}    ${url_ohter_product1}
+
+
+GoTo Lv D Sim
+    [Documentation]    Go to levelD sim redirect to landing page
+    [Arguments]    ${ProductLvD}
+    Go to    ${URL_PORTAL}/d/${ProductLvD}
+
+### FREEBIE ###
+Select Product Everyday Wow Have Freebie
+    [Arguments]    ${product_freebie}
+    ${freebie}=    Replace String    ${lbl_nameproduct}    -freebie    ${product_freebie}
+    Click Element    ${freebie}
+
+Verify month for installment on level d
+    Element Should Contain    ${lbl_leveld_installment_maxmonths}    ผ่อนชำระเพียง 1,354.17 บาท/เดือน นาน 24 เดือน
+    Element Should Contain    ${lbl_leveld_installment_desc_months}    ผ่อนชำระเพียง 1,354.17 บาท/เดือน นาน 24 เดือน
+    Element Should Contain    ${lbl_leveld_installment_desc_months}    ผ่อนชำระเพียง 3,250 บาท/เดือน นาน 10 เดือน
+    Element Should Contain    ${lbl_leveld_installment_desc_months}    ผ่อนชำระเพียง 5,416.67 บาท/เดือน นาน 6 เดือน
+    Element Should Contain    ${lbl_leveld_installment_desc_months}    ผ่อนชำระเพียง 10,833.33 บาท/เดือน นาน 3 เดือน
+
+Verify Truepoint Icon On LevelD Weloveshopping Desktop
+    Wait Until Element Is Visible    ${icn_truepoint}
+    Element Should Be Visible    ${icn_truepoint}
+
+Verify Condition Truepoint On LevelD Weloveshopping Desktop
+    Element Should Contain    ${txt_condition_truepoint}    หรือ ใช้ทรูพอยท์ 1,000 คะแนน
+    Element Should Contain    ${txt_condition_truepoint_bath}    +100 บาท
+    Element Should Contain    ${btn_truepoint}    แลกด้วย TruePoint
+
+#### TruePoint ####
+Click Add TruePoint to Cart and go to Cart
+    Wait Until Element Is Visible    ${btn_truepoint_wm}
+    Click Element    ${btn_truepoint_wm}
+
+Click Add Truepoint To Cart Weloveshopping
+    Wait Until Element Is Visible    ${btn_truepoint}
+    Click Element    ${btn_truepoint}
+
+
+
+### TruePoint ###
+Verify Additional Line for TruePoint Product
+    [Documentation]    Check additional lines when select TruePoint product
+    [Arguments]    ${mode}
+    Run Keyword If    '${mode}' == 'exist'    Log To Console    Verify TruePoint condition lines exist
+    Run Keyword If    '${mode}' == 'exist'    Element Should Contain    ${txt_truepoint_info}    ใช้ทรูพอยท์
+    Run Keyword If    '${mode}' == 'exist'    Element Should Contain    ${txt_truepoint_condition}    อ่านเงื่อนไข
+    Run Keyword If    '${mode}' == 'notexist'    Log To Console    Verify TruePoint condition lines do not exist
+    Run Keyword If    '${mode}' == 'notexist'    Element Should Not Be Visible    ${txt_truepoint_info}
+    Run Keyword If    '${mode}' == 'notexist'    Element Should Not Be Visible    ${txt_truepoint_condition}
+
+Verify TruePoint Thumbnail
+    [Documentation]    Check TruePoint thumbnail exist when select TruePoint product
+    [Arguments]    ${mode}
+    Run Keyword If    '${mode}' == 'exist'    Log To Console    Verify TruePoint Thumbnail exists
+    Run Keyword If    '${mode}' == 'exist'    Element Should Be Visible    ${img_truepoint_thumbnail}
+    Run Keyword If    '${mode}' == 'notexist'    Log To Console    Verify no TruePoint Thumbnail exists
+    Run Keyword If    '${mode}' == 'notexist'    Element Should Not Be Visible    ${img_truepoint_thumbnail}
+
+Verify TruePoint Button
+    [Documentation]    Check TruePoint button exist when select TruePoint product
+    [Arguments]    ${mode}
+    Run Keyword If    '${mode}' == 'exist'    Log To Console    Verify TruePoint Button exists
+    Run Keyword If    '${mode}' == 'exist'    Element Should Be Visible    ${btn_truepoint}
+    Run Keyword If    '${mode}' == 'exist'    Click Element Contain Text    ${btn_truepoint}    แลกด้วย TruePoint
+    Run Keyword If    '${mode}' == 'notexist'    Log To Console    Verify no TruePoint Button exists
+    Run Keyword If    '${mode}' == 'notexist'    Element Should Not Be Visible    ${btn_truepoint}
+
+Verify Level D Go To Cart Page
+    [Documentation]    Verify whether Page Go To Cart page or not
+    Log To Console    Verify whether Page Go To Cart from Level D or not
+    Location Should Contain    /cart
+
+Click TruePoint Button On Level D Page
+    [Documentation]    Click TruePoint button on level D page
+    Log To Console    Click TruePoint Button on Level D Page
+    Click Button    ${btn_truepoint}
+
+Select Level D Product
+    [Documentation]    Select specific product from varient
+    [Arguments]    ${product}
+    Log To Console    Select Specific Product from Other varient
+    Run Keyword If    '${product}' == 'normal'    Click Button    ${btn_attribute_red}
+    Run Keyword If    '${product}' == 'truepoint'    Click Button    ${btn_attribute_black}
+
+Click Continue On TruePoint Alert Message
+    [Documentation]    Click Continue button on TruePoint Popup Message
+    Log To Console    Click Continue button on TruePoint Popup Message
+    Click Button    ${btn_at_popup_truepoint_continue}
+    Wait Until Page Does Not Contain Element    btn-add-cart
+
+Verify Level D TruePoint Alert Message
+    [Documentation]    Verify TruePoint Alert Message at Popup
+    [Arguments]    ${mode}
+    Run Keyword If    '${mode}' == 'yes'    Log To Console    Verify TruePoint Alert Message at Popup
+    Run Keyword If    '${mode}' == 'yes'    Wait Until Element Is Visible    ${btn_at_popup_truepoint_continue}
+    Run Keyword If    '${mode}' == 'yes'    Element Should Contain    ${popup_error_msg}    คุณแลกสินค้าทรูพอยท์ได้เพียง 1 ชิ้น
+    Run Keyword If    '${mode}' == 'yes'    Element Should Contain    ${btn_at_popup_truepoint_continue}    ดำเนินการต่อ
+    Run Keyword If    '${mode}' == 'no'    Log To Console    Verify no Alert Message And Go To Cart Page
+    Run Keyword If    '${mode}' == 'no'    Wait Until Page Does Not Contain Element    btn-add-cart
+    Run Keyword If    '${mode}' == 'no'    Location Should Contain    /cart
+
+
+

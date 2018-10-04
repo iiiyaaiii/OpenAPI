@@ -1,0 +1,43 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Force Tags        Portal-API    Ligo    Sprint2017MC8    mc-wls
+Test Timeout      3 minutes
+
+*** Test Cases ***
+TC_MC_02350
+    [Documentation]    Nonjoin Hide Campaign (Hide)
+    [Tags]    Regression    High    mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-non-join/edit/${none_join_campaign_onoff_id}
+    Checked Campaign Show    ${radio_campaign_hide}
+    Get Campaign Name
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/campaign/?refresh=changeme
+    Verify Campaign Portal    Page Should Not Contain    ${compaign_name_th}
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-non-join/edit/${none_join_campaign_onoff_id}
+    Checked Campaign Show    ${radio_campaign_show}
+    Get Campaign Name
+    Click Button Submit Campaign
+
+TC_MC_02352
+    [Documentation]    Nonjoin Show Campaign (Show)
+    [Tags]    Regression    High    mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-non-join/edit/${none_join_campaign_onoff_id}
+    Checked Campaign Show    ${radio_campaign_show}
+    Get Campaign Name
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/campaign/?refresh=changeme
+    Verify Campaign Portal    Page Should Contain    ${compaign_name_th}

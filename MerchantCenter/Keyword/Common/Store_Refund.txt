@@ -1,0 +1,30 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../../Resource/WeLoveShopping/WebElement/StoreRefund.txt
+Resource          ../../Resource/Wemall/WebElement/Store_Refund.txt
+#Resource          ../../Resource/Wemall/Configuration/Staging/serverconfig.txt
+
+
+***Keyword***
+
+Check Accept Refund Time
+    [Documentation]    Use for check product count down time
+    Should Not Match Regexp    ${process_time_refund}    ([0-9]{2}\s[ก-ฮ]{10}\s[0-9]{4}\s[0-9]{2}\s:\s[0-9]{2}\sน.)
+
+Check Decline Refund Countdown Time
+	[Documentation]    Use for check countdown time decline request refund
+	Should Not Match Regexp    ${decline_countdown}    ([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})
+
+Buyer Click Cancel Refund
+	[Documentation]    Use for click button cancel refund and confirm
+	Click Element    ${btn_buyer_cancel_refund}
+    Confirm Action
+
+Go To Store Refund Page
+	[Documentation]    Use go to store refund page
+	[Arguments]    ${storename_slug_wemall}    ${order_id}
+	Go to    ${URL_STORE}/${storename_slug_wemall}/admin/orders/refund/${order_id}
+
+Click Link Refund Detail
+	[Documentation]    Use go to store refund page
+	Click Element    ${store_refund_detail_button}

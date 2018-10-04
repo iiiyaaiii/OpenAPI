@@ -1,0 +1,56 @@
+*** Setting ***
+Suite Setup       Run Keywords    WMS Login
+...               AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_WMS}/seller_product_property
+Force Tags        WMS-Web    mock    mc-wls
+Library           SeleniumLibrary
+Library           String
+Library           Collections
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/WMS_PropertyManagement.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WLSWMSPromoCode.txt
+
+*** Test Case ***
+TC_MC_00645
+    [Documentation]    Verify click save with blank - on Edit property type dropdown page
+    [Tags]    Regression    Low
+    ${count}=    Get Matching Xpath Count    //div[@class="dataTables_wrapper"]//tr
+    : FOR    ${Index}    IN RANGE    3    ${count}
+    \    ${status}=    Execute Javascript    return $('a:contains("Age")').length
+    \    sleep    2s
+    \    Run Keyword IF    '${status}' == '0'    Click Element    //ul[@class='pagination']/li[${index}]/a
+    \    ${status}=    Execute Javascript    return $('a:contains("Age")').length
+    \    sleep    2s
+    \    Run Keyword IF    '${status}' == '1'    Execute Javascript    $('a:contains("Age")')[0].click()
+    \    Exit For Loop If    '${status}' == '1'
+    sleep    2s
+    Wait Until Element Is Visible    //input[@name='title_th']    ${EXPECT_LOADTIME}
+    Clear Element Text    //input[@name='title_th']
+    Click Element    //button[@id='btn_edit_property']
+    Wait Until Element Is Visible    ${alert_message}    ${EXPECT_LOADTIME}
+    Element Should Contain    ${alert_message}    The title th field is required.
+
+TC_MC_00647
+    [Documentation]    Verify click "Add value property" button - on Edit property type dropdown page
+    [Tags]    Regression    Medium
+    ${count}=    Get Matching Xpath Count    //div[@class="dataTables_wrapper"]//tr
+    : FOR    ${Index}    IN RANGE    3    ${count}
+    \    ${status}=    Execute Javascript    return $('a:contains("Age")').length
+    \    sleep    2s
+    \    Run Keyword IF    '${status}' == '0'    Click Element    //ul[@class='pagination']/li[${index}]/a
+    \    ${status}=    Execute Javascript    return $('a:contains("Age")').length
+    \    sleep    2s
+    \    Run Keyword IF    '${status}' == '1'    Execute Javascript    $('a:contains("Age")')[0].click()
+    \    Exit For Loop If    '${status}' == '1'
+    sleep    2s
+    Wait Until Element Is Visible    //input[@name='title_th']    ${EXPECT_LOADTIME}
+    sleep    2s
+    ${count_input}=    Get Matching Xpath Count    //table[@id='table_report_property']/tbody/tr/td[1]/span/span/span/input
+    Execute Javascript    $('button[onclick="return false;"]').first().click()
+    sleep    2s
+    ${count_all_input}=    Get Matching Xpath Count    //table[@id='table_report_property']/tbody/tr/td[1]/span/span/span/input
+    Should Be True    ${count_all_input} > ${count_input}

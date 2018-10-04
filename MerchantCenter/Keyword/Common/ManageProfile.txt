@@ -1,0 +1,100 @@
+*** Settings ***
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           OperatingSystem
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          Common.txt
+
+*** Variables ***
+&{shippingDict}    deleteAddress=xpath=//div[@class='box-address-detail']/strong[text()='_sectionName']/following::button[@class[contains(.,'btn_delete')]]
+...    editAddress=xpath=//div[@class='box-address-detail']/strong[text()='_sectionName']/following::button[@class[contains(.,'btn_edit')]]
+
+*** Keywords ***
+Clear Unused Account Address
+    [Documentation]    Clear Unused Account Address
+    ${count}=    Get Matching Xpath Count    ${address_info}
+    : FOR    ${a}    IN RANGE    0    ${count}
+    \    ${adr}    Execute Javascript    return $('.font-16px').eq(${a}).text()
+    \    Run Keyword If    '${adr}' != 'wls buyer'    Execute Javascript    $('.btn_delete').eq(${a}).click()
+    \    Run Keyword If    '${adr}' != 'wls buyer'    Confirm Action
+
+Set or Clear Favorite Shop
+    [Documentation]    Set or Clear Favorite Shop
+    ${current_fav}=    Execute Javascript    return $('.favshop ').length
+    : FOR    ${i}    IN RANGE    0    ${current_fav}
+    \    Execute Javascript    $('.favshop ').eq(${i}).click()
+    Sleep    3s
+    Reload Page
+
+## KEYWORDS FOR SHIPPING ADDRESS
+Edit Shipping Address
+    [Arguments]    ${shippingSection}
+    ${locator}=    String.Replace String    &{shippingDict}[editAddress]    _sectionName    ${shippingSection}
+    Click Element    ${locator}
+
+Remove Shipping Address
+    [Arguments]    ${shippingSection}
+    ${locator}=    String.Replace String    &{shippingDict}[deleteAddress]    _sectionName    ${shippingSection}
+    Click Element    ${locator}
+    Confirm Action
+    Page Should Not Contain    ${shippingSection}
+
+##KEYWORDS FOR CHANGE PASSWORD
+Go To Change Password Page
+    [Arguments]    ${username}    ${password}
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Go to Login    ${username}    ${password}
+    Execute JavaScript    ${myacc}.mouseover()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Wait Until Element Is Visible    ${profile_changepass}
+    Click Element    ${profile_changepass}
+
+Enter Current Password
+    [Arguments]    ${password}
+    Input Text    ${change_oldpass}    ${password}
+    Execute Javascript    ${change_oldpass_js}.focusout()
+
+Enter New Password
+    [Arguments]    ${password}
+    Input Text    ${change_newpass}    ${password}
+    Execute Javascript    ${change_newpass_js}.focusout()
+
+Enter New Password Confirmation
+    [Arguments]    ${password}
+    Input Text    ${change_confirmpass}    ${password}
+    Execute Javascript    ${change_confirmpass_js}.focusout()
+
+Click Change Password Button
+    Common.Scroll Element Into View    ${btn_confirmChangePwd}
+    Click Element    ${btn_confirmChangePwd}
+
+Click Cancel Change Password Button
+    Click Element    ${btn_cancelChangePwd}
+
+Validate New Password - Invalid Format
+    ${getMessage}=    Get Element Attribute    ${alert_changePwd}@textContent
+    ${getMessage}=    String.Strip String    ${getMessage}
+    BuiltIn.Should Match    '${getMessage}'    'รหัสผ่านต้องมีความยาวตั้งแต่ 8 ตัว ขึ้นไป ประกอบด้วย - ตัวอักษร (A-Z) ตัวใหญ่ อย่างน้อย 1 ตัว - ตัวอักษร (a-z) ตัวเล็ก อย่างน้อย 1 ตัว - ตัวเลข อย่างน้อย 1 ตัว'
+
+Validate New Password - Minimum Range
+    Element Text Should Be    ${alert_newPwd}    รหัสผ่านอย่างน้อย 8-64 ตัวอักษร
+    Element Text Should Be    ${alert_newConfirmPwd}    รหัสผ่านอย่างน้อย 8-64 ตัวอักษร
+
+Validate New Password - Invalid Data Type
+    Element Text Should Be    ${alert_newPwd}    ข้อมูลไม่ถูกต้อง (ตัวอักษรและตัวเลขเท่านั้น)
+
+Change Password Validation
+    [Arguments]    ${currentPassword}    ${newPassword}    ${newPasswordConfirm}    ${error_case}
+    Enter Current Password    ${currentPassword}
+    Enter New Password    ${newPassword}
+    Enter New Password Confirmation    ${newPasswordConfirm}
+    Click Change Password Button
+    Run Keyword If    '${error_case}' == 'Invalid Format'    Validate New Password - Invalid Format
+    Run Keyword If    '${error_case}' == 'Invalid Range'    Validate New Password - Minimum Range
+    Run Keyword If    '${error_case}' == 'Invalid Data Type'    Validate New Password - Invalid Data Type
+
+Successfully Changed Password Page Should Be Appeared
+    ${getMessage}=    Get Element Attribute    ${alert_changeSuccess}@textContent
+    ${getMessage}=    String.Strip String    ${getMessage}
+    BuiltIn.Should Match    '${getMessage}'    'เปลี่ยนรหัสผ่านเรียบร้อยแล้ว'

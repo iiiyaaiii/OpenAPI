@@ -1,0 +1,38 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_06807
+    [Documentation]    User not found delete button proposition if there are price plan was mapped to that proposition already
+    [Tags]    Regression    High
+    Go To                  ${url_proposition}
+    Set Test Variable      ${test_nas_code}         robotNAS05
+    Create Proposition If Nas Code Not Exist        robotNAME05     ${EMPTY}   ${test_nas_code}
+    Set Test Variable      ${map_price_plan}        //tr[@data-id='row_${test_nas_code}']/td/span[@data-id="total_price_plan"]
+    ${total_price}=        Get Text                 ${map_price_plan}
+    Run Keyword If         '${total_price}' == '0'      Proposition - Mapping Price Plan
+    Element Should Not Be Visible    //span[@data-id="nas_code" and text()="${test_nas_code}"]/parent::td/parent::tr${btn_delete}
+
+TC_MC_06808
+    [Documentation]    Can be deleted proposition if no price plan was mapped to that proposition
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Set Test Variable                       ${test_nas_code}           robotNAS01
+    Create Proposition If Nas Code Not Exist    robotNAME01     ${EMPTY}   robotNAS01
+    ${delete_btn}=  Convert To String   //span[@data-id="nas_code" and text()="${test_nas_code}"]/parent::td/parent::tr${btn_delete}
+    Wait Until Element Is Visible           ${delete_btn}
+    Click Element                           ${delete_btn}
+    Wait Until Element Is Visible           ${btn_cf_delete}
+    Click Element                           ${btn_cf_delete}
+    Element Should Not Be Visible           //span[@data-id="nas_code" and text()="${test_nas_code}"]    

@@ -1,0 +1,147 @@
+*** Settings ***
+Suite Setup       Account Login    ${store_email1}    ${store_password1}
+Suite Teardown    Close All Browsers
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Product.txt
+Resource          ../../../../Resource/WeMall/WebElement/BlockShop.txt
+Resource          ../../../../Resource/WeMall/WebElement/Backend_Sellerpromotion.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Store_Theme.txt
+Resource          ../../../../Keyword/Common/Backend_Promotion.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/Product_Collection.txt
+
+*** Test Cases ***
+TC_MC_05285
+    [Documentation]    Landing Promotion should not display. Incase Store no have promotion period at today.
+    [Tags]    Regression    High
+    Clear Active Login
+    Check and Reset Seller Login Wemall   ${seller_name004}    ${seller_user_004}    ${seller_pwd_004}
+    Go To    ${URL_STORE}/${seller_name004}/admin/promotion/${seller_promotion_robot_not_display}/edit
+    Check and Open Shop
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('1000').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('200').trigger('input');
+    Genarate Date
+    ${end_date}    Add Time To Date    ${getDateTime}    10 seconds    exclude_millis=True
+    Execute Javascript    $('#period').val('${cur_date} - ${end_date}').trigger('input')
+    Execute Javascript    $('.ace-switch-show.ng-pristine.ng-valid').click()
+    Execute Javascript    $('button.btn-primary').get(1).click();
+    Sleep    5s
+    Go To    ${URL_PORTAL}/${seller_name004}/promotion
+    Sleep    5s
+    Element Should Be Visible    //div[@class='noresult-box']
+    Element Should Contain    //div[@class='noresult-box']    ร้านนี้ยังไม่มีโปรโมชั่นในช่วงเวลานี้
+    Go To    ${URL_STORE}/${seller_name004}/admin/promotion/${seller_promotion_robot_not_display}/edit
+    Execute Javascript    $('.ace-switch-show.ng-pristine.ng-valid').click()
+    Execute Javascript    $('button.btn-primary').get(1).click();
+    Sleep    0.5s
+
+TC_MC_05286
+    [Documentation]    Store have promotion period at Today and type discount baht
+    [Tags]    Regression    Medium
+    Go To    ${URL_PORTAL}/${store_url1}
+    Page Should Contain Element    //div[@class='promotion-desc']//div    ซื้อสินค้าตั้งแต่ 500 บาทขึ้นไป ลดเพิ่ม 55 บาท
+
+TC_MC_05287
+    [Documentation]    Store have promotion period at Today and type discount %
+    [Tags]    Regression    Medium
+    Go To    ${URL_PORTAL}/${store_url1}
+    Page Should Contain Element    //div[@class='promotion-desc']//div    ซื้อสินค้าตั้งแต่ 500 บาทขึ้นไป ลดเพิ่ม 10% ลดสูงสุดไม่เกิน 1,000 บาท
+
+TC_MC_05290
+    [Documentation]    Verify Store have promotion period at Today. But have 1 product to join
+    [Tags]    Regression    Medium
+    Go To    ${URL_PORTAL}/${store_url1}
+    ${promotion_item}=    Get Matching Xpath Count    //div[@class="box-main promotion-highlight-div"][1]//li
+    Should Be Equal As Integers    ${promotion_item}    1
+
+TC_MC_05292
+    [Documentation]    Store have promotion period at Today. have product to join > 8 item. seller select product highlight 8 item.
+    [Tags]    Regression    High
+    Go To    ${URL_PORTAL}/${store_url1}
+    ${promotion_item}=    Get Matching Xpath Count    //div[@class="box-main promotion-highlight-div"][2]//li
+    Should Be Equal As Integers    ${promotion_item}    8
+
+TC_MC_05306
+    [Documentation]    StoreFront Highlight Product-Store have highlight product less than 8 product
+    [Tags]    Regression    Medium
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${url_product_collection}
+    sleep    3s
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection With Product    5
+    Go To    ${URL_PORTAL}/${seller_name001}
+    sleep    2s
+    ${class_name}    Execute Javascript    return $('.product-wrapper ul').attr('class')
+    Should Be Equal    ${class_name}    product-shigh-list
+    ${numlist}    Execute Javascript    return $('.product-shigh-list li').length
+    ${numlist_int}    Convert To String    ${numlist}
+    Should Be Equal    ${numlist_int}    5
+
+TC_MC_05310
+    [Documentation]    StoreFront Highlight Product - Verify click ดูทั้งหมด (highlight product)
+    [Tags]    Regression    Medium
+    sleep    3s
+    Go To    ${URL_PORTAL}/${seller_name001}/collection
+    sleep    2s
+    ${CountProduct}    Execute Javascript    return $('#product-wrapper ul li').length
+    ${numlist_int}    Convert To String    ${CountProduct}
+    Should Be True    '${numlist_int}' == '5'
+
+TC_MC_05312
+    [Documentation]    Verify Home page Incase Admin Change shop status = Warning
+    [Tags]    Regression    Medium
+    WMS Switch Project    wm
+    Go To    ${url_block_seller}
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    Sleep    2s
+    ## Select action block status = Warning
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    warning
+    Select From List By Label    ${select_action_reason}    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Element Should Be Visible    ${top_record_status}    ${icon_warning}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'ปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+        Sleep    2s
+    #forntend
+    Go To    ${URL_PORTAL}/${user_block}
+    Sleep    2s
+    ${alert_shopclose}    Get Text    //div[@class="txt-error"]//h3
+    ${str2}    Convert To String    ${alert_shopclose}
+    Should Contain    ${str2}    ร้านค้าปิดให้บริการชั่วคราวค่ะ
+    Sleep    2s
+    WMS Login
+    Go To    ${url_block_seller}
+    Sleep    3s
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    Element Should Be Visible    ${top_record_status}    ${icon_warning}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'ปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+    ## Change action block status = Normal
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    normal
+    Select From List By Label    ${select_action_reason}    อื่นๆ
+    Input Text    ${input_comment}    ok
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    ## Verify expect result
+    Element Should Be Visible    ${top_record_status}    ${icon_normal}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'เปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}

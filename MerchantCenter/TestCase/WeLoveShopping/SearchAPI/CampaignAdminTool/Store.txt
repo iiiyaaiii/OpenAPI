@@ -1,0 +1,36 @@
+*** Settings ***
+Suite Setup     Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        Search-API    mock    mc-wls
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           DateTime
+Test Timeout      5 minutes
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+
+*** Test Case ***
+TC_MC_01100
+    [Documentation]    Search by store id
+    [Tags]    Regression    Medium    SmokeTest
+    Go to    ${URL_WMS}/campaignadmin_store
+    Wait Until Element Is Visible    ${txt_store_ids_search}    10s
+    Input Text    ${txt_store_ids_search}    ${store_robotId1},${store_robotId2}
+    Focus    ${btn_search_store_on_campaign_tool}
+    Click Element    ${btn_search_store_on_campaign_tool}
+    Element Should Be Visible    //td[1][contains(text(),'${store_robotId1}')]
+    Element Should Be Visible    //td[1][contains(text(),'${store_robotId2}')]
+
+TC_MC_01102
+    [Documentation]    Search by store name
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/campaignadmin_store
+    Sleep    2
+    Input Text    //input[@name='store_name']    robot_store1
+    Click Element    //input[@type='submit']
+    Element Should Contain    //td[2]    robot_store1

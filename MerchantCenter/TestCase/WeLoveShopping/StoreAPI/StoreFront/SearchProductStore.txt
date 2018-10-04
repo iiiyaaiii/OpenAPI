@@ -1,0 +1,86 @@
+*** Setting ***
+Suite Setup       Account Login    ${store_email1}    ${store_password1}
+Suite Teardown    Close Browser
+Test Setup        Run Keywords    Go To    ${URL_STORE}/${store_name1}/search?q=    AND    Reload Page
+Force Tags        Store-API    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Keyword/Common/seleniumLibrary.robot
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Keywords ***
+Search product in shop
+    [Arguments]    ${productname}
+    Input Text    name=q    ${productname}
+    Click Element    //button[@class="btn btn-shop-search"]
+    Wait Until Element Is Visible    //div[@class='sortdown-box']    ${EXPECT_LOADTIME}
+    sleep    2s
+
+Sorting product by
+    [Arguments]    ${sorting}
+    Wait Until Element Is Visible    //div[@class='sortdown-box']    ${EXPECT_LOADTIME}
+    Execute Javascript    $('li a:contains(${sorting})').click();
+    sleep    2s
+
+Check result sorting is
+    [Arguments]    ${sorting}
+    ${count_match}    Get Matching Xpath Count    //li[@class='isotope-item']
+    ${count_match}    Convert To Integer    ${count_match}
+    Should Be True    ${count_match} > 0
+    Element Should Contain    //div[@class='sortdown-box']/span    ${sorting}
+
+Check result search product is
+    [Arguments]    ${productname}
+    Element Should Contain    //*[@id="row-body"]/div/div/div[1]/div[1]/ul/li[3]/span    ${productname}
+    ${count_match1}    Get Matching Xpath Count    //a[contains(@class,'name') and contains(text(),'${productname}')]
+    ${count_match1}    Convert To Integer    ${count_match1}
+    Should Be True    ${count_match1} > 0
+
+
+*** Test Case ***
+TC_WLS_05623
+    [Documentation]    Search product store by input key words and filter by ผลการค้นหา
+    [Tags]    Regression    High
+    Reload Page
+    Search product in shop    Test
+    Sorting product by    ผลการค้นหา
+    Check result sorting is    ผลการค้นหา
+    Check result search product is    Test
+
+TC_WLS_05624
+    [Documentation]    Search product store by input key words and filter by ราคาต่ำสุด
+    [Tags]    Regression    Medium
+    Search product in shop    Test
+    Sorting product by    ราคาต่ำสุด
+    Check result sorting is    ราคาต่ำสุด
+    Check result search product is    Test
+    #${Count_p}    Get Text    //*[@id="row-body"]/div/div/div[3]/div/div[2]/div[1]/span[1]/font
+        : FOR    ${i}    IN RANGE    1    5
+        \    ${price_now}=    Get Text    //*[@id="product-wrapper"]/ul/li[${i}]/div/div[2]/div[2]/div[1]/strong
+        \    ${i_next}    Add Operation    ${i}    1
+        \    ${price_next}=    Get Text    //*[@id="product-wrapper"]/ul/li[${i_next}]/div/div[2]/div[2]/div[1]/strong
+        \    ${price_now}    Remove String    ${price_now}    บาท
+        \    ${price_next}    Remove String    ${price_next}    บาท
+        \    Should Be True    ${price_now} <= ${price_next}
+
+TC_WLS_05625
+    [Documentation]    Search product store by input key words and filter by ราคาสูงสุด
+    [Tags]    Regression    Medium
+    Search product in shop    Test
+    Sorting product by    ราคาสูงสุด
+    Check result sorting is    ราคาสูงสุด
+    Check result search product is    Test
+    #${Count_p}    Get Text    //*[@id="row-body"]/div/div/div[3]/div/div[2]/div[1]/span[1]/font
+        : FOR    ${i}    IN RANGE    1    5
+        \    ${price_now}=    Get Text    //*[@id="product-wrapper"]/ul/li[${i}]/div/div[2]/div[2]/div[1]/strong
+        \    ${i_next}    Add Operation    ${i}    1
+        \    ${price_next}=    Get Text    //*[@id="product-wrapper"]/ul/li[${i_next}]/div/div[2]/div[2]/div[1]/strong
+        \    ${price_now}    Remove String    ${price_now}    บาท
+        \    ${price_next}    Remove String    ${price_next}    บาท
+        \    Should Be True    ${price_now} >= ${price_next}
+
+
+

@@ -1,0 +1,7 @@
+*** variable ***
+### Locators ###
+${addcategory}    $('span:contains("เพิ่มหมวดหมู่")').click()
+${statusshow}    $('.radio-inline').eq(0).click()
+${submit}    $("button[class='btn btn-success']").click()
+${deletecategory}    $("div[column='7'] [class='webix_icon fa-trash-o']").click()
+${confirmdelete}    $("div[class='webix_popup_button confirm']").click()

@@ -1,0 +1,655 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../Resource/WeLoveShopping/WebElement/Member_SignUp.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/Backend_Dashboard.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/Backend_Shipping.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/Product.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/Backend_Payment.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/WMS_SellerDocumentRegister.txt
+Resource          ../../../Keyword/Common/Common.txt
+Resource          ../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../Keyword/Common/Member_StoreRegister.txt
+Resource          ../../../Keyword/Common/Backend_Dashboard.txt
+Resource          ../../../Keyword/Common/Product.txt
+Resource          ../../../Keyword/Common/WMS_SellerDocumentRegister.txt
+Resource          ../../../Keyword/Common/Checkout.txt
+
+
+*** variable ***
+#ระบุชื่อร้านค้าที่ต้องการสมัครเอาเอง
+
+${variable_user}    mcwlsprod_user_3
+${variable_pwd}    mcwlsprod_pass_3
+${variable_shopid}    user_mcwlsprod3_id
+${variable_shopurl}    user_mcwlsprod3_url
+${variable_shopname}    shopname_mcwlsprod3
+${user_email}    mcwlsprodtest_3@mailinator.com
+${shopname}    mcwlsprodtest_3
+${pwd_test}    Joy@123456
+
+*** Keywords ***
+Write Variable to File
+    [Arguments]    ${variable_name}    ${value}
+    ${variable}    Catenate    SEPARATOR=    ${    ${variable_name}    }    ${SPACE}${SPACE}${SPACE}${SPACE}    ${value}
+    #Append To File    ${path}${/}Config${/}${ENV}/robotdata.txt    ${\n}${variable}
+    ${FilePath}    Replace String    ${CURDIR}    /TestCase/Common/PrepareUserandShoptest    /Resource/${BU}/Configuration/${ENV}
+    Append To File   ${FilePath}${/}robotdata.txt    ${\n}${variable}
+
+Add Product to Campaign
+    [Arguments]    ${campaign_id}=none    ${product}=none
+    Go to    ${URL_PORTAL}/admin
+    Input Text    ${cms_username}    admin
+    Input Text    ${cms_password}    admin@wel0ve
+    # Execute Javascript    $('.btn-danger')[0].click()
+    Click Button    //*[@class="btn btn-danger"]
+    Sleep    2
+    Go to    ${URL_PORTAL}/admin/storecampaign/show/${campaign_id}
+    Sleep    2
+    Execute Javascript    $("input[name='txt_search_product']").val('${product}')
+    Press Key    //input[@name='txt_search_product']    \\13
+    Sleep    2
+    Execute Javascript    $('.all_check').click()
+    Execute Javascript    $('.btn-success').click()
+    Sleep    1
+    Input Text    //tbody[@id='list_product_promotion']//tr[1]//td[9]//input    9
+    Input Text    //tbody[@id='list_product_promotion']//tr[2]//td[9]//input    9
+    Sleep    1
+    Execute Javascript    $('.navbar-btn').click()
+    Sleep    3
+
+Add Product to store
+    Set Selenium Speed    .2
+    : FOR    ${i}    IN RANGE    3    4
+    \    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    \    Maximize Browser Window
+    \    Go to Login    ${blockstore_email${i}}    ${blockstore_password${i}}
+    \    Sleep   2s
+    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+    \    Store Add Product By Add Photo    electronic    robot_product1_1.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่งสินค้าใหม่    ${blockstore_name${i}}_instock_type_new
+    \    ...    New    5    1    0    0    1
+    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+    \    Store Add Product By Add Photo    electronic    robot_product1_2.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่งมือสอง    ${blockstore_name${i}}_instock_type_use
+    \    ...    Use    500    1    0    0    2
+    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+    \    Store Add Product By Add Photo    electronic    robot_product1_3.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่งหนัก 1.5 kg    ${blockstore_name${i}}_have_weight
+    \    ...    New    750    1    0    0    3
+    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+    \    Store Add Product By Add Photo    electronic    robot_product1_4.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 1 Attr. 1 Inv.    ${blockstore_name${i}}_1attr_1inv
+    \    ...    New    750    1    1    1    4
+    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+    \    Store Add Product By Add Photo    electronic    robot_product1_5.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 1 Attr. 3 Inv.    ${blockstore_name${i}}_1attr_3inv
+    \    ...    New    2    1    1    3    5
+    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+    \    Store Add Product By Add Photo    fashion    robot_product1_6.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 2 Attr. 1 Inv.    ${blockstore_name${i}}_2attr_1inv    New
+    \    ...    1000    1    2    1    6
+    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+    \    Store Add Product By Add Photo    fashion    robot_product1_7.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 2 Attr. 3 Inv.    ${blockstore_name${i}}_2attr_3inv    New
+    \    ...    1000    1    2    3    7
+    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+    \    Store Add Product By Add Photo    electronic    robot_product1_1.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่งสินค้าใหม่    ${blockstore_name${i}}_instock_type_new
+    \    ...    New    5    1    0    0    1
+    \    Myacc Logout
+
+Buy Product
+    [Arguments]    ${product_id}    ${option_color}    ${option_size}
+    Go to    ${URL_LEVEL_D}${product_id}
+    Run Keyword If    '${option_color}' != 'none'    Selected Attribute    สี    ${option_color}
+    Run Keyword If    '${option_size}' != 'none'    Selected Attribute    ขนาด    ${option_size}
+    Execute Javascript    $('#product_quantity_input').val(50)
+    Execute Javascript    $('#product_quantity_increase').click()
+    Sleep    1
+    Execute Javascript    ${addtocart}.click()
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Execute Javascript    ${btn_checkout}.click()
+    Sleep    1
+    Execute Javascript    $('.select_address')[0].click()
+    Sleep    1
+    Execute Javascript    ${shipping_post}.click()
+    Execute Javascript    ${payment_credit}.click()
+    Click Element    ${btn_confirm_checkout}
+    Execute Javascript    $('#wetrust_CCW').find('.button-payment-inner').click()
+    Perform payment by Credit Card
+    Sleep    18
+
+Set Group Campaign
+    [Arguments]    ${campaign_id}    ${group_name}
+    Go to    ${URL_PORTAL}/admin
+    Input Text    ${cms_username}    admin
+    Input Text    ${cms_password}    admin@wel0ve
+    # Execute Javascript    $('.btn-danger')[0].click()
+    Click Button    //*[@class="btn btn-danger"]
+    Go to    ${URL_PORTAL}/admin/storecampaign/edit/${campaign_id}
+    Select From List By Label    group_campaign    ${group_name}
+    Execute Javascript    $('.btn-success ').click()
+
+
+*** Test Cases ***
+TC_Create_Shop_Indiv
+    # [Documentation]    Signup User and Signup Store
+    # Set Selenium Speed    .2
+    # #${new_email}    Catenate    ${shopname}@mailinator.com
+    # Open Browser    ${URL_ACCOUNT}/register/user    ${BROWSER}
+    # Maximize Browser Window
+    # Input Text    ${input_email}    ${user_email}
+    # Input Password    ${input_password}    ${pwd_test}
+    # Input Password    ${input_cf_password}    ${pwd_test}
+    # Input Text    ${input_phone}    ${mobileno_test}
+    # Select Checkbox    ${accept_term_signup}
+    # Click Element    ${btn_signup_user}
+    # Sleep    1s
+    # ${errormsg}    Execute javascript    return $("div[class='alert alert-error bg-danger']").text().trim()
+    # Run Keyword If    "${errormsg}" == "อีเมลนี้ถูกใช้งานแล้ว" or "${errormsg}" == "true id นี้ถูกใช้งานแล้ว"     Register by exiting user    ${user_email}    ${pwd_test}
+    # Sleep    3s
+    # Go To    ${URL_ACCOUNT}/register/store
+    # Sleep    2s
+    # Input Text    ${owner_name}    wls
+    # Input Text    ${owner_surname}    automate
+    # Input Text    ${owner_idcard}    ${idcard}
+    # Input Text    //*[@name="s_name"]    ${shopname}
+    # Select From List By Label    ${shop_category}    แฟชั่น
+    # Input Text    ${shop_url}    ${shopname}
+    # Input Text    ${shop_address}    123Test
+    # Select From List By Label    ${shop_province}    กรุงเทพมหานคร
+    # Sleep    2s
+    # Select From List By Label    ${shop_city}    จตุจักร
+    # Sleep    2s
+    # Select From List By Label    ${shop_district}    จอมพล
+    # Input Text    ${shop_postcode}    10900
+    # Input Text    s_phone    ${mobileno_test}
+    # Accept Term Condition
+    # Sleep    2s
+    # Click Button    ${btn_register_shop}
+    # Sleep    5s
+    # Location Should Contain    ${URL_ACCOUNT}/register/complete
+    # ${shop_name}=    Get Text    //*[@class="desc-box"]/dl[1]/dd
+    # ${shop_id}=    Get Text    //*[@class="desc-box"]/dl[2]/dd
+    # ${shop_url}=    Get Text    //*[@class="desc-box"]/dl[3]/dd
+    # Write Variable to File    ${variable_user}    ${user_email}
+    # Write Variable to File    ${variable_pwd}    ${pwd_test}
+    # Write Variable to File    ${variable_shopid}    ${shop_id}
+    # Write Variable to File    ${variable_shopurl}    ${shopname}
+    # Write Variable to File    ${variable_shopname}    ${shopname}
+    # Activate Mail register    ${user_email}    ${pwd_test}
+
+    [Documentation]    [Welove]CreateNewIndividualshop
+#    Register Individual shop    ${user_email}    ${pwd_test}    ${shopname}
+    Open Browser    ${URL_ACCOUNT}/register/user    ${BROWSER}
+    Maximize Browser Window
+    Register by exiting user    ${user_email}    ${pwd_test}
+    Sleep    3s
+    Go To    ${URL_ACCOUNT}/register/store
+    Sleep    2s
+    Input Text    ${owner_name}    wls
+    Input Text    ${owner_surname}    automate
+    Input Text    ${owner_idcard}    1212121212121
+    Input Text    //*[@name="s_name"]    ${shopname}
+    Select From List By Label    ${shop_category}    แฟชั่น
+    Input Text    ${shop_url}    ${shopname}
+    Input Text    ${shop_address}    123Test
+    Select From List By Label    ${shop_province}    กรุงเทพมหานคร
+    Sleep    2s
+    Select From List By Label    ${shop_city}    จตุจักร
+    Sleep    2s
+    Select From List By Label    ${shop_district}    จอมพล
+    Input Text    ${shop_postcode}    10900
+    Input Text    s_phone    ${mobileno_test}
+    Accept Term Condition
+    Sleep    2s
+    Click Button    ${btn_register_shop}
+    Sleep    5s
+    Sleep    3s
+    Location Should Contain    ${URL_ACCOUNT}/register/complete
+    ${shop_name}=    Get Text    //*[@class="desc-box"]/dl[1]/dd
+    ${shop_id}=    Get Text    //*[@class="desc-box"]/dl[2]/dd
+    ${shop_url}=    Get Text    //*[@class="desc-box"]/dl[3]/dd
+    Write Variable to File    ${variable_user}    ${user_email}
+    Write Variable to File    ${variable_pwd}    ${pwd_test}
+    Write Variable to File    ${variable_shopid}    ${shop_id}
+    Write Variable to File    ${variable_shopurl}    ${shopname}
+    Write Variable to File    ${variable_shopname}    ${shopname}
+    #Activate Mail register    ${user_email}    ${pwd_test}
+
+
+TC_Manage4step_IndivShop
+    [Documentation]    [Welove]Manage 4 step for open Individual shop
+    Set Selenium Speed    .2
+    #${new_email}    Catenate    ${shopname}@mailinator.com
+    Account Login    ${user_email}    ${pwd_test}
+    Go To    ${URL_STORE}/${shopname}/admin
+    ${statusshipping}    Get Text    ${status_shipping}
+    ${shipping_status_str}    Convert To String    ${statusshipping}
+    Run Keyword IF    "${shipping_status_str}" == "ยังไม่ได้ตั้งค่าจัดส่ง"    Backend_Dashboard.Setting Shipping    ${shopname}
+    ${statusproduct}    Get Text    ${msg_status_product}
+    ${product_status_str}    Convert To String    ${statusproduct}
+    Run Keyword IF    "${product_status_str}" == "ยังไม่ได้เพิ่มสินค้า"    Product.Add 5 Product for new shop    ${shopname}
+    ${statusdocument}    Get Text    ${status_shopinfo}
+    ${shopinfo_status_str}    Convert To String    ${statusdocument}
+    Run Keyword IF    "${shopinfo_status_str}" == "ยังไม่ได้ส่งเอกสาร"    Backend_Dashboard.Upload Document Register Individualshop    ${shopname}
+    ${statusdocument}    Get Text    ${status_shopinfo}
+    ${shopinfo_status_str}    Convert To String    ${statusdocument}
+    Run Keyword IF    "${shopinfo_status_str}" == "รอตรวจสอบเอกสาร"    WMS_SellerDocumentRegister.Approve Document Individual shop    ${shopname}    wls
+    ${statusewallet}    Get Text    ${msg_status_ewallet}
+    ${ewallet_status_str}    Convert To String    ${statusewallet}
+    Run Keyword IF    "${ewallet_status_str}" == "ยังไม่ได้เปิดบัญชี"    Backend_Dashboard.Setting Payment Channel    ${shopname}
+    Element Should Be Visible    ${icon_shopinfo_enable}
+    sleep    2s
+    Element Should Be Visible    ${icon_shipping_enable}
+    sleep    2s
+    Element Should Be Visible    ${icon_product_enable}
+    sleep    2s
+    Element Should Be Visible    ${icon_ewallet_enable}
+    Sleep    2s
+    Element Should Be Visible    ${btn_openshop}
+    Click Element    ${btn_openshop}
+
+# TC_Add_Product_ToStore
+#     Set Selenium Speed    .2
+#     : FOR    ${i}    IN RANGE    2    4
+#     \    Open Browser    ${URL_PORTAL}    ${BROWSER}
+#     \    Maximize Browser Window
+#     \    Go to Login    ${blockstore_email${i}}    ${blockstore_password${i}}
+#     \    Sleep   2s
+# #    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+# #    \    Store Add Product By Add Photo    electronic    robot_product1_1.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่งสินค้าใหม่    ${blockstore_name${i}}_instock_type_new
+# #    \    ...    New    5    1    0    0    1
+# #    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+# #    \    Store Add Product By Add Photo    electronic    robot_product1_2.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่งมือสอง    ${blockstore_name${i}}_instock_type_use
+# #    \    ...    Use    500    1    0    0    2
+# #    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+# #    \    Store Add Product By Add Photo    electronic    robot_product1_3.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่งหนัก 1.5 kg    ${blockstore_name${i}}_have_weight
+# #    \    ...    New    750    1    0    0    3
+# #    \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+# #    \    Store Add Product By Add Photo    electronic    robot_product1_4.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 1 Attr. 1 Inv.    ${blockstore_name${i}}_1attr_1inv
+# #    \    ...    New    750    1    1    1    4
+#     \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+#     \    Store Add Product By Add Photo    electronic    robot_product1_5.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 1 Attr. 3 Inv.    ${blockstore_name${i}}_1attr_3inv
+#     \    ...    New    2    1    1    3    5
+#     \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+#     \    Store Add Product By Add Photo    fashion    robot_product1_6.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 2 Attr. 1 Inv.    ${blockstore_name${i}}_2attr_1inv    New
+#     \    ...    1000    1    2    1    6
+#     \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+#     \    Store Add Product By Add Photo    fashion    robot_product1_7.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 2 Attr. 3 Inv.    ${blockstore_name${i}}_2attr_3inv    New
+#     \    ...    1000    1    2    3    7
+#     # \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+#     # \    Store Add Product By Add Photo    electronic    robot_product1_3.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่งหนัก 1.5 kg    ${blockstore_name${i}}_have_weight
+#     # \    ...    New    750    1    0    0    3
+#     # \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+#     # \    Store Add Product By Add Photo    electronic    robot_product1_4.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 1 Attr. 1 Inv.    ${blockstore_name${i}}_1attr_1inv
+#     # \    ...    New    750    1    1    1    4
+#     # \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+#     # \    Store Add Product By Add Photo    electronic    robot_product1_5.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 1 Attr. 3 Inv.    ${blockstore_name${i}}_1attr_3inv
+#     # \    ...    New    2    1    1    3    5
+#     # \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+#     # \    Store Add Product By Add Photo    fashion    robot_product1_6.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 2 Attr. 1 Inv.    ${blockstore_name${i}}_2attr_1inv    New
+#     # \    ...    1000    1    2    1    6
+#     # \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+#     # \    Store Add Product By Add Photo    fashion    robot_product1_7.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่ง 2 Attr. 3 Inv.    ${blockstore_name${i}}_2attr_3inv    New
+#     # \    ...    1000    1    2    3    7
+#     \    Go To    ${URL_STORE}/${blockstore_url${i}}/admin/product/create
+#     \    Store Add Product By Add Photo    electronic    robot_product1_1.jpg    ${blockstore_name${i}}${SPACE}-${SPACE}พร้อมส่งสินค้าใหม่    ${blockstore_name${i}}_product_block1
+#     \    ...    New    5    1    0    0    1
+#     \    ${i}    Evaluate    ${i} + 1
+#     Myacc Logout
+
+# TC_AddProduct
+#    Set Selenium Speed    .2
+#    : FOR    ${i}    IN RANGE    1    3
+#    \    Open Browser    ${URL_PORTAL}    ${BROWSER}
+#    \    Maximize Browser Window
+#    \    Go to Login    ${store_email${i}}    ${store_password${i}}
+#    \    Sleep   2s
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Add Photo    electronic    robot_product${i}_1.jpg    ${store_name${i}}${SPACE}-${SPACE}พร้อมส่งสินค้าใหม่    ${store_name${i}}_instock_type_new
+# #    \    ...    New    5    1    0    0    1
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Add Photo    electronic    robot_product${i}_2.jpg    ${store_name${i}}${SPACE}-${SPACE}พร้อมส่งมือสอง    ${store_name${i}}_instock_type_use
+# #    \    ...    Use    500    1    0    0    2
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Add Photo    electronic    robot_product${i}_3.jpg    ${store_name${i}}${SPACE}-${SPACE}พร้อมส่งหนัก 1.5 kg    ${store_name${i}}_have_weight
+# #    \    ...    New    750    1.5    0    0    3
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Add Photo    electronic    robot_product${i}_4.jpg    ${store_name${i}}${SPACE}-${SPACE}พร้อมส่ง 1 Attr. 1 Inv.    ${store_name${i}}_1attr_1inv
+# #    \    ...    New    750    1    1    1    4
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Add Photo    electronic    robot_product${i}_5.jpg    ${store_name${i}}${SPACE}-${SPACE}พร้อมส่ง 1 Attr. 3 Inv.    ${store_name${i}}_1attr_3inv
+# #    \    ...    New    2    1    1    3    5
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Add Photo    fashion    robot_product${i}_6.jpg    ${store_name${i}}${SPACE}-${SPACE}พร้อมส่ง 2 Attr. 1 Inv.    ${store_name${i}}_2attr_1inv    New
+# #    \    ...    1000    1    2    1    6
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Add Photo    fashion    robot_product${i}_7.jpg    ${store_name${i}}${SPACE}-${SPACE}พร้อมส่ง 2 Attr. 3 Inv.    ${store_name${i}}_2attr_3inv    New
+# #    \    ...    1000    1    2    3    7
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_1    ${store_name${i}}${SPACE}-${SPACE}สินค้า FlashSale 1    ${store_name${i}}_flashsale1
+# #    \    ...    New    500    1    0    0    8
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_2    ${store_name${i}}${SPACE}-${SPACE}สินค้า FlashSale 1 มี Attr.    ${store_name${i}}_flashsale1_attr
+# #    \    ...    New    750    1    2    2    9
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_3    ${store_name${i}}${SPACE}-${SPACE}สินค้า FlashSale 2    ${store_name${i}}_flashsale2
+# #    \    ...    New    500    1    0    0    10
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_4    ${store_name${i}}${SPACE}-${SPACE}สินค้า FlashSale 2 มี Attr.    ${store_name${i}}_flashsale2_attr
+# #    \    ...    New    750    1    2    2    11
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_5    ${store_name${i}}${SPACE}-${SPACE}สินค้า FlashSale 3    ${store_name${i}}_flashsale3
+# #    \    ...    New    500    1    0    0    12
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_6    ${store_name${i}}${SPACE}-${SPACE}สินค้า FlashSale 3 มี Attr.    ${store_name${i}}_flashsale3_attr
+# #    \    ...    New    750    1    2    2    13
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_1    ${store_name${i}}${SPACE}-${SPACE}สินค้า Join Campaign    ${store_name${i}}_join_camapign
+# #    \    ...    New    300    1    0    0    14
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_2    ${store_name${i}}${SPACE}-${SPACE}สินค้า None Join Campaign    ${store_name${i}}_none_join_camapign
+# #    \    ...    New    500    1    0    0    15
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_3    ${store_name${i}}${SPACE}-${SPACE}สินค้า Custom Campaign    ${store_name${i}}_custom_camapign
+# #    \    ...    New    300    1    0    0    16
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    electronic    robot_product${i}_4    ${store_name${i}}${SPACE}-${SPACE}สินค้า Promotion Item Price    ${store_name${i}}_promotion_item_price
+# #    \    ...    New    200    1    0    0    17
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    electronic    robot_product${i}_5    ${store_name${i}}${SPACE}-${SPACE}สินค้า Promotion Item Percent    ${store_name${i}}_promotion_item_percent
+# #    \    ...    New    500    1    0    0    18
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    electronic    robot_product${i}_6    ${store_name${i}}${SPACE}-${SPACE}สินค้า Promotion Cart Price By Price    ${store_name${i}}_promotion_cart_price_by_price
+# #    \    ...    New    650    1    0    0    19
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    electronic    robot_product${i}_7    ${store_name${i}}${SPACE}-${SPACE}สินค้า Promotion Cart Percent By Price    ${store_name${i}}_promotion_cart_percent_by_price
+# #    \    ...    New    750    1    0    0    20
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    electronic    robot_product${i}_1    ${store_name${i}}${SPACE}-${SPACE}สินค้า Promotion Cart Price By QTY    ${store_name${i}}_promotion_cart_price_by_qty
+# #    \    ...    New    650    1    0    0    21
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    electronic    robot_product${i}_2    ${store_name${i}}${SPACE}-${SPACE}สินค้า Promotion Cart Percent By QTY    ${store_name${i}}_promotion_cart_percent_by_qty
+# #    \    ...    New    750    1    0    0    22
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    electronic    robot_product${i}_2    ${store_name${i}}${SPACE}-${SPACE}สินค้า preorder ใช้ stock 1 inv SoldOut    ${store_name${i}}_preorder_use_stock_soldout
+# #    \    ...    New    1000    1    0    0    23
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_6    ${store_name${i}}${SPACE}-${SPACE}สินค้าทดสอบ Promotion Item    ${store_name${i}}_test_promotion_item
+# #    \    ...    New    100    1    0    0    24
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_7    ${store_name${i}}${SPACE}-${SPACE}สินค้า Promotion & FlashSale    ${store_name${i}}_promotion_flashsale
+# #    \    ...    New    650    1    0    0    25
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_1    ${store_name${i}}${SPACE}-${SPACE}สินค้า Seller Promotion    ${store_name${i}}_sellerpromotion
+# #    \    ...    New    650    1    0    0    26
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_2    ${store_name${i}}${SPACE}-${SPACE}สินค้า Seller Promotion & FlashSale    ${store_name${i}}_sellerpromotion_flashsale
+# #    \    ...    New    650    1    0    0   27
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_3    ${store_name${i}}${SPACE}-${SPACE}สินค้าราคาแพง    ${store_name${i}}_more_price
+# #    \    ...    New    10000    1    0    0    28
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_4    ${store_name${i}}${SPACE}-${SPACE}สินค้า flashsale near soldout    ${store_name${i}}_less_qty
+# #    \    ...    New    500    1    0    0    29
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    electronic    robot_product${i}_5    ${store_name${i}}${SPACE}-${SPACE}สินค้าทดสอบ Promotion By Cart1    ${store_name${i}}_test_promotion_cart1
+# #    \    ...    New    500    1    0    0    30
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    electronic    robot_product${i}_6    ${store_name${i}}${SPACE}-${SPACE}สินค้าทดสอบ Promotion Item2    ${store_name${i}}_test_promotion_item2
+# #    \    ...    New    500    1    0    0    31
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product Pre-Order By Select Photo    electronic    robot_product${i}_7    ${store_name${i}}${SPACE}-${SPACE}สินค้า preorder ไม่ใช้ stock 1 inv    ${store_name${i}}_preorder_ignore_stock
+# #    \    ...    New    1000    0    0    0    32
+# #    \    ...    N    N
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product Pre-Order By Select Photo    electronic    robot_product${i}_1    ${store_name${i}}${SPACE}-${SPACE}สินค้า preorder ไม่ใช้ stock หลาย inv.    ${store_name${i}}_preorder_ignore_stock_inv
+# #    \    ...    New    800    0    1    3    33
+# #    \    ...    N    N
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product Pre-Order By Select Photo    electronic    robot_product${i}_2    ${store_name${i}}${SPACE}-${SPACE}สินค้า preorder ใช้ stock 1 inv    ${store_name${i}}_preorder_use_stock
+# #    \    ...    New    1000    0    0    0    34
+# #    \    ...    Y    N
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product Pre-Order By Select Photo    electronic    robot_product${i}_3    ${store_name${i}}${SPACE}-${SPACE}สินค้า preorder ใช้ stock หลาย inv    ${store_name${i}}_preorder_use_stock_inv
+# #    \    ...    New    1000    0    1    3    35
+# #    \    ...    Y    N
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product Pre-Order By Select Photo    electronic    robot_product${i}_4    ${store_name${i}}${SPACE}-${SPACE}สินค้า preorder ใช้ stock 1 inv (Allow)    ${store_name${i}}_preorder_use_stock_allow
+# #    \    ...    New    1000    0    0    0    36
+# #    \    ...    Y    Y
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product Pre-Order By Select Photo    electronic    robot_product${i}_5    ${store_name${i}}${SPACE}-${SPACE}สินค้า preorder ใช้ stock หลาย inv. (Allow)    ${store_name${i}}_preorder_use_stock_inv_allow
+# #    \    ...    New    800    0    1    3    37
+# #    # \    ...    Y    Y
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_6    ${store_name${i}}${SPACE}-${SPACE}สินค้าพร้อมส่ง out of stock    ${store_name${i}}_instock_soldout
+# #    \    ...    New    100    1    0    0    38
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product By Select Photo    fashion    robot_product${i}_7    ${store_name${i}}${SPACE}-${SPACE}สินค้าพร้อมส่ง out of stock all inv    ${store_name${i}}_instock_soldout_inv
+# #    \    ...    New    100    1    2    2    39
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product Pre-Order By Select Photo    electronic    robot_product${i}_2    ${store_name${i}}${SPACE}-${SPACE}สินค้า preorder ใช้ stock 1 inv SoldOut    ${store_name${i}}_preorder_use_stock_soldout
+# #    \    ...    New    1000    1    0    0    40
+# #    \    ...    Y    N
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product Pre-Order By Select Photo    electronic    robot_product${i}_3    ${store_name${i}}${SPACE}-${SPACE}สินค้า preorder ใช้ stock หลาย inv SoldOut    ${store_name${i}}_preorder_use_stock_inv_soldout
+# #    \    ...    New    1000    1    1    3    41
+# #    \    ...    Y    N
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product Pre-Order By Select Photo    electronic    robot_product${i}_4    ${store_name${i}}${SPACE}-${SPACE}สินค้า preorder ใช้ stock 1 inv (Allow) SoldOut    ${store_name${i}}_preorder_use_stock_allow_soldout
+# #    \    ...    New    1000    1    0    0    42
+# #    \    ...    Y    Y
+# #    \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+# #    \    Store Add Product Pre-Order By Select Photo    electronic    robot_product${i}_5    ${store_name${i}}${SPACE}-${SPACE}สินค้า preorder ใช้ stock หลาย inv. (Allow) SoldOut    ${store_name${i}}_preorder_use_stock_inv_allow_soldout
+# #    \    ...    New    800    1    1    3    43
+# #    \    ...    Y    Y
+#     # \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+#     # \    Store Add Product By Add Photo    electronic    robot_product${i}_1.jpg    ${store_name${i}}${SPACE}-${SPACE}product_block1    product_block1
+#     # \    ...    New    5    1    0    0    44
+#     # \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+#     # \    Store Add Product By Add Photo    electronic    robot_product${i}_1.jpg    ${store_name${i}}${SPACE}-${SPACE}_fix_join_campaign    ${store_name${i}}_fix_join_campaign
+#     # \    ...    New    5    1    0    0    45
+#     # \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+#     # \    Store Add Product By Select Photo    fashion    robot_product${i}_1    ${store_name${i}}${SPACE}-${SPACE}_join_promotion_item    ${store_name${i}}_join_promotion_item
+#     # \    ...    New    300    1    0    0    46
+#     # \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+#     # \    Store Add Product By Select Photo    fashion    robot_product${i}_2    ${store_name${i}}${SPACE}-${SPACE}_join_promotion_cart    ${store_name${i}}_join_promotion_cart
+#     # \    ...    New    300    1    0    0    47
+#     # \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+#     # \    Store Add Product By Select Photo    fashion    robot_product${i}_3    ${store_name${i}}${SPACE}-${SPACE}_promotion_custom_edit    ${store_name${i}}_promotion_custom_edit
+#     # \    ...    New    300    1    0    0    48
+#     \    Go To    ${URL_STORE}/${store_url${i}}/admin/product/create
+#     \    Store Add Product By Select Photo    fashion    robot_product${i}_4    ${store_name${i}}${SPACE}-${SPACE}_promotion_by_admin    ${store_name${i}}_promotion_by_admin
+#     \    ...    New    300    1    0    0    49
+#     Myacc Logout
+
+# Set_Product_to_Sold_Out
+#     Open Browser    ${URL_PORTAL}    ${BROWSER}
+#     Maximize Browser Window
+#     Go to Login    user_alpha_checkout@mailinator.com    123456
+#     Sleep    1
+#     Delete All Product In Cart
+#     #Buy Product    ${robot_store1_instock_soldout}    none    none
+#     Buy Product    ${robot_store1_instock_soldout_inv}    ขาว    S
+#     Buy Product    ${robot_store1_instock_soldout_inv}    ขาว    M
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_instock_soldout_inv}    ดำ    S
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_instock_soldout_inv}    ดำ    M
+#     # Delete All Product In Cart
+#     # Buy Product    ${robot_store1_2attr_3inv}    ขาว    S
+#     # Delete All Product In Cart
+#     # Buy Product    ${robot_store1_2attr_3inv}    ขาว    M
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_2attr_3inv}    ขาว    L
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_preorder_use_stock_soldout}    none    none
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_preorder_use_stock_inv_soldout}    ขาว    none
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_preorder_use_stock_inv_soldout}    ดำ    none
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_preorder_use_stock_inv_soldout}    น้ำเงิน    none
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_preorder_use_stock_inv}    น้ำเงิน    none
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_preorder_use_stock_allow_soldout}    none    none
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_preorder_use_stock_inv_allow_soldout}    ขาว    none
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_preorder_use_stock_inv_allow_soldout}    ดำ    none
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_preorder_use_stock_inv_allow_soldout}    น้ำเงิน    none
+#     Delete All Product In Cart
+#     Buy Product    ${robot_store1_preorder_use_stock_inv_allow}    น้ำเงิน    none
+
+# Select_Product_Data_to_Campaign
+#     WMS Login
+#     WMS Switch Project    wls
+#     Select Product to Campaign    ${join_campaign_id}    ${robot_store1_join_camapign}${SPACE}${robot_store2_join_camapign}    join
+#     # Select Product to Campaign    ${none_join_campaign_id}    ${robot_store2_none_join_camapign}${SPACE}${robot_store2_none_join_camapign}    none_join
+#     # Add Product to Campaign    ${custom_campaign_id}    ${robot_store2_custom_camapign}${SPACE}${robot_store2_custom_camapign}
+#     # Select Product to Campaign    ${promotion_item_fixprice_id}    ${robot_store2_promotion_item_price}${SPACE}${robot_store2_promotion_item_price}    promotion
+#     # Select Product to Campaign    ${promotion_item_percent_id}    ${robot_store2_promotion_item_percent}${SPACE}${robot_store2_promotion_item_percent}    promotion
+#     # Select Product to Campaign    ${promotion_cart_price_by_price_id}    ${robot_store2_promotion_cart_price_by_price}${SPACE}${robot_store2_promotion_cart_price_by_price}    promotion
+#     # Select Product to Campaign    ${promotion_cart_price_by_qty_id}    ${robot_store2_promotion_cart_price_by_qty}${SPACE}${robot_store2_promotion_cart_price_by_qty}    promotion
+#     # Select Product to Campaign    ${promotion_cart_percent_by_price_id}    ${robot_store2_promotion_cart_percent_by_price}${SPACE}${robot_store2_promotion_cart_percent_by_price}    promotion
+#     # Select Product to Campaign    ${promotion_cart_percent_by_qty_id}    ${robot_store2_promotion_cart_percent_by_qty}${SPACE}${robot_store2_promotion_cart_percent_by_qty}    promotion
+#     # Select Product to Campaign    ${promotion_cart_price_by_price_id}    ${robot_store2_promotion_flashsale}${SPACE}${robot_store2_promotion_flashsale}${robot_store2_sellerpromotion_flashsale}${robot_store2_sellerpromotion_flashsale}    promotion
+#     # Select Product to Campaign    ${promotion_cart_price_by_price_id}    ${robot_store2_sellerpromotion_flashsale}${SPACE}${robot_store2_sellerpromotion_flashsale}    promotion
+#     # Select Product to Campaign    ${promotion_cart_price_for_edit_id}    ${robot_store2_test_promotion_cart1}${SPACE}${robot_store2_test_promotion_cart1}    promotion
+#     # Select Product to Campaign    ${promotion_item_for_edit_id}    ${robot_store2_test_promotion_item2}${SPACE}${robot_store2_test_promotion_item2}    promotion
+#     # Select Product to Campaign    ${join_campaign_id}    L90100*    join
+#     # Select Product to Campaign    ${none_join_campaign_id}    L90106*    none_join
+#     # Select Product to Campaign    ${custom_campaign_id}    L90112*#
+
+# #Select_More_Product_to_JoinCampaign
+# #    WMS Login
+# #    WMS Switch Project    wls
+# #    Go to    ${URL_WMS}/campaign/collection-join/manage-show/1992
+# #    Sleep    3s
+# #    Execute Javascript    $("input[name='txt_search_product']").val('L90100*')
+# #    Press Key    //input[@name='txt_search_product']    \\13
+# #    Sleep    10s
+# #    Execute Javascript    $('.all_check.ng-pristine.ng-untouched.ng-valid')[0].click()
+# #    # Execute Javascript    $('.btn-success').click()
+# #    Click Element    //button[@class='btn btn-sm btn-primary pull-right']
+# #    Execute Javascript    $('.btn.btn-warning.navbar-btn.ng-binding').click()
+# #    Sleep    5s
+
+# Select_More_Product_to_NoneJoinCampaign
+#     Go to    ${URL_PORTAL}/admin
+#     Input Text    ${cms_username}    admin
+#     Input Text    ${cms_password}    admin@wel0ve
+#     # Execute Javascript    $('.btn-danger')[0].click()
+#     Click Button    //*[@class="btn btn-danger"]
+#     Go to    ${URL_PORTAL}/admin/storecampaign/show/${none_join_campaign_id}
+#     Sleep    2
+#     Execute Javascript    $("input[name='txt_search_product']").val('L90106*')
+#     Press Key    //input[@name='txt_search_product']    \\13
+#     Sleep    2
+#     Execute Javascript    $('.all_check').click()
+#     Execute Javascript    $('.btn-success').click()
+#     Execute Javascript    $('.btn.btn-warning.navbar-btn.ng-binding').click()
+#     Sleep    5s
+#     # Execute Javascript    $("input[name='txt_search_product']").val('L90107*')
+#     # Press Key    //input[@name='txt_search_product']    \\13
+#     # Sleep    2
+#     # Execute Javascript    $('.all_check').click()
+#     # Execute Javascript    $('.btn-success').click()
+#     # Sleep    1
+#     # Execute Javascript    $('.all_check').click()
+#     # Sleep    1
+#     # Execute Javascript    $("input[name='txt_search_product']").val('L90108*')
+#     # Press Key    //input[@name='txt_search_product']    \\13
+#     # Sleep    2
+#     # Execute Javascript    $('.all_check').click()
+#     # Execute Javascript    $('.btn-success').click()
+#     # Sleep    1
+#     # Execute Javascript    $('.all_check').click()
+#     # Sleep    1
+#     # Execute Javascript    $("input[name='txt_search_product']").val('L90109*')
+#     # Press Key    //input[@name='txt_search_product']    \\13
+#     # Sleep    2
+#     # Execute Javascript    $('.all_check').click()
+#     # Execute Javascript    $('.btn-success').click()
+#     # Sleep    1
+#     # Execute Javascript    $('.all_check').click()
+#     # Sleep    1
+#     # Execute Javascript    $("input[name='txt_search_product']").val('L90110*')
+#     # Press Key    //input[@name='txt_search_product']    \\13
+#     # Sleep    2
+#     # Execute Javascript    $('.all_check').click()
+#     # Execute Javascript    $('.btn-success').click()
+#     # Sleep    1
+#     # Execute Javascript    $('.all_check').click()
+#     # Sleep    1
+#     # Execute Javascript    $("input[name='txt_search_product']").val('L90111*')
+#     # Press Key    //input[@name='txt_search_product']    \\13
+#     # Sleep    2
+#     # Execute Javascript    $('.all_check').click()
+#     # Execute Javascript    $('.btn-success').click()
+#     # Sleep    1
+#     # Execute Javascript    $('.navbar-btn').click()
+#     # Sleep    3
+
+# Select_More_Product_to_CustomCampaign
+#     Go to    ${URL_PORTAL}/admin
+#     Input Text    ${cms_username}    admin
+#     Input Text    ${cms_password}    admin@wel0ve
+#     # Execute Javascript    $('.btn-danger')[0].click()
+#     Click Button    //*[@class="btn btn-danger"]
+#     Go to    ${URL_PORTAL}/admin/storecampaign/show/${custom_campaign_id}
+#     Sleep    2
+#     Execute Javascript    $("input[name='txt_search_product']").val('L90112*')
+#     Press Key    //input[@name='txt_search_product']    \\13
+#     Sleep    2
+#     Execute Javascript    $('.all_check').click()
+#     Execute Javascript    $('.btn-success').click()
+#     Execute Javascript    $('.btn.btn-warning.navbar-btn.ng-binding').click()
+#     Sleep    5s
+#     Sleep    1
+#     Execute Javascript    $('.all_check').click()
+#     Execute Javascript    $("input[name='txt_search_product']").val('L90113*')
+#     Press Key    //input[@name='txt_search_product']    \\13
+#     Sleep    2
+#     Execute Javascript    $('.all_check').click()
+#     Execute Javascript    $('.btn-success').click()
+#     Sleep    1
+#     Execute Javascript    $('.all_check').click()
+#     Sleep    1
+#     Execute Javascript    $("input[name='txt_search_product']").val('L90114*')
+#     Press Key    //input[@name='txt_search_product']    \\13
+#     Sleep    2
+#     Execute Javascript    $('.all_check').click()
+#     Execute Javascript    $('.btn-success').click()
+#     Sleep    1
+#     Execute Javascript    $('.all_check').click()
+#     Sleep    1
+#     Execute Javascript    $("input[name='txt_search_product']").val('L90115*')
+#     Press Key    //input[@name='txt_search_product']    \\13
+#     Sleep    2
+#     Execute Javascript    $('.all_check').click()
+#     Execute Javascript    $('.btn-success').click()
+#     Sleep    1
+#     Execute Javascript    $('.all_check').click()
+#     Sleep    1
+#     Execute Javascript    $("input[name='txt_search_product']").val('L90116*')
+#     Press Key    //input[@name='txt_search_product']    \\13
+#     Sleep    2
+#     Execute Javascript    $('.all_check').click()
+#     Execute Javascript    $('.btn-success').click()
+#     Sleep    1
+#     Execute Javascript    $('.all_check').click()
+#     Sleep    1
+#     Execute Javascript    $("input[name='txt_search_product']").val('L90117*')
+#     Press Key    //input[@name='txt_search_product']    \\13
+#     Sleep    2
+#     Execute Javascript    $('.all_check').click()
+#     Execute Javascript    $('.btn-success').click()
+#     Sleep    1
+#     Execute Javascript    $('.navbar-btn').click()
+#     Sleep    3
+

@@ -1,0 +1,195 @@
+*** Settings ***
+Documentation     Check ordertracking on wms web page
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    mock    mc-wm
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/WMS_OrderTracking.txt
+Resource          ../../../../Keyword/Common/ManageOrder.txt
+Resource          ../../../../Keyword/Common/Account_History.txt
+Resource          ../../../../Keyword/Common/Account_Refund.txt
+Resource          ../../../../Keyword/Common/Store_History.txt
+Resource          ../../../../Resource/WeMall/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeMall/WebElement/WMS_OrderTracking.txt
+
+*** Test Case ***
+TC_MC_04454
+    [Documentation]    [Wemall] WMWMSOrderTracking : View History Search Menu
+    [Tags]    RECON2017MC11    Low    WMS-Web
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Check search fields and buttons on Order Tracking page
+
+TC_MC_04455
+    [Documentation]    [Wemall] WMWMSOrderTracking : View History Order Head Table
+    [Tags]    RECON2017MC12    Low    WMS-Web
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Check column name on Order Tracking
+
+TC_MC_04457
+    [Documentation]    [Wemall] WMWMSOrderTracking : Search by Order ID
+    [Tags]    Regression    Medium    WMS-Web
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Search order id on wms order tracking    800011406660
+    Check Order Tracking on store id    L939533
+    Check Order Tracking on store name    ทรัสต์มอล
+    Check Order Tracking on order id    800011406660
+    Check Order Tracking on payment ref    ref 1 : 01104755\nref 2 : 800011406660\nref no : 9180320580672
+    Check Order Tracking on customer name   QAWLS TEST
+    Check Order Tracking on payment method    EW
+    Check Order Tracking on amount    264.00
+    Check Order Tracking on promotion code    Seller Promotion By Baht,\nTest MC Code None Join Campaign
+    Check Order Tracking on discount    35.00\n0.00
+
+TC_MC_04458
+    [Documentation]    [Wemall] WMWMSOrderTracking : Search by Store ID
+    [Tags]    Regression    Medium    WMS-Web
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Search store id on wms order tracking    L939533
+    Check Order Tracking on store id    L939533
+    Check Order Tracking on store name    ทรัสต์มอล
+    Check Order Tracking on payment ref    ref 1 : 01104755
+    Check Order Tracking on customer name    QAWLS TEST
+
+TC_MC_04460
+    [Documentation]    [Wemall] WMWMSOrderTracking : Search by Store Name
+    [Tags]    Regression    Medium    WMS-Web
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Search store name on wms order tracking    ทรัสต์มอล
+    Check Order Tracking on store id    L939533
+    Check Order Tracking on store name    ทรัสต์มอล
+    Check Order Tracking on payment ref    ref 1 : 01104755
+    Check Order Tracking on customer name    QAWLS TEST
+
+TC_MC_04472
+    [Documentation]    [Wemall] WMWMSOrderTracking : Search by Limit 20
+    [Tags]    Regression    Medium    WMS-Web
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Select value search on wms order tracking    ${select_limit}    20
+    Check the order tracking record    Showing 1 to 20
+
+TC_MC_05116
+    [Documentation]    WMWMSOrderTracking : Search by Order ID (Order 2 Stores)
+    [Tags]    Regression    Medium    WMS-Web
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Search order id on wms order tracking    800011406672
+    Check Order Tracking on store id    L939533,L939535
+    Check Order Tracking on store name    ทรัสต์มอล (MD), Trustdock Thailand (MX)
+    Check Order Tracking on order id    800011406672
+    Check Order Tracking on payment ref    ref 1 : 01104755
+    Check Order Tracking on customer name    QAWLS TEST
+
+TC_MC_06012
+    [Documentation]    WMWMSOrderTracking Check item status after place order
+    [Tags]    Regression    Medium    WMS-Web
+    Account Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order offline channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${cs_channel_radio_button}    ${lbl_payment_cs_ref2_number}
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    รอการชำระเงิน
+
+TC_MC_06013
+    [Documentation]    WMWMSOrderTracking Check item status after expired payment
+    [Tags]    Regression    Medium    WMS-Web
+    Account Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Login admin manage order web
+    API Order Manage Datetime    payment_expired_time    เพิ่ม-ลด    -4    day
+    Run cron order expire on admin manage order web    ${order_id_sub}
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    รายการถูกยกเลิก
+
+TC_MC_06014
+    [Documentation]    WMWMSOrderTracking Check item status in case payment failed
+    [Tags]    Regression    Medium    WMS-Web
+    Account Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order ewallet channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ew_channel_radio_button}
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    การชำระเงินไม่สำเร็จ
+
+TC_MC_06015
+    [Documentation]    WMWMSOrderTracking Check item status after payment
+    [Tags]    Regression    Medium    WMS-Web
+    Account Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    รอการแจ้งจัดส่งสินค้า
+
+TC_MC_06016
+    [Documentation]    WMWMSOrderTracking Check item status after seller ship full
+    [Tags]    Regression    Medium    WMS-Web
+    Account Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Shipping One Product Custom    testshipping    ${URL_STORE}    ${URL_FB}    A02.jpg
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    รอยืนยันรับสินค้า
+
+TC_MC_06017
+    [Documentation]    WMWMSOrderTracking Check item status after receive full
+    [Tags]    Regression    Medium    WMS-Web
+    Account Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Shipping One Product Custom    testshipping    ${URL_STORE}   ${URL_FB}    A02.jpg
+    Login admin manage order web
+    API Order Manage Escrow Datetime    1     receive_expired_time    เพิ่ม-ลด    -17    Day
+    Run cron auto receive on admin manage order web    ${order_id_sub}
+    WMS Switch Project    wm
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    ยังไม่โอนเงิน
+
+TC_MC_04491
+    [Documentation]    WMWMSOrderTracking : Search by Promotion/MC Code - Promotion Code - Exact Match
+    WMS Switch Project    wm
+    Open Wemall Order Tracking Page
+    Order Tracking Page Should Be Appeared
+    Search Order By Promotion/MC Code    ${test_promo_exact}
+    Order With Promotion/MC Code Should Be Found    ${test_expected_promo}
+
+TC_MC_10358
+    [Documentation]    WMWMSOrderTracking : Search by Promotion/MC Code - Promotion Code - Partial Match
+    WMS Switch Project    wm
+    Open Wemall Order Tracking Page
+    Order Tracking Page Should Be Appeared
+    Search Order By Promotion/MC Code    ${test_promo_partial}
+    Order With Promotion/MC Code Should Be Found    ${test_expected_promo}
+
+TC_MC_10359
+    [Documentation]    WMWMSOrderTracking : Search by Promotion/MC Code - MC Code - Exact Match
+    WMS Switch Project    wm
+    Open Wemall Order Tracking Page
+    Order Tracking Page Should Be Appeared
+    Search Order By Promotion/MC Code    ${test_mc_exact}
+    Order With Promotion/MC Code Should Be Found    ${test_expected_mc}
+
+TC_MC_10360
+    [Documentation]    WMWMSOrderTracking : Search by Promotion/MC Code - MC Code - Partial Match
+    WMS Switch Project    wm
+    Open Wemall Order Tracking Page
+    Order Tracking Page Should Be Appeared
+    Search Order By Promotion/MC Code    ${test_mc_partial}
+    Order With Promotion/MC Code Should Be Found    ${test_expected_mc}

@@ -1,0 +1,236 @@
+*** Variables ***
+### Locator ###
+${Menu_TruemoveH}    //a[contains(@class, 'dropdown-toggle')]/span[contains(@class, 'menu-text') and contains(text(), 'Truemove H')]
+${url_block_truemoveh}          ${URL_WMS}/tmvh-mobiles
+${url_horoscopes_truemoveh}     ${URL_WMS}/tmvh-horoscopes
+${url_price_plan}               ${URL_WMS}/tmvh-priceplan
+${url_proposition}              ${URL_WMS}/tmvh-proposition
+${url_device}           ${URL_WMS}/tmvh-device
+${breadcrumbs_truemoveh_report}    //*[@id="breadcrumbs"]/h1/small/ul/li[2]
+${breadcrumbs_truemoveh_import}    //*[@id="breadcrumbs"]/h1/small/ul/li[3]
+${url_block_truemoveh}    ${URL_WMS}/tmvh-mobiles
+${url_block_truemoveh_import}    ${URL_WMS}/tmvh-mobiles/import
+${input_product_id}    //textarea[@id="product-ids"]
+${input_store_id}    //*[@name="store_id"]
+${input_store_id_portal}    //*[@id="store-id"]
+${btn_bp_search}    //button[@name="search-btn"]
+${record_result_found}    //table[@id="result-table"]/tbody/tr
+${column_store_id}    //*[@id="result-table"]/tbody/tr[1]/td[8]
+${select_product_status}    //select[@id="status"]
+${column_product_status}    //*[@id="result-table"]/tbody/tr[1]/td[2]
+${column_last_update}    //*[@id="result-table"]/tbody/tr/td[7]
+${icon_status_close}    //i[@data-original-title="ปิด"]
+${icon_status_show}    //i[@data-original-title="เปิด"]
+${paging}    //div[@id="sample-table-2_paginate"]
+${store_last}    //*[@id="result-table"]/tbody/tr/td[1]/label/input
+${select_action_pstatus}    //select[@id="form-status"]
+${select_action_reason}    //select[@id="form-reason"]
+${input_reason}    //textarea[@id="form-comment"]
+${box_notify}    //div[@class="bootbox-body"]
+${btn_ok_action}    //div[@class="modal-footer"]//button[@data-bb-handler="confirm"]
+${btn_save_paction}    //button[@id="action-confirm-save"]
+${check_all_record}    //*[@id="result-table"]/thead/tr/th[1]/label/span
+${check_top_record}    //*[@id="result-table"]/tbody/tr/td[1]/label/span
+${check_record_tr1}    //*[@id="result-table"]/tbody/tr[1]/td[1]/label/span
+${check_record_tr2}    //*[@id="result-table"]/tbody/tr[2]/td[1]/label/span
+${input_email}    //input[@name="store_email"]
+${input_store_id}    //input[@name="store_id"]
+${input_phone}    //input[@name="store_phone"]
+${column_email}    //*[@id="result-table"]/tbody/tr[1]/td[8]
+${column_phone}    //*[@id="result-table"]/tbody/tr[1]/td[9]
+${column_store_id}    //*[@id="result-table"]/tbody/tr[1]/td[2]
+
+
+### Order ###
+${verify_status_dropdown}    id=verify_status
+${btn_search_order}    //button[@class="btn btn-sm btn-info"][@type="submit"]
+${link_ID_card}    //*[@id="dynamic-table"]/tbody/tr[1]/td[4]/div/a
+${payment_status_dropdown}    id=payment_status
+${btn_approve}    //button[@class="btn btn-sm btn-success"]
+${btn_reject}    //button[@class="btn btn-sm btn-danger"]
+${btn_customer_cancel}    //button[@class="btn btn-sm btn-default"]
+${btn_approve_submit}    id=approve_submit
+${btn_reject_submit}    id=reject_submit
+${btn_cancel_submit}    id=customet_cancel_submit
+${btn_remark}    id=icon
+${txt_remark}    id=remark_input
+${btn_submit_remark}    //button[@class="btn btn-info editable-submit"]
+${remark_message}    id=verify_remark
+${btn_edit_customer_info}    //a[@class="btn btn-sm btn-info"]
+${txt_id_card}    name=id_card
+${btn_save}    id=btn_submit
+${notify_message}    //*[@class="text-center alert alert-success ui-notify-message ui-notify-message-style"]
+${txt_other_title}    id=name_title_other
+${txt_first_name}    id=first_name
+${txt_last_name}    name=last_name
+${txt_tel_number}    name=phone
+${txt_thai_address_no}    name=customer_address
+${txt_thai_road}    name=customer_road
+${thai_province_dropdown}    id=customer_province_id
+${thai_district_dropdown}    name=customer_district_id
+${thai_city_dropdown}    name=customer_city_id
+${txt_thai_postcode}    name=customer_postcode
+${txt_billing_address_no}    name=billing_address
+${txt_billing_road}    name=billing_road
+${billing_province_dropdown}    id=billing_province_id
+${billing_district_dropdown}    id=billing_district
+${billing_city_dropdown}    id=billing_city
+${txt_billing_postcode}    name=billing_postcode
+${verify_remark_dropdown}    id=verify_remark
+${remark_label}    //div[@class="remark"]
+${btn_lucky_number}    id=type_number
+
+### Horoscopes ###
+${btn_create_horoscopes}            //a[@id="create_horoscopes"]
+${input_score}                      //input[@id="score"]
+${input_title}                      //input[@id="title"]
+${input_description}                //textarea[@id="description"]
+${input_status_active}              //input[@id="active"]
+${input_status_inactive}            //input[@id="inactive"]
+${btn_submit}                       //button[@id="submit_btn"]
+${btn_reset}                        //button[@id="reset_btn"]
+${error_input_score}                //div[@id="score-with-errors"]/ul/li
+${error_input_score_255}            //div[@id="score-with-errors"]
+${error_input_title}                //input[@id='title']//parent::span[1]//ul//li
+${error_input_description}          //textarea[@id='description']//parent::span[1]//ul//li
+${btn_create_horoscopes}            //a[@id="create_horoscopes"]
+${input_score}                      //input[@id="score"]
+${input_title}                      //input[@id="title"]
+${input_description}                //textarea[@id="description"]
+${input_status_active}              //input[@id="active"]
+${input_status_inactive}            //input[@id="inactive"]
+${btn_submit}                       //button[@id="submit_btn"]
+${btn_reset}                        //button[@id="reset_btn"]
+${error_input_score}                //div[@id="score-with-errors"]/ul/li
+${error_input_score_255}            //div[@id="score-with-errors"]
+${error_input_title}                //div[@id="title-with-errors"]/ul/li
+${error_input_description}          //div[@id="description-with-errors"]/ul/li
+${result_error}                     //span[@id="result-error"]
+${result_success}                   //span[@id="result-success"]
+${btn_edit}                         //a[@data-id="btn-edit"]
+${btn_delete}                       //a[@data-id="btn-delete"]
+${btn_no_delete}                    //button[@id="btn_no_delete"]
+${btn_cf_delete}                    //button[@id="btn_confirm_delete"]
+${success_import_panel}             //*[@id="import_form"]/div[1]/div[4]/div[1]/div
+${error_import_panel}               //*[@id="import_form"]/div[1]/div[4]/div[2]/div/div/table
+
+### Proposition ###
+${input_name}                       //input[@id="name"]
+${click_merchant}                   //*[@id="form_field_select_4_chosen"]
+${select_merchant}                  //ul[@class="chosen-results"]
+${click_mobile_nas_codes}           //*[@id="mobile_nas_codes_chosen"]
+${select_mobile_nas_codes}          //*[@id="mobile_nas_codes_chosen"]/div/ul/li
+${input_campaign_code}              //input[@id="campaign_code"]
+${input_nas_code}                   //input[@id="nas_code"]
+${input_pool_number}                //input[@id="pool_number"]
+${input_baseline}                   //input[@id="baseline"]
+${input_contract}                   //input[@id="contract"]
+${input_penalty}                    //input[@id="penalty"]
+${select_source_type}               //select[@id="source_type"]
+${input_term_short}               	//textarea[@id="term_short"]
+${error_input_name}                 //div[@id="name-with-errors"]/ul/li
+${error_merchant}                   //div[@id="merchant_ids_hide-with-errors"]//ul[@class="list-unstyled"]//li
+${error_mobile_nas_code}            //div[@id='mobile_nas_codes-with-errors']//ul[@class="list-unstyled"]//li
+${error_input_nas_code}             //div[@id="nas_code-with-errors"]/ul/li
+${error_input_baseline}             //div[@id="baseline-with-errors"]/ul/li
+${error_input_contract}             //div[@id="contract-with-errors"]/ul/li
+${error_input_penalty}              //div[@id="penalty-with-errors"]/ul/li
+${error_select_source_type}         //div[@id="source_type-with-errors"]/ul/li
+${error_input_term_short}           //div[@id="term_short-with-errors"]/ul/li
+${error_input_term_long}            //div[@id="term_long-with-errors"]/ul/li
+${input_search_nas_code} 			//input[@id="search_nas_code"]
+${column_merchant}                  //td[@data-id="merchant"]
+${merchant_name}                    //tr[1]//td//div[@data-id="merchant"]
+${txt_product_sku}                  id=sku
+${lbl_warning_sku}                  id=sku-remark
+${lbl_searched_product_id}          //table[@id="dynamic-table"]/tbody/tr[1]/td[4]/span
+${lbl_searched_product_sku}         //table[@id="dynamic-table"]/tbody/tr[2]/td[5]/span
+${lbl_header_proposition}           //div[@class="table-header"]
+${btn_next_page}                    //a[@rel="next"]
+${tbl_search_result}                //div[@id="sample-table-2_wrapper"]/table/tbody/tr
+
+### Mapping ###
+${btn_submit_search_priceplan}      id=search_priceplan
+${btn_submit_search_propo}          id=search_btn
+${btn_map_proposition}              //a[@class="btn btn-xs btn-warning"]
+${btn_search_product}               //button[@class="btn btn-sm btn-primary"]
+${btn_reset_search_product}         //a[@class="btn btn-sm btn-default"]
+${btn_back_to_proposition}          //a[@class="btn btn-xs btn-default"]
+${chk_the_first_row}                //*[@id="dynamic-table"]/tbody/tr[1]/td[1]/label/span
+${btn_map}                          id=map-btn
+
+### Device ###
+${input_sim_type_ids} 				//div[@class='checkbox'][1]/label/span
+${input_search_name} 				//input[@id="search_name"]
+${error_input_sim_type_ids}         //div[@id="sim_type_ids_hide-with-errors"]/ul/li
+${error_input_search_name}          //div[@id="name-with-errors"]/ul/li
+${btn_search_device}          		//*[@id="search_btn"]
+
+### Checkout ###
+${box_payment_type}    //div[@class="box-payment-type"]
+${payment_type}    $('div[class="box-payment-inner-wrap"]')
+${ewallet}    wetrust_EW
+${creditcard}    wetrust_CCW
+${type_sim}    //div[@class="box-overflow"]//div[@data-option-title="Micro"]
+
+
+### ProductVerify ###
+${merchant_dropdown}                id=merchant_id
+${txt_productId}                    id=product_id
+${btn_search_product_verify}        id=search_product_verify
+${status_dropdown}                  id=status
+${error_merchant}                   id=merchant_id-errors
+${error_ID}                         id=product_id-errors
+${btn_create}                       id=create-product-verify
+${txt_productName}                  id=product_name
+${txt_product_ids}                   id=product_ids
+${btn_edit_icon}                    //i[@class="ace-icon fa fa-pencil bigger-130"]
+${label_productName}                //span[@data-id="title"]
+${label_productID}                  //span[@data-id="product_id"]
+${txt_redirect_link}                id=special_url
+${btn_submit}                       id=submit_btn
+${label_active_status}              //span[@class="label label-success"]
+${label_inactive_status}            //span[@class="label label-danger"]
+${notify_message}                   //*[@class="text-center alert alert-success ui-notify-message ui-notify-message-style"]
+
+
+### Commission Report ###
+${type_dropdown}                    id=source_type
+${dealer_dropdown}                  id=merchant_id
+${btn_commission_search}            id=submit_btn
+${txt_order_id}                     id=order_id
+${label_order_id}                   //*[@id="dynamic-table"]/tbody/tr/td[2]/div
+${msg_order_id}                     id=order-id-errors
+${label_sim_only}                   //span[@class="label label-sm label-pink arrowed-in arrowed-in-right"]
+
+
+### Activate Sim Report ###
+${txt_thai_id}                      id=id_card
+${txt_msisdn}                       id=mobile
+${txt_name}                         id=name
+${dropdown_payment}                 id=payment_status
+${txt_item_status}                  id=ddcl-item-statuses-code
+${dropdown_activate_status}         id=activate_status
+${dropdown_verify_status}           id=verify_status
+${btn_search_sim}                   id=submit_search_sim
+${btn_reset_sim}                    id=reset_btn
+${order_date}                       id=order_date
+${activate_status_waiting}          //div[@class="waiting-status"]
+${payment_date}                     id=payment_date
+${item_activate_status}             //select[@name="item_activate_status"]
+${label_activate_orderId}           //*[@id="dynamic-table_wrapper"]/table/tbody/tr[1]/td/b/a
+${label_verify_waiting}             //div[@class="label label-sm label-warning"]
+${label_verify_approved}            //div[@class="label label-sm label-success"]
+${label_verify_rejected}            //div[@class="label label-sm label-danger"]
+${no_activate_status}               //td[@class="td_activate_status"]//div[@class="text-center"]
+
+### Mobile Report ###
+${table_info}                       id=table_report_info
+${mobile_label}                     //*[@id="sample-table-2_wrapper"]/table/tbody/tr/td[4]
+${btn_search_mobile}                id=submit
+${searched_result}                  //div[@id="sample-table-2_wrapper"]/table/tbody/tr
+${btn_active_inactive}              id=active_inactive
+${btn_confirm}                      id=extend_btn
+${dropdown_changed_status}          id=select_active
+
+

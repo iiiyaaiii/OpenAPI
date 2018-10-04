@@ -1,0 +1,11 @@
+*** Variables ***
+
+### Locator ###
+${input_orderid_wms_feedback}    //input[@name="keyword"]
+${btn_feedback_search}    //input[@class="btn btn-sm btn-primary margin-bottom-5 "]
+${text_orderid_wms_feedback}    //section/div[2]/div[1]/div[2]/table/tbody/tr[2]/td[1]/a
+${DropDown_Hidecomment}    xpath=//*[@class="form-control hide_comment"]
+${DropDown_HideReason}    xpath=//*[@class="form-control hide_reason"]
+${admin_comment}    //textarea[@name="admin_comment"]
+${Save_Button}    //button[@class="btn btn-primary btn-save-feedback"]
+${Auditor_name}    //section/div[2]/div[1]/div[2]/table/tbody/tr[2]/td[12]

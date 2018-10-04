@@ -1,0 +1,44 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Force Tags        Campaign    feature-campaign    PortalJoin    Search-API    mc-wls
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+
+*** Test Cases ***
+TC_MC_01792
+    [Documentation]    [Welove] Join Campaign : Sorting product campaign by Product Price ASC
+    [Tags]    Regression    High    Search-API     mock    SmokeTest
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_asc}.click()
+    Sleep    1
+    : FOR    ${i}    IN RANGE    1    4
+    \    ${price_now}    Get Text    //ul[@class='items-list-box']/li[${i}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}    Get Text    //ul[@class='items-list-box']/li[${i_next}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} <= ${price_next}
+
+TC_MC_01793
+    [Documentation]    [Welove] Join Campaign : Sorting product campaign by Product Price DESC
+    [Tags]    Regression    High    Search-API    mock
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_desc}.click()
+    Sleep    1
+    : FOR    ${i}    IN RANGE    1    4
+    \    ${price_now}    Get Text    //ul[@class='items-list-box']/li[${i}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}    Get Text    //ul[@class='items-list-box']/li[${i_next}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} >= ${price_next}

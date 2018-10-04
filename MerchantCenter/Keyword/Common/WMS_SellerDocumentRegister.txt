@@ -1,0 +1,192 @@
+*** Settings ***
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           OperatingSystem
+Library           Collections
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeMall/WebElement/WMS_SellerDocumentRegister.txt
+Resource          ../../Resource/WeMall/init.robot
+
+*** Keywords ***
+Upload All Document Register Corporate shop
+    [Documentation]    Verify Admin upload document . Incase status document "รอเอกสาร"
+    [Arguments]    ${shopname}    ${Project}
+    Common.WMS Switch Project    ${Project}
+    Goto    ${URL_WMS}/sellerregister
+    Sleep    1s
+    Input Text    ${wms_input_email}    ${user_email}
+    Select From List By Label    ${select_shop_status}    ทั้งหมด
+    Click Button    ${wms_btn_search}
+    Sleep    1s
+    Click Element    ${btn_wms_edit_hide}
+    Sleep    3
+    ${IMG_DIR}=    Replace String Using Regexp    ${CURDIR}    Keyword$    Image
+    ${CUR_IMG_DIR}=    Remove String    ${IMG_DIR}    ${/}Keyword${/}Common
+    ${file}=    Catenate    SEPARATOR=${/}    ${CUR_IMG_DIR}${/}Resource/${BU}${/}Image    logo_mi6_seller_1.jpg
+    Choose File    name=corp_id1    ${file}
+    ${file}=    Catenate    SEPARATOR=${/}    ${CUR_IMG_DIR}${/}Resource/${BU}${/}Image    logo_mi6_seller_2.jpg
+    Choose File    name=house_register1    ${file}
+    ${file}=    Catenate    SEPARATOR=${/}    ${CUR_IMG_DIR}${/}Resource/${BU}${/}Image    logo_mi6_seller_3.jpg
+    Choose File    name=corp_pp20    ${file}
+    ${file}=    Catenate    SEPARATOR=${/}    ${CUR_IMG_DIR}${/}Resource/${BU}${/}Image    logo_mi6_seller_4.jpg
+    Choose File    name=corp_info1    ${file}
+    ${file}=    Catenate    SEPARATOR=${/}    ${CUR_IMG_DIR}${/}Resource/${BU}${/}Image    logo_mi6_seller_5.jpg
+    Choose File    name=corp_info2    ${file}
+    ${file}=    Catenate    SEPARATOR=${/}    ${CUR_IMG_DIR}${/}Resource/${BU}${/}Image    logo_mi6_seller_6.jpg
+    Choose File    name=corp_bank    ${file}
+    Sleep    1s
+    Click Button    ${btn_upload_docs}
+    Sleep    5s
+    Execute Javascript    $("input[id='bank_accountname']").val('นายทดสอบ เลขที่บัญชี')
+    Execute Javascript    $("#bank_name").val('2')
+    Execute Javascript    $("input[id='bank_accountnumber']").val('1234567890')
+    Click Button    ${btn_save_bookbank}
+    sleep    2s
+    ${msg_status_After}    Get Text    ${wms_doc_status}
+    ${msg_status_After_str}    Convert To String    ${msg_status_After}
+    Should Be True    "${msg_status_After_str}" == "รอตรวจสอบ"
+    Sleep    2s
+    Click Button    ${btn_save_wms}
+    Sleep    3s
+    ${msg_alert}    Execute Javascript    return $('.bootbox .modal-body').text()
+    Execute Javascript    $('.bootbox .modal-footer .btn-primary').click()
+    Member_SignIn.Account Login    ${user_email}    ${pwd_test}
+    Go To    ${URL_STORE}/${shopname}/admin
+    Sleep    3s
+
+Approve Document Corporate shop
+    [Arguments]    ${shopname}    ${Project}
+    Common.WMS Switch Project    ${Project}
+    Member_SignIn.WMS Login
+    Goto    ${URL_WMS}/sellerregister
+    Sleep    1s
+    Input Text    ${wms_input_email}    ${user_email}
+    Select From List By Label    ${select_shop_status}    ทั้งหมด
+    Click Button    ${wms_btn_search}
+    Sleep    1s
+    Click Element    ${btn_wms_edit}
+    Sleep    3s
+    Execute Javascript    $.each($('#frm_sellerregiter').find('select:visible'), function( index, value ) {$(value).val('approved').attr('selected', true);});
+    Sleep    1s
+    Click Button    ${btn_save_wms}
+    Sleep    3s
+    ${msg_alert}    Execute Javascript    return $('.bootbox .modal-body').text()
+    Execute Javascript    $('.bootbox .modal-footer .btn-primary').click()
+    Wait Until Element Is Visible    ${btn_activate_ccw}    ${EXPECT_LOADTIME}
+    ${uploadfile_bank}    Execute Javascript    return $("input[name='corp_bank']").length
+    ${result}    Convert To String    ${uploadfile_bank}
+    Should Contain    ${result}    1
+    Click Button    ${btn_activate_ccw}
+    Sleep    3s
+    ${msg_alert}    Execute Javascript    return $('.bootbox .modal-body').text()
+    Execute Javascript    $('.bootbox .modal-footer .btn-primary').click()
+    Wait Until Element Is Not Visible    ${btn_activate_ccw}    ${EXPECT_LOADTIME}
+    Member_SignIn.Account Login    ${user_email}    ${pwd_test}
+    Go To    ${URL_STORE}/${shopname}/admin
+
+Approve Document Wemall shop
+    [Arguments]    ${shopname}    ${Project}    ${Type}
+    Common.WMS Switch Project    ${Project}
+    Member_SignIn.WMS Login
+    Goto    ${URL_WMS}/sellerregister
+    Sleep    1s
+    Input Text    ${wms_input_email}    ${user_email}
+    Select From List By Label    ${select_shop_status}    ทั้งหมด
+    Click Button    ${wms_btn_search}
+    Sleep    1s
+    Click Element    ${btn_wms_edit}
+    #${supplier_code}    Execute Javascript    return $("input[id='supplier_code']").length
+    ${supplier_code1}=   Run Keyword If    "${Type}" == "MF"    Create FMS Supplier    BTH001    ${Type}
+    ${supplier_code2}=   Run Keyword If    "${Type}" == "MX"    Create FMS Supplier    BTH001    ${Type}
+    ${supplier_code3}=   Run Keyword If    "${Type}" == "RT"    Create FMS Supplier    BTH001    ${Type}
+    Run Keyword If    "${Type}" == "MF"    Input SupplierCode    ${supplier_code1}
+    Run Keyword If    "${Type}" == "MX"    Input SupplierCode    ${supplier_code2}
+    Run Keyword If    "${Type}" == "RT"    Input SupplierCode    ${supplier_code3}
+    Sleep    3s
+    Execute Javascript    $.each($('#frm_sellerregiter').find('select:visible'), function( index, value ) {$(value).val('approved').attr('selected', true);});
+    Sleep    1s
+    Click Button    ${btn_save_wms}
+    Sleep    3s
+    ${msg_alert}    Execute Javascript    return $('.bootbox .modal-body').text()
+    Execute Javascript    $('.bootbox .modal-footer .btn-primary').click()
+    Wait Until Element Is Visible    ${btn_activate_ccw}    ${EXPECT_LOADTIME}
+    ${uploadfile_bank}    Execute Javascript    return $("input[name='corp_bank']").length
+    ${result}    Convert To String    ${uploadfile_bank}
+    Should Contain    ${result}    1
+    Click Button    ${btn_activate_ccw}
+    Sleep    3s
+    ${msg_alert}    Execute Javascript    return $('.bootbox .modal-body').text()
+    Execute Javascript    $('.bootbox .modal-footer .btn-primary').click()
+    Wait Until Element Is Not Visible    ${btn_activate_ccw}    ${EXPECT_LOADTIME}
+    Member_SignIn.Account Login    ${user_email}    ${pwd_test}
+    Go To    ${URL_STORE}/${shopname}/admin
+
+Approve Document Individual shop
+    [Arguments]    ${shopname}    ${Project}
+    Common.WMS Switch Project    ${Project}
+    Member_SignIn.WMS Login
+    Goto    ${URL_WMS}/sellerregister
+    Sleep    1s
+    Input Text    ${wms_input_email}    ${user_email}
+    Select From List By Label    ${select_shop_status}    ทั้งหมด
+    Click Button    ${wms_btn_search}
+    Sleep    1s
+    Click Element    ${btn_wms_edit}
+    Sleep    3s
+    Execute Javascript    $('.doc-status').val('approved');
+    Sleep    1s
+    Click Button    ${btn_save_wms}
+    Sleep    3s
+    ${msg_alert}    Execute Javascript    return $('.bootbox .modal-body').text()
+    Execute Javascript    $('.bootbox .modal-footer .btn-primary').click()
+    Sleep    5s
+    Member_SignIn.Account Login    ${user_email}    ${pwd_test}
+    Go To    ${URL_STORE}/${shopname}/admin
+
+Input SupplierCode
+    [Arguments]    ${supplier_code}
+    Execute Javascript    $("input[id='supplier_code']").val('${supplier_code}')
+    Click Button    ${btn_save_supplier_code}
+
+Click link on first record in seller register page
+    [Arguments]    ${link}
+    Run keyword If    '${link}'=='store id'    Click Element    ${first_storeid_link}
+    Run keyword If    '${link}'=='store name'    Click Element    ${first_storename_link}
+    Run keyword If    '${link}'=='url name'    Click Element    ${first_url_link}
+
+Check that link is redirect to store page successfully
+    [Arguments]    ${site}
+    ${url_store}    Get Text    ${first_url_link}
+    Run keyword If    '${site}'=='welove'    Select Window    url=https://store.wls-dev.com/${url_store}
+    Run keyword If    '${site}'=='welove'    Location Should Be    https://store.wls-dev.com/${url_store}
+    Run keyword If    '${site}'=='wemall'    Select Window    url=https://www.wemall-dev.com/${url_store}
+    Run keyword If    '${site}'=='wemall'    Location Should Be    https://www.wemall-dev.com/${url_store}
+
+Go To Seller Register Page
+    Go To    ${URL_WMS}/sellerregister
+
+Search Email Store
+    [Arguments]    ${email}
+    Wait Until Element Is Visible    ${lbl_email}
+    Input Text    ${lbl_email}    ${email}
+    Press Key    ${lbl_email}   ${ENTER}
+    Click Element    ${btn_wms_edit_hide}
+    Wait Until Element Is Visible    ${txt_detailshop}
+
+Verify Visible Label For Supplier Code
+    [Arguments]    ${text_supplier_shop}
+    ${text}    Get Text    ${txt_supplier_code}
+    ${text_remove}    Remove String    ${text}    :
+    ${text_removed}    Strip String    ${text_remove}
+    Should Be Equal    ${text_removed}    ${text_supplier_shop}
+    Element Should Be Visible    ${lbl_supplier_code}
+
+Key Supplier Code
+    [Arguments]    ${supplier_code}
+    Input Text    ${lbl_supplier_code}    ${supplier_code}
+    Click Element    ${btn_save_supplier_code}
+
+Verify Invalid Supplier Code
+    ${value}    Get Value    ${lbl_supplier_code_value}
+    Run Keyword If    '${value}' == 'MD'    Element Should Contain    ${lbl_message_format_supplier_code}    กรุณากรอกรหัสให้ตรงตามรูปแบบ โดยขึ้นต้นด้วย TH และตามด้วยตัวเลข 4 หลัก
+    Run Keyword If    '${value}' == 'RT'    Element Should Contain    ${lbl_message_format_supplier_code}    กรุณากรอกรหัสให้ตรงตามรูปแบบ โดยขึ้นต้นด้วย ITM

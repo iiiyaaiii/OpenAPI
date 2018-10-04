@@ -1,0 +1,378 @@
+*** Settings ***
+#Suite Setup      Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Setup       Run Keywords    Account Login    ${store_email1}    ${store_password1}    AND    Go to    ${URL_PORTAL}    AND    Set Selenium Speed    0.3 s
+Suite Teardown    Close All Browsers
+Test Setup        Go to    ${URL_ACCOUNT}
+Test Timeout      1 minutes
+Library           String
+Library           Collections
+Library           OperatingSystem
+Library           DateTime
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Force Tags        Checkout-Web    Shipping    Ligo    Sprint2017MC9    mc-wls
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Cart.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Portal.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Backend_Shipping.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+Resource          ../../../../Keyword/Common/LevelD.txt
+
+*** Test Cases ***
+TC_MC_04147
+    [Documentation]    Shipping cost : westore EMS - เหมา - ฟรี
+    Set Shipping Type    emsflat    free
+    Delete All Product In Cart
+    GoTo Lv D    ${robot_store1_instock_type_new}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    Execute Javascript    ${shipping_ems}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    ฟรี
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 0
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04148
+    [Documentation]    Shipping cost : westore NonEMS - เหมา - ฟรี
+    Set Shipping Type    postflat    free
+    Delete All Product In Cart
+    GoTo Lv D    ${robot_store1_instock_type_new}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select POST ##
+    Sleep    1
+    Execute Javascript    ${shipping_post}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    ฟรี
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 0
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04149
+    [Documentation]    Shipping cost : westore EMS - เหมา - ไม่ฟรี
+    Set Shipping Type    emsflat    50
+    Delete All Product In Cart
+    GoTo Lv D    ${robot_store1_instock_type_new}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select EMS ##
+    Sleep    1
+    Execute Javascript    ${shipping_ems}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    50.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 50
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04150
+    [Documentation]    Shipping cost : westore Non EMS - เหมา - ไม่ฟรี
+    Set Shipping Type    postflat    ${EMPTY}    35
+    Delete All Product In Cart
+    GoTo Lv D    ${robot_store1_instock_type_new}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select POST ##
+    Sleep    1
+    Execute Javascript    ${shipping_post}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    35.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 35
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04151
+    [Documentation]    Shipping cost : westore EMS - น้ำหนักรวม - ช่วงน้ำหนัก
+    Set Shipping Type    emsweight    ${EMPTY}    40
+    Capture Page Screenshot
+    Delete All Product In Cart
+    GoTo Lv D    ${buyer_product_chk_102}
+    Selected Attribute    สี    แดง
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select EMS ##
+    Sleep    1
+    Execute Javascript    ${shipping_ems}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    40.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 40
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04152
+    [Documentation]    Shipping cost : westore Non EMS - น้ำหนักรวม - ช่วงน้ำหนัก
+    Set Shipping Type    postweight    ${EMPTY}    30
+    Delete All Product In Cart
+    GoTo Lv D    ${buyer_product_chk_102}
+    Selected Attribute    สี    ดำ
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select POST ##
+    Sleep    1
+    Execute Javascript    ${shipping_post}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    30.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 30
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04153
+    [Documentation]    Shipping cost : westore EMS - น้ำหนักรวม - ขึ้นไป
+    Set Shipping Type    emsweight    ${EMPTY}    60
+    Delete All Product In Cart
+    GoTo Lv D    ${buyer_product_chk_102}
+    Selected Attribute    สี    แดง
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${continue_shopping}.click()
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_103}
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select EMS ##
+    Sleep    1
+    Execute Javascript    ${shipping_ems}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    60.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 60
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04154
+    [Documentation]    Shipping cost : westore NonEMS - น้ำหนักรวม - ขึ้นไป
+    Set Shipping Type    postweight    ${EMPTY}    50
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_102}
+    Selected Attribute    สี    ดำ
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${continue_shopping}.click()
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_103}
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select POST ##
+    Sleep    1
+    Execute Javascript    ${shipping_post}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    50.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 50
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04155
+    [Documentation]    Shipping cost : westore EMS - ราคารวม - ช่วงราคา
+    Set Shipping Type    emsprice    ${EMPTY}    50
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_102}
+    Selected Attribute    สี    ดำ
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select EMS ##
+    Sleep    1
+    Execute Javascript    ${shipping_ems}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    50.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 50
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04156
+    [Documentation]    Shipping cost : westore NonEMS - ราคารวม - ช่วงราคา
+    Set Shipping Type    postprice    ${EMPTY}    40
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_102}
+    Selected Attribute    สี    แดง
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select POST ##
+    Sleep    1
+    Execute Javascript    ${shipping_post}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    40.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 40
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04157
+    [Documentation]    Shipping cost : westore EMS - ราคารวม - ขึ้นไป
+    Set Shipping Type    emsprice    ${EMPTY}    70
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_102}
+    Selected Attribute    สี    ดำ
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${continue_shopping}.click()
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_103}
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select EMS ##
+    Sleep    1
+    Execute Javascript    ${shipping_ems}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    70.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 70
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04158
+    [Documentation]    Shipping cost : westore Non EMS - ราคารวม - ขึ้นไป
+    Set Shipping Type    postprice    ${EMPTY}    60
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_102}
+    Selected Attribute    สี    แดง
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${continue_shopping}.click()
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_103}
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select POST ##
+    Sleep    1
+    Execute Javascript    ${shipping_post}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    60.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 60
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04159
+    [Documentation]    Shipping cost : westore EMS - จำนวนสินค้ารวม - ช่วงจำนวน
+    Set Shipping Type    emsamount    ${EMPTY}    60
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_102}
+    Repeat Keyword    2 times    Execute Javascript    ${leveld_increase_js}.click()
+    Selected Attribute    สี    ดำ
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select EMS ##
+    Sleep    1
+    Execute Javascript    ${shipping_ems}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    60.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 60
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04160
+    [Documentation]    Shipping cost : westore Non EMS - จำนวนสินค้ารวม - ช่วงจำนวน
+    Set Shipping Type    postamount    ${EMPTY}    50
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_102}
+    Repeat Keyword    2 times    Execute Javascript    ${leveld_increase_js}.click()
+    Selected Attribute    สี    แดง
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select POST ##
+    Sleep    1
+    Execute Javascript    ${shipping_post}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    50.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 50
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04161
+    [Documentation]    Shipping cost : westore EMS - จำนวนสินค้ารวม - ขึ้นไป
+    Set Shipping Type    emsamount    ${EMPTY}    80
+    Delete All Product In Cart
+    GoTo Lv D    ${buyer_product_chk_102}
+    Repeat Keyword    2 times    Execute Javascript    ${leveld_increase_js}.click()
+    Selected Attribute    สี    ดำ
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${continue_shopping}.click()
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_103}
+    Repeat Keyword    2 times    Execute Javascript    ${leveld_increase_js}.click()
+    Sleep    1
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select EMS ##
+    Sleep    1
+    Execute Javascript    ${shipping_ems}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    80.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 80
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}
+
+TC_MC_04162
+    [Documentation]    Shipping cost : westore NonEMS - จำนวนสินค้ารวม - ขึ้นไป
+    Set Shipping Type    postamount    ${EMPTY}    70
+    Delete All Product In Cart
+    GoTo Lv D    ${buyer_product_chk_102}
+    Repeat Keyword    2 times    Execute Javascript    ${leveld_increase_js}.click()
+    Selected Attribute    สี    แดง
+    Sleep    1
+    Click Element    ${addtocart}
+    Execute Javascript    ${continue_shopping}.click()
+    Go to    ${URL_LEVEL_D}/${buyer_product_chk_103}
+    Repeat Keyword    2 times    Execute Javascript    ${leveld_increase_js}.click()
+    Sleep    1
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+    ## Select POST ##
+    Sleep    1
+    Execute Javascript    ${shipping_post}.click()
+    ${exclude_shipping}=    Get Amount Before
+    Element Text Should Be    ${shipping_price}    70.00 บาท
+    ${include_shipping}=    Evaluate    ${exclude_shipping} + 70
+    ${net_amount}=    Get Amount After
+    Should Be Equal    ${net_amount}    ${include_shipping}

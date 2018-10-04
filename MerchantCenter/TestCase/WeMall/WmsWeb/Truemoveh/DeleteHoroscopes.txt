@@ -1,0 +1,53 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_06071
+    [Documentation]     Can be delete horoscopes on Truemove H Horoscopes page
+    [Tags]    Regression    High
+    Go To                                   ${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}                      1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Delete Horoscope By Score               ${score_1}
+    ${target}=     Convert To String        //tr[@data-id='row_${score_1}']/td/span[@data-id="score" and text()="${score_1}"]              
+    Wait Until Element Is Not Visible       ${target}                       ${TIMEOUT}
+    Element Should Not Be Visible           ${target}     
+
+TC_MC_06072
+    [Documentation]     Can not delete horoscopes on Truemove H Horoscopes page if click cancel to delete
+    [Tags]    Medium
+    Go To                                   ${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}                      1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Wait Until Element Is Visible           //tr[@data-id='row_${score_1}']${btn_delete}
+    Click Element                           //tr[@data-id='row_${score_1}']${btn_delete}
+    Wait Until Element Is Visible           ${btn_no_delete}
+    Click Element                           ${btn_no_delete}
+    Wait Until Element Is Visible           //tr[@data-id="row_${score_1}"]
+    Element Is Visible                      //tr[@data-id="row_${score_1}"]     
+
+TC_MC_06073
+    [Documentation]   	Confirmation box is closed when user click close button at warning message
+    [Tags]    Regression    Medium
+    Go To                                   ${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}                      1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Wait Until Element Is Visible           //tr[@data-id='row_${score_1}']${btn_delete}
+    Click Element                           //tr[@data-id='row_${score_1}']${btn_delete}
+    Wait Until Element Is Visible           //a[@data-action="close"]
+    Click Element                           //a[@data-action="close"]
+    Wait Until Element Is Visible           //tr[@data-id="row_${score_1}"]
+    Element Is Visible                      //tr[@data-id="row_${score_1}"]
+
+         

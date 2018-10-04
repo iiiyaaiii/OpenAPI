@@ -1,0 +1,32 @@
+*** Variables ***
+### Data ###
+${row_star1}    2
+${row_star2}    3
+${row_star3}    4
+${row_star4}    5
+${star_1}    1
+${star_2}    2
+${star_3}    3
+${star_4}    4
+${star_5}    5
+### Locator ###
+${icon_excellent}    //i[@class="icon-excellent-l"]
+${icon_good}    //i[@class="icon-good-l"]
+${icon_fair}    //i[@class="icon-fair-l"]
+${box_rating_1}    //div[@class="box-overflow rating_select_1"]/div[2]
+${box_rating_2}    //div[@class="box-overflow rating_select_2"]/div[2]
+${box_rating_3}    //div[@class="box-overflow rating_select_3"]/div[2]
+${box_rating_4}    //div[@class="box-overflow rating_select_4"]/div[2]
+${comment_box}    //textarea[@name="comment"]
+${button_submit_feedback}    //button[@class="btn btn-feedback"]
+${feedback_excellent}    //p[@class="feedback-excellent"]
+${feedback_good}    //p[@class="feedback-good"]
+${feedback_excellent_active}    //div[@class="inner-feedback excellent active"]
+${feedback_good_active}    //div[@class="inner-feedback good active"]
+${feedback_fair_active}    //div[@class="inner-feedback fair active"]
+${input_seller_ordernum}    //*[@id="keyword"]
+${seller_feedback_search_button}    //*[@class='btn btn-mini btn-primary btn-es-search']
+${checkfeedback}    //*[@id="allorder"]/div/table/tbody/tr[1]
+${store_box_comment}    box-comments
+${text_wait_feedback_date}    //*[@id="allorder"]/div/table/tbody/tr/td[5]
+${text_comment_error}    //span[@id="comment-error"]

@@ -1,0 +1,190 @@
+*** Settings ***
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           OperatingSystem
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeMall/WebElement/Category.txt
+
+*** Variables ***
+${message_confirm_recheck}    คุณยืนยันที่จะลบหมวดหมู่ย่อยนี้ใช่หรือไม่?
+${message_error_recheck}    หมวดหมู่นี้ไม่สามารถลบได้เนื่องจากมีสินค้าอยู่\nกรุณา ย้ายสินค้าออกจากหมวดหมู่นี้ ให้หมดก่อนทำการลบ
+
+*** Keywords ***
+Genarate Category Name
+    [Documentation]    Input condition of category name
+    [Arguments]    ${title}
+    ${time}    Get Time    epoch
+    ${category_name}    Catenate    ${title} ${time}
+    Set Suite Variable    ${category_name}
+
+Verify Category Has Successfully Created
+    [Documentation]    Verify Category Has Successfully Created
+    [Arguments]    ${category_name}
+    #Go To    ${URL_STORE}/${shop_name}/admin/category
+    Common.Get shop name
+    Go To    ${URL_STORE}/${shop_name}/admin/category
+    Sleep    2s
+    ${title_top}    Execute Javascript    return $('.col-table-2').eq(2).text().trim()
+    Should Contain    ${title_top}    ${category_name}
+
+Add Category No Image
+    [Documentation]    Action add category by no image
+    [Arguments]    ${category_name}
+    Common.Get shop name
+
+    Go To    ${URL_STORE}/${shop_name}/admin/category/create
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('.row-fluid .btn-primary').click()
+    Display Alert Footer
+
+Change Status Category To Hide
+    [Documentation]    Action change status of category to hide
+    Execute Javascript    $('.checkbox-select').first().click()
+    Execute Javascript    $('#btn_hide_cat').click()
+    Click OK Alert Box V2
+
+Change Status Category To Show
+    [Documentation]    Action change status of category to show
+    Execute Javascript    $('.checkbox-select').first().click()
+    Execute Javascript    $('#btn_visible_cat').click()
+    Click OK Alert Box V2
+
+Check input value
+    [Documentation]    Check input value
+    ${check_Value}    Get Matching Xpath Count    //input[@id="title_th" and @value=""]
+    Run Keyword If    ${check_Value} == 1    Input duplicate category
+
+Input duplicate category
+    [Documentation]    Input duplicate category
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Input Text    ${input_category_name}    ${category_name}
+    Click Button Save And Display Alert    ชื่อหมวดหมู่นี้มีอยู่แล้ว
+
+Check Top Record Status Is Hide
+    [Documentation]    verify check top record of category status is hide
+    ${status}    Execute Javascript    return $("#table_report_category tbody tr:eq(0) td:eq(3), .icon-eye-hide-grey").is(':visible');
+    Return From Keyword    ${status}
+
+Check Top Record Status Is Show
+    [Documentation]    verify check top record of category status is show
+    ${status}    Execute Javascript    return $("#table_report_category tbody tr:eq(0) td:eq(3), .icon-eye-show-green").is(':visible');
+    Return From Keyword    ${status}
+
+Hide Category Have Product
+    [Documentation]    Hide Category Have Product to used
+    [Arguments]    ${category}
+    Common.Get shop name
+    Go To    ${URL_STORE}/${shop_name}/admin/category
+    Search By Keyword Found Result    ${category}
+    Change Status Category To Hide
+    Sleep    2s
+    Check Top Record Status Is Hide
+    Sleep    4s
+
+Show Category Have Product
+    [Documentation]    Show Category Have Product to used
+    [Arguments]    ${category}
+    Common.Get shop name
+    Go To    ${URL_STORE}/${shop_name}/admin/category
+    Search By Keyword Found Result    ${category}
+    Change Status Category To Show
+    Sleep    2s
+    Check Top Record Status Is Show
+    Sleep    4s
+
+Verify image without save
+    [Documentation]    Action Verify image without save
+    Click Element    //a[contains(.,'${category_name}')]
+    Wait Until Page Contains    แบนเนอร์ประจำหมวดหมู่
+    Element Should Not Be Visible    ${img_over3M}
+
+Search By Keyword Found Result
+    [Documentation]    Search By Keyword Found Result
+    [Arguments]    ${keyword}
+    Input Text    ${input_keyword}    ${keyword}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    1s
+    ${title_cat}    Execute Javascript    return $("ul.tb-body-list li:first div.cat-lv1 div.col-table-2 a").text()
+    ${title_cat_str}    Convert To String    ${title_cat}
+    Should Contain    ${title_cat_str}    ${keyword}
+
+Click OK Alert Box V2
+    # Sleep    1s
+    ${msg_alert}    Execute Javascript    return $('#modal-confirm .modal-body .modal-desc-box .text-left').text()
+    Execute Javascript    $('#modal-confirm .btn-primary').click()
+    #Sleep    3s
+    ${msg_alert}    Execute Javascript    return $('.notify').text()
+
+Click Cancel Alert Box V2
+    #Sleep    1s
+    ${msg_alert}    Execute Javascript    return $('#modal-confirm .modal-body .modal-desc-box .text-left').text()
+    Execute Javascript    $('#modal-confirm .btn-default').click()
+    #Sleep    3s
+    ${msg_alert}    Execute Javascript    return $('.notify').text()
+
+Click Button Save And New
+    [Documentation]    Click button save and can new
+    Execute Javascript    $('.row-fluid .btn-success').click()
+
+
+Add SubCategory NoteBookBag
+    [Documentation]    Add SubCategory NoteBookBag
+    Sleep    2s
+    Press Key    //input[@id='search']    กระเป๋าเอกสาร
+    Press Key    //input[@id='search']    \\13
+    Sleep    2s
+    Execute Javascript    $('ul.tb-body-list li > div.cat-lv1 > div.col-table-2 > a')[0].click()
+    Sleep    2s
+    Execute Javascript    $('a#subcategory_alter_add')[0].click()
+    Press Key    //input[@id='input-name']    กระเป๋าโน๊ตบุ๊ค
+    Execute Javascript    $('button#btn_create_cat').click()
+    Sleep    2s
+    Execute Javascript    $("#input_shop_category select option").filter(function(){ return this.text == 'กระเป๋าเอกสาร'; }).attr('selected', true).change();
+    Execute Javascript    $("select#shop_sub_category option").filter(function(){ return this.text == 'กระเป๋าโน๊ตบุ๊ค'; }).attr('selected', true).change();
+
+Go To Admin Category Page
+    [Arguments]    ${category_name}
+    Go To    ${URL_STORE}/${category_name}/admin/category
+
+Go To Edit Category
+    [Arguments]    ${category_name}    ${id}
+    Go To    ${URL_STORE}/${category_name}/admin/category/edit/${id}
+
+Click Delete Sub Category
+    Wait Until Element Is Visible    ${btn_delete_subcategory}
+    Click Element    ${btn_delete_subcategory}
+
+Add Sub Category
+    Click Element    id=subcategory_alter_add
+    Input Text    //input[@class="form-control sub_category"]    Temp sub category
+    Click Element    ${btn_save}
+
+Verify Confirm Delete
+    Wait Until Element Is Visible    ${fre_confirm_delete}
+    ${message_confirm}    Get Text    ${dlg_confirm_delete}
+    Should Contain    ${message_confirm}    ${message_confirm_recheck}
+
+Search Category At Admin Page
+    [Arguments]    ${categoryname}
+    Input Text    search    ${categoryname}
+    Click Element    ${btn_search}
+
+Select Main Category
+    Click Element    ${ddl_select_category}
+    Wait Until Element Is Visible    ${btn_delete_maincategory}
+
+Select Sub Category
+    Click Element    ${chk_category}
+    Click Element    ${ddl_select_sub_category}
+
+Click Delete Category
+    Click Element    ${btn_delete_maincategory}
+
+Verify Delete Category
+    Wait Until Element Is Visible    ${frm_delete_error}
+    ${message_error}    Get Text    ${dlg_error_delete}
+    Should Contain    ${message_error}    ${message_error_recheck}
+
+
+
+

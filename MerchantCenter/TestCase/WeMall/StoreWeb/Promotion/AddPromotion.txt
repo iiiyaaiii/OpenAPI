@@ -1,0 +1,322 @@
+*** Setting ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+Force Tags        Store-Web
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Backend_Sellerpromotion.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Backend_Promotion.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Case ***
+TC_MC_01681
+    [Documentation]    Add Promotion - Verify require information on add promotion.
+    [Tags]    Regression    Medium
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    1s
+    ${placeholder}    Execute Javascript    return $("input.span12").attr('placeholder');
+    ${error_1}    Execute Javascript    return $('.error .help-inline').eq(0).text().trim();
+    ${error_2}    Execute Javascript    return $('.error .help-inline').eq(1).text().trim();
+    Should Contain    ${placeholder}    ชื่อโปรโมชั่นความยาวไม่เกิน 80    ตัวอักษร เช่น โปรโมชั่นส่งความสุขเทศกาลปีใหม่ (New Year Value Sale)
+    Should Be Equal    ${error_1}    กรุณากรอกชื่อโปรโมชั่น
+    Should Be Equal    ${error_2}    กรุณาเลือกประเภทส่วนลด
+    Execute Javascript    $("select[name='discount_type']").val('percent').change();
+    Sleep    1s
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    1s
+    ${placeholder}    Execute Javascript    return $("input.span12").attr('placeholder');
+    ${error_1}    Execute Javascript    return $('.error .help-inline').eq(0).text().trim();
+    ${error_2}    Execute Javascript    return $('.error .help-inline').eq(1).text().trim();
+    ${error_3}    Execute Javascript    return $('.error .help-inline').eq(4).text().trim();
+    ${error_4}    Execute Javascript    return $('.error .help-inline').eq(7).text().trim();
+    ${error_5}    Execute Javascript    return $('.error .help-inline').eq(9).text().trim();
+    Should Contain    ${placeholder}    ชื่อโปรโมชั่นความยาวไม่เกิน 80    ตัวอักษร เช่น โปรโมชั่นส่งความสุขเทศกาลปีใหม่ (New Year Value Sale)
+    Should Be Equal    ${error_1}    กรุณากรอกชื่อโปรโมชั่น
+    Should Be Equal    ${error_2}    กรุณากรอกยอดขั้นต่ำไม่เกิน 200,000 บาท
+    Should Be Equal    ${error_3}    กรุณากรอกส่วนลด
+    Should Be Equal    ${error_4}    กรุณากรอกส่วนลดสูงสุด
+    Sleep    1s
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.btn-primary').click();
+    ${placeholder}    Execute Javascript    return $("input.span12").attr('placeholder');
+    ${error_1}    Execute Javascript    return $('.error .help-inline').eq(0).text().trim();
+    ${error_2}    Execute Javascript    return $('.error .help-inline').eq(1).text().trim();
+    ${error_3}    Execute Javascript    return $('.error .help-inline').eq(4).text().trim();
+    Should Contain    ${placeholder}    ชื่อโปรโมชั่นความยาวไม่เกิน 80    ตัวอักษร เช่น โปรโมชั่นส่งความสุขเทศกาลปีใหม่ (New Year Value Sale)
+    Should Be Equal    ${error_1}    กรุณากรอกชื่อโปรโมชั่น
+    Should Be Equal    ${error_2}    กรุณากรอกยอดขั้นต่ำไม่เกิน 200,000 บาท
+    Should Be Equal    ${error_3}    กรุณากรอกส่วนลด
+
+TC_MC_01683
+    [Documentation]    Check validate field. Incase input invalid format.
+    [Tags]    Regression    Low
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $('.btn-primary').click();
+    Press Key    //input[@ng-model="formData.title"]    test1111111111111111111111111111111111111111111111111111111111111111111111111234
+    #Execute Javascript    $("input.span12").val('test111111111111111111111111111111111111111111111111111111111111111111111111')
+    ${value}    Execute Javascript    return $("input.span12").eq(0).val();
+    Should Be Equal    ${value}    test1111111111111111111111111111111111111111111111111111111111111111111111111234
+    Sleep    3s
+    Execute Javascript    $("select[name='discount_type']").val('percent').change();
+    Sleep    1s
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    1s
+    Execute Javascript    $('.input-mini').eq(0).val('500.55').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(0).val();
+    Should Be Equal    ${value}    500.55
+    Execute Javascript    $('.input-mini').eq(0).val('1999999').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(0).val();
+    Should Be Equal    ${value}    199999
+    Execute Javascript    $('.input-mini').eq(0).val('200001').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(0).val();
+    Should Be Equal    ${value}    200001
+    Execute Javascript    $('.input-mini').eq(0).val('aaa').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(0).val();
+    Should Be Equal    ${value}    ${EMPTY}
+    Execute Javascript    $('.input-mini').eq(0).val('ทดสอบ').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(0).val();
+    Should Be Equal    ${value}    ${EMPTY}
+    Execute Javascript    $('.input-mini').eq(0).val('5%').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(0).val();
+    Should Be Equal    ${value}    5
+    Execute Javascript    $('.input-mini').eq(1).val('100').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(1).val();
+    Should Be Equal    ${value}    10
+    Execute Javascript    $('.input-mini').eq(1).val('1111').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(1).val();
+    Should Be Equal    ${value}    11
+    Execute Javascript    $('.input-mini').eq(1).val('50.99').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(1).val();
+    Should Be Equal    ${value}    50
+    Execute Javascript    $('.input-mini').eq(1).val('0').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(1).val();
+    Should Be Equal    ${value}    ${EMPTY}
+    Execute Javascript    $('.input-mini').eq(1).val('5%').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(1).val();
+    Should Be Equal    ${value}    5
+    Execute Javascript    $('.input-mini').eq(2).val('500.55').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(2).val();
+    Should Be Equal    ${value}    500.55
+    Execute Javascript    $('.input-mini').eq(2).val('1999999').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(2).val();
+    Should Be Equal    ${value}    199999
+    Execute Javascript    $('.input-mini').eq(2).val('200001').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(2).val();
+    Should Be Equal    ${value}    200001
+    Execute Javascript    $('.input-mini').eq(2).val('aaa').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(2).val();
+    Should Be Equal    ${value}    ${EMPTY}
+    Execute Javascript    $('.input-mini').eq(2).val('ทดสอบ').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(2).val();
+    Should Be Equal    ${value}    ${EMPTY}
+    Execute Javascript    $('.input-mini').eq(2).val('5%').trigger('input');
+    ${value}    Execute Javascript    return $('.input-mini').eq(2).val();
+    Should Be Equal    ${value}    5
+
+TC_MC_01685
+    [Documentation]    Verify add promotion type "discount baht".
+    [Tags]    Regression    High
+    ${check_promotion_type}    Check Have Promotion    Promotion discount baht
+    Run Keyword IF    '${check_promotion_type}' == '1'    Delete Promotion    Promotion discount baht
+    ${check_promotion_type}    Check Have Promotion    Promotion discount baht
+    Run Keyword IF    '${check_promotion_type}' == '0'    Add Promotion Without Product Type Baht    Promotion discount baht
+
+TC_MC_01687
+    [Documentation]    Verify add promotion type "discount baht". Incase input discount rate more than total order price.
+    [Tags]    Regression    Medium
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $("input.span12").val('Promotion B').trigger('input');
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 3 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.input-mini').eq(0).val('500').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('600').trigger('input');
+    Execute Javascript    $('.btn-primary').click();
+    ${text}    Execute Javascript    return $('.error .help-inline').eq(1).text().trim();
+    Should Contain    ${text}    ส่วนลดจะต้องน้อยกว่า ซื้อครบ(บาท)
+    Execute Javascript    $('.input-mini').eq(0).val('1001').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('9999').trigger('input');
+    Execute Javascript    $('.btn-primary').click();
+    ${text}    Execute Javascript    return $('.error .help-inline').eq(1).text().trim();
+    Should Contain    ${text}    ส่วนลดจะต้องน้อยกว่า ซื้อครบ(บาท)
+    Execute Javascript    $('.input-mini').eq(0).val('3000').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('3000').trigger('input');
+    Execute Javascript    $('.btn-primary').click();
+    ${text}    Execute Javascript    return $('.error .help-inline').eq(1).text().trim();
+    Should Contain    ${text}    ส่วนลดจะต้องน้อยกว่า ซื้อครบ(บาท)
+    Execute Javascript    $('.input-mini').eq(0).val('5888').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('5889').trigger('input');
+    Execute Javascript    $('.btn-primary').click();
+    ${text}    Execute Javascript    return $('.error .help-inline').eq(1).text().trim();
+    Should Contain    ${text}    ส่วนลดจะต้องน้อยกว่า ซื้อครบ(บาท)
+
+TC_MC_01689
+    [Documentation]    Verify add promotion type "discount %".
+    [Tags]    Regression    High
+    ${check_promotion_type}    Check Have Promotion    Promotion discount Percent
+    Run Keyword IF    '${check_promotion_type}' == '1'    Delete Promotion    Promotion discount Percent
+    ${check_promotion_type}    Check Have Promotion    Promotion discount Percent
+    Run Keyword IF    '${check_promotion_type}' == '0'    Add Promotion Without Product Type Percent    Promotion discount Percent
+
+TC_MC_01691
+    [Documentation]    Verify add promotion discount type %. Incase input max rate discount more than total order price.
+    [Tags]    Regression    High
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $("input.span12").val('Promotion discount Percent2').trigger('input');
+    Execute Javascript    $("select[name='discount_type']").val('percent').change();
+    Execute Javascript    $('.input-mini').eq(0).val('500').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('10').trigger('input');
+    Execute Javascript    $('.input-mini').eq(2).val('600').trigger('input');
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 3 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    ${textcheck}    Catenate    ${hh}:${ii}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+    Input Text    //*[@id="search"]    Promotion discount Percent2
+    Execute Javascript    $(':contains("ค้นหา")').click()
+    Sleep    3s
+    ${textdate}    Execute Javascript    return $(".end-pro-box").eq(0).text().trim();
+    Should Contain    ${textdate}    ${textcheck}
+    ${value}    Execute Javascript    return $(".promotion-desc").eq(0).text().trim();
+    Should Be Equal    ${value}    ซื้อสินค้าตั้งแต่ 500 บาทขึ้นไป ลดเพิ่ม 10% ลดสูงสุดไม่เกิน 600 บาท
+    Sleep    3s
+    Delete Promotion    Promotion discount Percent2
+
+#TC_WLS_00573
+#    [Documentation]    Verify add promotion    เอาไว้ใช้รัน create promotion อย่างเดียว
+#    [Tags]    Low
+#    Repeat Keyword    20 times    Create seller promotion
+
+TC_MC_01693
+    [Documentation]    Verify add product to join promotion. Incase user select All product.
+    #    Go To Manage Product On Row Title    Promotion discount baht
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $("input.span12").val('Promotion Percent AllProduct').trigger('input');
+    Execute Javascript    $("select[name='discount_type']").val('percent').change();
+    Execute Javascript    $('.input-mini').eq(0).val('500').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('10').trigger('input');
+    Execute Javascript    $('.input-mini').eq(2).val('100').trigger('input');
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 3 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    ${textcheck}    Catenate    ${hh}:${ii}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Click Element    ${select_type_all}
+    Click Element    ${save_on_top}
+    Execute Javascript    $('#alertbefore-submit [type="reset"]').click()
+    Sleep    2s
+    Click Element    ${save_on_top}
+    Execute Javascript    $('button:contains(ยืนยัน)')[0].click()
+    Sleep    5s
+    ${breadcrumbs_title}    Execute Javascript    return $('#breadcrumbs li:last-child').text().trim()
+    Should Be Equal    ${breadcrumbs_title}    เลือกสินค้าไฮไลท์
+
+TC_MC_01699
+    [Documentation]    Verify add product to join promotion. Incase user select product by category.
+    [Tags]    Regression    High
+    #Go To Manage Product On Row Title    Promotion C
+    # select type category
+    ${check_promotion_type}    Check Have Promotion    Promotion Percent by category
+    Run Keyword IF    '${check_promotion_type}' == '1'    Delete Promotion    Promotion Percent by category
+    ${check_promotion_type}    Check Have Promotion    Promotion Percent by category
+    Run Keyword IF    '${check_promotion_type}' == '0'    Add Promotion Percent By Category
+
+TC_MC_01705
+    [Documentation]    Verify add product to join promotion. Incase user select product by item.
+    [Tags]    Regression    High
+    #Go To Manage Product On Row Title    Promotion C
+    # select type category
+    ${check_promotion_type}    Check Have Promotion    Promotion Percent by item
+    Run Keyword IF    '${check_promotion_type}' == '1'    Delete Promotion    Promotion Percent by item
+    ${check_promotion_type}    Check Have Promotion    Promotion Percent by item
+    Run Keyword IF    '${check_promotion_type}' == '0'    Add Promotion Percent By Item
+
+TC_MC_01723
+    [Documentation]    Verify add promotion. Verify date promotion incase end date more than start date
+    [Tags]    Regression    Medium
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $("input.span12").val('Promotion A').trigger('input');
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('500').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('100').trigger('input');
+    Input Text    period    2017-02-24 23:59:00 - 2017-02-24 23:59:00
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    ${value}    Execute Javascript    return $("#notify-msg").text().trim();
+    Should Be Equal    ${value}    วันที่และเวลาสิ้นสุดโปรโมชั่น ต้องมากกว่า วันเริ่มโปรโมชั่น
+
+TC_MC_01725
+    [Documentation]    Verify add product to join promotion. Incase user select product by item.[sorting by keyword of product name]
+    [Tags]    Regression    Low    mock
+    Sleep    2
+    ${count_data}=    Execute Javascript    return $('.checkbox-select').length
+    Run Keyword If    ${count_data} == 0    Pass Execution    No Data
+    Run Keyword If    ${count_data} > 0    Execute Javascript    $('div.promotion-manage-menu span a')[0].click()
+    ${checked}=    Execute Javascript    return $("[name='source_products']").prop('checked')
+    Run Keyword If    ${checked} == False    Execute Javascript    $("[name='source_products']").prop('checked', true)
+    Execute Javascript    ${selectproduct_cate}
+    Sleep    2
+    ## check selected
+    ${selected_item}=    Execute Javascript    return $(".sp").length
+    Run Keyword If    ${selected_item} > 0    Remove Selected Promotion Item
+    ## validate result 1
+    ${product_list}=    Execute Javascript    return $(".plist").length
+    Should Be True    ${product_list} == 20
+    Focus    ${keynameproduct}
+    Press Key    ${keynameproduct}    \\13
+    Sleep    2
+    Execute Javascript    ${selectproductall}
+    Execute Javascript    ${selectproduct_to_rigth}
+    ## validate result 2
+    ${disabled}=    Execute Javascript    return $('[check-all="products"]').prop('disabled')
+    Should Be True    ${disabled} == True
+    ${selected}=    Execute Javascript    return $(".sp").length
+    Should Be True    ${selected} >= 20
+    Execute Javascript    $(".tool-top-button button[name='save']").click()
+    ## validate result 3
+    Sleep    2
+    Wait Until Element Is Visible    //div[@id='alertbefore-submit']/div[@class='modal-body']    ${EXPECT_LOADTIME}
+    Execute Javascript    $("div#alertbefore-submit button[name='save']").click()
+    Sleep    5
+    ${product_list_hi}=    Execute Javascript    return $("input.checkbox-select").length
+    Should Be True    ${product_list_hi} == 20
+
+TC_MC_08767
+    [Documentation]    verify link redirect to level d when click product name at select product by item to join seller promotion page.
+    [Tags]    Medium
+    Backend_Promotion.Click Manage Product Seller Promotion
+    Backend_Promotion.Search Product In MangeProduct Seller Promotion Page
+    Backend_Promotion.Click Product Name In ManageProduct Seller Promotion Page
+    Backend_Promotion.Verify Seller Product Link Redirect To LevelD
+
+TC_MC_08768
+    [Documentation]    verify link redirect to level d when click product image at select product by item to join seller promotion page.
+    [Tags]    Medium
+    Backend_Promotion.Click Manage Product Seller Promotion
+    Backend_Promotion.Search Product In MangeProduct Seller Promotion Page
+    Backend_Promotion.Click Product Image In ManageProduct Seller Promotion Page
+    Backend_Promotion.Verify Seller Product Link Redirect To LevelD

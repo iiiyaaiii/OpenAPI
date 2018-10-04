@@ -1,0 +1,72 @@
+*** Keywords ***
+Verify Navigation bar
+    [Arguments]    ${Navigation}
+    Page Should Contain Element    //li[contains(.,'${Navigation}')]
+
+Verify Input Field
+    [Arguments]    ${TxtSearch}
+    Page Should Contain Element    //input[@placeholder="${TxtSearch}"]
+
+Verify Label on WordsPhrase Screen
+    Page Should Contain    * ต้องการเพิ่ม Phrase ใหม่ กรุณาใส่คำที่ต้องการเพิ่ม แล้วกดค้นหา เพื่อป้องกันการบันทึกซ้ำ
+    Page Should Contain Element    //*[@class="table-header" and contains(.,"ระบบจัดการ การเจาะจงคำค้นหา")]
+    Page Should Contain Element    //th[2][contains(.,'Words Phrase')]
+    Page Should Contain Element    //th[3][contains(.,'Action')]
+
+Verify Button on WordsPhrase Screen
+    Page Should Contain Element    ${BtnSearch}
+    Page Should Contain Element    btn_delete
+    Page Should Contain Element    ${Btn_Import}
+    Page Should Contain Element    ${Icon_Edit}
+    Page Should Contain Element    ${Icon_Delete}
+
+Input Search
+    [Arguments]    ${TxtSearch}
+    Input Text    q    ${TxtSearch}
+    Set Test Variable    ${TxtSearch}    ${TxtSearch}
+
+Input Add Phrase
+    [Arguments]    ${TxtInput}
+    Input Text    ${TxtAdd}    ${TxtInput}
+
+Click Search Phrase
+    Click Element    ${BtnSearch}
+    Run Keyword If    "${TxtSearch}" == "Test"    Wait Until Element Is Visible    ${BtnCreate}
+    Run Keyword If    "${TxtSearch}" != "Test"    Wait Until Page Contains    ${TxtSearch}
+
+Click Add Phrase
+    Click Element    ${BtnCreate}
+    Wait Until Element Is Visible    ${TxtAdd}
+
+Click Save Add Phrase
+    Click Element    ${BtnSubmit}
+
+Get Data From Table
+    ${DataPhrase}    Execute Javascript    return $('tr td:eq(1) a').text().trim();
+    Set Suite Variable    ${DataPhrase}    ${DataPhrase}
+    [Return]    ${DataPhrase}
+
+Verify Search Result
+    Page Should Contain Element    //tr[1]//a[contains(.,'${DataPhrase}')]
+
+Click Edit Phrase
+    [Arguments]    ${TxtEdit}
+    Click Element    ${Icon_Edit}
+    Wait Until Element Is Visible    //input[@value="${TxtEdit}"]
+
+Input Edit Phrase
+    [Arguments]    ${TxtEdit}
+    Input Text    //div[contains(.,'Phrase')]/input    ${TxtEdit}
+
+Click Save Edit Phrase
+    Click Element    ${BtnSave}
+
+Click Delete Phrase
+    Click Element    ${Icon_Delete}
+    Sleep    1s
+    Confirm Action
+
+Verify Phrase On List
+    [Arguments]    ${TxtVerify}
+    Run Keyword If    "${TxtVerify}" == "None"    Page Should Not Contain    ${TxtVerify}
+    Run Keyword If    "${TxtVerify}" != "None"    Page Should Contain    ${TxtVerify}

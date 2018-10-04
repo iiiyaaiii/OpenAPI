@@ -1,0 +1,120 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Check and Reset Seller Login    ${category_shopname2}    ${category_user_002}    ${category_pwd_002}    AND    Check And Set Category    [Test]FixCategory1    [Test]FixCategory2    test123
+Test Setup        Go To    ${URL_STORE}/${category_shopname2}/admin/category
+Suite Teardown    Close Browser
+Force Tags        Store-Web    DeleteCategory    mc-wm
+Library           OperatingSystem
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Category.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Backend_Category.txt
+
+*** Variables ***
+${category_name}    [Test]FixCategory1
+
+*** Keywords ***
+Check And Set Category
+    [Arguments]    ${categoryname}    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบข้อมูล
+    Run Keyword If    ${Result} == True    Create Category    ${categoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    ${category_id}    Get Element Attribute    //*[@class="table-catlist-body"]//ul[1]//li[1]@id
+    ${category_id}    Remove String    ${category_id}    category_id_
+    Set Suite Variable    ${category_id}
+#    [return]    ${category_id}
+    Input Text    search    ${categoryname2}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบข้อมูล
+    Run Keyword If    ${Result} == True    Create category have subcate    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname2}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    ${category_id2}    Get Element Attribute    //*[@class="table-catlist-body"]//ul[1]//li[1]@id
+    ${category_id2}    Remove String    ${category_id2}    category_id_
+    Set Suite Variable    ${category_id2}
+#    [return]    ${category_id2}
+
+Create Category
+    [Arguments]    ${categoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/create
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('.row-fluid .btn-primary').click()
+    Display Alert Footer
+
+Create category have subcate
+    [Arguments]    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/create
+    Input Text    ${input_category_name}    ${categoryname2}
+    Execute Javascript    $('a#subcategory_alter_add').click()
+    Execute Javascript    $('#input-name').val('${subcategoryname}')
+    #Execute Javascript    $('#btn_select_photo').click()
+    #Choose Image From Gallery Correct2
+    #Sleep    2s
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${categoryname2}
+    Execute Javascript    $('i.icon-plus-sign-alt').click()
+
+
+*** Test Cases ***
+TC_MC_01249
+    [Documentation]    [WeMall] Verify Cancel Delete Category
+    Execute Javascript    ${check_record}.first().click();
+    #Execute Javascript    $('#btn_delete_cat').click()
+    Click Element    //button[@class="btn btn-small btn-lightwhite btn_action tooltip-info"]
+    Click Cancel Alert Box V2
+
+TC_MC_01251
+    [Documentation]    [WeMall] Verify Delete main category at campaign pages
+    Search By Keyword Found Result    กระเป๋าเอกสาร
+    Execute Javascript    ${check_record}.first().click();
+    Execute Javascript    $('#btn_delete_cat').click()
+    Click OK Alert Box V2
+
+TC_MC_01253
+    [Documentation]    [WeMall] Verify Delete main category have product
+    Add Category No Image    ForDelete
+    Go To    ${url_category_list}
+    Search By Keyword Found Result    ForDelete
+    Sleep    3s
+    Execute Javascript    ${check_all}.click()
+    Execute Javascript    $('#btn_delete_cat').click()
+    #Click Element    //button[@class="btn btn-small btn-lightwhite btn_action tooltip-info"]
+    Click OK Alert Box V2
+
+TC_MC_01325
+    [Documentation]    [WeMall] Verify Delete per sub category at category pages
+    [Tags]    Regression    Medium
+    Go To Edit Category    ${category_shopname2}    ${category_id}
+    Add Sub Category
+    Go To Edit Category    ${category_shopname2}    ${category_id}
+    Click Delete Sub Category
+    Verify Confirm Delete
+
+TC_MC_01327
+    [Documentation]    [WeMall] Verify Delete main category have sub category at category pages
+    [Tags]    Regression    Medium
+    Go To Admin Category Page    ${category_shopname2}
+    Search Category At Admin Page    ${category_name}
+    Select Main Category
+    Click Delete Category
+    Verify Delete Category
+
+TC_MC_01329
+    [Documentation]    [WeMall] Verify Delete sub category have product
+    [Tags]    Regression    Medium
+    Go To Admin Category Page    ${category_shopname2}
+    Search Category At Admin Page    ${category_name}
+    Select Sub Category
+    Click Delete Category
+    Verify Delete Category

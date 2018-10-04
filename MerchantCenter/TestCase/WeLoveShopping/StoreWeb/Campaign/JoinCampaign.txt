@@ -1,0 +1,230 @@
+*** Setting ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Force Tags        Store-Web    Ligo    Sprint2017MC8    JoinCampaign    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+
+*** Test Cases ***
+TC_MC_01889
+    [Documentation]    [Welove] To verify when select products = 5 to join campaign is limit products to join campaign = 5
+    [Tags]    High
+    Check and Reset Seller Login    ${user_s001}    ${seller_user_001}    ${seller_pwd_001}
+    Go to    ${URL_STORE}/${user_s001}/admin/campaign/${join_campaign_Fee_Zero_limit}
+    Execute Javascript    $("button[name='save']").click()
+    ${count_checked}=    Execute Javascript    return $("#table-right .checkbox-select").length
+    : FOR    ${index}    IN RANGE    ${count_checked}    5
+    \    Execute Javascript    $("#table-left .checkbox-select")[${index}].click()
+    Execute Javascript    $("button#add-product").click()
+    Wait Until Element Is Visible    //*[@id="btn_create"]
+    Execute Javascript    $("button#btn_create").click()
+    ## Verify Expected Result
+    Sleep    1s
+    Element Should Contain    //*[@id="page-content"]/div[2]/div[2]/div/div/div[2]/div[1]/strong    สินค้าที่ส่งเข้าร่วมแคมเปญ จำนวน 5 รายการ
+    ## Remove Product from campaign
+    Execute Javascript    $("button#btn_cancel_frm_create_cat2").click()
+    Execute Javascript    $('.btn-primary').click()
+
+TC_MC_01891
+    [Documentation]    [Welove] To verify when select products = 8 to join campaign is limit products = 5
+    [Tags]    Regression    High
+    Check and Reset Seller Login    ${user_s001}    ${seller_user_001}    ${seller_pwd_001}
+    Go to    ${URL_STORE}/${user_s001}/admin/campaign/${join_campaign_Fee_Zero_limit}
+    Click Element    ${btn_select_product_for_join_campaign}
+    ${count_checked}=    Execute Javascript    return $("#table-right .checkbox-select").length
+    : FOR    ${index}    IN RANGE    ${count_checked} + 1    8
+    \    Click Element    //table[@id="table-left"]/tbody/tr[${index}]/td[1]/label/input
+    Click Element    ${btn_select_product}
+    Wait Until Element Is Visible    ${btn_save_campaign}
+    Click Element    ${btn_save_campaign}
+    Element Should Contain    //div[@class='form-horizontal']    คุณสามารถส่งรายการสินค้าเข้าร่วมแคมเปญนี้ได้ไม่เกิน 5 ชิ้น
+    Element Should Contain    //div[@class='form-horizontal']    กรุณาตรวจสอบจำนวนรายการสินค้าของคุณ
+
+TC_MC_01892
+    [Documentation]    [Welove] To verify when select products = 10 to join campaign is No limit products (ไม่จำกัดจำนวน)
+    [Tags]    High
+    Check and Reset Seller Login    ${user_s001}    ${seller_user_001}    ${seller_pwd_001}
+    Go to    ${URL_STORE}/${user_s001}/admin/campaign/${join_campaign_id}
+    Execute Javascript    $("button[name='save']").click()
+    ${count_checked}=    Execute Javascript    return $("#table-right .checkbox-select").length
+    : FOR    ${index}    IN RANGE    ${count_checked}    10
+    \    Execute Javascript    $("#table-left .checkbox-select")[${index}].click()
+    Execute Javascript    $("button#add-product").click()
+    Wait Until Element Is Visible    //*[@id="btn_create"]
+    Execute Javascript    $("button#btn_create").click()
+    ## Verify Expected Result
+    Wait Until Element Is Visible    //*[@id="btn_cancel_frm_create_cat2"]
+    Element Should Contain    //*[@id="page-content"]/div[2]/div[2]/div/div/div[2]/div[1]/strong    สินค้าที่ส่งเข้าร่วมแคมเปญ จำนวน 10 รายการ
+    ## Remove Product from campaign
+    Execute Javascript    $("button#btn_cancel_frm_create_cat2").click()
+    Execute Javascript    $('.btn-primary').click()
+
+TC_MC_01901
+    [Documentation]    [Welove] Display detail limit % ผู้ซื้อพึงพอใจร้านค้า at campaign detail pages (กำหนด limit %) can join product to campaign
+    [Tags]    Regression    High
+    Check and Reset Seller Login    ${user_s001}    ${seller_user_001}    ${seller_pwd_001}
+    Go to    ${URL_STORE}/${user_s001}/admin/campaign/${join_campaign_id}
+    Element Should Be Visible    ${btn_select_product_for_join_campaign}
+    Click Element    ${btn_select_product_for_join_campaign}
+    ${count_checked}=    Execute Javascript    return $("#table-right .checkbox-select").length
+    : FOR    ${index}    IN RANGE    ${count_checked} + 1    3
+    \    Click Element    //table[@id="table-left"]/tbody/tr[${index}]/td[1]/label/input
+    Click Element    ${btn_save_campaign}
+
+TC_MC_01902
+    [Documentation]    [Welove] Display detail limit % ผู้ซื้อพึงพอใจร้านค้า at campaign detail pages (กำหนด limit %) cannot join product to campaign
+    [Tags]    Regression    High
+    Check and Reset Seller Login    ${user_s001}    ${seller_user_001}    ${seller_pwd_001}
+    Go to    ${URL_STORE}/${user_s001}/admin/campaign/${join_campaign_id_limit}
+    Element Should Contain    //*[@id="page-content"]/div[2]/div[2]/div/div/div[3]    ขออภัยค่ะ ร้านค้าของคุณไม่ตรงกับเงื่อนไขที่กำหนด
+    Element Should Not Be Visible    //*[@id="btn_create_cat2"]
+
+TC_MC_01903
+    [Documentation]    [Welove] Display detail limit % ผู้ซื้อพึงพอใจร้านค้า at campaign detail pages (ไม่กำหนด limit %)
+    [Tags]    Regression    High
+    Check and Reset Seller Login    ${user_s001}    ${seller_user_001}    ${seller_pwd_001}
+    Go to    ${URL_STORE}/${user_s001}/admin/campaign/${join_campaign_id}
+    Element Should Be Visible    ${btn_select_product_for_join_campaign}
+    Click Element    ${btn_select_product_for_join_campaign}
+    ${count_checked}=    Execute Javascript    return $("#table-right .checkbox-select").length
+    : FOR    ${index}    IN RANGE    ${count_checked} + 1    1
+    \    Click Element    //table[@id="table-left"]/tbody/tr[${index}]/td[1]/label/input
+    Click Element    ${btn_save_campaign}
+
+TC_MC_01904
+    [Documentation]    [Welove] Seller join product already and then admin edit limit %
+    [Tags]    Regression    High
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Select Radio Button    has_feedback_limit    1
+    Input Text    //input[@id="percent_limit_min"]    0
+    Input Text    //input[@id="percent_limit_max"]    100
+    Click Button Submit Campaign
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${user_s001}    ${seller_user_001}    ${seller_pwd_001}
+    Go to    ${URL_STORE}/${user_s001}/admin/campaign/${join_campaign_id_limit}
+    ${selected_count_text}    Execute Javascript    return $('#page-content > div.widget-box > div.widget-body > div > div > div.content-box:contains("ร้านค้าเปิดใหม่ที่ยังไม่เคยได้รับคะแนนความพึงพอใจ")').length
+    Should Be True    '${selected_count_text}' > 0
+    Execute Javascript    $("button[name='save']").click()
+    Sleep    2
+    ${count_checked}=    Execute Javascript    return $("#table-right .checkbox-select").length
+    : FOR    ${index}    IN RANGE    ${count_checked} + 1   3
+    \    Click Element    //table[@id="table-left"]/tbody/tr[${index}]/td[1]/label/input
+    Click Element    id=add-product
+    Click Element    id=btn_create
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Location Should Contain    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Select Radio Button    has_feedback_limit    1
+    Input Text    //input[@id="percent_limit_min"]    10
+    Input Text    //input[@id="percent_limit_max"]    50
+    ${min}    Execute Javascript    return $('#percent_limit_min').val();
+    ${max}    Execute Javascript    return $('#percent_limit_max').val();
+    Should Be True    ${min}    10
+    Should Be True    ${max}    50
+    Click Button Submit Campaign
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${user_s001}    ${seller_user_001}    ${seller_pwd_001}
+    Go to    ${URL_STORE}/${user_s001}/admin/campaign/manage/${join_campaign_id_limit}
+    ${selected_count_checked}=    Execute Javascript    return $("#table-right .checkbox-select").length
+    Should Be True    '${selected_count_checked}' != 0
+    Execute JavaScript    $('.icon-trash').eq(0).click()
+    Sleep    2s
+    Click Element    ${btn_save_campaign}
+    Go to    ${URL_STORE}/${user_s001}/admin/campaign/status/${join_campaign_id_limit}
+    Execute JavaScript    $('#btn_cancel_frm_create_cat2').click();
+    Sleep    2s
+    Execute JavaScript    $('div.modal-footer > a.btn.btn-primary').eq(0).click()
+    Sleep    3s
+    Location Should Contain    ${URL_STORE}/${user_s001}/admin/campaign/my
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Select Radio Button    has_feedback_limit    1
+    Input Text    //input[@id="percent_limit_min"]    50
+    Input Text    //input[@id="percent_limit_max"]    80
+    Click Button Submit Campaign
+
+TC_MC_01907
+    [Documentation]    [Welove] Seller new store join to join campaign (select ร้านค้าใหม่สามารถเข้าร่วมแคมเปญนี้ได้)
+    [Tags]    Regression    High
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Execute JavaScript    $('#percent_limit_2').prop("checked", true).click();
+    Execute JavaScript    $('#percent_limit_min').val('10')
+    Execute JavaScript    $('#percent_limit_max').val('100')
+    Execute JavaScript    $('input[name=allow_not_feedback]').prop( "checked" ,"checked")
+    Click Button Submit Campaign
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${user_s004}    ${seller_user_004}    ${seller_pwd_004}
+    Go to    ${URL_STORE}/${user_s004}/admin/campaign/${join_campaign_id_limit}
+    ${selected_count_text}    Execute Javascript    return $('#page-content > div.widget-box > div.widget-body > div > div > div.content-box:contains("ร้านค้าเปิดใหม่ที่ยังไม่เคยได้รับคะแนนความพึงพอใจ")').length
+    Should Be True    '${selected_count_text}' > 0
+    Execute Javascript    $("button[name='save']").click()
+    Sleep    2s
+    ${count_checked}=    Execute Javascript    return $("#table-right .checkbox-select").length
+    : FOR    ${index}    IN RANGE    ${count_checked}    2
+    \    Execute Javascript    $("#table-left .checkbox-select")[${index}].click()
+    Execute Javascript    $("button#add-product").click()
+    Sleep    2s
+    Execute Javascript    $("button#btn_create").click()
+    Sleep    2s
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Location Should Contain    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Execute JavaScript   $('#percent_limit_2').prop("checked", true).click();
+    Execute JavaScript    $('#percent_limit_min').val('10')
+    Execute JavaScript    $('#percent_limit_max').val('50')
+    ${min}    Execute Javascript    return $('#percent_limit_min').val();
+    ${max}    Execute Javascript    return $('#percent_limit_max').val();
+    Should Be True    ${min}    10
+    Should Be True    ${max}    50
+    Click Button Submit Campaign
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${user_s004}    ${seller_user_004}    ${seller_pwd_004}
+    Go to    ${URL_STORE}/${user_s004}/admin/campaign/manage/${join_campaign_id_limit}
+    ${selected_count_checked}=    Execute Javascript    return $("#table-right .checkbox-select").length
+    Should Be True    '${selected_count_checked}' != 0
+    Execute JavaScript    $('.icon-trash').eq(0).click()
+    Sleep    2s
+    Click Element    ${btn_save_campaign}
+    Go to    ${URL_STORE}/${user_s004}/admin/campaign/status/${join_campaign_id_limit}
+    Execute JavaScript    $('#btn_cancel_frm_create_cat2').click();
+    Sleep    2s
+    Execute JavaScript    $('div.modal-footer > a.btn.btn-primary').eq(0).click()
+    Sleep    3s
+    Location Should Contain    ${URL_STORE}/${user_s004}/admin/campaign/my
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Execute JavaScript    $('#percent_limit_2').prop("checked", true).click();
+    Execute JavaScript    $('#percent_limit_min').val('50')
+    Execute JavaScript    $('#percent_limit_max').val('80')
+    Execute JavaScript    $('input[name=allow_not_feedback]:checked').prop('checked',false)
+    Click Button Submit Campaign
+
+TC_MC_01908
+    [Documentation]    [Welove] Seller new store join to join campaign (not select ร้านค้าใหม่สามารถเข้าร่วมแคมเปญนี้ได้)
+    [Tags]    Regression    High
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Execute JavaScript    $('#percent_limit_2').prop("checked", true).click();
+    Execute JavaScript    $('#percent_limit_min').val('0')
+    Execute JavaScript    $('#percent_limit_max').val('100')
+    Execute JavaScript    $('input[name=allow_not_feedback]').prop( "checked" ,false)
+    Click Button Submit Campaign
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${user_s004}    ${seller_user_004}    ${seller_pwd_004}
+    Go to    ${URL_STORE}/${user_s004}/admin/campaign/${join_campaign_id_limit}
+    Element Should Contain    //*[@id="page-content"]/div[2]/div[2]/div/div/div[3]    ขออภัยค่ะ ร้านค้าของคุณไม่ตรงกับเงื่อนไขที่กำหนด
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_limit}
+    Execute JavaScript    $('#percent_limit_2').prop("checked", true).click();
+    Execute JavaScript    $('#percent_limit_min').val('50')
+    Execute JavaScript    $('#percent_limit_max').val('80')
+    Execute JavaScript    $('input[name=allow_not_feedback]:checked').prop('checked',false)
+    Click Button Submit Campaign

@@ -1,0 +1,194 @@
+*** Settings ***
+Suite Setup       Account Login    ${buyer_account}    ${buyer_account_pass}
+Suite Teardown    Close All Browsers
+Force Tags        Account-Web    Member    StoreRegister    Ligo    mc-wls
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignUp.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_StoreRegister.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Variables ***
+${shopname1}    WLSAutomate02
+${less_characters}    tes
+${existing_characters}    takkyshop
+${special_characters}    111@
+${alphabetic_characters}    AAAA
+${availability_characters}    testqa
+${message_less_characters}    ข้อมูลไม่ถูกต้อง ต้องมีอย่างน้อย 4 ตัวอักษร
+${message_existing_characters}    URL นี้ถูกใช้งานแล้ว
+${message_special_characters}    รูปแบบ URL ไม่ถูกต้อง
+${message_alphabetic_characters}    กรอกชื่อ URL ร้านค้าเป็นตัวอักษรภาษาอังกฤษพิมพ์เล็กเท่านั้น
+${message_availability_characters}    พร้อมใช้งาน
+${message_remark}    ตัวอักษรภาษาอังกฤษพิมพ์เล็ก ความยาว 4-20 ตัวอักษร, อักขระพิเศษใส่ได้เฉพาะ _ หรือ – เท่านั้น URL ร้านค้านี้ไม่สามารถเปลี่ยนแปลงได้ในภายหลัง
+
+*** Test Cases ***
+TC_MC_00252
+    [Documentation]    Verify register shop. Incase doesn't enter required field.
+    [Tags]    Regression    Sprint2017MC6    High
+    Go To    ${url_register_shop}
+    Wait Until Element Is Visible    ${owner_name}
+    Clear Element Text    ${shop_phone}
+    Accept Term Condition
+    Sleep    2s
+    Click Button    ${btn_register_shop}
+    Element Should Contain    ${error_owner_name}    กรุณากรอกชื่อ
+    Element Should Contain    ${error_owner_surname}    กรุณากรอกนามสกุล
+    Element Should Contain    ${error_owner_idcard}    กรุณากรอกหมายเลขบัตรประชาชน
+    Element Should Not Be Visible    ${img_upload}
+    Element Should Contain    ${msg_upload}    ท่านสามารถส่งเอกสารนี้ได้ภายหลัง
+    Element Should Contain    ${error_shop_category}    กรุณาเลือกหมวดหมู่ร้านค้า
+    Element Should Contain    ${error_shop_name}    กรุณากรอกชื่อร้านค้า
+    Element Should Contain    ${error_shop_url}    กรุณากรอก URL ของร้านค้า
+    Element Should Contain    ${error_shop_address}    กรุณากรอกที่อยู
+    Element Should Contain    ${error_shop_province}    กรุณาเลือกจังหวัด
+    Element Should Contain    ${error_shop_city}    กรุณาเลือกเขต / อำเภอ
+    Element Should Contain    ${error_shop_district}    กรุณาเลือกแขวง / ตำบล
+    Element Should Contain    ${error_shop_postcode}    กรุณากรอกรหัสไปรษณีย์
+    Element Should Contain    ${error_shop_phone}    กรุณากรอกเบอร์โทรศัพท์มือถือ
+
+TC_MC_00255
+    [Documentation]    Verify register shop. The Validation Personal ID.
+    [Tags]    Regression    Sprint2017MC6    High
+    Set Selenium Speed    1
+    Go To    ${url_register_shop}
+    Wait Until Element Is Visible    ${owner_name}
+    Input Text    ${owner_idcard}    Test!@#$%
+    Accept Term Condition
+    Sleep    2s
+    Click Button    ${btn_register_shop}
+    Run Keyword And Continue On Failure    Element Should Contain    ${error_owner_idcard}    The idcard must be digits.
+    #กรุณากรอกหมายเลขบัตรประชาชนเป็นตัวเลขเท่านั้น
+    Input Text    ${owner_idcard}    1234567890&^$'
+    #    Accept Term Condition
+    Sleep    2s
+    Click Button    ${btn_register_shop}
+    Run Keyword And Continue On Failure    Element Should Contain    ${error_owner_idcard}    The idcard must be digits.
+    #กรุณากรอกหมายเลขบัตรประชาชนเป็นตัวเลขเท่านั้น
+    Input Text    ${owner_idcard}    1234567890
+    #    Accept Term Condition
+    Sleep    2s
+    Click Button    ${btn_register_shop}
+    Run Keyword And Continue On Failure    Element Should Contain    ${error_owner_idcard}    กรุณากรอกหมายเลขบัตรประชาชน 13 หลัก
+    Input Text    ${owner_idcard}    12345678901231
+    #    Accept Term Condition
+    Sleep    2s
+    Click Button    ${btn_register_shop}
+    Element Should Contain    ${error_owner_idcard}    กรุณากรอกหมายเลขบัตรประชาชน 13 หลัก
+
+TC_MC_00256
+    [Documentation]    Verify register shop. Incase upload file type is not supported.
+    [Tags]    Regression    Sprint2017MC6    High
+    Go To    ${url_register_shop}
+    Wait Until Element Is Visible    ${owner_name}
+   	Upload Image To Gallery    image_hack.jpg    id=DocFile
+    Sleep    1s
+    Element Should Be Visible    ${img_upload}
+
+TC_MC_00258
+    [Documentation]    Verify register shop. Incase upload image correct. (.jpg/.git/.png/.pdf)
+    [Tags]    Regression    Sprint2017MC6    High
+    Go To    ${url_register_shop}
+    Wait Until Element Is Visible    ${owner_name}
+    Upload Image To Gallery    logo_mi6_seller_3.jpg    id=DocFile
+    Sleep    1s
+    Element Should Be Visible    ${img_upload}
+
+TC_MC_00260
+    [Documentation]    Verify register shop. Incase enter existing shop name.
+    [Tags]    Regression    Sprint2017MC6    High
+    Go To    ${url_register_shop}
+    Wait Until Element Is Visible    ${owner_name}
+    ${curren_time}=    Get Time    epoch
+    ${username}    Catenate    wlsautomate${curren_time}@mailinator.Common
+    Input Text    ${owner_name}    wls
+    Input Text    ${owner_surname}    automate
+    Input Text    ${owner_idcard}    1212121212121
+    Input Text    ${shop_name}    TakkyShop
+    Select From List By Label    ${shop_category}    แฟชั่น
+    Input Text    ${shop_url}    wlsautomate${curren_time}
+    Input Text    ${shop_address}    123Test
+    Select From List By Label    ${shop_province}    กรุงเทพมหานคร
+    Sleep    2s
+    Select From List By Label    ${shop_city}    จตุจักร
+    Sleep    2s
+    Select From List By Label    ${shop_district}    จอมพล
+    Input Text    ${shop_postcode}    10900
+    Input Text    ${shop_phone}    0891234567
+    Accept Term Condition
+    Sleep    2s
+    Click Button    ${btn_register_shop}
+    ${msg_error}    Execute Javascript    return $('#s_name-msg').text()
+    Should Contain    ${msg_error}    ชื่อร้านค้านี้ถูกใช้งานแล้ว
+
+TC_MC_00261
+    [Documentation]    [Welove] Verify register shop. The Validation Shop URL incase less than 4 characters
+    [Tags]    Regression    High
+    Go To    ${url_register_shop}
+    Wait Until Element Is Visible    ${owner_name}
+    Input Text    ${shop_name}    ${shopname1}
+    Input Text    ${shop_url}    ${less_characters}
+    Click Element    ${btn_check_url_individual}
+    Element Should Contain    ${msg_error_slug}    ${message_less_characters}
+    Element Should Contain    ${txa_remark_individual}    ${message_remark}
+
+TC_MC_00262
+    [Documentation]    Verify register shop. Incase enter existing URL name.
+    [Tags]    Regression    High
+    Go To    ${url_register_shop}
+    Wait Until Element Is Visible    ${owner_name}
+    Input Text    ${shop_name}    ${shopname1}
+    Input Text    ${shop_url}    ${existing_characters}
+    Click Element    ${btn_check_url_individual}
+    Element Should Contain    ${msg_error_slug}    ${message_existing_characters}
+    Element Should Contain    ${txa_remark_individual}    ${message_remark}
+
+TC_MC_10604
+    [Documentation]    [Welove] Verify register shop. The Validation Shop URL incase special character.
+    [Tags]    Regression    High
+    Go To    ${url_register_shop}
+    Wait Until Element Is Visible    ${owner_name}
+    Input Text    ${shop_name}    ${shopname1}
+    Input Text    ${shop_url}    ${special_characters}
+    Click Element    ${btn_check_url_individual}
+    Element Should Contain    ${msg_error_slug}    ${message_special_characters}
+    Element Should Contain    ${txa_remark_individual}    ${message_remark}
+
+TC_MC_10605
+    [Documentation]    [Welove] Verify register shop. The Validation Shop URL incase alphabetic character
+    [Tags]    Regression    High
+    Go To    ${url_register_shop}
+    Wait Until Element Is Visible    ${owner_name}
+    Input Text    ${shop_name}    ${shopname1}
+    Input Text    ${shop_url}    ${alphabetic_characters}
+    Click Element    ${btn_check_url_individual}
+    Element Should Contain    ${msg_error_slug}    ${message_alphabetic_characters}
+    Element Should Contain    ${txa_remark_individual}    ${message_remark}
+
+TC_MC_10606
+    [Documentation]    [Welove] Verify register shop.  Incase URL validation Availability
+    [Tags]    Regression    High
+    Go To    ${url_register_shop}
+    Wait Until Element Is Visible    ${owner_name}
+    Input Text    ${shop_name}    ${shopname1}
+    Input Text    ${shop_url}    ${availability_characters}
+    Click Element    ${btn_check_url_individual}
+    Element Should Contain    ${msg_error_slug}    ${message_availability_characters}
+    Element Should Contain    ${txa_remark_individual}    ${message_remark}
+
+TC_MC_00270
+    [Documentation]    Verify register shop. Incase enter mobile phone is numeric less than 10 digits.
+    [Tags]    Regression    Sprint2017MC6    Medium
+    Go To    ${url_register_shop}
+    Wait Until Element Is Visible    ${owner_name}
+    Clear Element Text    ${shop_phone}
+    Input Text    ${shop_phone}    089123456
+    Input Text    ${shop_postcode}    10900
+    Sleep    2s
+    Element Should Contain    ${error_shop_phone}    กรุณากรอกเบอร์โทรศัพท์มือถือ 10 หลัก

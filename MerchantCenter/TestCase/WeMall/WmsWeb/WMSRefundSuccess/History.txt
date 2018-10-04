@@ -1,0 +1,62 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    SellerDocumentRegister    mock
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+
+*** Test Case ***
+TC_MC_04521
+    [Documentation]    [Wemall] WMWMSRefundSuccess : View refund success Menu Search
+    [Tags]    RECON2017MC12    Low    WMS-Web
+    Go to    ${URL_WMS}/orderrequestrefund
+    Element Should Contain    //div[@class="row form-group"][1]//div[@class="col-xs-2"][1]    Transfer (Bank Name)
+    Element Should Contain    //div[@class="row form-group"][1]//div[@class="col-xs-2"][2]    Last Update Doc Date
+    Element Should Contain    //div[@class="row form-group"][1]//div[@class="col-xs-2"][3]    Order ID
+    Element Should Contain    //div[@class="row form-group"][1]//div[@class="col-xs-2"][4]    Customer ID
+    Element Should Contain    //div[@class="row form-group"][1]//div[@class="col-xs-2"][5]    Order Status
+    Element Should Contain    //div[@class="row form-group"][1]//div[@class="col-xs-2"][6]    Channel
+    Element Should Contain    //div[@class="row form-group"][2]//div[@class="col-xs-2"][1]    Request Refund Date
+    Element Should Contain    //div[@class="row form-group"][2]//div[@class="col-xs-2"][2]    Accept Refund Time
+    Element Should Contain    //div[@class="row form-group"][2]//div[@class="col-xs-2"][3]    Reason Refund
+    Element Should Contain    //div[@class="row form-group"][2]//div[@class="col-xs-2"][4]    Store ID
+    Element Should Contain    //div[@class="row form-group"][2]//div[@class="col-xs-2"][5]    Admin Status
+    Element Should Contain    //div[@class="row form-group"][2]//div[@class="col-xs-2"][6]    Reject By
+    Element Should Contain    //div[@class="row form-group"][3]//div[@class="col-xs-2"][1]    Limit
+    Element Should Contain    //div[@class="row form-group"][3]//div[@class="col-xs-2"][2]    Auto/Manual Refund
+    Element Should Contain    //div[@class="row form-group"][3]//div[@class="col-xs-2"][3]    Merchant ID
+    Element Should Be Visible    //input[@value="Search"]
+    Element Should Be Visible    //a[@href="orderrequestrefund"]
+    Element Should Be Visible    //button[@id="export_excel"]
+
+TC_MC_04522
+    [Documentation]    [Wemall] WMWMSRefundSuccess : View refund success Menu Seller Accept Refund
+    [Tags]    RECON2017MC12    Low    WMS-Web
+    Go to    ${URL_WMS}/orderrequestrefund
+    Element Should Contain    //table[1]//thead//tr[1]//th[1]    Request Name
+    Element Should Contain    //table[1]//thead//tr[1]//th[2]    Transfer (Bank Name)
+    Element Should Contain    //table[1]//thead//tr[1]//th[3]    Bank Account No.
+    Element Should Contain    //table[1]//thead//tr[1]//th[4]    Last Update Doc. Date
+    Element Should Contain    //table[1]//thead//tr[1]//th[5]    Order ID
+    Element Should Contain    //table[1]//thead//tr[1]//th[6]    Account Name
+    Element Should Contain    //table[1]//thead//tr[1]//th[7]    Payment Channel
+    Element Should Contain    //table[1]//thead//tr[1]//th[8]    Shipping Name
+    Element Should Contain    //table[1]//thead//tr[1]//th[9]    Amount Order
+    Element Should Contain    //table[1]//thead//tr[1]//th[10]    Amount Refund
+    Element Should Contain    //table[1]//thead//tr[1]//th[11]    Payment From Text File
+    Element Should Contain    //table[1]//thead//tr[1]//th[12]    Payment From System
+    Element Should Contain    //table[1]//thead//tr[1]//th[13]    Merchant ID
+    Element Should Contain    //table[1]//thead//tr[1]//th[14]    Order Status
+    Element Should Contain    //table[1]//thead//tr[1]//th[15]    Request Refund Date
+    Element Should Contain    //table[1]//thead//tr[1]//th[16]    Accept Refund Date
+    Element Should Contain    //table[1]//thead//tr[1]//th[17]    Reason Refund
+    Element Should Contain    //table[1]//thead//tr[1]//th[18]    Refund ID
+    Element Should Contain    //table[1]//thead//tr[1]//th[19]    Store ID
+    Element Should Contain    //table[1]//thead//tr[1]//th[20]    Admin Status
+    Element Should Contain    //table[1]//thead//tr[1]//th[21]    Reject By
+    Element Should Contain    //table[1]//thead//tr[1]//th[22]    Detail
+    Element Should Contain    //table[1]//thead//tr[1]//th[23]    Auto Refund

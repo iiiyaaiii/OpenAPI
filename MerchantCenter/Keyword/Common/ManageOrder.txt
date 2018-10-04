@@ -1,0 +1,230 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../../Resource/WeMall/WebElement/ManageOrder.txt
+Resource          ../../Resource/Weloveshopping/WebElement/ManageOrder.txt
+Resource          Checkout.txt
+Resource          ../../Resource/WeloveShopping/init.robot
+
+*** Keywords ***
+Login admin manage order web
+    [Documentation]    Use for login admin manage order-web
+    Go To    ${URL_ORDER}/admin/login
+    Input Text        ${input_username_admin_orderweb}    ${user_admin_manage_orderweb}
+    Input Password    ${input_password_admin_orderweb}    ${pass_admin_manage_orderweb}
+    Click Element    ${login_button_admin_orderweb}
+    Wait Until Element Is Visible    ${user_sign_admin_orderweb}
+
+Search order id on manage datetime page
+    [Documentation]    Use for input order id on manage datetime page
+    [Arguments]    ${order_id}
+    Input Text    ${input_search_manage_datetime}    ${order_id}
+    Click Element    ${button_search_manage_datetime}
+
+API Order Manage Escrow Datetime
+    [Documentation]    Use for admin manage escrow datetime on api-order page
+    [Arguments]    ${item_select}    ${status_managetime}    ${time_addsub}   ${order_time}    ${unit}
+    Go to order web manage date time
+    Search order id on manage datetime page    ${order_id_sub}
+    : FOR    ${i}    IN RANGE    1    ${item_select} + 1
+    \    Execute Javascript    $('#escrow-item-${i}').attr('checked', 'checked');
+    Select From List    ${escrow_select_list_status}    ${status_managetime}
+    Select From List    ${escrow_select_list_type}    ${time_addsub}
+    Wait Until Element Is Visible    ${escrow_time}
+    Input Text    ${escrow_time}    ${order_time}
+    Select From List    ${escrow_unit}    ${unit}
+    Click Element    ${escrow_btn_update}
+
+API Order Manage Datetime
+    [Documentation]    Use for admin manage datetime on api-order page
+    [Arguments]    ${status_managetime}    ${time_addsub}   ${order_time}    ${unit}
+    Go to order web manage date time
+    Search order id on manage datetime page    ${order_id_sub}
+    Select From List    ${select_list_status}    ${status_managetime}
+    Select From List    ${select_list_type}    ${time_addsub}
+    Wait Until Element Is Visible    ${input_order_time}
+    Input Text    ${input_order_time}    ${order_time}
+    Click Element    //select[@name="unit"]//option[@value="${unit}"]
+    Click Element    ${update_button}
+
+Run cron order expire on admin manage order web
+    [Documentation]    Use change order countdown
+    [Arguments]    ${order_id_sub}
+    Go To     ${URL_CRON_PAYMENT_EXPIRED}?order_id=${order_id_sub}
+
+Run cron auto accept request refund on admin manage order web
+    [Documentation]    Use change order countdown
+    [Arguments]    ${order_id_sub}
+    Go To     ${URL_CRON_ACCEPT}?order_id=${order_id_sub}
+
+Run cron auto cancel request refund on admin manage order web
+    [Documentation]    Use change order countdown
+    [Arguments]    ${order_id_sub}
+    Go To     ${URL_CRON_CANCEL}?order_id=${order_id_sub}
+
+Run cron auto receive on admin manage order web
+    [Documentation]    Use change order countdown
+    [Arguments]    ${order_id_sub}
+    Go To     ${URL_CRON_RECEIVE_EXPIRED}?order_id=${order_id_sub}
+
+Search email
+    [Documentation]    Use change order countdown
+    [Arguments]    ${order_id_sub}    ${email_code}
+    Go To     ${URL_ORDER}/admin/cron/email?order_id=${order_id_sub}&status=1&email_type=${email_code}
+
+Set Escrow Product Expire Time
+    [Documentation]    Use for set escrow product time
+    [Arguments]    ${escrow_field}=receive_expired_time    ${escrow_type}=เพิ่ม-ลด    ${unit}=Day
+    Click ELement   ${select_escrow_product1}
+    Select From List    escrow-fields    ${escrow_field}
+    Select From List    escrow-type    ${escrow_type}
+    Input Text    ${escrow_time}    -7
+    Select From List    escrow-unit    ${unit}
+    Click Element    ${escrow_btn_update}
+
+Set Receive Expire Time
+    [Documentation]    Use for set recieve expire pay time
+    [Arguments]    ${order_id}    ${escrow_field}=receive_expired_time    ${escrow_type}=เพิ่ม-ลด    ${unit}=Day
+    Go To    ${URL_ORDER}/admin/manage/datetime
+    Input Text    //*[@name='order_id']    ${order_id}
+    Execute Javascript    ${order_admin_search}
+    Click ELement   //*[@id="manage-process"]/div/div[2]/table/tbody/tr[2]/td[1]/div/ins
+    Select From List    escrow-fields    ${escrow_field}
+    Select From List    escrow-type    ${escrow_type}
+    Input Text    //*[@id="escrow-time"]    -17
+    Select From List    escrow-unit    ${unit}
+    Click Element    //*[@id="escrow-btn"]
+
+Set Auto Receive With API
+    [Documentation]    Use for set auto receive with api
+    [Arguments]    ${orderID}
+    Go To    ${URL_API}/v3/auto/receive?order_id=${orderID}
+    Sleep    3
+
+Run Cron Auto Feedback on admin manage order web
+    [Documentation]    Use for set auto receive with api
+    [Arguments]    ${orderID}
+    Go To    ${URL_CRON_FEEDBACK_EXPIRED}?order_id=${orderID}
+    Sleep    5
+
+Check Receive Detail Commission Fee
+    [Documentation]    Use for check detail commission fee data on wms detail
+    [Arguments]    ${orderid}    ${customerid}
+    Wait Until Element Is Visible    xpath=//html/body/div[6]/div[4]
+    Element Should Contain    //*[@id="b_customer_id"]    Customer ID : ${customerid}
+    Element Should Contain    //*[@id="b_order_id"]    Order ID : ${orderid}
+    Element Should Contain    //*[@id="b_payment_method"]    Payment Method : บัตรเครดิต
+    Element Should Contain    //*[@id="b_price"]    Price : 20.00
+    Element Should Contain    //*[@id="b_shipping_price"]    Shipping Price : 0.00
+    Element Should Contain    //*[@id="b_total_price_before_discount"]    Total Price before discount : 20.00
+    Element Should Contain    //*[@id="b_discount"]    Discount : 0.00
+    Element Should Contain    //*[@id="b_total_price_after_discount"]    Total Price after discount : 20.00 (เงินที่ผู้ซื้อจ่ายมา)
+    Element Should Contain    //*[@id="b_product_fee"]    ค่าธรรมเนียมค่าสินค้า : 0.5981
+    Element Should Contain    //*[@id="b_ship_fee"]    ค่าธรรมเนียมค่าขนส่ง 3% : 0.0000
+    Element Should Contain    //*[@id="b_total_fee_exclude_vat"]    ค่าธรรมเนียมรวม : 0.5981
+    Element Should Contain    //*[@id="b_vat"]    ภาษี 7% : 0.0419
+    Element Should Contain    //*[@id="b_total_fee_include_vat"]    ค่าธรรมเนียมรวมภาษี 7% : 0.64
+    Element Should Contain    //*[@id="b_total_price_after_fee"]    Total Price after Fee (+ Vat 7%) : 19.36 (เงินที่ร้านจะได้รับ)
+
+Check Receive Transaction Fee
+    [Documentation]    Use for check detail transaction fee on wms detail
+    [Arguments]    ${product}
+    Element Should Contain    xpath=//html/body/div[7]/div    Transaction Fee
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[2]    รหัสสินค้า
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[3]    ชื่อสินค้า
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[4]    หมวดหมู่
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[5]    % ค่าธรรมเนียมหมวดหมู่สินค้า
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[7]    ราคาขาย
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[8]    ส่วนลด/ชิ้น
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[9]    ราคาหลังหักส่วนลด
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[10]    ค่าธรรมเนียมค่าสินค้า
+    ${vat_text}=    Get Text    xpath=//html/body/div[7]/table/thead/tr/th[10]
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[10]    ${vat_text}
+    ${text}=    Get Text    xpath=//html/body/div[7]/table/thead/tr/th[11]
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[11]    ${text}
+    ${refund}=    Get Text    xpath=//html/body/div[7]/table/thead/tr/th[12]
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[12]    ${refund}
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr    1
+    ${id}=    Get Text    xpath=//html/body/div[7]/table/tbody/tr/td[2]
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr/td[2]    ${id}
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr/td[3]    ${product}
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr/td[4]    ปุ๋ย
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr/td[5]    3%
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr/td[7]    20.00
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr/td[8]    0.0000
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr/td[9]    20.0000
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr/td[10]    0.6000
+    ${price}=    Get Text    xpath=//html/body/div[7]/table/tbody/tr/td[13]
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr/td[13]    ${price}
+    ${amount}=    Get Text    xpath=//html/body/div[7]/table/tbody/tr/td[14]
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr/td[14]    ${amount}
+
+Check Refund Full Detail Commission Fee
+    [Documentation]    Use for check detail refund full data on wms detail
+    [Arguments]    ${orderid}    ${customerid}
+    Wait Until Element Is Visible    //div[@class="col-sm-4 invoice-col"][3]
+    Element Should Contain    //*[@id="b_customer_id"]    Customer ID : ${customerid}
+    Element Should Contain    //*[@id="b_order_id"]    Order ID : ${orderid}
+    Element Should Contain    //*[@id="b_payment_method"]    Payment Method : บัตรเครดิต
+    Element Should Contain    //*[@id="b_price"]    Price : 21.00
+    Element Should Contain    //*[@id="b_shipping_price"]    Shipping Price : 0.00
+    Element Should Contain    //*[@id="b_total_price_before_discount"]    Total Price before discount : 21.00
+    Element Should Contain    //*[@id="b_discount"]    Discount : 0.00
+    Element Should Contain    //*[@id="b_total_price_after_discount"]    Total Price after discount : 21.00 (เงินที่ผู้ซื้อจ่ายมา)
+    Element Should Contain    //*[@id="b_product_fee"]    ค่าธรรมเนียมค่าสินค้า : 0.0000
+    Element Should Contain    //*[@id="b_ship_fee"]    ค่าธรรมเนียมค่าขนส่ง 3% : 0.0000
+    Element Should Contain    //*[@id="b_total_fee_exclude_vat"]    ค่าธรรมเนียมรวม : 0
+    Element Should Contain    //*[@id="b_vat"]    ภาษี 7% : 0.0000
+    Element Should Contain    //*[@id="b_total_fee_include_vat"]    ค่าธรรมเนียมรวมภาษี 7% : 0.00
+    Element Should Contain    //*[@id="b_total_price_after_fee"]    Total Price after Fee (+ Vat 7%) : 0.00 (เงินที่ร้านจะได้รับ)
+
+Check Refund Full Transaction Fee
+    [Documentation]    Use for check detail transaction fee on wms detail
+    [Arguments]    ${product1}    ${product2}
+    Element Should Contain    xpath=//html/body/div[7]/div    Transaction Fee
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[2]    รหัสสินค้า
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[3]    ชื่อสินค้า
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[4]    หมวดหมู่
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[5]    % ค่าธรรมเนียมหมวดหมู่สินค้า
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[7]    ราคาขาย
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[8]    ส่วนลด/ชิ้น
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[9]    ราคาหลังหักส่วนลด
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[10]    ค่าธรรมเนียมค่าสินค้า
+    ${vat_text}=    Get Text    xpath=//html/body/div[7]/table/thead/tr/th[10]
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[10]    ${vat_text}
+    ${text}=    Get Text    xpath=//html/body/div[7]/table/thead/tr/th[11]
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[11]    ${text}
+    ${refund}=    Get Text    xpath=//html/body/div[7]/table/thead/tr/th[12]
+    Element Should Contain    xpath=//html/body/div[7]/table/thead/tr/th[12]    ${refund}
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]    1
+    ${id}=    Get Text    xpath=//html/body/div[7]/table/tbody/tr[1]/td[2]
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]    ${id}
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]/td[3]    ${product1}
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]/td[4]    รองเท้าผ้าใบผู้ชาย
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]/td[5]    0%
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]/td[7]    1.00
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]/td[8]    0.0000
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]/td[9]    1.0000
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]/td[10]    0.0000
+    ${price1}=    Get Text    xpath=//html/body/div[7]/table/tbody/tr[1]/td[12]
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]/td[12]    ${price1}
+    ${amount1}=    Get Text    xpath=//html/body/div[7]/table/tbody/tr[1]/td[14]
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]/td[14]    ${amount1}
+    ${text_yes}=    Get Text    xpath=//html/body/div[7]/table/tbody/tr[1]/td[15]
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[1]/td[15]    ${text_yes}
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]    2
+    ${id}=    Get Text    xpath=//html/body/div[7]/table/tbody/tr[2]/td[2]
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]    ${id}
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]/td[3]    ${product2}
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]/td[4]    ปุ๋ย
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]/td[5]    0%
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]/td[7]    20.00
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]/td[8]    0.0000
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]/td[9]    20.0000
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]/td[10]    0.0000
+    ${price2}=    Get Text    xpath=//html/body/div[7]/table/tbody/tr[2]/td[12]
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]/td[12]    ${price2}
+    ${amount2}=    Get Text    xpath=//html/body/div[7]/table/tbody/tr[2]/td[14]
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]/td[14]    ${amount2}
+    ${text_yes}=    Get Text    xpath=//html/body/div[7]/table/tbody/tr[2]/td[15]
+    Element Should Contain    xpath=//html/body/div[7]/table/tbody/tr[2]/td[15]    ${text_yes}
+

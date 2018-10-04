@@ -1,0 +1,583 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Force Tags        Store-Web    mock    Action    Ligo    mc-wls
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/BlockShop.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/SellerPromotion.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Product.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Product_Collection.txt
+
+*** Test Cases ***
+TC_MC_01591
+    [Documentation]    Store have promotion period at Today and type discount baht
+    [Tags]    Regression    Medium
+    Account Login    ${blockstore_email1}    ${blockstore_password1}
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/edit
+    Check and Open Shop
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('1000').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('200').trigger('input');
+    ${current_date}    Get Current Date    UTC    +7 hours    result_format=datetime    exclude_millis=True
+    ${end_date}    Add Time To Date    ${current_date}    10 minutes    exclude_millis=True
+    Execute Javascript    $('#period').val('${current_date} - ${end_date}').trigger('input')
+    Execute Javascript    $('button.btn-primary').get(1).click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/products
+    Execute Javascript    $("input[name='source_products']").click()
+    Execute Javascript    $("input[check-all='selectedProducts']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Sleep    1s
+    # Assign Id To Element    //select[@ng-model='selectedCategory']    promotion_cate
+    Select From List By Value    category_filter    152653
+    Sleep    3s
+    Execute Javascript    $("input[check-all='products']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Execute Javascript    $('button:contains(บันทึก)')[1].click();
+    Sleep    0.3s
+    Execute Javascript    $('button:contains(ยืนยัน)').click()
+    Sleep    2s
+    Go To    ${URL_STORE}/${blockstore_url1}
+    Sleep    5s
+    Element Should Contain    //div[@class='promotion-desc']//div    ซื้อสินค้าตั้งแต่ 1,000 บาทขึ้นไป ลดเพิ่ม 200 บาท
+    # ${text}    Execute Javascript    return $('.promotion-desc .col-1').text().trim();
+    # Should Contain    ${text}    บาท
+
+TC_MC_01592
+    [Documentation]    Store have promotion period at Today and type discount %
+    [Tags]    Regression    Medium
+    Check and Reset Seller Login    ${blockstore_url1}    ${blockstore_email1}    ${blockstore_password1}
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/edit
+    Check and Open Shop
+    Execute Javascript    $("select[name='discount_type']").val('percent').change();
+    Execute Javascript    $('.input-mini').eq(0).val('1000').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('10').trigger('input');
+    Execute Javascript    $('.input-mini').eq(2).val('200').trigger('input');
+    ${current_date}    Get Current Date    UTC    +7 hours    result_format=datetime    exclude_millis=True
+    ${end_date}    Add Time To Date    ${current_date}    10 minutes    exclude_millis=True
+    Execute Javascript    $('#period').val('${current_date} - ${end_date}').trigger('input')
+    Execute Javascript    $('button.btn-primary').get(1).click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/products
+    Execute Javascript    $("input[name='source_products']").click()
+    Execute Javascript    $("input[check-all='selectedProducts']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Sleep    1s
+    # Assign Id To Element    //select[@ng-model='selectedCategory']    promotion_cate
+    Select From List By Value    category_filter    152653
+    Sleep    3s
+    Execute Javascript    $("input[check-all='products']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Execute Javascript    $('button:contains(บันทึก)')[1].click();
+    Sleep    0.3s
+    Execute Javascript    $('button:contains(ยืนยัน)').click()
+    Sleep    2s
+    Go To    ${URL_STORE}/${blockstore_url1}
+    Sleep    5s
+    Element Should Contain    //div[@class='promotion-desc']//div    ซื้อสินค้าตั้งแต่ 1,000 บาทขึ้นไป ลดเพิ่ม 10% ลดสูงสุดไม่เกิน 200 บาท
+
+TC_MC_01593
+    [Documentation]    Verify Store have promotion period at Today. But no have product to join
+    [Tags]    Regression    Medium
+    Check and Reset Seller Login    ${blockstore_url1}    ${blockstore_email1}    ${blockstore_password1}
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/products
+    Check and Open Shop
+    Execute Javascript    $("input[name='source_categories']").click()
+    Sleep    0.5s
+    Execute Javascript    $("label:contains('รองเท้ากอล์ฟ') > input").click()
+    Execute Javascript    $('button:contains(บันทึก)')[1].click();
+    Execute Javascript    $('button:contains(ยืนยัน)').click()
+    Sleep    2s
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion
+    Wait Until Element Is Visible    //*[@id="promo_no_product_${seller_promotion_robot}"]    ${EXPECT_LOADTIME}
+    Element Should Contain    //*[@id="promo_no_product_${seller_promotion_robot}"]    ไม่แสดงโปรโมชั่นหน้าร้านเนื่องจากไม่มีสินค้าในโปรโมชั่น
+    Go To    ${URL_STORE}/${blockstore_url1}
+    Sleep    5s
+    Element Should Not Be Visible    //div[@class='box-main promotion-highlight-div']
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/products
+    Execute Javascript    $("input[name='source_products']").click()
+    Execute Javascript    $("input[check-all='selectedProducts']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Sleep    1s
+    # Assign Id To Element    //select[@ng-model='selectedCategory']    promotion_cate
+    Select From List By Value    category_filter    152653
+    Sleep    3s
+    Execute Javascript    $("input[check-all='products']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Execute Javascript    $('button:contains(บันทึก)')[1].click();
+    Sleep    0.3s
+    Execute Javascript    $('button:contains(ยืนยัน)').click()
+    Sleep    2s
+
+TC_MC_01594
+    [Documentation]    Verify Store have promotion period at Today. But have 1 product to join
+    Check and Reset Seller Login    ${blockstore_url1}    ${blockstore_email1}    ${blockstore_password1}
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${promotion_id}/products
+    Execute Javascript    $('input[name="source_products"]').click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(0).click();
+    Execute Javascript    $('.btn.btn-success').click()
+    Execute Javascript    $('button.btn.btn-small.btn-primary').get(3).click();
+    Execute Javascript    $('button.button-submit.btn.btn-small.btn-primary').get(0).click();
+    Wait Until Element Is Visible    table_report
+    Select all product into hightlight promotion
+    Go To    ${URL_STORE}/${blockstore_url1}
+    Sleep    5s
+    ${promotion_item}    Execute Javascript    return $('.highlight-list-2 li').length;
+    Should Be Equal As Integers    ${promotion_item}    1
+
+TC_MC_01595
+    [Documentation]    Verify Store have promotion period at Today. But have 5 product to join
+    [Tags]    Regression    Medium
+    Check and Reset Seller Login    ${blockstore_url1}    ${blockstore_email1}    ${blockstore_password1}
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/edit
+    Check and Open Shop
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('1000').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('200').trigger('input');
+    ${current_date}    Get Current Date    UTC    +7 hours    result_format=datetime    exclude_millis=True
+    ${end_date}    Add Time To Date    ${current_date}    10 minutes    exclude_millis=True
+    Execute Javascript    $('#period').val('${current_date} - ${end_date}').trigger('input')
+    Execute Javascript    $('button.btn-primary').get(1).click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/products
+    Execute Javascript    $("input[name='source_products']").click()
+    Execute Javascript    $("input[check-all='selectedProducts']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Sleep    1s
+    # Assign Id To Element    //select[@ng-model='selectedCategory']    promotion_cate
+    Select From List By Value    category_filter    152653
+    Sleep    3s
+    Repeat Keyword    2 times    Execute Javascript    $("input[check-all='products']").click()
+    : FOR    ${index}    IN RANGE    0    5
+    \    Execute Javascript    $('.velocity-enter-transition-slideLeftBigIn.ng-scope > .col-1 > label > input')[${index}].click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Execute Javascript    $('button:contains(บันทึก)')[1].click();
+    Sleep    0.3s
+    Execute Javascript    $('button:contains(ยืนยัน)').click()
+    Sleep    2s
+    Go To    ${URL_STORE}/${blockstore_url1}
+    Sleep    5s
+    ${promotion_item}    Execute Javascript    return $('.highlight-list-2 li').length;
+    Should Be Equal As Integers    ${promotion_item}    5
+    # Element Should Contain    //div[@class='promotion-desc']//div    ซื้อครบ 1,000 บาท ลด 200 บาท
+
+TC_MC_01597
+    [Documentation]    Store have promotion period at Today. have product to join > 8 item. seller select product highlight 8 item.
+    [Tags]    Regression    High
+    Check and Reset Seller Login    ${blockstore_url1}    ${blockstore_email1}    ${blockstore_password1}
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/edit
+    Check and Open Shop
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('1000').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('200').trigger('input');
+    ${current_date}    Get Current Date    UTC    +7 hours    result_format=datetime    exclude_millis=True
+    ${end_date}    Add Time To Date    ${current_date}    10 minutes    exclude_millis=True
+    Execute Javascript    $('#period').val('${current_date} - ${end_date}').trigger('input')
+    Execute Javascript    $('button.btn-primary').get(1).click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/products
+    Execute Javascript    $("input[name='source_products']").click()
+    Execute Javascript    $("input[check-all='selectedProducts']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Sleep    1s
+    # Assign Id To Element    //select[@ng-model='selectedCategory']    promotion_cate
+    Select From List By Value    category_filter    152653
+    Sleep    3s
+    Repeat Keyword    2 times    Execute Javascript    $("input[check-all='products']").click()
+    : FOR    ${index}    IN RANGE    0    8
+    \    Execute Javascript    $('.velocity-enter-transition-slideLeftBigIn.ng-scope > .col-1 > label > input')[${index}].click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Execute Javascript    $('button:contains(บันทึก)')[1].click();
+    Sleep    0.3s
+    Execute Javascript    $('button:contains(ยืนยัน)').click()
+    Sleep    2s
+    Go To    ${URL_STORE}/${blockstore_url1}
+    Sleep    5s
+    ${promotion_item}    Execute Javascript    return $('.highlight-list-2 li').length;
+    Should Be Equal As Integers    ${promotion_item}    8
+
+TC_MC_01598
+    [Documentation]    Store have promotion period at Today. have product to join > 8 item. seller select product highlight 3 item.
+    [Tags]    High
+    Check and Reset Seller Login    ${blockstore_url1}    ${blockstore_email1}    ${blockstore_password1}
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/edit
+    Check and Open Shop
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('1000').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('200').trigger('input');
+    ${current_date}    Get Current Date    UTC    +7 hours    result_format=datetime    exclude_millis=True
+    ${end_date}    Add Time To Date    ${current_date}    10 minutes    exclude_millis=True
+    Execute Javascript    $('#period').val('${current_date} - ${end_date}').trigger('input')
+    Execute Javascript    $('button.btn-primary').get(1).click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/products
+    Execute Javascript    $("input[name='source_products']").click()
+    Execute Javascript    $("input[check-all='selectedProducts']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Sleep    1s
+    # Assign Id To Element    //select[@ng-model='selectedCategory']    promotion_cate
+    Select From List By Value    category_filter    152653
+    Sleep    3s
+    Execute Javascript    $("input[check-all='products']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Execute Javascript    $('button:contains(บันทึก)')[1].click();
+    Sleep    0.3s
+    Execute Javascript    $('button:contains(ยืนยัน)').click()
+    Sleep    2s
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/highlight
+    Repeat Keyword    2 times    Execute Javascript    $('#check_all').click()
+    : FOR    ${index}    IN RANGE    0    3
+    \    Execute Javascript    $('#table_report > tbody > tr > td > label > .checkbox-select.ng-pristine.ng-valid')[${index}].click()
+    Execute Javascript    $('.btn.btn-primary.button-submit')[1].click()
+    Sleep    0.3s
+    Execute Javascript    $('button:contains(ยืนยัน)').click()
+    Sleep    1s
+    Go To    ${URL_STORE}/${blockstore_url1}
+    Sleep    5s
+    ${promotion_item}    Execute Javascript    return $('.highlight-list-2 li').length;
+    Should Be Equal As Integers    ${promotion_item}    3
+
+TC_MC_01599
+    [Documentation]    Store have promotion period at Today. have product to join > 8 item. seller select product highlight 5 item.
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${promotion_id}/products
+    Execute Javascript    $('input[name="source_products"]').click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(0).click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(1).click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(2).click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(3).click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(4).click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(5).click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(6).click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(7).click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(8).click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(9).click();
+    Execute Javascript    $('.promotion-item-box li input[type="checkbox"]').get(10).click();
+    Execute Javascript    $('.btn.btn-success').click();
+    Execute Javascript    $('button.btn.btn-small.btn-primary').get(3).click();
+    Execute Javascript    $('button.button-submit.btn.btn-small.btn-primary').get(0).click();
+    Sleep    1s
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${promotion_id}/highlight
+    Execute Javascript    $('#check_all').click();
+    Execute Javascript    $('#check_all').click();
+    Execute Javascript    $('input.checkbox-select').get(3).click();
+    Execute Javascript    $('input.checkbox-select').get(4).click();
+    Execute Javascript    $('input.checkbox-select').get(5).click();
+    Execute Javascript    $('input.checkbox-select').get(6).click();
+    Execute Javascript    $('input.checkbox-select').get(7).click();
+    Execute Javascript    $('button.btn.btn-primary.btn-small.button-submit').get(0).click();
+    Execute Javascript    $('button.btn.btn-primary.btn-small.button-submit').get(2).click();
+    Sleep    2s
+    Go To    ${URL_STORE}/${blockstore_url1}
+    Sleep    5s
+    ${promotion_item}    Execute Javascript    return $('.highlight-list-2 li').length;
+    Should Be Equal As Integers    ${promotion_item}    5
+    Page Should Not Contain Element    //*[@*="highlight-list-2"]
+
+TC_MC_01600
+    [Documentation]    Store have promotion period at Today. have product to join > 8 item. seller no select product highlight.
+    [Tags]    Regression    Medium
+    Check and Reset Seller Login    ${blockstore_url1}    ${blockstore_email1}    ${blockstore_password1}
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/edit
+    Check and Open Shop
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('1000').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('200').trigger('input');
+    ${current_date}    Get Current Date    UTC    +7 hours    result_format=datetime    exclude_millis=True
+    ${end_date}    Add Time To Date    ${current_date}    10 minutes    exclude_millis=True
+    Execute Javascript    $('#period').val('${current_date} - ${end_date}').trigger('input')
+    Execute Javascript    $('button.btn-primary').get(1).click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/products
+    Execute Javascript    $("input[name='source_products']").click()
+    Execute Javascript    $("input[check-all='selectedProducts']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Sleep    1s
+    # Assign Id To Element    //select[@ng-model='selectedCategory']    promotion_cate
+    Select From List By Value    category_filter    152653
+    Sleep    3s
+    Execute Javascript    $("input[check-all='products']").click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Execute Javascript    $('button:contains(บันทึก)')[1].click();
+    Sleep    0.3s
+    Execute Javascript    $('button:contains(ยืนยัน)').click()
+    Sleep    2s
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/highlight
+    Repeat Keyword    2 times    Execute Javascript    $('#check_all').click()
+    Execute Javascript    $('.btn.btn-primary.button-submit')[1].click()
+    Sleep    0.3s
+    Execute Javascript    $('button:contains(ยืนยัน)').click()
+    Sleep    1s
+    Go To    ${URL_STORE}/${blockstore_url1}
+    Sleep    5s
+    ${promotion_item}    Execute Javascript    return $('.highlight-list-2 li').length;
+    Should Be Equal As Integers    ${promotion_item}    8
+
+TC_MC_01590
+    [Documentation]    Landing Promotion should not display. Incase Store no have promotion period at today.
+    [Tags]    High
+    Check and Reset Seller Login    ${blockstore_url1}    ${blockstore_email1}    ${blockstore_password1}
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/edit
+    Check and Open Shop
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('1000').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('200').trigger('input');
+    ${current_date}    Get Current Date    UTC    +7 hours    result_format=datetime    exclude_millis=True
+    ${end_date}    Add Time To Date    ${current_date}    10 minutes    exclude_millis=True
+    Execute Javascript    $('#period').val('${current_date} - ${end_date}').trigger('input')
+    Execute Javascript    $('.ace-switch-show.ng-pristine.ng-valid').click()
+    Execute Javascript    $('button.btn-primary').get(1).click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${blockstore_url1}/promotion
+    Sleep    5s
+    Element Should Be Visible    //div[@class='noresult-box']
+    Element Should Contain    //div[@class='noresult-box']    ร้านนี้ยังไม่มีโปรโมชั่นในช่วงเวลานี้
+    Go To    ${URL_STORE}/${blockstore_url1}/admin/promotion/${seller_promotion_robot}/edit
+    Execute Javascript    $('.ace-switch-show.ng-pristine.ng-valid').click()
+    Execute Javascript    $('button.btn-primary').get(1).click();
+    Sleep    0.5s
+
+TC_MC_01622
+    [Documentation]    Add Favorite Store
+    [Tags]    Regression    Medium
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    sleep    3s
+    Go To    ${URL_STORE}/${user_s002}
+    sleep    2s
+    ${class_name}    Execute Javascript    return $('#fav01 a').attr('class');
+    Should Be Empty    ${class_name}
+    Execute Javascript    $('#fav01 a').click();
+    ${class_name}    Execute Javascript    return $('#fav01 a').attr('class');
+    Should Be Equal    ${class_name}    active
+    Go To    https://account.wls-dev.com/profile/favorite
+    ${favoriteshop}    Execute Javascript    return $('a:contains("ร้าน wlsautomate26")').length
+    ${favoriteshop1}    Convert To String    ${favoriteshop}
+    Should Be Equal    ${favoriteshop1}    1
+
+TC_MC_01624
+    [Documentation]    Remove Favorite Store
+    [Tags]    Regression    Medium
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${URL_STORE}/${user_s002}
+    sleep    3s
+    Execute Javascript    $('#fav01 a').click();
+    ${class_name}    Execute Javascript    return $('#fav01 a').attr('class');
+    Should Be Empty    ${class_name}
+    Go To    https://account.wls-dev.com/profile/favorite
+    ${favoriteshop}    Execute Javascript    return $('a:contains("ร้าน wlsautomate26")').length
+    ${favoriteshop1}    Convert To String    ${favoriteshop}
+    Should Be Equal    ${favoriteshop1}    0
+
+TC_MC_01626
+    [Documentation]    Verify Home page Incase Admin Change shop status = Warning
+    [Tags]    Low
+    WMS Switch Project    wls
+    Go To    ${url_block_seller}
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    Sleep    2s
+    ## Select action block status = Warning
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    warning
+    Select From List By Label    ${select_action_reason}    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Element Should Be Visible    ${top_record_status}    ${icon_warning}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'ปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+        Sleep    2s
+    #forntend
+    Go To    ${URL_STORE}/${user_block}
+    Sleep    2s
+    ${alert_shopclose}    Execute javascript    return $('#error_text').text().trim();
+    ${str2}    Convert To String    ${alert_shopclose}
+    Should Contain    ${str2}    ร้านค้าปิดให้บริการชั่วคราวค่ะ
+    Sleep    2s
+    WMS Login
+    Go To    ${url_block_seller}
+    Sleep    3s
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    Element Should Be Visible    ${top_record_status}    ${icon_warning}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'ปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+    ## Change action block status = Normal
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    normal
+    Select From List By Label    ${select_action_reason}    อื่นๆ
+    Input Text    ${input_comment}    ok
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    ## Verify expect result
+    Element Should Be Visible    ${top_record_status}    ${icon_normal}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'เปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+
+TC_MC_01627
+    [Documentation]    Verify Home page Incase Admin Change shop status = Blocked
+    WMS Switch Project    wls
+    [Tags]    Regression    Low
+    Go To    ${url_block_seller}
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    Sleep    2s
+    ## Select action block status = blocked
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Sleep    2s
+    Select From List By Label    ${select_action_status}    blocked
+    Select From List By Label    ${select_action_reason}    กระทำผิดกฏระเบียบเว็บไซต์
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    ## Verify expect result
+    Sleep    4s
+    Account Login    ${seller_user_block}    ${seller_pwd_block}
+    Go To    ${URL_STORE}/${user_block}
+    ${alert_shopclose}    Execute javascript    return $('#error_text').text().trim();
+    ${str2}    Convert To String    ${alert_shopclose}
+    Should Contain    ${str2}    ร้านค้าปิดให้บริการชั่วคราวค่ะ
+    Sleep    2s
+    WMS Login
+    Go To    ${url_block_seller}
+    Sleep    4s
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'ปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+    ## Change action block status = Normal
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    normal
+    Select From List By Label    ${select_action_reason}    อื่นๆ
+    Input Text    ${input_comment}    ok
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    ## Verify expect result
+    Element Should Be Visible    ${top_record_status}    ${icon_normal}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'เปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+
+TC_MC_01633
+    [Documentation]    StoreFront Highlight Product-Verify store home pages (have highlight product)
+    [Tags]    Medium
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${url_product_collection}
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection With Product    50
+    ## Restore
+    #Delete Collection
+    sleep    3s
+    Go To    ${URL_STORE}/${user_s001}
+    sleep    2s
+    ${class_name}    Execute Javascript    return $('.product-wrapper ul').attr('class')
+    Should Be Equal    ${class_name}    product-shigh-list
+    ${numlist}    Execute Javascript    return $('.product-shigh-list li').length
+    ${numlist_int}    Convert To String    ${numlist}
+    Should Be Equal    ${numlist_int}    8
+
+TC_MC_01636
+    [Documentation]    StoreFront Highlight Product - Verify click ดูทั้งหมด (highlight product)
+    [Tags]    Regression    Medium
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${url_product_collection}
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection With Product    50
+    ## Restore
+    #Delete Collection
+    sleep    3s
+    Go To    ${URL_STORE}/${user_s001}/collection
+    sleep    4s
+    ${paging}    Execute Javascript    return $('.pagination-wls-jan span').length;
+    ${before_Count1}    Set Variable    0
+    : FOR    ${index}    IN RANGE    0    ${paging}
+    \    #\    ${CountProduct}    Execute Javascript    return $('#product-wrapper ul li').length
+    \    ${CountProduct}    Execute Javascript    return $('#product-wrapper ul li').length
+    \    ${numlist_int}    Convert To String    ${CountProduct}
+    \    #\    ${before_Count1}    Evaluate    ${numlist_int} + ${before_Count1}
+    \    ${before_Count1}    Evaluate    ${numlist_int} + ${before_Count1}
+    \    Go To next page StoreFront
+    Set Test Variable    ${before_Count1}
+    Should Be True    '${before_Count1}' == '50'
+    #Should Be True    '${before_Count1}' == '40'
+
+TC_MC_01638
+    [Documentation]    StoreFront Highlight Product - Verify click ดูทั้งหมด (highlight product)
+    [Tags]    Low
+    sleep    3s
+    Go To    ${URL_STORE}/${user_s001}/collection
+    sleep    2s
+    ${CountProduct}    Execute Javascript    return $('#product-wrapper ul li').length
+    ${numlist_int}    Convert To String    ${CountProduct}
+    Should Be True    '${numlist_int}' == '40'
+
+TC_MC_01634
+    [Documentation]    StoreFront Highlight Product-Verify store home pages (no product in highlight)
+    [Tags]    Regression    Medium
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${url_product_collection}
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection Without Product
+    sleep    3s
+    Go To    ${URL_STORE}/${user_s001}
+    sleep    2s
+    ${class_name}    Execute Javascript    return $('.product-wrapper ul').attr('class')
+    Should Not Be Equal    ${class_name}    product-shigh-list
+
+TC_MC_01635
+    [Documentation]    StoreFront Highlight Product-Verify store home pages (hide highlight)
+    [Tags]    Regression    Medium
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${url_product_collection}
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection Without Product
+    Execute Javascript    $('input#check_all').click()
+    Execute Javascript    $('input#btn_hide').click()
+    Page Should Contain    คุณต้องการซ่อนหรือไม่
+    Execute Javascript    $('div.modal-footer > a.btn-primary').click()
+    Product_Collection.Check Top Record Status Is Hide
+    Click Element    //*[@id="sidebar-shortcuts-large"]/div[3]/div[2]/div/a
+    Element Should Not Be Visible    //div[@class='seller-highlight-wrapper']
+    sleep    3s
+    Go To    ${URL_STORE}/${user_s001}
+    sleep    2s
+    ${class_name}    Execute Javascript    return $('.product-wrapper ul').attr('class')
+    Should Not Be Equal    ${class_name}    product-shigh-list
+
+
+TC_MC_01639
+    [Documentation]    StoreFront Highlight Product-Store have highlight product less than 8 product
+    [Tags]    Regression    SmokeTest    High
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${url_product_collection}
+    sleep    3s
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection With Product    5
+    Go To    ${URL_STORE}/${user_s001}
+    sleep    2s
+    ${class_name}    Execute Javascript    return $('.product-wrapper ul').attr('class')
+    Should Be Equal    ${class_name}    product-shigh-list
+    ${numlist}    Execute Javascript    return $('.product-shigh-list li').length
+    ${numlist_int}    Convert To String    ${numlist}
+    Should Be Equal    ${numlist_int}    5
+

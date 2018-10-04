@@ -1,0 +1,93 @@
+*** Settings ***
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Keywords ***
+Go to TruemoveH Product Verify on wms page
+    [Documentation]    Go to WMS and go to TruemoveH Prodict Verify page
+    Go to    ${URL_WMS}/tmvh-product-verify
+
+Select Merchant to search product verify
+    [Documentation]    Select merchant in dropdown list
+    [Arguments]    ${merchant}
+    Select From List    ${merchant_dropdown}    ${merchant}
+
+Search product verify by product ID
+    [Documentation]    Enter product Id on product ID field
+    [Arguments]    ${productId}
+    Input Text    ${txt_productId}    ${productId}
+    Click Element    ${btn_search_product_verify}
+
+Select product verify by status
+    [Documentation]    Select status in dropdown list
+    [Arguments]    ${status}
+    Select From List    ${status_dropdown}    ${status}
+    Click Element    ${btn_search_product_verify}
+
+Check that the error message displays under Merchant field
+    [Documentation]    Check merchant error message
+    [Arguments]    ${merchantMessage}
+    Element Should Contain    ${error_merchant}    ${merchantMessage}
+
+Check that the error message displays under product ID field
+    [Documentation]    Check product ID error message
+    [Arguments]    ${IdMessage}
+    Element Should Contain    ${error_ID}    ${IdMessage}
+
+Go to List Product page
+    [Documentation]    Click Create button
+    Click Element    ${btn_create}
+
+Search product verify pending by product name
+    [Documentation]    Enter product name on Product Name field
+    [Arguments]    ${productName}
+    Input Text    ${txt_productName}    ${productName}
+    Click Element    ${btn_search_product_verify}
+
+Search product verify pending by product ID
+    [Documentation]    Enter product Id on product ID field
+    [Arguments]    ${productIds}
+    Input Text    ${txt_product_ids}    ${productIds}
+    Click Element    ${btn_search_product_verify}
+
+Edit the Redirect link successfully
+    [Documentation]    Edit redirect link on Manage Product Verify
+    [Arguments]    ${redirectLink}
+    Click Element    ${btn_edit_icon}
+    Page Should Contain    Manage Product Verify
+    Input Text    ${txt_redirect_link}    ${redirectLink}
+    Click Element    ${btn_submit}
+    Element Should Contain    ${notify_message}    success
+
+Edit the status successfully
+    [Documentation]    Edit status on Manage Product Verify
+    [Arguments]    ${status}
+    Click Element    ${btn_edit_icon}
+    Page Should Contain    Manage Product Verify
+    Run Keyword if    '${status}'=='Active'    Execute Javascript    $('[id="active"]').click()
+     ...  ELSE    Execute Javascript    $('[id="inactive"]').click()
+    Click Element    ${btn_submit}
+    Element Should Contain    ${notify_message}    success
+
+Check that the searched product displays product ID correctly
+    [Documentation]    Check the result in table that displays product ID as search input
+    [Arguments]    ${productId}
+    Element Should Contain    ${label_productID}    ${productId}
+
+Check that the searched product displays status correctly
+    [Documentation]    Check the result in table that displays status as search input
+    [Arguments]    ${status}
+    Run Keyword if    '${status}'=='Active'    Element Should Contain    ${label_active_status}    ${status}
+    ...  ELSE    Element Should Contain    ${label_inactive_status}    ${status}
+
+Check that List product page displays product name correctly
+    [Documentation]    Check the result in List Product page displays product name as search input
+    [Arguments]    ${productName}
+    Element Should Contain    ${label_productName}    ${productName}
+
+Check that List product page displays product ID correctly
+    [Documentation]    Check the result in List Product page displays product ID as search input
+    [Arguments]    ${productIds}
+    Element Should Contain    ${label_productID}    ${productIds}

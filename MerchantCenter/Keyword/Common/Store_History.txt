@@ -1,0 +1,202 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../../Resource/Wemall/WebElement/Store_History.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/StoreHistory.txt
+
+*** Keyword ***
+
+LogIn OrderWeb Admin
+	[Documentation]    Use for log in manage order-web admin
+	Go To    ${URL_ORDER}/admin
+    Input Text    //*[@name="username"]    ${user_order_admin}
+    Input Text    //*[@name="userpass"]    ${pass_order_admin}
+    Click Button    ${order_admin_login}
+
+Go To Store Order History Page
+    [Documentation]    Use for go to store order history page
+    [Arguments]    ${slug_name}
+    Go To    ${URL_STORE}/${slug_name}/admin/orders
+
+Check Location
+    [Documentation]    Use for ckeck location order history page
+    [Arguments]    ${location}
+    Location Should Be    ${location}
+
+Click search button on store order history
+    [Documentation]    Use for click search button
+    Click Element    ${btn_search_store_history}
+
+Request Refund Buyer
+    [Documentation]    Use for set refund buyer one product
+    [Arguments]    ${order_request_reasons}    ${txt_reason}
+    Execute Javascript    ${btn_request_refund}.click()
+    Sleep    3
+    Click Element    ${select_chxbox_refund}
+    Select From List    order_request_reasons_code    ${order_request_reasons}
+    Input Text    ${txt_reason_area}    ${txt_reason}
+    Click Element    ${btn_confirm_request_refund}
+    Confirm Action
+
+Set Order Expire Time
+	[Documentation]    Use for set order expire pay time
+	[Arguments]    ${order_id}    ${order_field}=payment_expired_time    ${order_type}=เพิ่ม-ลด    ${unit}=Day
+	Go To    ${URL_ORDER}/admin/manage/datetime
+    Input Text    //*[@name='order_id']    ${order_id}
+    Execute Javascript    ${order_admin_search}
+	Select From List    order-fields    ${order_field}
+	Select From List    order-type    ${order_type}
+	Input Text    //*[@name="time"]    -4
+	Select From List    order-unit    ${unit}
+	Click Element    //*[@id="order-btn"]
+
+Set Order Expire With API
+	[Documentation]    Use for set order expire time with api
+	[Arguments]    ${orderID}
+	Go To    ${URL_API}/v3/auto/expire?order_id=${orderID}
+	Sleep    5
+
+Shipping One Product
+	[Documentation]    Use for shipping one product in order
+	[Arguments]    ${tracking_number}
+	Click Button    ${btn_shipping}
+	Click Button    ${btn_input_tracking}
+	Input Text    ${input_tracking}    ${tracking_number}
+	Click Button    ${btn_confirm_ship}
+
+Shipping One Product By Product Name
+    [Documentation]    Use for shipping one product in order by product name
+    [Arguments]    ${tracking_number}   ${product_name}
+    Click Button    ${btn_shipping}
+    Execute Javascript    $('.table-ship .checkall').click()
+    Execute Javascript    $("input[data-name='${product_name}']").click()
+    Click Button    ${btn_input_tracking}
+    Input Text    ${input_tracking}    ${tracking_number}
+    Click Button    ${btn_confirm_ship}
+    Sleep    3
+
+Shipping One Product Custom
+    [Documentation]    Use for shipping one product in order
+    [Arguments]    ${tracking_or_message}   ${tracking_url1}    ${tracking_url2}    ${name_file}
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    ${tracking_or_message}
+    Input Text    ${input_url_custom}    ${tracking_url1}
+    Input Text    ${input_url_custom_2}    ${tracking_url2}
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}${/}${name_file}
+    Click Button    ${confirm_custom_button}
+    Sleep    5
+
+Shipping One Product Custom By Product Name
+    [Documentation]    Use for shipping one product in order by product name
+    [Arguments]    ${tracking_or_message}   ${tracking_url1}    ${tracking_url2}    ${name_file}    ${product_name}
+    Click Button    ${btn_shipping}
+    #Execute Javascript    $('.table-ship .checkall').click()
+    #Execute Javascript    $("input[data-name='${product_name}']").click()
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    ${tracking_or_message}
+    Input Text    ${input_url_custom}    ${tracking_url1}
+    Input Text    ${input_url_custom_2}    ${tracking_url2}
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/${name_file}
+    Click Button    ${confirm_custom_button}
+    Sleep    3
+
+Check Order Countdown Time
+	[Documentation]    Use for check order coutdown time
+	Should Not Match Regexp    ${order_countdown}    เหลือเวลาภายใน\n([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})
+
+Check More Detail No Shipping
+	[Documentation]    Use for check more detail no shipping
+	${txt_more_detail}=    Execute JavaScript    return $('.order-list-action').eq(0).text().trim()
+    Should Be Equal    ${txt_more_detail}    ดูรายละเอียด
+
+Check More Detail With Refund
+	[Documentation]    Use for check more detail with shipping
+	${txt_more_detail}=    Execute JavaScript    return $('.link-to-detail').eq(0).text().trim()
+    Should Be Equal    ${txt_more_detail}    ดูรายละเอียด
+
+Check Text Refund Order List
+	[Documentation]    Check text refund order list
+	${txt_refund}=    Execute JavaScript    return $('.order-list-refund').eq(0).text().trim()
+	Should Be Equal    ${txt_refund}    ผู้ซื้อได้ทำการขอเงินคืน
+
+Check Button Shipping History Page
+	[Documentation]    Check button shipping
+	${txt_shipping}=    Execute JavaScript    return $('.btn.btn-small.btn_request_tracking').eq(0).text().trim()
+    Should Be Equal    ${txt_shipping}    แจ้งจัดส่งสินค้า
+
+Search order id on store order history
+    [Documentation]    Use for search order by order id on store order history
+    [Arguments]    ${order_id}
+    Input text    ${input_orderid_store_history}    ${order_id}
+    Click search button on account order history
+
+Check Text partial ship
+    [Documentation]    Use for check partial ship item
+    [Arguments]    ${text_partialship}
+    Element Should Contain    ${ship_by_item}    ${text_partialship}
+
+Go to waitshipping tab on store history page
+    [Documentation]    Use for go to waitshipping tab
+    [Arguments]    ${slug_name}
+    Go To    ${URL_STORE}/${slug_name}/admin/orders?status=waitshipping&sort-by-pay=ASC
+
+Click select all checkbox on waitshipping tab store history page
+    [Documentation]    Use for click select all checkbox for print label
+    Click Element    ${chk_select_all}
+
+View print option popup
+    [Documentation]    Verify ตัวเลือกการพิมพ์ button
+    Click Element    ${btn_order_print}
+    ${is_contain}    Execute Javascript    return ($('#print h3').text().match('ตัวเลือกการพิมพ์') != null)
+    Should Be True    ${is_contain}
+    ${is_contain3}    Execute Javascript    return $('button.close').click()
+
+View waitshipping page
+    [Documentation]    Use for view detail on waitshipping page
+    ${is_contain}    Execute Javascript    return ($('.nav-tabs li.active a').text().match('รอการแจ้งจัดส่งสินค้า') != null)
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return ($('a[href=#shipCompany]').eq(0).text().match('แจ้งจัดส่งสินค้า') != null)
+    Should Be True    ${is_contain}
+    Element Should Contain    //*[@id="allorder"]/div[2]/div    รายการสั่งซื้อที่เลือก : 0 ตัวเลือกการพิมพ์
+    ${is_contain}    Get Value    //*[@class="input-page-limit"]
+    Should Be Equal    ${is_contain}    14
+
+Select order items
+    [Documentation]    Select order items on รายงานการสั่งซื้อ page
+    [Arguments]    ${items}
+    : FOR    ${i}    IN RANGE    0    ${items}
+    \    Execute Javascript    $('.table-order input.check-item').eq(${i}).click()
+
+Check text tracking number on store order detail
+    [Documentation]    Use for check text tracking number on store order detail
+    ${txt_tracking}=    Execute JavaScript    return $('#product_detail_list tbody .text-center .headline').text()
+    Should Be Equal    ${txt_tracking}    หมายเลขพัสดุ
+    ${txt_status_box}=    Execute JavaScript    return $('#product_detail_list tbody .text-center').text()
+    Should Contain    ${txt_status_box}    LN892440056TH
+    ${txt_check_tracking}=    Execute JavaScript    return $('#product_detail_list tbody .text-center a').text()
+    Should Be Equal    ${txt_check_tracking}    ตรวจสอบสถานะการจัดส่ง
+
+Print the order lists
+    [Documentation]    Select order items on รายงานการสั่งซื้อ page
+    [Arguments]    ${option}
+    Click Element    ${btn_order_print}
+    Run Keyword If    '${option}'=='พิมพ์ใบส่งของ'    Click Element    ${radio_print_order}
+    ...    ELSE    Click Element    ${radio_print_address}
+    Wait Until Element Is Visible    ${btn_process_print}
+    Click Element    ${btn_process_print}
+
+View on Print preview page
+    [Documentation]    Go to Print preview page
+    Select Window    title=Print Order Preview
+    Wait Until Element Is Visible    id=print-type
+
+Check the title of print preview page with item
+    [Documentation]    Verify the title of print preview page show as default text
+    [Arguments]    ${item}
+    Element Should Contain    ${title_page}    แสดงตัวอย่าง ที่อยู่จัดส่ง จำนวน ${item} รายการ
+
+Seller Promotion Tag Displays On Main Product Correctly
+    Wait Until Element Is Visible    ${lbl_promotion_tag_on_seller}
+    Element Should Be Visible    ${lbl_promotion_tag_on_seller}

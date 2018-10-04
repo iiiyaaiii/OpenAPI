@@ -1,0 +1,66 @@
+*** Settings ***
+Suite Setup     Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        Search-API    mock    mc-wls
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           DateTime
+Test Timeout      5 minutes
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+
+*** Test Case ***
+TC_MC_01090
+    [Documentation]    CampaignAdminTool - Product : Search product by Store name
+    [Tags]    Regression    High
+    Go to    ${URL_WMS}/campaignadmin_product
+    Sleep    2
+    Input Text    //input[@name='store_name']    robot_store1
+    Click Element    //input[@type='submit']
+    : FOR    ${i}    IN RANGE    1    10
+    \    Element Should Contain    //table[@id='sample-table-2']/tbody//tr[${i}]//td[7]    robot_store1
+
+TC_MC_01092
+    [Documentation]    CampaignAdminTool - Product : Search product by Store ids
+    [Tags]    Regression    High    SmokeTest
+    Go to    ${URL_WMS}/campaignadmin_product
+    Wait Until Element Is Visible    ${txt_store_ids_search}    10s
+    Input Text    ${txt_store_ids_search}    ${store_robotId1},${store_robotId2}
+    Focus    ${btn_search_store_on_campaign_tool}
+    Click Element    ${btn_search_store_on_campaign_tool}
+    Element Should Be Visible    //td[7][contains(text(),'${store_name1}')]
+    Element Should Be Visible    //td[7][contains(text(),'${store_name2}')]
+
+TC_MC_01094
+    [Documentation]    CampaignAdminTool - Product : Search product by Store id
+    [Tags]    High
+    Go to    ${URL_WMS}/campaignadmin_product
+    Sleep    2
+    Input Text    //input[@name='store_ids']    L939478
+    Click Element    //input[@type='submit']
+    : FOR    ${i}    IN RANGE    1    10
+    \    Element Should Contain    //table[@id='sample-table-2']/tbody//tr[${i}]//td[7]    robot_store1
+
+TC_MC_01096
+    [Documentation]    CampaignAdminTool - Product : Search product by Store id
+    [Tags]    High
+    Go to    ${URL_WMS}/campaignadmin_product
+    Sleep    2
+    Input Text    //input[@name='store_ids']    L
+    Click Element    //input[@type='submit']
+    Element Should Contain    //tbody/tr/td    --- No data ---
+
+TC_MC_01098
+    [Documentation]    CampaignAdminTool - Product : Check amount sold items in product performance table
+    [Tags]    High
+    Go to    ${URL_WMS}/campaignadmin_product
+    Sleep    2
+    : FOR    ${i}    IN RANGE    1    10
+    \    Element Should Be Visible    //table[@id='sample-table-2']/tbody//tr[${i}]//td[8]
+    \    ${text}    Get Text    //table[@id='sample-table-2']/tbody//tr[${i}]//td[8]
+    \    Should be True    ${text} >= 0

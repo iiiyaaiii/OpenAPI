@@ -1,0 +1,20 @@
+*** Variables ***
+
+##WEMALL - CREDIT CARD PROMOTION
+${wemall_creditCardPromo}    mcnav_credit
+# ${wemall_viewAllCredit}    //a[@title='ดูสิทธิพิเศษกับบัตรเครดิต']
+${wemall_viewAllCredit}    //ul[@class="credit-list-box"]/li[6]/div/a
+${wemall_viewAllCreditSelected}    //a[(@href='https://www.wemall-dev.com/content/4371') and (@class='nl-main-cat active')]
+${fre_wm_home}    //body[@class='mc_home']
+${tab_wm_live_chat}     id=live-agent
+${fre_wm_live_chat}    //iframe[@class="i-embedded-form"]
+
+##WEMALL - SHOP BY BRAND
+${wemall_viewAllBrand}    //a[@href='https://www.wemall-dev.com/brand']
+${txt_search}    //input[@type="text"]
+${btn_portal_search}    //button[@type="button"]
+${img_sim_product}    //a[contains(text(),'ซิม Truemove')]
+${lnk_contactus}    //a[contains(text(),"ติดต่อเรา")]
+${fre_contactus}    //div[@class="content-box"]
+${lab_wm_contactus}    //div[@class="content-box"]/p[2]
+${lab_email_contactus}    //div[@class="content-box"]/table[2]//td

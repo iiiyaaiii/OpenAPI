@@ -1,0 +1,2625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20180720 17:32:15.513" generator="Robot 3.0.4 (Python 2.7.10 on darwin)">
+<suite source="/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/TestCase/WeLoveShopping" id="s1" name="WeLoveShopping">
+<suite source="/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/TestCase/WeLoveShopping/OrderAPI" id="s1-s1" name="OrderAPI">
+<suite source="/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/TestCase/WeLoveShopping/OrderAPI/WLSOrder" id="s1-s1-s1" name="WLSOrder">
+<suite source="/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/TestCase/WeLoveShopping/OrderAPI/WLSOrder/Detail.robot" id="s1-s1-s1-s1" name="Detail">
+<kw type="setup" name="Go to Login and Check Seller Login" library="Member_SignIn">
+<doc>Open browser and check seller login</doc>
+<arguments>
+<arg>${URL_PORTAL}</arg>
+<arg>${BROWSER}</arg>
+<arg>${reconteststore_slug}</arg>
+<arg>${user_reconteststore}</arg>
+<arg>${password_reconteststore}</arg>
+</arguments>
+<kw name="Set Selenium Speed" library="SeleniumLibrary">
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<arguments>
+<arg>0.3</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:17.363" starttime="20180720 17:32:17.362"></status>
+</kw>
+<kw name="Open Custom Browser" library="Common">
+<arguments>
+<arg>${URL_PORTAL}</arg>
+<arg>${BROWSER}</arg>
+</arguments>
+<kw name="Replace String" library="String">
+<doc>Replaces ``search_for`` in the given ``string`` with ``replace_with``.</doc>
+<arguments>
+<arg>/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/Common</arg>
+<arg>Common</arg>
+<arg>UserLibrary</arg>
+</arguments>
+<assign>
+<var>${path}</var>
+</assign>
+<msg timestamp="20180720 17:32:17.364" level="INFO">${path} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary</msg>
+<status status="PASS" endtime="20180720 17:32:17.364" starttime="20180720 17:32:17.364"></status>
+</kw>
+<kw name="Catenate" library="BuiltIn">
+<doc>Catenates the given items together and returns the resulted string.</doc>
+<arguments>
+<arg>SEPARATOR=</arg>
+<arg>${path}</arg>
+<arg>${/}selenium-server-standalone-2.53.0.jar</arg>
+</arguments>
+<assign>
+<var>${selenium_jar}</var>
+</assign>
+<msg timestamp="20180720 17:32:17.365" level="INFO">${selenium_jar} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar</msg>
+<status status="PASS" endtime="20180720 17:32:17.365" starttime="20180720 17:32:17.364"></status>
+</kw>
+<kw name="Set Environment Variable" library="OperatingSystem">
+<doc>Sets an environment variable to a specified value.</doc>
+<arguments>
+<arg>SELENIUM_SERVER_JAR</arg>
+<arg>${selenium_jar}</arg>
+</arguments>
+<msg timestamp="20180720 17:32:17.365" level="INFO">Environment variable 'SELENIUM_SERVER_JAR' set to value '/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar'.</msg>
+<status status="PASS" endtime="20180720 17:32:17.366" starttime="20180720 17:32:17.365"></status>
+</kw>
+<kw name="Get Chrome Mobile Options" library="_customkeyword">
+<arguments>
+<arg>Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4</arg>
+</arguments>
+<assign>
+<var>${options}</var>
+</assign>
+<msg timestamp="20180720 17:32:17.366" level="INFO">${options} = &lt;selenium.webdriver.chrome.options.Options object at 0x10e601a90&gt;</msg>
+<status status="PASS" endtime="20180720 17:32:17.366" starttime="20180720 17:32:17.366"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Create Webdriver</arg>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:17.367" starttime="20180720 17:32:17.366"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Open Browser</arg>
+<arg>${url}</arg>
+<arg>${browser}</arg>
+</arguments>
+<kw name="Open Browser" library="SeleniumLibrary">
+<doc>Opens a new browser instance to the given ``url``.</doc>
+<arguments>
+<arg>${url}</arg>
+<arg>${browser}</arg>
+</arguments>
+<msg timestamp="20180720 17:32:17.368" level="INFO">Opening browser 'gc' to base url 'https://portal.wls-dev.com'.</msg>
+<status status="PASS" endtime="20180720 17:32:24.490" starttime="20180720 17:32:17.368"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:24.490" starttime="20180720 17:32:17.367"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Create Webdriver</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:24.494" starttime="20180720 17:32:24.493"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.5s</arg>
+</arguments>
+<kw name="Set Selenium Speed" library="SeleniumLibrary">
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<arguments>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:24.499" starttime="20180720 17:32:24.498"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:24.499" starttime="20180720 17:32:24.495"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.5s</arg>
+</arguments>
+<kw name="Set Browser Implicit Wait" library="SeleniumLibrary">
+<doc>Sets the implicit wait value used by Selenium.</doc>
+<arguments>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:25.006" starttime="20180720 17:32:24.501"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:25.006" starttime="20180720 17:32:24.500"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:25.008" starttime="20180720 17:32:25.007"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:25.010" starttime="20180720 17:32:25.009"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Window Size</arg>
+<arg>375</arg>
+<arg>667</arg>
+<arg>ELSE</arg>
+<arg>Set Window Size</arg>
+<arg>1440</arg>
+<arg>900</arg>
+</arguments>
+<kw name="Set Window Size" library="SeleniumLibrary">
+<doc>Sets current windows size to given ``width`` and ``height``.</doc>
+<arguments>
+<arg>1440</arg>
+<arg>900</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:25.654" starttime="20180720 17:32:25.011"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:25.655" starttime="20180720 17:32:25.010"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:25.656" starttime="20180720 17:32:25.655"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:25.658" starttime="20180720 17:32:25.657"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile' or '${browser}' == 'Safari'</arg>
+<arg>Go To</arg>
+<arg>${url}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:25.660" starttime="20180720 17:32:25.659"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile'</arg>
+<arg>Maximize Browser Window</arg>
+</arguments>
+<kw name="Maximize Browser Window" library="SeleniumLibrary">
+<doc>Maximizes current browser window.</doc>
+<status status="PASS" endtime="20180720 17:32:26.370" starttime="20180720 17:32:25.662"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:26.371" starttime="20180720 17:32:25.661"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:26.371" starttime="20180720 17:32:17.363"></status>
+</kw>
+<kw name="Check and Reset Seller Login" library="Member_SignIn">
+<doc>Check and reset seller login</doc>
+<arguments>
+<arg>${store_name}</arg>
+<arg>${user}</arg>
+<arg>${password}</arg>
+</arguments>
+<kw name="Check Element" library="Common">
+<arguments>
+<arg>//a[@title='บัญชีของฉัน']</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<kw name="Run Keyword And Ignore Error" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Wait Until Element Is Visible</arg>
+<arg>${locator}</arg>
+</arguments>
+<assign>
+<var>@{element}</var>
+</assign>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${locator}</arg>
+</arguments>
+<kw name="Capture Page Screenshot" library="SeleniumLibrary">
+<doc>Takes screenshot of the current page and embeds it into log file.</doc>
+<msg timestamp="20180720 17:32:33.642" html="yes" level="INFO">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-1.png"&gt;&lt;img src="selenium-screenshot-1.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" endtime="20180720 17:32:33.643" starttime="20180720 17:32:32.522"></status>
+</kw>
+<msg timestamp="20180720 17:32:33.649" level="FAIL">Element '//a[@title='บัญชีของฉัน']' not visible after 5 seconds.</msg>
+<status status="FAIL" endtime="20180720 17:32:33.650" starttime="20180720 17:32:26.378"></status>
+</kw>
+<msg timestamp="20180720 17:32:33.650" level="INFO">@{element} = [ FAIL | Element '//a[@title='บัญชีของฉัน']' not visible after 5 seconds. ]</msg>
+<status status="PASS" endtime="20180720 17:32:33.650" starttime="20180720 17:32:26.377"></status>
+</kw>
+<msg timestamp="20180720 17:32:33.651" level="INFO">${result} = FAIL</msg>
+<status status="PASS" endtime="20180720 17:32:33.651" starttime="20180720 17:32:26.375"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${result}'=='FAIL'</arg>
+<arg>Go to Login</arg>
+<arg>${user}</arg>
+<arg>${password}</arg>
+</arguments>
+<kw name="Go to Login" library="Member_SignIn">
+<doc>Login on portal page</doc>
+<arguments>
+<arg>${user}</arg>
+<arg>${password}</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>//a[@title="เข้าสู่ระบบ"]</arg>
+<arg>60</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:34.710" starttime="20180720 17:32:33.655"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>//a[@title="เข้าสู่ระบบ"]</arg>
+</arguments>
+<msg timestamp="20180720 17:32:34.712" level="INFO">Clicking element '//a[@title="เข้าสู่ระบบ"]'.</msg>
+<status status="PASS" endtime="20180720 17:32:38.370" starttime="20180720 17:32:34.711"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>//input[@name="username"]</arg>
+<arg>60</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:39.421" starttime="20180720 17:32:38.370"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>//input[@id="username"]</arg>
+<arg>${email}</arg>
+</arguments>
+<msg timestamp="20180720 17:32:39.423" level="INFO">Typing text 'reconteststore@gmail.com' into text field '//input[@id="username"]'.</msg>
+<status status="PASS" endtime="20180720 17:32:41.243" starttime="20180720 17:32:39.422"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>//input[@id="password"]</arg>
+<arg>${pass}</arg>
+</arguments>
+<msg timestamp="20180720 17:32:41.244" level="INFO">Typing text 'Escrow@1234' into text field '//input[@id="password"]'.</msg>
+<status status="PASS" endtime="20180720 17:32:42.902" starttime="20180720 17:32:41.244"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>//button[@type="submit"]</arg>
+</arguments>
+<msg timestamp="20180720 17:32:42.904" level="INFO">Clicking element '//button[@type="submit"]'.</msg>
+<status status="PASS" endtime="20180720 17:32:47.076" starttime="20180720 17:32:42.903"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:47.077" starttime="20180720 17:32:33.653"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:47.077" starttime="20180720 17:32:33.651"></status>
+</kw>
+<kw name="Check Element" library="Common">
+<arguments>
+<arg>//a[@title='ร้านค้าของฉัน']</arg>
+</arguments>
+<assign>
+<var>${result_store}</var>
+</assign>
+<kw name="Run Keyword And Ignore Error" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Wait Until Element Is Visible</arg>
+<arg>${locator}</arg>
+</arguments>
+<assign>
+<var>@{element}</var>
+</assign>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${locator}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:48.135" starttime="20180720 17:32:47.080"></status>
+</kw>
+<msg timestamp="20180720 17:32:48.135" level="INFO">@{element} = [ PASS | None ]</msg>
+<status status="PASS" endtime="20180720 17:32:48.135" starttime="20180720 17:32:47.079"></status>
+</kw>
+<msg timestamp="20180720 17:32:48.136" level="INFO">${result_store} = PASS</msg>
+<status status="PASS" endtime="20180720 17:32:48.136" starttime="20180720 17:32:47.078"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${result_store}'=='PASS'</arg>
+<arg>Execute JavaScript</arg>
+<arg>$("a[title='ร้านค้าของฉัน']").mouseover()</arg>
+</arguments>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>$("a[title='ร้านค้าของฉัน']").mouseover()</arg>
+</arguments>
+<msg timestamp="20180720 17:32:48.140" level="INFO">Executing JavaScript:
+$("a[title='ร้านค้าของฉัน']").mouseover()</msg>
+<status status="PASS" endtime="20180720 17:32:48.662" starttime="20180720 17:32:48.139"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:48.662" starttime="20180720 17:32:48.137"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${result_store}'=='PASS'</arg>
+<arg>Execute JavaScript</arg>
+<arg>return $("li[ng-if='profile.we_store'] &gt; a").attr("href")</arg>
+</arguments>
+<assign>
+<var>${store_login}</var>
+</assign>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>return $("li[ng-if='profile.we_store'] &gt; a").attr("href")</arg>
+</arguments>
+<msg timestamp="20180720 17:32:48.665" level="INFO">Executing JavaScript:
+return $("li[ng-if='profile.we_store'] &gt; a").attr("href")</msg>
+<status status="PASS" endtime="20180720 17:32:49.180" starttime="20180720 17:32:48.664"></status>
+</kw>
+<msg timestamp="20180720 17:32:49.180" level="INFO">${store_login} = https://store.wls-dev.com/reconteststore/admin</msg>
+<status status="PASS" endtime="20180720 17:32:49.180" starttime="20180720 17:32:48.663"></status>
+</kw>
+<kw name="Run Keyword And Return Status" library="BuiltIn">
+<doc>Runs the given keyword with given arguments and returns the status as a Boolean value.</doc>
+<arguments>
+<arg>Should Contain</arg>
+<arg>${store_login}</arg>
+<arg>${store_name}</arg>
+</arguments>
+<assign>
+<var>${check_storename}</var>
+</assign>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${store_login}</arg>
+<arg>${store_name}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:49.183" starttime="20180720 17:32:49.182"></status>
+</kw>
+<msg timestamp="20180720 17:32:49.183" level="INFO">${check_storename} = True</msg>
+<status status="PASS" endtime="20180720 17:32:49.183" starttime="20180720 17:32:49.181"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${check_storename}' == 'False'</arg>
+<arg>Clear Active Login</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:49.185" starttime="20180720 17:32:49.184"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${check_storename}' == 'False'</arg>
+<arg>Go to Login</arg>
+<arg>${user}</arg>
+<arg>${password}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:49.186" starttime="20180720 17:32:49.185"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:49.186" starttime="20180720 17:32:26.372"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:49.186" starttime="20180720 17:32:17.361"></status>
+</kw>
+<test id="s1-s1-s1-s1-t1" name="TC_MC_03551">
+<kw type="setup" name="Create order offline channel" library="Checkout">
+<doc>Clear product in cart and create new order by offline channel</doc>
+<arguments>
+<arg>${reconteststore_slug}</arg>
+<arg>${normal_product1_reconstore}</arg>
+<arg>${select_address}</arg>
+<arg>${shipping_post}</arg>
+<arg>${cs_channel_radio_button}</arg>
+<arg>${lbl_payment_cs_ref2_number}</arg>
+</arguments>
+<kw name="Delete All Product In Cart" library="Checkout">
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_PORTAL}/cart</arg>
+</arguments>
+<msg timestamp="20180720 17:32:49.193" level="INFO">Opening url 'https://portal.wls-dev.com/cart'</msg>
+<status status="PASS" endtime="20180720 17:32:52.613" starttime="20180720 17:32:49.193"></status>
+</kw>
+<kw name="Get Matching Xpath Count" library="SeleniumLibrary">
+<doc>Deprecated. Use `Get Element Count` instead.</doc>
+<arguments>
+<arg>${delete_product_cart}</arg>
+</arguments>
+<assign>
+<var>${count}</var>
+</assign>
+<msg timestamp="20180720 17:32:53.632" level="INFO">${count} = 0</msg>
+<status status="PASS" endtime="20180720 17:32:53.632" starttime="20180720 17:32:52.614"></status>
+</kw>
+<kw type="for" name="${a} IN RANGE [ 0 | ${count} ]">
+<status status="PASS" endtime="20180720 17:32:53.633" starttime="20180720 17:32:53.633"></status>
+</kw>
+<kw name="Wait Until Page Contains" library="SeleniumLibrary">
+<doc>Waits until ``text`` appears on current page.</doc>
+<arguments>
+<arg>ไม่มีสินค้าในตะกร้าของท่าน</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:32:54.161" starttime="20180720 17:32:53.634"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:32:54.161" starttime="20180720 17:32:49.192"></status>
+</kw>
+<kw name="Add Product To Cart by product name on Store" library="Checkout">
+<doc>Use for user select one product which select product one piece to cart</doc>
+<arguments>
+<arg>${URL_SHOP}/${store_name}</arg>
+<arg>${product_name}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${store_url}</arg>
+</arguments>
+<msg timestamp="20180720 17:32:54.164" level="INFO">Opening url 'https://store.wls-dev.com/reconteststore'</msg>
+<status status="PASS" endtime="20180720 17:32:59.131" starttime="20180720 17:32:54.163"></status>
+</kw>
+<kw name="Select product by product name" library="Checkout">
+<doc>Use for select product by name when placeorder</doc>
+<arguments>
+<arg>${product_name}</arg>
+</arguments>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>$("img[alt='${product_name}']").click()</arg>
+</arguments>
+<msg timestamp="20180720 17:32:59.136" level="INFO">Executing JavaScript:
+$("img[alt='Robotreconteststore normal product']").click()</msg>
+<status status="PASS" endtime="20180720 17:33:04.433" starttime="20180720 17:32:59.135"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:33:04.433" starttime="20180720 17:32:59.133"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:33:05.494" starttime="20180720 17:33:04.434"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+</arguments>
+<msg timestamp="20180720 17:33:05.495" level="INFO">Clicking element '//button[@id="btn-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:33:06.600" starttime="20180720 17:33:05.495"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:33:07.647" starttime="20180720 17:33:06.602"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+</arguments>
+<msg timestamp="20180720 17:33:07.648" level="INFO">Clicking element '//div[@class="modal-content"]//a[@class="btn btn-default btn-popup-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:33:10.130" starttime="20180720 17:33:07.647"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:33:10.130" starttime="20180720 17:32:54.162"></status>
+</kw>
+<kw name="Place Order" library="Checkout">
+<doc>Use for payment order by online or offline channel</doc>
+<arguments>
+<arg>${select_address}</arg>
+<arg>${shipping_post}</arg>
+<arg>${payment_channel}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_PORTAL}/cart</arg>
+</arguments>
+<msg timestamp="20180720 17:33:10.134" level="INFO">Opening url 'https://portal.wls-dev.com/cart'</msg>
+<status status="PASS" endtime="20180720 17:33:11.778" starttime="20180720 17:33:10.133"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_place_order}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:33:13.019" starttime="20180720 17:33:11.780"></status>
+</kw>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_place_order}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180720 17:33:13.024" level="INFO">Clicking element '//button[@class="btn btn-buy"]'.</msg>
+<status status="PASS" endtime="20180720 17:33:14.112" starttime="20180720 17:33:13.022"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:33:14.113" starttime="20180720 17:33:13.020"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>//button[@class="btn btn-default btn-xs btn-add new_address"]</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:33:17.153" starttime="20180720 17:33:14.113"></status>
+</kw>
+<kw name="Focus" library="SeleniumLibrary">
+<doc>Deprecated. Use `Set Focus To Element` instead.</doc>
+<arguments>
+<arg>//button[@class="btn btn-default btn-xs btn-add new_address"]</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:33:18.198" starttime="20180720 17:33:17.154"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${email}</arg>
+</arguments>
+<msg timestamp="20180720 17:33:18.199" level="INFO">Executing JavaScript:
+$('.select_address')[1].click()</msg>
+<status status="PASS" endtime="20180720 17:33:20.474" starttime="20180720 17:33:18.198"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${shipping}.click()</arg>
+</arguments>
+<msg timestamp="20180720 17:33:20.476" level="INFO">Executing JavaScript:
+$('.radio-box')[0].click()</msg>
+<status status="PASS" endtime="20180720 17:33:21.023" starttime="20180720 17:33:20.475"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${payment_type}.click()</arg>
+</arguments>
+<msg timestamp="20180720 17:33:21.026" level="INFO">Executing JavaScript:
+$('#wetrust_CS').find('.button-payment-inner').click()</msg>
+<status status="PASS" endtime="20180720 17:33:21.557" starttime="20180720 17:33:21.025"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:33:21.558" starttime="20180720 17:33:10.131"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_confirm_placeorder}</arg>
+</arguments>
+<msg timestamp="20180720 17:33:21.561" level="INFO">Clicking element '//button[@class='btn btn-con m-hide btn_step3_confirm']'.</msg>
+<status status="PASS" endtime="20180720 17:34:14.884" starttime="20180720 17:33:21.560"></status>
+</kw>
+<kw name="Get order id offline from thankyou page" library="Checkout">
+<doc>Use for get order id offline on thankyou page</doc>
+<arguments>
+<arg>${lbl_order_id}</arg>
+</arguments>
+<kw name="Check Element Visible" library="Account_History">
+<doc>Use for check element is visible</doc>
+<arguments>
+<arg>${lbl_order_id}</arg>
+<arg>${expect_load_time}</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${expect_load_time}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:34:23.280" starttime="20180720 17:34:14.890"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:23.280" starttime="20180720 17:34:14.887"></status>
+</kw>
+<kw name="Get Text" library="SeleniumLibrary">
+<doc>Returns the text value of element identified by ``locator``.</doc>
+<arguments>
+<arg>${lbl_order_id}</arg>
+</arguments>
+<assign>
+<var>${order_id}</var>
+</assign>
+<msg timestamp="20180720 17:34:24.333" level="INFO">${order_id} = 800011412900</msg>
+<status status="PASS" endtime="20180720 17:34:24.333" starttime="20180720 17:34:23.281"></status>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<arguments>
+<arg>${order_id}</arg>
+</arguments>
+<msg timestamp="20180720 17:34:24.335" level="INFO">${order_id} = 800011412900</msg>
+<status status="PASS" endtime="20180720 17:34:24.335" starttime="20180720 17:34:24.334"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:24.336" starttime="20180720 17:34:14.885"></status>
+</kw>
+<kw name="Get substring order id offline from thankyou page" library="Checkout">
+<doc>Use for get substring order id offline form thankyou page</doc>
+<arguments>
+<arg>${order_id}</arg>
+</arguments>
+<kw name="Get Substring" library="String">
+<doc>Returns a substring from ``start`` index to ``end`` index.</doc>
+<arguments>
+<arg>${order_id}</arg>
+<arg>4</arg>
+<arg>12</arg>
+</arguments>
+<assign>
+<var>${order_id_sub}</var>
+</assign>
+<msg timestamp="20180720 17:34:24.339" level="INFO">${order_id_sub} = 11412900</msg>
+<status status="PASS" endtime="20180720 17:34:24.339" starttime="20180720 17:34:24.338"></status>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<arguments>
+<arg>${order_id_sub}</arg>
+</arguments>
+<msg timestamp="20180720 17:34:24.340" level="INFO">${order_id_sub} = 11412900</msg>
+<status status="PASS" endtime="20180720 17:34:24.340" starttime="20180720 17:34:24.339"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:24.340" starttime="20180720 17:34:24.336"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:24.341" starttime="20180720 17:32:49.190"></status>
+</kw>
+<kw name="Go To Store Order Detail Page" library="Store_Detail">
+<doc>Use for go to store order detail page</doc>
+<arguments>
+<arg>${reconteststore_slug}</arg>
+<arg>${order_id}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_STORE}/${slug_name}/admin/orders/show/${secure_key}</arg>
+</arguments>
+<msg timestamp="20180720 17:34:24.343" level="INFO">Opening url 'https://store.wls-dev.com/reconteststore/admin/orders/show/800011412900'</msg>
+<status status="PASS" endtime="20180720 17:34:28.948" starttime="20180720 17:34:24.343"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:28.948" starttime="20180720 17:34:24.341"></status>
+</kw>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${order_product_name_detail}</arg>
+<arg>${normal_product1_reconstore}</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:34:30.014" level="INFO">Element '//*[@id="product_detail_list"]/tbody/tr[1]/td[2]/div[1]/a' contains text 'Robotreconteststore normal product'.</msg>
+<status status="PASS" endtime="20180720 17:34:30.015" starttime="20180720 17:34:28.953"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:30.016" starttime="20180720 17:34:28.950"></status>
+</kw>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${order_status_detail_product}</arg>
+<arg>รอการชำระเงิน</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:34:31.075" level="INFO">Element '//*[@class="order-detail-status"]' contains text 'รอการชำระเงิน'.</msg>
+<status status="PASS" endtime="20180720 17:34:31.075" starttime="20180720 17:34:30.019"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:31.076" starttime="20180720 17:34:30.017"></status>
+</kw>
+<doc>Check status placeorder order detail waiting for payment</doc>
+<tags>
+<tag>High</tag>
+<tag>mc-wls</tag>
+<tag>Order-API</tag>
+<tag>Regression</tag>
+</tags>
+<status status="PASS" endtime="20180720 17:34:31.076" critical="yes" starttime="20180720 17:32:49.187"></status>
+</test>
+<test id="s1-s1-s1-s1-t2" name="TC_MC_03553">
+<kw type="setup" name="Create order offline channel" library="Checkout">
+<doc>Clear product in cart and create new order by offline channel</doc>
+<arguments>
+<arg>${reconteststore_slug}</arg>
+<arg>${normal_product1_reconstore}</arg>
+<arg>${select_address}</arg>
+<arg>${shipping_post}</arg>
+<arg>${cs_channel_radio_button}</arg>
+<arg>${lbl_payment_cs_ref2_number}</arg>
+</arguments>
+<kw name="Delete All Product In Cart" library="Checkout">
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_PORTAL}/cart</arg>
+</arguments>
+<msg timestamp="20180720 17:34:31.091" level="INFO">Opening url 'https://portal.wls-dev.com/cart'</msg>
+<status status="PASS" endtime="20180720 17:34:33.438" starttime="20180720 17:34:31.091"></status>
+</kw>
+<kw name="Get Matching Xpath Count" library="SeleniumLibrary">
+<doc>Deprecated. Use `Get Element Count` instead.</doc>
+<arguments>
+<arg>${delete_product_cart}</arg>
+</arguments>
+<assign>
+<var>${count}</var>
+</assign>
+<msg timestamp="20180720 17:34:34.458" level="INFO">${count} = 0</msg>
+<status status="PASS" endtime="20180720 17:34:34.458" starttime="20180720 17:34:33.439"></status>
+</kw>
+<kw type="for" name="${a} IN RANGE [ 0 | ${count} ]">
+<status status="PASS" endtime="20180720 17:34:34.459" starttime="20180720 17:34:34.459"></status>
+</kw>
+<kw name="Wait Until Page Contains" library="SeleniumLibrary">
+<doc>Waits until ``text`` appears on current page.</doc>
+<arguments>
+<arg>ไม่มีสินค้าในตะกร้าของท่าน</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:34:34.991" starttime="20180720 17:34:34.460"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:34.992" starttime="20180720 17:34:31.090"></status>
+</kw>
+<kw name="Add Product To Cart by product name on Store" library="Checkout">
+<doc>Use for user select one product which select product one piece to cart</doc>
+<arguments>
+<arg>${URL_SHOP}/${store_name}</arg>
+<arg>${product_name}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${store_url}</arg>
+</arguments>
+<msg timestamp="20180720 17:34:34.995" level="INFO">Opening url 'https://store.wls-dev.com/reconteststore'</msg>
+<status status="PASS" endtime="20180720 17:34:37.303" starttime="20180720 17:34:34.994"></status>
+</kw>
+<kw name="Select product by product name" library="Checkout">
+<doc>Use for select product by name when placeorder</doc>
+<arguments>
+<arg>${product_name}</arg>
+</arguments>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>$("img[alt='${product_name}']").click()</arg>
+</arguments>
+<msg timestamp="20180720 17:34:37.306" level="INFO">Executing JavaScript:
+$("img[alt='Robotreconteststore normal product']").click()</msg>
+<status status="PASS" endtime="20180720 17:34:43.285" starttime="20180720 17:34:37.306"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:43.285" starttime="20180720 17:34:37.304"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:34:44.336" starttime="20180720 17:34:43.286"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+</arguments>
+<msg timestamp="20180720 17:34:44.338" level="INFO">Clicking element '//button[@id="btn-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:34:45.449" starttime="20180720 17:34:44.337"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:34:46.512" starttime="20180720 17:34:45.450"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+</arguments>
+<msg timestamp="20180720 17:34:46.513" level="INFO">Clicking element '//div[@class="modal-content"]//a[@class="btn btn-default btn-popup-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:34:48.822" starttime="20180720 17:34:46.512"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:48.822" starttime="20180720 17:34:34.992"></status>
+</kw>
+<kw name="Place Order" library="Checkout">
+<doc>Use for payment order by online or offline channel</doc>
+<arguments>
+<arg>${select_address}</arg>
+<arg>${shipping_post}</arg>
+<arg>${payment_channel}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_PORTAL}/cart</arg>
+</arguments>
+<msg timestamp="20180720 17:34:48.826" level="INFO">Opening url 'https://portal.wls-dev.com/cart'</msg>
+<status status="PASS" endtime="20180720 17:34:49.808" starttime="20180720 17:34:48.825"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_place_order}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:34:50.860" starttime="20180720 17:34:49.809"></status>
+</kw>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_place_order}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180720 17:34:50.864" level="INFO">Clicking element '//button[@class="btn btn-buy"]'.</msg>
+<status status="PASS" endtime="20180720 17:34:51.965" starttime="20180720 17:34:50.864"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:51.965" starttime="20180720 17:34:50.861"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>//button[@class="btn btn-default btn-xs btn-add new_address"]</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:34:54.488" starttime="20180720 17:34:51.966"></status>
+</kw>
+<kw name="Focus" library="SeleniumLibrary">
+<doc>Deprecated. Use `Set Focus To Element` instead.</doc>
+<arguments>
+<arg>//button[@class="btn btn-default btn-xs btn-add new_address"]</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:34:55.532" starttime="20180720 17:34:54.489"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${email}</arg>
+</arguments>
+<msg timestamp="20180720 17:34:55.533" level="INFO">Executing JavaScript:
+$('.select_address')[1].click()</msg>
+<status status="PASS" endtime="20180720 17:34:57.595" starttime="20180720 17:34:55.533"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${shipping}.click()</arg>
+</arguments>
+<msg timestamp="20180720 17:34:57.596" level="INFO">Executing JavaScript:
+$('.radio-box')[0].click()</msg>
+<status status="PASS" endtime="20180720 17:34:58.129" starttime="20180720 17:34:57.596"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${payment_type}.click()</arg>
+</arguments>
+<msg timestamp="20180720 17:34:58.130" level="INFO">Executing JavaScript:
+$('#wetrust_CS').find('.button-payment-inner').click()</msg>
+<status status="PASS" endtime="20180720 17:34:58.657" starttime="20180720 17:34:58.129"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:34:58.658" starttime="20180720 17:34:48.823"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_confirm_placeorder}</arg>
+</arguments>
+<msg timestamp="20180720 17:34:58.660" level="INFO">Clicking element '//button[@class='btn btn-con m-hide btn_step3_confirm']'.</msg>
+<status status="PASS" endtime="20180720 17:35:07.868" starttime="20180720 17:34:58.659"></status>
+</kw>
+<kw name="Get order id offline from thankyou page" library="Checkout">
+<doc>Use for get order id offline on thankyou page</doc>
+<arguments>
+<arg>${lbl_order_id}</arg>
+</arguments>
+<kw name="Check Element Visible" library="Account_History">
+<doc>Use for check element is visible</doc>
+<arguments>
+<arg>${lbl_order_id}</arg>
+<arg>${expect_load_time}</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${expect_load_time}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:35:15.411" starttime="20180720 17:35:07.876"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:15.411" starttime="20180720 17:35:07.872"></status>
+</kw>
+<kw name="Get Text" library="SeleniumLibrary">
+<doc>Returns the text value of element identified by ``locator``.</doc>
+<arguments>
+<arg>${lbl_order_id}</arg>
+</arguments>
+<assign>
+<var>${order_id}</var>
+</assign>
+<msg timestamp="20180720 17:35:16.464" level="INFO">${order_id} = 800011412901</msg>
+<status status="PASS" endtime="20180720 17:35:16.464" starttime="20180720 17:35:15.412"></status>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<arguments>
+<arg>${order_id}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:16.465" level="INFO">${order_id} = 800011412901</msg>
+<status status="PASS" endtime="20180720 17:35:16.465" starttime="20180720 17:35:16.464"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:16.466" starttime="20180720 17:35:07.869"></status>
+</kw>
+<kw name="Get substring order id offline from thankyou page" library="Checkout">
+<doc>Use for get substring order id offline form thankyou page</doc>
+<arguments>
+<arg>${order_id}</arg>
+</arguments>
+<kw name="Get Substring" library="String">
+<doc>Returns a substring from ``start`` index to ``end`` index.</doc>
+<arguments>
+<arg>${order_id}</arg>
+<arg>4</arg>
+<arg>12</arg>
+</arguments>
+<assign>
+<var>${order_id_sub}</var>
+</assign>
+<msg timestamp="20180720 17:35:16.469" level="INFO">${order_id_sub} = 11412901</msg>
+<status status="PASS" endtime="20180720 17:35:16.469" starttime="20180720 17:35:16.468"></status>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<arguments>
+<arg>${order_id_sub}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:16.470" level="INFO">${order_id_sub} = 11412901</msg>
+<status status="PASS" endtime="20180720 17:35:16.471" starttime="20180720 17:35:16.470"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:16.471" starttime="20180720 17:35:16.466"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:16.471" starttime="20180720 17:34:31.088"></status>
+</kw>
+<kw name="Login admin manage order web" library="ManageOrder">
+<doc>Use for login admin manage order-web</doc>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_ORDER}/admin/login</arg>
+</arguments>
+<msg timestamp="20180720 17:35:16.475" level="INFO">Opening url 'https://order.wls-dev.com/admin/login'</msg>
+<status status="PASS" endtime="20180720 17:35:17.571" starttime="20180720 17:35:16.473"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${input_username_admin_orderweb}</arg>
+<arg>${user_admin_manage_orderweb}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:17.573" level="INFO">Typing text 'automate' into text field '//input[@name="username"]'.</msg>
+<status status="PASS" endtime="20180720 17:35:19.220" starttime="20180720 17:35:17.572"></status>
+</kw>
+<kw name="Input Password" library="SeleniumLibrary">
+<doc>Types the given password into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${input_password_admin_orderweb}</arg>
+<arg>${pass_admin_manage_orderweb}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:19.224" level="INFO">Typing password into text field '//input[@name="userpass"]'.</msg>
+<status status="PASS" endtime="20180720 17:35:20.872" starttime="20180720 17:35:19.222"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${login_button_admin_orderweb}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:20.873" level="INFO">Clicking element '//button[@type="submit"]'.</msg>
+<status status="PASS" endtime="20180720 17:35:22.642" starttime="20180720 17:35:20.873"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${user_sign_admin_orderweb}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:35:23.696" starttime="20180720 17:35:22.643"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:23.697" starttime="20180720 17:35:16.472"></status>
+</kw>
+<kw name="API Order Manage Datetime" library="ManageOrder">
+<doc>Use for admin manage datetime on api-order page</doc>
+<arguments>
+<arg>payment_expired_time</arg>
+<arg>เพิ่ม-ลด</arg>
+<arg>-4</arg>
+<arg>day</arg>
+</arguments>
+<kw name="Go to order web manage date time" library="Account_History">
+<doc>Use for go to manage date time page</doc>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_ORDER}/admin/manage/datetime</arg>
+</arguments>
+<msg timestamp="20180720 17:35:23.701" level="INFO">Opening url 'https://order.wls-dev.com/admin/manage/datetime'</msg>
+<status status="PASS" endtime="20180720 17:35:24.471" starttime="20180720 17:35:23.701"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:24.472" starttime="20180720 17:35:23.699"></status>
+</kw>
+<kw name="Search order id on manage datetime page" library="ManageOrder">
+<doc>Use for input order id on manage datetime page</doc>
+<arguments>
+<arg>${order_id_sub}</arg>
+</arguments>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${input_search_manage_datetime}</arg>
+<arg>${order_id}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:24.478" level="INFO">Typing text '11412901' into text field '//*[@name='order_id']'.</msg>
+<status status="PASS" endtime="20180720 17:35:26.109" starttime="20180720 17:35:24.477"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${button_search_manage_datetime}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:26.111" level="INFO">Clicking element '//input[@value="Search"]'.</msg>
+<status status="PASS" endtime="20180720 17:35:28.959" starttime="20180720 17:35:26.110"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:28.959" starttime="20180720 17:35:24.473"></status>
+</kw>
+<kw name="Select From List" library="SeleniumLibrary">
+<doc>Deprecated. Use `Select From List By Label/Value/Index` instead.</doc>
+<arguments>
+<arg>${select_list_status}</arg>
+<arg>${status_managetime}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:28.961" level="INFO">Selecting option(s) 'payment_expired_time' from list '//select[@id="order-fields"]'.</msg>
+<status status="PASS" endtime="20180720 17:35:33.643" starttime="20180720 17:35:28.960"></status>
+</kw>
+<kw name="Select From List" library="SeleniumLibrary">
+<doc>Deprecated. Use `Select From List By Label/Value/Index` instead.</doc>
+<arguments>
+<arg>${select_list_type}</arg>
+<arg>${time_addsub}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:33.645" level="INFO">Selecting option(s) 'เพิ่ม-ลด' from list '//select[@id="order-type"]'.</msg>
+<status status="PASS" endtime="20180720 17:35:38.323" starttime="20180720 17:35:33.644"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${input_order_time}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:35:39.380" starttime="20180720 17:35:38.323"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${input_order_time}</arg>
+<arg>${order_time}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:39.381" level="INFO">Typing text '-4' into text field '//input[@id="order-time"]'.</msg>
+<status status="PASS" endtime="20180720 17:35:40.995" starttime="20180720 17:35:39.381"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>//select[@name="unit"]//option[@value="${unit}"]</arg>
+</arguments>
+<msg timestamp="20180720 17:35:40.997" level="INFO">Clicking element '//select[@name="unit"]//option[@value="day"]'.</msg>
+<status status="PASS" endtime="20180720 17:35:42.070" starttime="20180720 17:35:40.996"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${update_button}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:42.072" level="INFO">Clicking element '//input[@id="order-btn"]'.</msg>
+<status status="PASS" endtime="20180720 17:35:45.308" starttime="20180720 17:35:42.071"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:45.308" starttime="20180720 17:35:23.698"></status>
+</kw>
+<kw name="Run cron order expire on admin manage order web" library="ManageOrder">
+<doc>Use change order countdown</doc>
+<arguments>
+<arg>${order_id_sub}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_CRON_PAYMENT_EXPIRED}?order_id=${order_id_sub}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:45.316" level="INFO">Opening url 'https://api-order.wls-dev.com/v3/auto/expire?order_id=11412901'</msg>
+<status status="PASS" endtime="20180720 17:35:49.005" starttime="20180720 17:35:45.314"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:49.005" starttime="20180720 17:35:45.310"></status>
+</kw>
+<kw name="Go To Store Order Detail Page" library="Store_Detail">
+<doc>Use for go to store order detail page</doc>
+<arguments>
+<arg>${reconteststore_slug}</arg>
+<arg>${order_id}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_STORE}/${slug_name}/admin/orders/show/${secure_key}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:49.009" level="INFO">Opening url 'https://store.wls-dev.com/reconteststore/admin/orders/show/800011412901'</msg>
+<status status="PASS" endtime="20180720 17:35:51.295" starttime="20180720 17:35:49.008"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:51.295" starttime="20180720 17:35:49.006"></status>
+</kw>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${order_product_name_detail}</arg>
+<arg>${normal_product1_reconstore}</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:52.361" level="INFO">Element '//*[@id="product_detail_list"]/tbody/tr[1]/td[2]/div[1]/a' contains text 'Robotreconteststore normal product'.</msg>
+<status status="PASS" endtime="20180720 17:35:52.361" starttime="20180720 17:35:51.298"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:52.362" starttime="20180720 17:35:51.296"></status>
+</kw>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${order_status_detail_product}</arg>
+<arg>รายการนี้ถูกยกเลิก</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:53.424" level="INFO">Element '//*[@class="order-detail-status"]' contains text 'รายการนี้ถูกยกเลิก'.</msg>
+<status status="PASS" endtime="20180720 17:35:53.425" starttime="20180720 17:35:52.365"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:53.425" starttime="20180720 17:35:52.363"></status>
+</kw>
+<doc>Check status placeorder order detail cancel order</doc>
+<tags>
+<tag>mc-wls</tag>
+<tag>Medium</tag>
+<tag>Order-API</tag>
+<tag>Regression</tag>
+</tags>
+<status status="PASS" endtime="20180720 17:35:53.425" critical="yes" starttime="20180720 17:34:31.083"></status>
+</test>
+<test id="s1-s1-s1-s1-t3" name="TC_MC_03554">
+<kw type="setup" name="Create order ewallet channel" library="Checkout">
+<doc>Clear product in cart and create new order by ewallet</doc>
+<arguments>
+<arg>${reconteststore_slug}</arg>
+<arg>${normal_product1_reconstore}</arg>
+<arg>${select_address}</arg>
+<arg>${shipping_post}</arg>
+<arg>${ew_channel_radio_button}</arg>
+</arguments>
+<kw name="Delete All Product In Cart" library="Checkout">
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_PORTAL}/cart</arg>
+</arguments>
+<msg timestamp="20180720 17:35:53.438" level="INFO">Opening url 'https://portal.wls-dev.com/cart'</msg>
+<status status="PASS" endtime="20180720 17:35:55.175" starttime="20180720 17:35:53.438"></status>
+</kw>
+<kw name="Get Matching Xpath Count" library="SeleniumLibrary">
+<doc>Deprecated. Use `Get Element Count` instead.</doc>
+<arguments>
+<arg>${delete_product_cart}</arg>
+</arguments>
+<assign>
+<var>${count}</var>
+</assign>
+<msg timestamp="20180720 17:35:56.192" level="INFO">${count} = 0</msg>
+<status status="PASS" endtime="20180720 17:35:56.192" starttime="20180720 17:35:55.176"></status>
+</kw>
+<kw type="for" name="${a} IN RANGE [ 0 | ${count} ]">
+<status status="PASS" endtime="20180720 17:35:56.193" starttime="20180720 17:35:56.192"></status>
+</kw>
+<kw name="Wait Until Page Contains" library="SeleniumLibrary">
+<doc>Waits until ``text`` appears on current page.</doc>
+<arguments>
+<arg>ไม่มีสินค้าในตะกร้าของท่าน</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:35:56.724" starttime="20180720 17:35:56.194"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:35:56.725" starttime="20180720 17:35:53.432"></status>
+</kw>
+<kw name="Add Product To Cart by product name on Store" library="Checkout">
+<doc>Use for user select one product which select product one piece to cart</doc>
+<arguments>
+<arg>${URL_SHOP}/${store_name}</arg>
+<arg>${product_name}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${store_url}</arg>
+</arguments>
+<msg timestamp="20180720 17:35:56.728" level="INFO">Opening url 'https://store.wls-dev.com/reconteststore'</msg>
+<status status="PASS" endtime="20180720 17:35:59.033" starttime="20180720 17:35:56.727"></status>
+</kw>
+<kw name="Select product by product name" library="Checkout">
+<doc>Use for select product by name when placeorder</doc>
+<arguments>
+<arg>${product_name}</arg>
+</arguments>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>$("img[alt='${product_name}']").click()</arg>
+</arguments>
+<msg timestamp="20180720 17:35:59.040" level="INFO">Executing JavaScript:
+$("img[alt='Robotreconteststore normal product']").click()</msg>
+<status status="PASS" endtime="20180720 17:36:03.177" starttime="20180720 17:35:59.039"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:03.178" starttime="20180720 17:35:59.035"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:36:04.230" starttime="20180720 17:36:03.179"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:04.232" level="INFO">Clicking element '//button[@id="btn-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:36:05.320" starttime="20180720 17:36:04.231"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:36:06.369" starttime="20180720 17:36:05.321"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:06.371" level="INFO">Clicking element '//div[@class="modal-content"]//a[@class="btn btn-default btn-popup-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:36:08.725" starttime="20180720 17:36:06.370"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:08.726" starttime="20180720 17:35:56.725"></status>
+</kw>
+<kw name="Place Order" library="Checkout">
+<doc>Use for payment order by online or offline channel</doc>
+<arguments>
+<arg>${select_address}</arg>
+<arg>${shipping_post}</arg>
+<arg>${payment_channel}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_PORTAL}/cart</arg>
+</arguments>
+<msg timestamp="20180720 17:36:08.733" level="INFO">Opening url 'https://portal.wls-dev.com/cart'</msg>
+<status status="PASS" endtime="20180720 17:36:09.810" starttime="20180720 17:36:08.732"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_place_order}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:36:10.873" starttime="20180720 17:36:09.811"></status>
+</kw>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_place_order}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:10.876" level="INFO">Clicking element '//button[@class="btn btn-buy"]'.</msg>
+<status status="PASS" endtime="20180720 17:36:11.969" starttime="20180720 17:36:10.875"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:11.970" starttime="20180720 17:36:10.874"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>//button[@class="btn btn-default btn-xs btn-add new_address"]</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:36:13.986" starttime="20180720 17:36:11.971"></status>
+</kw>
+<kw name="Focus" library="SeleniumLibrary">
+<doc>Deprecated. Use `Set Focus To Element` instead.</doc>
+<arguments>
+<arg>//button[@class="btn btn-default btn-xs btn-add new_address"]</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:36:15.024" starttime="20180720 17:36:13.986"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${email}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:15.025" level="INFO">Executing JavaScript:
+$('.select_address')[1].click()</msg>
+<status status="PASS" endtime="20180720 17:36:16.929" starttime="20180720 17:36:15.025"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${shipping}.click()</arg>
+</arguments>
+<msg timestamp="20180720 17:36:16.930" level="INFO">Executing JavaScript:
+$('.radio-box')[0].click()</msg>
+<status status="PASS" endtime="20180720 17:36:17.478" starttime="20180720 17:36:16.930"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${payment_type}.click()</arg>
+</arguments>
+<msg timestamp="20180720 17:36:17.479" level="INFO">Executing JavaScript:
+$('#wetrust_EW').find('.button-payment-inner').click()</msg>
+<status status="PASS" endtime="20180720 17:36:18.016" starttime="20180720 17:36:17.479"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:18.016" starttime="20180720 17:36:08.728"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_confirm_placeorder}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:18.019" level="INFO">Clicking element '//button[@class='btn btn-con m-hide btn_step3_confirm']'.</msg>
+<status status="PASS" endtime="20180720 17:36:22.904" starttime="20180720 17:36:18.018"></status>
+</kw>
+<kw name="Check Element Visible" library="Account_History">
+<doc>Use for check element is visible</doc>
+<arguments>
+<arg>${wallet_cancel}</arg>
+<arg>${expect_load_time}</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${expect_load_time}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:36:30.559" starttime="20180720 17:36:22.905"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:30.559" starttime="20180720 17:36:22.904"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${wallet_cancel}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:30.560" level="INFO">Clicking element '//a[contains(text(),'ยกเลิกรายการ')]'.</msg>
+<status status="PASS" endtime="20180720 17:36:39.315" starttime="20180720 17:36:30.560"></status>
+</kw>
+<kw name="Check Element Visible" library="Account_History">
+<doc>Use for check element is visible</doc>
+<arguments>
+<arg>${btn_view_order_detail_thankyou_page}</arg>
+<arg>${expect_load_time}</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${expect_load_time}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:36:40.373" starttime="20180720 17:36:39.318"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:40.374" starttime="20180720 17:36:39.316"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_view_order_detail_thankyou_page}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:40.375" level="INFO">Clicking element '//*[@class="btn btn-action-main"]'.</msg>
+<status status="PASS" endtime="20180720 17:36:44.003" starttime="20180720 17:36:40.375"></status>
+</kw>
+<kw name="Get Location" library="SeleniumLibrary">
+<doc>Returns the current browser URL.</doc>
+<assign>
+<var>${url_detail}</var>
+</assign>
+<msg timestamp="20180720 17:36:44.522" level="INFO">${url_detail} = https://account.wls-dev.com/profile/report/orderdetail/800011412902</msg>
+<status status="PASS" endtime="20180720 17:36:44.522" starttime="20180720 17:36:44.004"></status>
+</kw>
+<kw name="Remove String" library="String">
+<doc>Removes all ``removables`` from the given ``string``.</doc>
+<arguments>
+<arg>${url_detail}</arg>
+<arg>${URL_ACCOUNT}/profile/report/orderdetail/</arg>
+</arguments>
+<assign>
+<var>${order_id}</var>
+</assign>
+<msg timestamp="20180720 17:36:44.524" level="INFO">${order_id} = 800011412902</msg>
+<status status="PASS" endtime="20180720 17:36:44.524" starttime="20180720 17:36:44.523"></status>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<arguments>
+<arg>${order_id}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:44.525" level="INFO">${order_id} = 800011412902</msg>
+<status status="PASS" endtime="20180720 17:36:44.525" starttime="20180720 17:36:44.524"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:44.525" starttime="20180720 17:35:53.430"></status>
+</kw>
+<kw name="Go To Store Order Detail Page" library="Store_Detail">
+<doc>Use for go to store order detail page</doc>
+<arguments>
+<arg>${reconteststore_slug}</arg>
+<arg>${order_id}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_STORE}/${slug_name}/admin/orders/show/${secure_key}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:44.529" level="INFO">Opening url 'https://store.wls-dev.com/reconteststore/admin/orders/show/800011412902'</msg>
+<status status="PASS" endtime="20180720 17:36:46.665" starttime="20180720 17:36:44.528"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:46.665" starttime="20180720 17:36:44.526"></status>
+</kw>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${order_product_name_detail}</arg>
+<arg>${normal_product1_reconstore}</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:47.728" level="INFO">Element '//*[@id="product_detail_list"]/tbody/tr[1]/td[2]/div[1]/a' contains text 'Robotreconteststore normal product'.</msg>
+<status status="PASS" endtime="20180720 17:36:47.728" starttime="20180720 17:36:46.668"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:47.728" starttime="20180720 17:36:46.666"></status>
+</kw>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${order_status_detail_product}</arg>
+<arg>ชำระเงินไม่สำเร็จ</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:48.783" level="INFO">Element '//*[@class="order-detail-status"]' contains text 'ชำระเงินไม่สำเร็จ'.</msg>
+<status status="PASS" endtime="20180720 17:36:48.784" starttime="20180720 17:36:47.732"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:48.784" starttime="20180720 17:36:47.729"></status>
+</kw>
+<doc>Check status placeorder order detail payment fail</doc>
+<tags>
+<tag>mc-wls</tag>
+<tag>Medium</tag>
+<tag>Order-API</tag>
+<tag>Regression</tag>
+</tags>
+<status status="PASS" endtime="20180720 17:36:48.785" critical="yes" starttime="20180720 17:35:53.427"></status>
+</test>
+<test id="s1-s1-s1-s1-t4" name="TC_MC_03556">
+<kw type="setup" name="Create order two products" library="Checkout">
+<doc>Clear product in cart and create new order two products by credit card channel</doc>
+<arguments>
+<arg>${reconteststore_slug}</arg>
+<arg>${normal_product1_reconstore}</arg>
+<arg>${normal_product2_reconstore}</arg>
+<arg>${select_address}</arg>
+<arg>${shipping_post}</arg>
+<arg>${ccw_channel_radio_button}</arg>
+</arguments>
+<kw name="Delete All Product In Cart" library="Checkout">
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_PORTAL}/cart</arg>
+</arguments>
+<msg timestamp="20180720 17:36:48.793" level="INFO">Opening url 'https://portal.wls-dev.com/cart'</msg>
+<status status="PASS" endtime="20180720 17:36:50.531" starttime="20180720 17:36:48.792"></status>
+</kw>
+<kw name="Get Matching Xpath Count" library="SeleniumLibrary">
+<doc>Deprecated. Use `Get Element Count` instead.</doc>
+<arguments>
+<arg>${delete_product_cart}</arg>
+</arguments>
+<assign>
+<var>${count}</var>
+</assign>
+<msg timestamp="20180720 17:36:51.548" level="INFO">${count} = 0</msg>
+<status status="PASS" endtime="20180720 17:36:51.548" starttime="20180720 17:36:50.532"></status>
+</kw>
+<kw type="for" name="${a} IN RANGE [ 0 | ${count} ]">
+<status status="PASS" endtime="20180720 17:36:51.549" starttime="20180720 17:36:51.548"></status>
+</kw>
+<kw name="Wait Until Page Contains" library="SeleniumLibrary">
+<doc>Waits until ``text`` appears on current page.</doc>
+<arguments>
+<arg>ไม่มีสินค้าในตะกร้าของท่าน</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:36:52.081" starttime="20180720 17:36:51.549"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:52.081" starttime="20180720 17:36:48.791"></status>
+</kw>
+<kw name="Add Product To Cart by product name on Store" library="Checkout">
+<doc>Use for user select one product which select product one piece to cart</doc>
+<arguments>
+<arg>${URL_SHOP}/${store_name}</arg>
+<arg>${product_first}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${store_url}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:52.084" level="INFO">Opening url 'https://store.wls-dev.com/reconteststore'</msg>
+<status status="PASS" endtime="20180720 17:36:54.639" starttime="20180720 17:36:52.084"></status>
+</kw>
+<kw name="Select product by product name" library="Checkout">
+<doc>Use for select product by name when placeorder</doc>
+<arguments>
+<arg>${product_name}</arg>
+</arguments>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>$("img[alt='${product_name}']").click()</arg>
+</arguments>
+<msg timestamp="20180720 17:36:54.642" level="INFO">Executing JavaScript:
+$("img[alt='Robotreconteststore normal product']").click()</msg>
+<status status="PASS" endtime="20180720 17:36:58.760" starttime="20180720 17:36:54.642"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:36:58.761" starttime="20180720 17:36:54.641"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:36:59.816" starttime="20180720 17:36:58.761"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+</arguments>
+<msg timestamp="20180720 17:36:59.817" level="INFO">Clicking element '//button[@id="btn-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:37:00.941" starttime="20180720 17:36:59.816"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:37:01.999" starttime="20180720 17:37:00.942"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:02.000" level="INFO">Clicking element '//div[@class="modal-content"]//a[@class="btn btn-default btn-popup-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:37:04.622" starttime="20180720 17:37:02.000"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:37:04.622" starttime="20180720 17:36:52.082"></status>
+</kw>
+<kw name="Add Product To Cart by product name on Store" library="Checkout">
+<doc>Use for user select one product which select product one piece to cart</doc>
+<arguments>
+<arg>${URL_SHOP}/${store_name}</arg>
+<arg>${product_second}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${store_url}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:04.628" level="INFO">Opening url 'https://store.wls-dev.com/reconteststore'</msg>
+<status status="PASS" endtime="20180720 17:37:06.443" starttime="20180720 17:37:04.626"></status>
+</kw>
+<kw name="Select product by product name" library="Checkout">
+<doc>Use for select product by name when placeorder</doc>
+<arguments>
+<arg>${product_name}</arg>
+</arguments>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>$("img[alt='${product_name}']").click()</arg>
+</arguments>
+<msg timestamp="20180720 17:37:06.449" level="INFO">Executing JavaScript:
+$("img[alt='Robotreconteststore normal product 2']").click()</msg>
+<status status="PASS" endtime="20180720 17:37:11.152" starttime="20180720 17:37:06.448"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:37:11.152" starttime="20180720 17:37:06.445"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:37:12.208" starttime="20180720 17:37:11.153"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:12.209" level="INFO">Clicking element '//button[@id="btn-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:37:13.327" starttime="20180720 17:37:12.208"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:37:14.384" starttime="20180720 17:37:13.328"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:14.386" level="INFO">Clicking element '//div[@class="modal-content"]//a[@class="btn btn-default btn-popup-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:37:17.976" starttime="20180720 17:37:14.385"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:37:17.976" starttime="20180720 17:37:04.623"></status>
+</kw>
+<kw name="Place Order" library="Checkout">
+<doc>Use for payment order by online or offline channel</doc>
+<arguments>
+<arg>${select_address}</arg>
+<arg>${shipping_post}</arg>
+<arg>${payment_channel}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_PORTAL}/cart</arg>
+</arguments>
+<msg timestamp="20180720 17:37:17.980" level="INFO">Opening url 'https://portal.wls-dev.com/cart'</msg>
+<status status="PASS" endtime="20180720 17:37:18.975" starttime="20180720 17:37:17.979"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_place_order}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:37:20.034" starttime="20180720 17:37:18.976"></status>
+</kw>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_place_order}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:20.038" level="INFO">Clicking element '//button[@class="btn btn-buy"]'.</msg>
+<status status="PASS" endtime="20180720 17:37:21.137" starttime="20180720 17:37:20.037"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:37:21.137" starttime="20180720 17:37:20.035"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>//button[@class="btn btn-default btn-xs btn-add new_address"]</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:37:23.564" starttime="20180720 17:37:21.138"></status>
+</kw>
+<kw name="Focus" library="SeleniumLibrary">
+<doc>Deprecated. Use `Set Focus To Element` instead.</doc>
+<arguments>
+<arg>//button[@class="btn btn-default btn-xs btn-add new_address"]</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:37:24.599" starttime="20180720 17:37:23.564"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${email}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:24.601" level="INFO">Executing JavaScript:
+$('.select_address')[1].click()</msg>
+<status status="PASS" endtime="20180720 17:37:26.662" starttime="20180720 17:37:24.600"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${shipping}.click()</arg>
+</arguments>
+<msg timestamp="20180720 17:37:26.663" level="INFO">Executing JavaScript:
+$('.radio-box')[0].click()</msg>
+<status status="PASS" endtime="20180720 17:37:27.200" starttime="20180720 17:37:26.662"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${payment_type}.click()</arg>
+</arguments>
+<msg timestamp="20180720 17:37:27.202" level="INFO">Executing JavaScript:
+$('#wetrust_CCW').find('.button-payment-inner').click()</msg>
+<status status="PASS" endtime="20180720 17:37:27.737" starttime="20180720 17:37:27.201"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:37:27.737" starttime="20180720 17:37:17.977"></status>
+</kw>
+<kw name="Perform payment by Credit Card" library="Checkout">
+<doc>Inpage Credit Card</doc>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${rdo_credit_card}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:37:28.791" starttime="20180720 17:37:27.742"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${rdo_credit_card}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:28.792" level="INFO">Clicking element '//div[@id="wetrust_CCW"]/div[1]/div'.</msg>
+<status status="PASS" endtime="20180720 17:37:29.874" starttime="20180720 17:37:28.792"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_number_1}</arg>
+<arg>${lbl_credit1}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:29.876" level="INFO">Typing text '5555' into text field 'id=card_number_1'.</msg>
+<status status="PASS" endtime="20180720 17:37:31.537" starttime="20180720 17:37:29.875"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_number_2}</arg>
+<arg>${lbl_credit2}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:31.540" level="INFO">Typing text '5555' into text field 'id=card_number_2'.</msg>
+<status status="PASS" endtime="20180720 17:37:33.179" starttime="20180720 17:37:31.538"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_number_3}</arg>
+<arg>${lbl_credit3}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:33.181" level="INFO">Typing text '5555' into text field 'id=card_number_3'.</msg>
+<status status="PASS" endtime="20180720 17:37:34.815" starttime="20180720 17:37:33.180"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_number_4}</arg>
+<arg>${lbl_credit4}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:34.817" level="INFO">Typing text '4444' into text field 'id=card_number_4'.</msg>
+<status status="PASS" endtime="20180720 17:37:36.454" starttime="20180720 17:37:34.816"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_name}</arg>
+<arg>QA WLS</arg>
+</arguments>
+<msg timestamp="20180720 17:37:36.455" level="INFO">Typing text 'QA WLS' into text field 'name=card_name'.</msg>
+<status status="PASS" endtime="20180720 17:37:38.179" starttime="20180720 17:37:36.455"></status>
+</kw>
+<kw name="Select From List By Label" library="SeleniumLibrary">
+<doc>Selects options from selection list ``locator`` by ``labels``.</doc>
+<arguments>
+<arg>card_expiry_month</arg>
+<arg>${month}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:38.182" level="INFO">Selecting options from selection list 'card_expiry_month' by label 10.</msg>
+<status status="PASS" endtime="20180720 17:37:41.359" starttime="20180720 17:37:38.181"></status>
+</kw>
+<kw name="Select From List By Label" library="SeleniumLibrary">
+<doc>Selects options from selection list ``locator`` by ``labels``.</doc>
+<arguments>
+<arg>card_expiry_year</arg>
+<arg>${year}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:41.361" level="INFO">Selecting options from selection list 'card_expiry_year' by label 2019.</msg>
+<status status="PASS" endtime="20180720 17:37:44.534" starttime="20180720 17:37:41.360"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_cvn}</arg>
+<arg>${cnv}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:44.535" level="INFO">Typing text '123' into text field 'name=card_cvn'.</msg>
+<status status="PASS" endtime="20180720 17:37:46.170" starttime="20180720 17:37:44.534"></status>
+</kw>
+<kw name="Click Confirm Checkout Button" library="Checkout">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_confirm_checkout}</arg>
+</arguments>
+<msg timestamp="20180720 17:37:46.175" level="INFO">Clicking element '//button[@id="btn_step3_confirm"]'.</msg>
+<status status="PASS" endtime="20180720 17:37:47.297" starttime="20180720 17:37:46.174"></status>
+</kw>
+<kw name="Confirm Action" library="SeleniumLibrary">
+<doc>Deprecated. Use `Handle Alert` instead.</doc>
+<status status="PASS" endtime="20180720 17:37:48.862" starttime="20180720 17:37:47.298"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:37:48.863" starttime="20180720 17:37:46.171"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:37:48.864" starttime="20180720 17:37:27.738"></status>
+</kw>
+<kw name="Get order id online from thankyou page" library="Checkout">
+<doc>Use for get order id online on thankyou page</doc>
+<kw name="Check Element Is Visible" library="Common">
+<doc>Use for check element is visible</doc>
+<arguments>
+<arg>${text_order_id_thankyou_page}</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>60</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:38:18.645" starttime="20180720 17:37:48.870"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:18.646" starttime="20180720 17:37:48.868"></status>
+</kw>
+<kw name="Get Text" library="SeleniumLibrary">
+<doc>Returns the text value of element identified by ``locator``.</doc>
+<arguments>
+<arg>${text_order_id_thankyou_page}</arg>
+</arguments>
+<assign>
+<var>${text_order_id}</var>
+</assign>
+<msg timestamp="20180720 17:38:19.694" level="INFO">${text_order_id} = หมายเลขการสั่งซื้อ 800011412903</msg>
+<status status="PASS" endtime="20180720 17:38:19.694" starttime="20180720 17:38:18.647"></status>
+</kw>
+<kw name="Get Substring" library="String">
+<doc>Returns a substring from ``start`` index to ``end`` index.</doc>
+<arguments>
+<arg>${text_order_id}</arg>
+<arg>19</arg>
+</arguments>
+<assign>
+<var>${order_id}</var>
+</assign>
+<msg timestamp="20180720 17:38:19.696" level="INFO">${order_id} = 800011412903</msg>
+<status status="PASS" endtime="20180720 17:38:19.696" starttime="20180720 17:38:19.695"></status>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<arguments>
+<arg>${order_id}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:19.698" level="INFO">${order_id} = 800011412903</msg>
+<status status="PASS" endtime="20180720 17:38:19.698" starttime="20180720 17:38:19.697"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:19.698" starttime="20180720 17:37:48.865"></status>
+</kw>
+<kw name="Get substring order id online from thankyou page" library="Checkout">
+<doc>Use for get substring order id online form thankyou page</doc>
+<arguments>
+<arg>${order_id}</arg>
+</arguments>
+<kw name="Get Substring" library="String">
+<doc>Returns a substring from ``start`` index to ``end`` index.</doc>
+<arguments>
+<arg>${order_id}</arg>
+<arg>4</arg>
+<arg>12</arg>
+</arguments>
+<assign>
+<var>${order_id_sub}</var>
+</assign>
+<msg timestamp="20180720 17:38:19.702" level="INFO">${order_id_sub} = 11412903</msg>
+<status status="PASS" endtime="20180720 17:38:19.702" starttime="20180720 17:38:19.701"></status>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<arguments>
+<arg>${order_id_sub}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:19.703" level="INFO">${order_id_sub} = 11412903</msg>
+<status status="PASS" endtime="20180720 17:38:19.703" starttime="20180720 17:38:19.703"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:19.704" starttime="20180720 17:38:19.699"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:19.704" starttime="20180720 17:36:48.789"></status>
+</kw>
+<kw name="Go To Store Order Detail Page" library="Store_Detail">
+<doc>Use for go to store order detail page</doc>
+<arguments>
+<arg>${reconteststore_slug}</arg>
+<arg>${order_id}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_STORE}/${slug_name}/admin/orders/show/${secure_key}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:19.708" level="INFO">Opening url 'https://store.wls-dev.com/reconteststore/admin/orders/show/800011412903'</msg>
+<status status="PASS" endtime="20180720 17:38:22.296" starttime="20180720 17:38:19.707"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:22.296" starttime="20180720 17:38:19.705"></status>
+</kw>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${order_status_detail}</arg>
+<arg>รอการแจ้งจัดส่งสินค้า</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:23.370" level="INFO">Element '//div[@class="text-center"]/div[@class="headline"]' contains text 'รอการแจ้งจัดส่งสินค้า'.</msg>
+<status status="PASS" endtime="20180720 17:38:23.370" starttime="20180720 17:38:22.301"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:23.371" starttime="20180720 17:38:22.297"></status>
+</kw>
+<kw name="Check Order Countdown Main Status Order" library="Store_Detail">
+<doc>Use for check order countdown main status order</doc>
+<kw name="Should Not Match Regexp" library="BuiltIn">
+<doc>Fails if ``string`` matches ``pattern`` as a regular expression.</doc>
+<arguments>
+<arg>${order_countdown_detail_main}</arg>
+<arg>เหลือเวลาภายใน\n([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:38:23.378" starttime="20180720 17:38:23.375"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:23.378" starttime="20180720 17:38:23.373"></status>
+</kw>
+<kw name="Check Button Shipping Detail Page" library="Store_Detail">
+<doc>Use for check button shipping detail page</doc>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${btn_shipping_detail}</arg>
+<arg>แจ้งจัดส่งสินค้า</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:24.462" level="INFO">Element '//*[@class="order-detail-button"]' contains text 'แจ้งจัดส่งสินค้า'.</msg>
+<status status="PASS" endtime="20180720 17:38:24.462" starttime="20180720 17:38:23.385"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:24.463" starttime="20180720 17:38:23.382"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:24.463" starttime="20180720 17:38:23.379"></status>
+</kw>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${order_product_name_detail}</arg>
+<arg>Robotreconteststore normal product 2</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:25.527" level="INFO">Element '//*[@id="product_detail_list"]/tbody/tr[1]/td[2]/div[1]/a' contains text 'Robotreconteststore normal product 2'.</msg>
+<status status="PASS" endtime="20180720 17:38:25.527" starttime="20180720 17:38:24.466"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:25.528" starttime="20180720 17:38:24.464"></status>
+</kw>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${order_status_detail_product1}</arg>
+<arg>รอการแจ้งจัดส่งสินค้า</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:26.588" level="INFO">Element '//*[@id="product_detail_list"]/tbody/tr[1]/td[3]/div[1]' contains text 'รอการแจ้งจัดส่งสินค้า'.</msg>
+<status status="PASS" endtime="20180720 17:38:26.588" starttime="20180720 17:38:25.531"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:26.589" starttime="20180720 17:38:25.528"></status>
+</kw>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${order_product2_name_detail}</arg>
+<arg>Robotreconteststore normal product</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:27.632" level="INFO">Element '//*[@id="product_detail_list"]/tbody/tr[1]/td[2]/div[1]/a' contains text 'Robotreconteststore normal product'.</msg>
+<status status="PASS" endtime="20180720 17:38:27.632" starttime="20180720 17:38:26.593"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:27.633" starttime="20180720 17:38:26.590"></status>
+</kw>
+<kw name="Check Text" library="Common">
+<doc>Use for check error message</doc>
+<arguments>
+<arg>${order_status_detail_product2}</arg>
+<arg>รอการแจ้งจัดส่งสินค้า</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>${text}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:28.698" level="INFO">Element '//*[@id="product_detail_list"]/tbody/tr[2]/td[3]/div' contains text 'รอการแจ้งจัดส่งสินค้า'.</msg>
+<status status="PASS" endtime="20180720 17:38:28.698" starttime="20180720 17:38:27.637"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:28.699" starttime="20180720 17:38:27.634"></status>
+</kw>
+<doc>Check status placeorder order detail waiting for shipping</doc>
+<tags>
+<tag>High</tag>
+<tag>mc-wls</tag>
+<tag>Order-API</tag>
+<tag>Regression</tag>
+</tags>
+<status status="PASS" endtime="20180720 17:38:28.700" critical="yes" starttime="20180720 17:36:48.786"></status>
+</test>
+<test id="s1-s1-s1-s1-t5" name="TC_MC_03557">
+<kw type="setup" name="Create order credit card channel" library="Checkout">
+<doc>Clear product in cart and create new order by credit card channel</doc>
+<arguments>
+<arg>${reconteststore_slug}</arg>
+<arg>${normal_product1_reconstore}</arg>
+<arg>${select_address}</arg>
+<arg>${shipping_post}</arg>
+<arg>${ccw_channel_radio_button}</arg>
+</arguments>
+<kw name="Delete All Product In Cart" library="Checkout">
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_PORTAL}/cart</arg>
+</arguments>
+<msg timestamp="20180720 17:38:28.716" level="INFO">Opening url 'https://portal.wls-dev.com/cart'</msg>
+<status status="PASS" endtime="20180720 17:38:30.694" starttime="20180720 17:38:28.715"></status>
+</kw>
+<kw name="Get Matching Xpath Count" library="SeleniumLibrary">
+<doc>Deprecated. Use `Get Element Count` instead.</doc>
+<arguments>
+<arg>${delete_product_cart}</arg>
+</arguments>
+<assign>
+<var>${count}</var>
+</assign>
+<msg timestamp="20180720 17:38:31.756" level="INFO">${count} = 0</msg>
+<status status="PASS" endtime="20180720 17:38:31.756" starttime="20180720 17:38:30.695"></status>
+</kw>
+<kw type="for" name="${a} IN RANGE [ 0 | ${count} ]">
+<status status="PASS" endtime="20180720 17:38:31.757" starttime="20180720 17:38:31.756"></status>
+</kw>
+<kw name="Wait Until Page Contains" library="SeleniumLibrary">
+<doc>Waits until ``text`` appears on current page.</doc>
+<arguments>
+<arg>ไม่มีสินค้าในตะกร้าของท่าน</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:38:32.292" starttime="20180720 17:38:31.757"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:32.292" starttime="20180720 17:38:28.713"></status>
+</kw>
+<kw name="Add Product To Cart by product name on Store" library="Checkout">
+<doc>Use for user select one product which select product one piece to cart</doc>
+<arguments>
+<arg>${URL_SHOP}/${store_name}</arg>
+<arg>${product_name}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${store_url}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:32.295" level="INFO">Opening url 'https://store.wls-dev.com/reconteststore'</msg>
+<status status="PASS" endtime="20180720 17:38:35.189" starttime="20180720 17:38:32.295"></status>
+</kw>
+<kw name="Select product by product name" library="Checkout">
+<doc>Use for select product by name when placeorder</doc>
+<arguments>
+<arg>${product_name}</arg>
+</arguments>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>$("img[alt='${product_name}']").click()</arg>
+</arguments>
+<msg timestamp="20180720 17:38:35.197" level="INFO">Executing JavaScript:
+$("img[alt='Robotreconteststore normal product']").click()</msg>
+<status status="PASS" endtime="20180720 17:38:39.816" starttime="20180720 17:38:35.196"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:39.816" starttime="20180720 17:38:35.192"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:38:40.877" starttime="20180720 17:38:39.817"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${Button_AddToCart}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:40.878" level="INFO">Clicking element '//button[@id="btn-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:38:41.987" starttime="20180720 17:38:40.877"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:38:43.050" starttime="20180720 17:38:41.989"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_order}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:43.051" level="INFO">Clicking element '//div[@class="modal-content"]//a[@class="btn btn-default btn-popup-add-cart"]'.</msg>
+<status status="PASS" endtime="20180720 17:38:45.389" starttime="20180720 17:38:43.050"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:45.389" starttime="20180720 17:38:32.293"></status>
+</kw>
+<kw name="Place Order" library="Checkout">
+<doc>Use for payment order by online or offline channel</doc>
+<arguments>
+<arg>${select_address}</arg>
+<arg>${shipping_post}</arg>
+<arg>${payment_channel}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_PORTAL}/cart</arg>
+</arguments>
+<msg timestamp="20180720 17:38:45.393" level="INFO">Opening url 'https://portal.wls-dev.com/cart'</msg>
+<status status="PASS" endtime="20180720 17:38:46.290" starttime="20180720 17:38:45.392"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_place_order}</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:38:47.344" starttime="20180720 17:38:46.291"></status>
+</kw>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_place_order}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:47.348" level="INFO">Clicking element '//button[@class="btn btn-buy"]'.</msg>
+<status status="PASS" endtime="20180720 17:38:48.437" starttime="20180720 17:38:47.348"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:48.437" starttime="20180720 17:38:47.346"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>//button[@class="btn btn-default btn-xs btn-add new_address"]</arg>
+<arg>${EXPECT_LOADTIME}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:38:50.321" starttime="20180720 17:38:48.438"></status>
+</kw>
+<kw name="Focus" library="SeleniumLibrary">
+<doc>Deprecated. Use `Set Focus To Element` instead.</doc>
+<arguments>
+<arg>//button[@class="btn btn-default btn-xs btn-add new_address"]</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:38:51.363" starttime="20180720 17:38:50.322"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${email}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:51.364" level="INFO">Executing JavaScript:
+$('.select_address')[1].click()</msg>
+<status status="PASS" endtime="20180720 17:38:53.240" starttime="20180720 17:38:51.364"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${shipping}.click()</arg>
+</arguments>
+<msg timestamp="20180720 17:38:53.241" level="INFO">Executing JavaScript:
+$('.radio-box')[0].click()</msg>
+<status status="PASS" endtime="20180720 17:38:53.773" starttime="20180720 17:38:53.241"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>${payment_type}.click()</arg>
+</arguments>
+<msg timestamp="20180720 17:38:53.775" level="INFO">Executing JavaScript:
+$('#wetrust_CCW').find('.button-payment-inner').click()</msg>
+<status status="PASS" endtime="20180720 17:38:54.310" starttime="20180720 17:38:53.774"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:38:54.311" starttime="20180720 17:38:45.390"></status>
+</kw>
+<kw name="Perform payment by Credit Card" library="Checkout">
+<doc>Inpage Credit Card</doc>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${rdo_credit_card}</arg>
+</arguments>
+<status status="PASS" endtime="20180720 17:38:55.367" starttime="20180720 17:38:54.313"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${rdo_credit_card}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:55.369" level="INFO">Clicking element '//div[@id="wetrust_CCW"]/div[1]/div'.</msg>
+<status status="PASS" endtime="20180720 17:38:56.454" starttime="20180720 17:38:55.368"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_number_1}</arg>
+<arg>${lbl_credit1}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:56.466" level="INFO">Typing text '5555' into text field 'id=card_number_1'.</msg>
+<status status="PASS" endtime="20180720 17:38:58.114" starttime="20180720 17:38:56.455"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_number_2}</arg>
+<arg>${lbl_credit2}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:58.115" level="INFO">Typing text '5555' into text field 'id=card_number_2'.</msg>
+<status status="PASS" endtime="20180720 17:38:59.767" starttime="20180720 17:38:58.115"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_number_3}</arg>
+<arg>${lbl_credit3}</arg>
+</arguments>
+<msg timestamp="20180720 17:38:59.769" level="INFO">Typing text '5555' into text field 'id=card_number_3'.</msg>
+<status status="PASS" endtime="20180720 17:39:01.411" starttime="20180720 17:38:59.768"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_number_4}</arg>
+<arg>${lbl_credit4}</arg>
+</arguments>
+<msg timestamp="20180720 17:39:01.413" level="INFO">Typing text '4444' into text field 'id=card_number_4'.</msg>
+<status status="PASS" endtime="20180720 17:39:03.055" starttime="20180720 17:39:01.412"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_name}</arg>
+<arg>QA WLS</arg>
+</arguments>
+<msg timestamp="20180720 17:39:03.056" level="INFO">Typing text 'QA WLS' into text field 'name=card_name'.</msg>
+<status status="PASS" endtime="20180720 17:39:04.757" starttime="20180720 17:39:03.056"></status>
+</kw>
+<kw name="Select From List By Label" library="SeleniumLibrary">
+<doc>Selects options from selection list ``locator`` by ``labels``.</doc>
+<arguments>
+<arg>card_expiry_month</arg>
+<arg>${month}</arg>
+</arguments>
+<msg timestamp="20180720 17:39:04.759" level="INFO">Selecting options from selection list 'card_expiry_month' by label 10.</msg>
+<status status="PASS" endtime="20180720 17:39:07.920" starttime="20180720 17:39:04.758"></status>
+</kw>
+<kw name="Select From List By Label" library="SeleniumLibrary">
+<doc>Selects options from selection list ``locator`` by ``labels``.</doc>
+<arguments>
+<arg>card_expiry_year</arg>
+<arg>${year}</arg>
+</arguments>
+<msg timestamp="20180720 17:39:07.921" level="INFO">Selecting options from selection list 'card_expiry_year' by label 2019.</msg>
+<status status="PASS" endtime="20180720 17:39:11.064" starttime="20180720 17:39:07.921"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>${txt_card_cvn}</arg>
+<arg>${cnv}</arg>
+</arguments>
+<msg timestamp="20180720 17:39:11.066" level="INFO">Typing text '123' into text field 'name=card_cvn'.</msg>
+<status status="PASS" endtime="20180720 17:39:12.685" starttime="20180720 17:39:11.065"></status>
+</kw>
+<kw name="Click Confirm Checkout Button" library="Checkout">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_confirm_checkout}</arg>
+</arguments>
+<msg timestamp="20180720 17:39:12.689" level="INFO">Clicking element '//button[@id="btn_step3_confirm"]'.</msg>
+<status status="PASS" endtime="20180720 17:39:13.804" starttime="20180720 17:39:12.688"></status>
+</kw>
+<kw name="Confirm Action" library="SeleniumLibrary">
+<doc>Deprecated. Use `Handle Alert` instead.</doc>
+<status status="PASS" endtime="20180720 17:39:15.327" starttime="20180720 17:39:13.805"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:39:15.327" starttime="20180720 17:39:12.685"></status>
+</kw>
+<status status="PASS" endtime="20180720 17:39:15.328" starttime="20180720 17:38:54.312"></status>
+</kw>
+<kw name="Get order id online from thankyou page" library="Checkout">
+<doc>Use for get order id online on thankyou page</doc>
+<kw name="Check Element Is Visible" library="Common">
+<doc>Use for check element is visible</doc>
+<arguments>
+<arg>${text_order_id_thankyou_page}</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${locator}</arg>
+<arg>60</arg>
+</arguments>
+<kw name="Capture Page Screenshot" library="SeleniumLibrary">
+<doc>Takes screenshot of the current page and embeds it into log file.</doc>
+<status status="FAIL" endtime="20180720 17:39:24.299" starttime="20180720 17:39:24.298"></status>
+</kw>
+<msg timestamp="20180720 17:39:24.299" level="WARN">Keyword 'Capture Page Screenshot' could not be run on failure: Execution terminated by signal</msg>
+<status status="FAIL" endtime="20180720 17:39:24.300" starttime="20180720 17:39:15.335"></status>
+</kw>
+<status status="FAIL" endtime="20180720 17:39:24.301" starttime="20180720 17:39:15.333"></status>
+</kw>
+<status status="FAIL" endtime="20180720 17:39:24.302" starttime="20180720 17:39:15.330"></status>
+</kw>
+<status status="FAIL" endtime="20180720 17:39:24.302" starttime="20180720 17:38:28.706"></status>
+</kw>
+<doc>Check status placeorder order detail waiting for receive</doc>
+<tags>
+<tag>High</tag>
+<tag>mc-wls</tag>
+<tag>Order-API</tag>
+<tag>Regression</tag>
+</tags>
+<status status="FAIL" endtime="20180720 17:39:24.303" critical="yes" starttime="20180720 17:38:28.703">Setup failed:
+Execution terminated by signal</status>
+</test>
+<test id="s1-s1-s1-s1-t6" name="TC_MC_03558">
+<doc>Check status order detail buyer receive</doc>
+<tags>
+<tag>High</tag>
+<tag>mc-wls</tag>
+<tag>Order-API</tag>
+<tag>Regression</tag>
+<tag>robot-exit</tag>
+</tags>
+<status status="FAIL" endtime="20180720 17:39:24.309" critical="yes" starttime="20180720 17:39:24.307">Test execution stopped due to a fatal error.</status>
+</test>
+<test id="s1-s1-s1-s1-t7" name="TC_MC_03559">
+<doc>Check status order detail buyer request refund before ship</doc>
+<tags>
+<tag>High</tag>
+<tag>mc-wls</tag>
+<tag>Order-API</tag>
+<tag>Regression</tag>
+<tag>robot-exit</tag>
+</tags>
+<status status="FAIL" endtime="20180720 17:39:24.314" critical="yes" starttime="20180720 17:39:24.310">Test execution stopped due to a fatal error.</status>
+</test>
+<test id="s1-s1-s1-s1-t8" name="TC_MC_03560">
+<doc>Check status order detail buyer request refund after ship</doc>
+<tags>
+<tag>High</tag>
+<tag>mc-wls</tag>
+<tag>Order-API</tag>
+<tag>Regression</tag>
+<tag>robot-exit</tag>
+</tags>
+<status status="FAIL" endtime="20180720 17:39:24.318" critical="yes" starttime="20180720 17:39:24.315">Test execution stopped due to a fatal error.</status>
+</test>
+<test id="s1-s1-s1-s1-t9" name="TC_MC_03796">
+<doc>Check status order detail buyer request refund and accept before ship</doc>
+<tags>
+<tag>High</tag>
+<tag>mc-wls</tag>
+<tag>Order-API</tag>
+<tag>Regression</tag>
+<tag>robot-exit</tag>
+</tags>
+<status status="FAIL" endtime="20180720 17:39:24.322" critical="yes" starttime="20180720 17:39:24.319">Test execution stopped due to a fatal error.</status>
+</test>
+<test id="s1-s1-s1-s1-t10" name="TC_MC_03797">
+<doc>Check status order detail buyer request refund and accept after ship</doc>
+<tags>
+<tag>High</tag>
+<tag>mc-wls</tag>
+<tag>Order-API</tag>
+<tag>Regression</tag>
+<tag>robot-exit</tag>
+</tags>
+<status status="FAIL" endtime="20180720 17:39:24.326" critical="yes" starttime="20180720 17:39:24.324">Test execution stopped due to a fatal error.</status>
+</test>
+<kw type="teardown" name="Close All Browsers" library="SeleniumLibrary">
+<doc>Closes all open browsers and resets the browser cache.</doc>
+<status status="PASS" endtime="20180720 17:39:24.382" starttime="20180720 17:39:24.331"></status>
+</kw>
+<status status="FAIL" endtime="20180720 17:39:24.382" starttime="20180720 17:32:15.580"></status>
+</suite>
+<suite source="/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/TestCase/WeLoveShopping/OrderAPI/WLSOrder/Refund.robot" id="s1-s1-s1-s2" name="Refund">
+<test id="s1-s1-s1-s2-t1" name="TC_MC_03808">
+<doc>check text buyer request refund after ship</doc>
+<tags>
+<tag>High</tag>
+<tag>mc-wls</tag>
+<tag>Order-API</tag>
+<tag>Regression</tag>
+<tag>robot-exit</tag>
+</tags>
+<status status="FAIL" endtime="20180720 17:39:24.414" critical="yes" starttime="20180720 17:39:24.412">Test execution stopped due to a fatal error.</status>
+</test>
+<status status="FAIL" endtime="20180720 17:39:24.415" starttime="20180720 17:39:24.408"></status>
+</suite>
+<status status="FAIL" endtime="20180720 17:39:24.421" starttime="20180720 17:32:15.578"></status>
+</suite>
+<status status="FAIL" endtime="20180720 17:39:24.439" starttime="20180720 17:32:15.576"></status>
+</suite>
+<status status="FAIL" endtime="20180720 17:39:24.454" starttime="20180720 17:32:15.524"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="7" pass="4">Critical Tests</stat>
+<stat fail="7" pass="4">All Tests</stat>
+</total>
+<tag>
+<stat info="combined" fail="1" combined="NOT robot-exit" pass="4">NOT robot-exit</stat>
+<stat fail="7" pass="2">High</stat>
+<stat fail="7" pass="4">mc-wls</stat>
+<stat fail="0" pass="2">Medium</stat>
+<stat fail="7" pass="4">Order-API</stat>
+<stat fail="7" pass="4">Regression</stat>
+<stat fail="6" pass="0">robot-exit</stat>
+</tag>
+<suite>
+<stat fail="7" id="s1" name="WeLoveShopping" pass="4">WeLoveShopping</stat>
+<stat fail="7" id="s1-s1" name="OrderAPI" pass="4">WeLoveShopping.OrderAPI</stat>
+<stat fail="7" id="s1-s1-s1" name="WLSOrder" pass="4">WeLoveShopping.OrderAPI.WLSOrder</stat>
+<stat fail="6" id="s1-s1-s1-s1" name="Detail" pass="4">WeLoveShopping.OrderAPI.WLSOrder.Detail</stat>
+<stat fail="1" id="s1-s1-s1-s2" name="Refund" pass="0">WeLoveShopping.OrderAPI.WLSOrder.Refund</stat>
+</suite>
+</statistics>
+<errors>
+<msg timestamp="20180720 17:32:17.283" level="ERROR">Error in file '/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/Common/Bulktracking.txt': Importing test library 'ExcelLibrary' failed: ImportError: No module named ExcelLibrary
+Traceback (most recent call last):
+  None
+PYTHONPATH:
+  /usr/local/bin
+  /System/Library/Frameworks/Python.framework/Versions/2.7/lib/python27.zip
+  /System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7
+  /System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-darwin
+  /System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac
+  /System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac/lib-scriptpackages
+  /System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk
+  /System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-old
+  /System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-dynload
+  /Library/Python/2.7/site-packages
+  /System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python
+  /System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/PyObjC</msg>
+<msg timestamp="20180720 17:39:24.299" level="WARN">Keyword 'Capture Page Screenshot' could not be run on failure: Execution terminated by signal</msg>
+</errors>
+</robot>

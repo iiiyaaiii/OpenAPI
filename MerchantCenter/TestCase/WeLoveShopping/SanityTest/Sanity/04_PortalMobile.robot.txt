@@ -1,0 +1,208 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${AGENT}
+Suite Teardown    Close Browser
+Test Setup        Clear Mobile Login
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Home.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Cart.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Portal.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Search.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Checkout.txt
+Force Tags        Buyer    Sanity
+
+*** Variables ***
+${AGENT}    Mobile
+
+*** Test Cases ***
+TC_WLS_03104
+    [Documentation]    Home have FlashSale on time
+    Go to    ${URL_PORTAL}
+    Element Should Be Visible    ${h_flashsale}
+    Element Should Be Visible    ${h_flashsale_c}
+    ${f_product}=    Get Matching Xpath Count    ${h_flashsale_p}
+    Should Be Equal    ${f_product}    5
+    #    ${f_product}=    Evaluate    ${f_content} - 1
+    : FOR    ${i}    IN RANGE    1    ${f_product}
+    # \    Element Should Be Visible    ${h_flashsale_p}[${i}]${h_flashsale_ribbon}
+    \    Element Should Be Visible    ${h_flashsale_p}[${i}]${h_flashsale_price}
+    \    Element Should Be Visible    ${h_flashsale_p}[${i}]${h_flashsale_compare}
+
+TC_WLS_03105
+    [Documentation]    Display FlashSale product before time in next day
+    Go to    ${URL_PORTAL}
+    Sleep    5
+    # Click Element    ${h_flashsale_p}[5]//div
+    Execute Javascript    $('.h-dz-list > ul > li > div')[4].click()
+    Sleep    3
+    Click Element    ${f_list}${f_list_tab_next}
+    Sleep    3
+    ${n_dealzapp}    Get Matching Xpath Count    ${f_list_product}
+    Pass Execution If    ${n_dealzapp} == 0    ไม่มีข้อมูล Dealzapp ในวันถัดไป
+    Run Keyword If    ${n_dealzapp} != 0    Element Should Contain    ${f_list}${f_list_tab_next}    ดีลถัดไป
+    Run Keyword If    ${n_dealzapp} != 0    Element Should Contain    //div[@class='time-start ng-scope']    ดีลถัดไปเริ่มเวลา
+    Run Keyword If    ${n_dealzapp} != 0    Element Should Contain    //div[@class='time-start ng-scope']    10:00 น.
+    # Run Keyword If    ${n_dealzapp} != 0    Element Should Be Visible    //div[@class='starttime']
+    # Run Keyword If    ${n_dealzapp} != 0    Element Should Contain    //div[@class='starttime']    เริ่มเวลา
+    # Run Keyword If    ${n_dealzapp} != 0    Element Should Contain    //div[@class='starttime']    10:00 น.
+    ${discount}    Run Keyword If    ${n_dealzapp} != 0    Get Text    ${f_list_product}[1]${f_list_prodcut_discount}//strong
+    ${f_name}    Run Keyword If    ${n_dealzapp} != 0    Get Text    ${f_list_product}[1]${f_list_prodcut_name}
+    ${f_price}    Run Keyword If    ${n_dealzapp} != 0    Get Text    ${f_list_product}[1]${f_list_prodcut_price}
+    ${f_compare}    Run Keyword If    ${n_dealzapp} != 0    Get Text    ${f_list_product}[1]${f_list_prodcut_compare}
+    Run Keyword If    ${n_dealzapp} != 0    Click Element    ${f_list_product}[1]
+    Sleep    3
+    Run Keyword If    ${n_dealzapp} != 0    Element Should Be Visible    ${m_leveld_n_flashsale}
+#    Element Should Contain    ${m_leveld_n_flashsale}    Flash Sale
+#    Element Should Be Visible    ${m_leveld_f_icon}
+    ${f_name}    Replace String    ${f_name}    &    &amp;
+    Run Keyword If    ${n_dealzapp} != 0    Element Should Contain    ${m_leveld_n_flashsale}    ราคาพิเศษ ${f_price}
+    Run Keyword If    ${n_dealzapp} != 0    Element Should Contain    ${m_leveld_n_flashsale}    เริ่มเวลา 10:00น.
+    Run Keyword If    ${n_dealzapp} != 0    Element Should Contain    ${m_leveld_p_name}    ${f_name}
+#    Element Should Contain    ${m_leveld_p_price}    ${f_compare}
+
+TC_WLS_03106
+    [Documentation]    Display FlashSale product on time
+    Go to    ${URL_PORTAL}
+    Sleep    3
+    Execute Javascript    $('.h-dz-title > i')[1].click()
+    Sleep    3
+    Element Should Contain    ${f_list}${f_list_tab_today}    ดีลปัจจุบัน
+    Element Should Contain    ${f_list}${f_list_tab_detail}    เหลือเวลาอีก
+    # ${discount}    Get Text    ${f_list_product}[1]${f_list_prodcut_discount}//strong
+    ${f_name}    Get Text    ${f_list_product}[1]${f_list_prodcut_name}
+    ${f_price}    Get Text    ${f_list_product}[1]${f_list_prodcut_price}
+    ${f_compare}    Get Text    ${f_list_product}[1]${f_list_prodcut_compare}
+    Click Element    ${f_list_product}[1]
+    Sleep    3
+    Element Should Be Visible    ${m_leveld_c_flashsale}
+#    Element Should Contain    ${m_leveld_c_flashsale}    Flash Sale
+#    Element Should Be Visible    ${m_leveld_f_icon}
+    Element Should Contain    ${m_leveld_c_flashsale}    เหลือเวลาอีก
+    # Element Should Contain    ${m_leveld_p_discount}//strong    ${discount}
+    ${f_name}    Remove String    ${f_name}    &    amp;    quot;
+    ${leveld_product_name}    Get Text    ${m_leveld_p_name}
+    ${leveld_product_name}    Remove String    ${leveld_product_name}    "    &
+    # Element Should Contain    ${m_leveld_p_name}    ${f_name}
+    Should Be Equal    ${leveld_product_name}    ${f_name}
+    Element Should Contain    ${m_leveld_p_price}    ${f_price}
+    Element Should Contain    ${m_leveld_p_compare}    ${f_compare}
+
+TC_WLS_03107
+    [Documentation]    Level C - Search : Display (Type : Thumb) - Product We Store
+    [Tags]    Regression
+    Go to    ${URL_PORTAL}
+    Input Text    ${input_key_search}    เสื้อแขนยาว
+    Execute Javascript    ${btn_search}.click()
+    Sleep    3
+    Element Should Contain    ${breadcrumb}    เสื้อแขนยาว
+    ${count_product}    Get Matching Xpath Count    ${thumb_product}
+    Should Be True    ${count_product} <= 20
+    ${match_result}    Get Matching Xpath Count    ${thumb_product}${thumb_product_name}[contains(text(),'เสื้อแขนยาว')]
+    Should Be True    ${match_result} <= 20
+    ${count_wetrust}    Get Matching Xpath Count    ${thumb_product}${thumb_product_wetrust}
+    Should Be True    ${count_product} == ${count_wetrust}
+
+TC_WLS_03108
+    [Documentation]    Level C - Category : Sorting product by Price ASC
+    [Tags]    Regression
+    Go to    ${URL_PORTAL}
+    Click Element    ${hamburger_menu}
+    Sleep    1
+    Click Element    ${menu_catgory}
+    Sleep    3
+    Click Element    ${category}[2]
+    Sleep    3
+    Click Element    ${category}[3]
+    Sleep    3
+    Click Element    ${category}[3]
+    Sleep    3
+    Execute Javascript    ${sort_type}.click()
+    Sleep    2
+    Click Element    ${m_sort_asc}
+    Sleep    3
+    ${count_product}    Get Matching Xpath Count    ${thumb_product}
+    Should Be True    ${count_product} <= 20
+    : FOR    ${i}    IN RANGE    1    ${count_product}
+    \    ${current_price}    Get Text    ${thumb_product}[${i}]${thumb_product_price}
+    \    ${current_price}    Get Substring    ${current_price}    \    -4
+    \    ${current_price}    Remove String    ${current_price}    ,
+    \    ${current_price}    Convert To Integer    ${current_price}
+    \    ${n}    Evaluate    ${i} + 1
+    \    ${next_price}    Get Text    ${thumb_product}[${n}]${thumb_product_price}
+    \    ${next_price}    Get Substring    ${next_price}    \    -4
+    \    ${next_price}    Remove String    ${next_price}    ,
+    \    ${next_price}    Convert To Integer    ${next_price}
+    \    Should Be True    ${current_price} <= ${next_price}
+
+TC_WLS_04863
+    [Documentation]    [mobile] Filtering and sorting product DealZapp on DealZapp on time
+    Go to    ${URL_PORTAL}/dealzapp
+    Element Should Contain    ${f_list_filter_type}    ค้นหาละเอียด
+    #Verify Sort by type panel
+    Click Element    ${f_list_filter_type}
+    Element Should Be Visible    //div[@id='popDztype']
+    Checkbox Should Be Selected    //div[@id='popDztype']//div[@class='checkbox']//input
+    Element Should Contain    //div[@id='popDztype']//div[@class='checkbox']    ทุกประเภท
+    Element Should Be Visible    //div[@id='popDztype']//div[@class='checkbox ng-scope']//input[@class='filter-checkbox filter-cate']
+    Click Element    //div[@id='popDztype']//div[@class='checkbox ng-scope'][@ng-repeat='category in categories'][1]//input
+    Click Element    //div[@id='popDztype']//div[@class='btn-submit']
+    Element Should Not Be Visible    //div[@id='popDztype']
+    Sleep    3
+    Element Should Contain    ${f_list_filter_sort}    จัดเรียง
+    Click Element    ${f_list_filter_sort}
+    Element Should Be Visible    //div[@id='popDzsort']
+    Element Should Contain    //div[@id='popDzsort']//div[@class='radio ng-scope'][1]    สินค้ายอดนิยม
+    Element Should Contain    //div[@id='popDzsort']//div[@class='radio ng-scope'][2]    ส่วนลดสูงสุด
+    Element Should Contain    //div[@id='popDzsort']//div[@class='radio ng-scope'][3]    ราคาต่ำสุด
+    Element Should Contain    //div[@id='popDzsort']//div[@class='radio ng-scope'][4]    ราคาสูงสุด
+    Click Element    //div[@id='popDzsort']//div[@class='radio ng-scope'][3]
+    Sleep    3
+    #Check Filter isset
+    Click Element    ${f_list_filter_type}
+    Element Should Be Visible    //div[@id='popDztype']
+    Checkbox Should Be Selected    //div[@id='popDztype']//div[@class='checkbox ng-scope'][@ng-repeat='category in categories'][1]//input
+    Click Element    ${btn_confirm}
+    : FOR    ${i}    IN RANGE    1    4
+    \    ${current_price}    Get Text    ${f_list_product}[${i}]//span[@class='price']
+    \    ${current_price}    Get Substring    ${current_price}    \    -4
+    \    ${current_price}    Remove String    ${current_price}    ,
+    \    ${current_price}    Convert To Number    ${current_price}
+    \    ${n}    Evaluate    ${i} + 1
+    \    ${next_price}    Get Text    ${f_list_product}[${n}]//span[@class='price']
+    \    ${next_price}    Get Substring    ${next_price}    \    -4
+    \    ${next_price}    Remove String    ${next_price}    ,
+    \    ${next_price}    Convert To Number    ${next_price}
+    \    Should Be True    ${current_price} <= ${next_price}
+    Execute Javascript    $('.sort-selected.color-welove').click()
+    Click Element    //div[@id='popDzsort']//div[@class='radio ng-scope'][4]
+    Sleep    2s
+    : FOR    ${i}    IN RANGE    1    4
+    \    ${current_price}    Get Text    ${f_list_product}[${i}]//span[@class='price']
+    \    ${current_price}    Get Substring    ${current_price}    \    -4
+    \    ${current_price}    Remove String    ${current_price}    ,
+    \    ${current_price}    Convert To Number    ${current_price}
+    \    ${n}    Evaluate    ${i} + 1
+    \    ${next_price}    Get Text    ${f_list_product}[${n}]//span[@class='price']
+    \    ${next_price}    Get Substring    ${next_price}    \    -4
+    \    ${next_price}    Remove String    ${next_price}    ,
+    \    ${next_price}    Convert To Number    ${next_price}
+    \    Should Be True    ${current_price} >= ${next_price}
+    Execute Javascript    $('.sort-selected.color-welove').click()
+    Click Element    //div[@id='popDzsort']//div[@class='radio ng-scope'][2]
+    Sleep    2s
+    : FOR    ${i}    IN RANGE    1    4
+    \    ${current_discount_price}    Get Text    ${f_list_product}[${i}]//div[@class='tag-sale']//strong
+    \    ${current_discount_price}    Convert To Number    ${current_discount_price}
+    \    ${n}    Evaluate    ${i} + 1
+    \    ${next_discount_price}    Get Text    ${f_list_product}[${n}]//div[@class='tag-sale']//strong
+    \    ${next_discount_price}    Convert To Number    ${next_discount_price}
+    \    Should Be True    ${next_discount_price} <= ${current_discount_price}

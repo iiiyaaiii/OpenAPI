@@ -1,0 +1,27 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_06032
+    [Documentation]    Truemove H Horoscopes page is displayed when user choose menu horoscopes
+    [Tags]    Regression    High
+    Go To Menu Horoscopes
+    Element Should Contain           //div[contains(@class ,'HoroscopesWrapper')]/div   	Truemove H Horoscopes
+
+TC_MC_06033
+    [Documentation]    Can be access to Truemove H Horoscopes page via direct link
+    [Tags]    Regression    High
+    Go To                           ${url_horoscopes_truemoveh}
+    Wait Until Element Is Visible   //div[contains(@class ,'HoroscopesWrapper')]/div        10s        
+    Element Should Contain          //div[contains(@class ,'HoroscopesWrapper')]/div        Truemove H Horoscopes

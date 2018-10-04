@@ -1,0 +1,3 @@
+*** Variables ***
+${sidebar_store_wemall}    //*[@id='row-body']/div/div/div/div[2]
+${row_product}    //*[@id='product-wrapper']/ul/li[1]

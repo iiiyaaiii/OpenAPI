@@ -1,0 +1,35 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../../Resource/WeMall/WebElement/StoreFrontPromotion.txt
+Resource          ../../Resource/WeMall/WebElement/Store_Front.txt
+Resource          Common.txt
+Resource          ../../Resource/WeMall/Configuration/Staging/serverconfig.txt
+
+***Keyword***
+Validate Category Sidebar Store Front Promotion LvC
+    [Arguments]    ${loop}=5
+    : FOR    ${i}    IN RANGE    0    ${loop}
+    \    Execute Javascript    ${store_promotion_sidebar_lvc}.find('a')[${i}].click()
+    \    Sleep    2
+    \    ${indexOf}=    Execute Javascript    return $('span.caption-desc').text().replace('ทั้งหมด : ' ,'').indexOf(' รายการ')
+    \    ${return}=    Execute Javascript    return $('span.caption-desc').text().replace('ทั้งหมด : ' ,'').substring(0, ${indexOf})
+    \    Should be True    ${return} >= 0
+    \    ${productlist}=    Execute Javascript    return $('ul.product-list li').length
+    \    Should be True    ${productlist} <= 40
+    \    ${url}=    Get Location
+    \    ${category_id}=   Remove String   ${url}    ${URL_PORTAL}/${store_url1}/category/
+    \    Should Be Equal    ${url}    ${URL_PORTAL}/${store_url1}/category/${category_id}
+
+
+Validate Store Front Promotion Product List LvC
+    ${productlist}=    Execute Javascript    return ${store_promotion_product_list_lvc}.length
+    Should be True    ${productlist} <= 40
+
+Open Store Front page
+    [Arguments]     ${storeName}
+    Common.Open Custom Browser  ${URL_PORTAL}/${storeName}    ${BROWSER}
+
+Click Product In StoreFrontPromotion
+    [Arguments]    ${product}
+    Wait Until Element Is Visible    ${search_store_product}
+    Execute Javascript    $('a:contains("${product}")')[0].click()

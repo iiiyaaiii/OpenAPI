@@ -1,0 +1,28 @@
+*** variable ***
+
+${BROWSER}    ff
+${EXPECT_LOADTIME}    60
+${ENV}    Production
+### Locator ####
+${URL_ACCOUNT}    https://account.weloveshopping.com
+${URL_STORE}    https://store.weloveshopping.com
+${URL_WMS}    https://wms.weloveshopping.com
+${URL_PORTAL}    https://portal.weloveshopping.com
+${URL_API}    https://api-order.weloveshopping.com
+${URL_API_FEEDBACK}    https://api-feedback.weloveshopping.com
+${URL_BILL_COUNTERSERVICE}    https://account.weloveshopping.com/billing/counter_service/
+${URL_DASHBOARD}    https://store.weloveshopping.com/${storename_slug_prod}/admin/dashboard/summary
+${URL_NODATA}    https://store.weloveshopping.com/prodtest50/admin/dashboard/summary
+${URL_API_ORDER}    https://api-order.weloveshopping.com
+${URL_IMAGE}    https://cdn-a.weloveshopping-dev.com/themes/responsive/assets/images/SmilingSuccess.png
+${URL_FB}    https://www.facebook.com
+${URL_TRACKING}    https://wms.weloveshopping.com/order
+${URL_RECONCLINE_OFFLINE}    ${URL_WMS}/orderoffline
+${URL_REFUND}    https://wms.weloveshopping.com/orderrequestrefund
+${TEST_ENV}    PROD
+${URL_EAGLEEYE}    https://eagleeye.weloveshopping.com
+${URL_CHECKOUT}    https://checkout.weloveshopping.com
+${URL_ORDER_FOR_API}    api-order.wls-aws.com
+${URL_LEVEL_D}    ${URL_PORTAL}/product
+${URL_STAMP_API}    api.weloveshopping.com
+${URL_SHOP}    https://store.weloveshopping.com

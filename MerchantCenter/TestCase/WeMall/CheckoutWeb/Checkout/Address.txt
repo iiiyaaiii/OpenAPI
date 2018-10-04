@@ -1,0 +1,86 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Test Setup        Go to    ${URL_PORTAL}
+Force Tags        Checkout-Web    Ligo    Sprint2017MC9
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeMall/WebElement/Cart.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/ManageProfile.txt
+
+*** Variables ***
+${product_id}           L91200127
+
+*** Test Cases ***
+TC_MC_04146
+    [Documentation]    [WeMall] เพิ่มที่อยู่ใหม่ - Edit - Delete
+    [Tags]    Regression    High    mock
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Go to Login    ${seller_user_001}    ${seller_pwd_001}
+    Execute JavaScript    $("a[title='บัญชีของฉัน']").mouseover()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Click Element    ${profile_address}
+    #Clear Unused Account Address
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${product_id}?refresh=changeme
+    Click Element       ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Click Add Address
+    Sleep    1
+    Execute Javascript    $('#firstname').val('Checkout')
+    Execute Javascript    $('#lastname').val('ADR')
+    Execute Javascript    $('#address').val('fl.19 AIA Capital Tower')
+    Click Element    ${address_bkk}
+    Sleep    1
+    Click Element    ${chk_out_city}
+    Click Element    ${chk_out_district}
+    Input Text    ${address_zipcode}    10400
+    Input Text    ${edit_phone}    0810000010
+    Input Text    ${address_shippingemail}    buyer_test10@mailinator.com
+    Execute Javascript    $('.btn.btn-add-address').click()
+    Sleep    3
+    Execute Javascript    $('.btn_edit').click()
+    Execute Javascript    $('#firstname').val('Checkout_edit')
+    Execute Javascript    $('#lastname').val('ADR_edit')
+    Execute Javascript    $('#address').val('fl.19 AIA Capital Tower_edit')
+    Execute Javascript    $('.submit').click()
+
+TC_MC_04208
+    [Documentation]    [WeMall] Add shipping address when specify invalid email
+    [Tags]    High
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Go to Login    ${seller_user_001}    ${seller_pwd_001}
+    Execute JavaScript    $("a[title='บัญชีของฉัน']").mouseover()
+    Go to    ${URL_LEVEL_D}/${product_id}?refresh=changeme
+    Click Element       ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Execute Javascript    $('.new_address:first').click()
+    Input Address Checkout Step 1    Checkout    Address    fl.19 AIA Capital Tower   กรุงเทพมหานคร    จตุจักร    จันทรเกษม    10400    0810000010    ABC001@mailinator
+    Execute Javascript    $('.btn.btn-add-address').click()
+    Verify Error Message
+
+TC_MC_04212
+    [Documentation]    [WeMall] Edit shipping address when specify valid email
+    [Tags]    High
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Go to Login    ${seller_user_001}    ${seller_pwd_001}
+    Execute JavaScript    $("a[title='บัญชีของฉัน']").mouseover()
+    Go to    ${URL_LEVEL_D}/${product_id}?refresh=changeme
+    Click Element       ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    ${btn_Add_address} =    Get Matching Xpath Count    ${btn_selectaddr}
+    Run Keyword If    ${btn_Add_address} == '0'    Click Add Address
+    Run Keyword If    ${btn_Add_address} == '0'     Input Address Checkout Step 1    Checkout    Address    fl.19 AIA Capital Tower    กรุงเทพมหานคร    จตุจักร    จันทรเกษม    10400    0810000010    ABC001@mailinator
+    Click Edit Address
+    Input Address Checkout Step 1    Checkout    Address    fl.19 AIA Capital Tower    กรุงเทพมหานคร    จตุจักร    จันทรเกษม    10400    0810000010    ABC001@mailinator.com
+    Verify After Save

@@ -1,0 +1,286 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Clear All Test
+Force Tags        feature-report
+Library           SeleniumLibrary
+Library           String
+Library           OperatingSystem
+Library           ExcelLibrary
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Bulktracking.txt
+Resource          ../../../../Keyword/Common/Account_History.txt
+Resource          ../../../../Keyword/Common/ManageOrder.txt
+Resource          ../../../../Resource/WeMall/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeMall/WebElement/Bulktracking.txt
+Resource          ../../../../Resource/WeMall/WebElement/Account_History.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Bulktracking.txt
+
+*** Test Cases ***
+TC_MC_03151
+    [Tags]    Store-Web    Regression    High
+    [Documentation]    WMStore View Bulk tracking page Open link (Not Login Shop)
+    Go To Store Bulktracking Page    trustment
+    Verify Text Username
+    Verify Text Password
+
+TC_MC_03153
+    [Tags]    Store-Web    RECON2017MC10    Low
+    [Documentation]    WMStore View Bulk tracking page Open link (Account Only)
+    Set Selenium Speed    0.2
+    Account Login    ${user_buyer_only}    ${password_buyer_only}
+    Go To Store Bulktracking Page    trustment
+    Check Text    ${locator_error_text}    ${error_text}
+
+TC_MC_03154
+    [Tags]    Store-Web    RECON2017MC10    Low
+    [Documentation]     WMStore View Bulk tracking page (Non-self stores)
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go To Store Bulktracking Page    trustment
+    Check Text    ${locator_error_text}    ${error_text}
+
+TC_MC_03156
+    [Tags]    Store-Web    RECON2017MC10    Medium
+    [Documentation]    WMStore View Bulk tracking text (Store Not have Status Ship)
+    Set Selenium Speed    0.2
+    Check and Reset Seller Login    ${slug_name_shop_no_data_wemall}    ${user_shop_no_data_wemall}    ${password_shop_no_data_wemall}
+    Go To Order List Waitshipping Tab Store Page    ${slug_name_shop_no_data_wemall}
+    Check Element Is Visible    ${muti_ship_button}
+    Click Button    ${muti_ship_button}
+    Select Window Bulktracking    title=Bulk Order Tracking - Wemall
+    Check Location    ${URL_STORE}/${slug_name_shop_no_data_wemall}/admin/orders/bulk-tracking
+    Check Text Page Should Contain    ${text_ship_order}
+    Check Text Page Should Contain    ${text_ship_item}
+
+TC_MC_03157
+    [Tags]    Store-Web    RECON2017MC10    Medium
+    [Documentation]    WMStore View Bulk tracking page import data (Store Not have Status Ship)
+    Set Selenium Speed    0.2
+    Check and Reset Seller Login    ${slug_name_shop_no_data_wemall}    ${user_shop_no_data_wemall}    ${password_shop_no_data_wemall}
+    Go to store bulktracking page    ${slug_name_shop_no_data_wemall}
+    ${file_path}    Get file path
+    Choose File    ${input_file_tracking}    ${file_path}/tracking_20170721_140257.xls
+    Click Button    ${tracking_button}
+    Check Element Is Visible    ${comfirm_button}
+    Click Button    ${comfirm_button}
+    Check Element Is Visible    ${locator_text_already}
+    Check Text    ${locator_text_already}     ดำเนินการเรียบร้อย
+    Check Text    ${locator_alert_text_ship}    คุณสามารถตรวจสอบสถานะการแจ้งจัดส่งสินค้าได้ ที่นี่
+    Check Text    ${locator_text_total}    รายการที่แจ้งจัดส่งทั้งหมด 0รายการ
+    Check Text    ${locator_text_success}    แจ้งจัดส่งสำเร็จ 0รายการ
+    Check Text    ${locator_text_fail}    แจ้งจัดส่งไม่สำเร็จ 0รายการ
+
+TC_MC_03161
+    [Tags]    RECON2017MC10    Low    Store-Web
+    [Documentation]    WMStore View bulk tracking page (show menu)
+    Set Selenium Speed    0.2
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go to store bulktracking page    ${storename_slug_wemall}
+    Element Is Visible    ${logo}
+    Check Text    ${bulktracking_title}    แจ้งจัดส่งทีละหลายรายการ
+    Check Text    ${step_first_title}    1. ดาวน์โหลดแบบฟอร์มในการแจ้งจัดส่ง
+    Element Is Visible    ${download_button_on_bulktracking}
+    Check Text    ${suggest_download_file}    ดาวน์โหลดไฟล์ Excel จากระบบ\n(ระบบจะรวมรายการสั่งซื้อจากร้านค้าหรือรหัสสินค้าของร้านของคุณ ที่รอการแจ้งจัดส่งทั้งหมดมาไว้ในไฟล์นี้)
+    Check Text    ${step_second_title}    2. กรอกหมายเลขพัสดุ ของแต่ละรายการสั่งซื้อหรือรหัสสินค้าของร้าน\nลงในไฟล์ที่ดาวน์โหลดมา
+    Check Text    ${suggest_open_file}    เปิดไฟล์ “แจ้งจัดส่งทั้งออเดอร์.xls” หรือ “แจ้งจัดส่งแบบรายชิ้น.xls” ที่ดาวน์โหลดมา และ กรอกหมายเลขพัสดุให้ตรงกับหมายเลขการสั่งซื้อหรือรหัสสินค้าของร้าน แล้วกดบันทึก\nดูรายละเอียดการใช้ตาราง
+    Element Is Visible    ${view_detail_link}
+    Check Text    ${step_third_title}    3. เพิ่มแบบฟอร์มเข้าระบบเพื่อแจ้งจัดส่ง
+    Element Is Visible    ${input_import_tracking_file}
+    Element Is Visible    ${tracking_button}
+    Check Text    ${suggest_upload_file}    อัพโหลดไฟล์ “แจ้งจัดส่งทั้ง\nออร์เดอร์.xls” หรือ “แจ้งจัดส่งแบบรายชิ้น.xls” เข้าระบบเพื่อแจ้งจัดส่ง
+
+TC_MC_03162
+    [Tags]    RECON2017MC10    Low    Store-Web
+    [Documentation]    WMStore View bulk tracking page (View tool tip)
+    Set Selenium Speed    0.1
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go to store bulktracking page    ${storename_slug_wemall}
+    Check Element Is Visible    ${view_detail_link}
+    Click Button    ${view_detail_link}
+    Check Element Is Visible    ${how_to_use_file_modal}
+    Check Text    ${how_to_use_file_header}    วิธีใช้งานไฟล์ excel ที่ใช้แจ้งจัดส่งทีละหลายรายการ
+    Check Text    ${caution_title}    ข้อควรระวัง
+    Check Text    ${caution_content_first}    กรณีวิธีการจัดส่งเป็นวิธีอื่น ที่ไม่ใช่ไปรษณีย์ไทย หรือ Kerry Express ให้ใช้ “หมายเลขพัสดุ หรือ ข้อความ”
+    Check Text    ${caution_content_second}    ผู้ซื้อมีสิทธิ์ที่จะขอเงินคืนจากร้านค้า กรณี
+
+TC_MC_03163
+    [Tags]    RECON2017MC10    Medium    Store-Web
+    [Documentation]    WMStore Download bulk tracking
+    Set Selenium Speed    0.3
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go To    ${URL_STORE}/trustmall/admin/orders?status=waitshipping&sort-by-pay=ASC
+    Wait Until Element Is Visible    //a[@id="btn-bulk"]
+    Click Element    //a[@id="btn-bulk"]
+    Select Window Bulktracking    title=Bulk Order Tracking - Wemall
+    Execute Javascript    $("input[value='partial']").click()
+    Wait Until Element Is Visible    //*[@class="btn btn-download"]
+    Click Element    //*[@class="btn btn-download"]
+    Wait Until Element Is Visible    //p[@class="order-update-datetime"]
+    ${text_download}=    Get Text    //p[@class="order-update-datetime"]
+    Should Not Match Regexp    ${text_download}    ดาวน์โหลด ณ วันที่ ([0-9]{1,2}\s[ก-ฮ]{1}\.[ก-ฮ]{1}\.\s[0-9]{4} []0-9]{2}:[0-9]{2}\sน\.)
+
+TC_MC_03208
+    [Tags]    Regression    Medium    Store-Web    RECON2017MC10
+    [Documentation]    WMStore Check user doesn't select ship type
+    Set Selenium Speed    0.3
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go to store bulktracking page    ${storename_slug_wemall}
+    Check Element Is Visible    ${download_button_on_bulktracking}
+    Click Button    ${download_button_on_bulktracking}
+    Check Element Is Visible    ${error_download_modal}
+    Check Text    ${error_text_header}    คุณยังไม่ได้เลือกรูปแบบไฟล์ที่ต้องการแจ้งจัดส่ง
+    Check Text    ${error_text_body}    กรุณาเลือกรูปแบบไฟล์ เพื่อดาวน์โหลดฟอร์มในการแจ้งจัดส่ง
+
+TC_MC_03209
+    [Tags]    Regression    Medium    Store-Web
+    [Documentation]    WMStore Check text after download
+    Set Selenium Speed    0.3
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go To    ${URL_STORE}/trustmall/admin/orders?status=waitshipping&sort-by-pay=ASC
+    Wait Until Element Is Visible    //a[@id="btn-bulk"]
+    Click Element    //a[@id="btn-bulk"]
+    Select Window Bulktracking    title=Bulk Order Tracking - Wemall
+    Execute Javascript    $("input[value='partial']").click()
+    Wait Until Element Is Visible    //*[@class="btn btn-download"]
+    Click Element    //*[@class="btn btn-download"]
+    Wait Until Element Is Visible    //p[@class="order-update-datetime"]
+    ${text_download}=    Get Text    //p[@class="order-update-datetime"]
+    Should Not Match Regexp    ${text_download}    ดาวน์โหลด ณ วันที่ ([0-9]{1,2}\s[ก-ฮ]{1}\.[ก-ฮ]{1}\.\s[0-9]{4} []0-9]{2}:[0-9]{2}\sน\.)
+
+TC_MC_03211
+    [Tags]    Regression    Medium    Store-Web
+    [Documentation]    WMStore Check error message in case tracking number over 255 characters
+    Set Selenium Speed    0.3
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go to store bulktracking page    ${storename_slug_wemall}
+    Check Element Is Visible    ${tracking_button}
+    ${file_path}    Get file path
+    Choose File    ${input_file_tracking}    ${file_path}/Over255Character.xls
+    Click Button    ${tracking_button}
+    Check Element Is Visible    ${comfirm_button}
+    Click Button    ${comfirm_button}
+    Check Element Is Visible   ${here_link}
+    Check Text    ${locator_error_message}    หมายเลขพัสดุหรือข้อความต้องไม่เกิน 255 ตัวอักษร
+
+TC_MC_03212
+    [Tags]    Regression    Medium    Store-Web
+    [Documentation]    WMStore Check error message in case tracking number over 255 characters
+    Set Selenium Speed    0.3
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go to store bulktracking page    ${storename_slug_wemall}
+    Check Element Is Visible    ${tracking_button}
+    ${file_path}    Get file path
+    Choose File    ${input_file_tracking}    ${file_path}/LinkInvalid.xls
+    Click Button    ${tracking_button}
+    Check Element Is Visible    ${comfirm_button}
+    Click Button    ${comfirm_button}
+    Check Element Is Visible   ${here_link}
+    Check Text    ${locator_error_message}    ลิงก์เพื่อตรวจสอบหมายเลขพัสดุ-1 ไม่ถูกต้อง
+
+TC_MC_03214
+    [Tags]    Regression    Medium    Store-Web
+    [Documentation]    WMStore Check error message in case orderid is imaginary
+    Set Selenium Speed    0.3
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go to store bulktracking page    ${storename_slug_wemall}
+    Check Element Is Visible    ${tracking_button}
+    ${file_path}    Get file path
+    Choose File    ${input_file_tracking}    ${file_path}/OrderIdInvalid.xls
+    Click Button    ${tracking_button}
+    Check Element Is Visible    ${comfirm_button}
+    Click Button    ${comfirm_button}
+    Check Element Is Visible   ${here_link}
+    Check Text    ${locator_error_message}    หมายเลขการสั่งซื้อไม่ถูกต้อง
+
+TC_MC_03215
+    [Tags]    Regression    Medium    Store-Web
+    [Documentation]    WMStore Check error message in case user doesn't input tracking
+    Set Selenium Speed    0.3
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go to store bulktracking page    ${storename_slug_wemall}
+    Check Element Is Visible    ${tracking_button}
+    ${file_path}    Get file path
+    Choose File    ${input_file_tracking}    ${file_path}/NotInputTrackingNumber.xls
+    Click Button    ${tracking_button}
+    Check Element Is Visible    ${comfirm_button}
+    Click Button    ${comfirm_button}
+    Check Element Is Visible   ${here_link}
+    Check Text    ${locator_error_message}    ไม่ระบุหมายเลขพัสดุ
+
+TC_MC_03220
+    [Tags]    Regression    Medium    Store-Web
+    [Documentation]    WMStore Check error message in case orderid has already shipped
+    Set Selenium Speed    0.3
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go to store bulktracking page    ${storename_slug_wemall}
+    Check Element Is Visible    ${tracking_button}
+    ${file_path}    Get file path
+    Choose File    ${input_file_tracking}    ${file_path}/OrderShipped.xls
+    Click Button    ${tracking_button}
+    Check Element Is Visible    ${comfirm_button}
+    Click Button    ${comfirm_button}
+    Check Element Is Visible   ${here_link}
+    Check Text    ${locator_error_message}    หมายเลขการสั่งซื้อนี้เคยแจ้งจัดส่งแล้ว
+
+TC_MC_03221
+    [Tags]    Regression    Medium    Store-Web
+    [Documentation]    WMStore Check error message in case productid is imaginary
+    Set Selenium Speed    0.3
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go to store bulktracking page    ${storename_slug_wemall}
+    Check Element Is Visible    ${tracking_button}
+    ${file_path}    Get file path
+    Choose File    ${input_file_tracking}    ${file_path}/ProductIdInvalid.xls
+    Click Button    ${tracking_button}
+    Check Element Is Visible    ${comfirm_button}
+    Click Button    ${comfirm_button}
+    Check Element Is Visible   ${here_link}
+    Check Text    ${locator_error_message}    หมายเลขรหัสสินค้าไม่ตรงตามที่สั่งซื้อ
+
+TC_MC_03222
+    [Tags]    Regression    Medium    Store-Web
+    [Documentation]    WMStore Check error message in case productid has already shipped
+    Set Selenium Speed    0.3
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Go to store bulktracking page    ${storename_slug_wemall}
+    Check Element Is Visible    ${tracking_button}
+    ${file_path}    Get file path
+    Choose File    ${input_file_tracking}    ${file_path}/ProductIdAlreadyShip.xls
+    Click Button    ${tracking_button}
+    Check Element Is Visible    ${comfirm_button}
+    Click Button    ${comfirm_button}
+    Check Element Is Visible   ${here_link}
+    Check Text    ${locator_error_message}    หมายเลขรหัสสินค้านี้เคยแจ้งจัดส่งแล้ว
+
+TC_MC_03224
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    trustmall 004    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go to store bulktracking page    ${storename_slug_wemall}
+    Check Element Is Visible    ${tracking_button}
+    ${file_path}    Get file path
+    Open Excel    ${file_path}/PrepareShippingWM.xls
+    Put String To Cell    Sheet1    0    1    EX093592705TH
+    Put String To Cell    Sheet1    1    1    ${order_id}
+    Save Excel    ${file_path}/PrepareShippingWM.xls    true
+    Choose File    ${input_file_tracking}    ${file_path}/PrepareShippingWM.xls
+    Click Button    ${tracking_button}
+    Check Element Is Visible    ${comfirm_button}
+    Click Button    ${comfirm_button}
+    Check Text    ${txt_status_bulktracking_success}    แจ้งจัดส่งสำเร็จ
+
+
+

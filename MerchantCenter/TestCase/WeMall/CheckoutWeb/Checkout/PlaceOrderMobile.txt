@@ -1,0 +1,582 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    Mobile
+Suite Teardown    Close All Browsers
+Test Setup        Go to    ${URL_PORTAL}
+Test Timeout      4 minutes
+Library           String
+Library           Collections
+Library           OperatingSystem
+Library           DateTime
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Force Tags        Checkout-Web    Ligo    Sprint2017MC9
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Cart.txt
+Resource          ../../../../Resource/WeMall/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeMall/WebElement/Portal.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+
+*** Test Cases ***
+# TC_MC_04304
+#     [Documentation]    [Mobile] [CheckOut Step2] [ByCart] Verify price leght type discount price and show badge Promotion name
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_price_by_price}
+#     Click Element    ${m_select_qty}[2]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Price Condition Mobile
+#     Click Element    ${m_leveld_addtocart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=${promotion_name}
+#     ${cart_summary}    Get Promotion Price Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Price Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#
+# TC_MC_04305
+#     [Documentation]    [Mobile] [CheckOut Step2] [ByCart] Verify price leght type discount% and show badge Promotion name
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_percent_by_price}
+#     Click Element    ${m_select_qty}[2]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Percent Condition Mobile
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=${promotion_name}
+#     ${cart_summary}    Get Promotion Price Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Percent Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#
+# TC_MC_04306
+#     [Documentation]    [Mobile] [CheckOut Step2] [ByCart] Verify piece leght type discount by piece and show badge Promotion name
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_price_by_qty}
+#     Click Element    ${m_select_qty}[3]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Price Condition Mobile
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=${promotion_name}
+#     ${cart_summary}    Get Promotion Quantity Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Price Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#
+# TC_MC_04307
+#     [Documentation]    [Mobile] [CheckOut Step2] [ByCart] Verify piece leght type discount% and show badge Promotion name
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_percent_by_qty}
+#     Click Element    ${m_select_qty}[5]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Percent Condition Mobile
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=${promotion_name}
+#     ${cart_summary}    Get Promotion Quantity Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Percent Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#
+# TC_MC_04308
+#     [Documentation]    [Mobile] [CheckOut Step2] [FlashSale] Verify display badge FlashSale under product name
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_PORTAL}
+#     Execute Javascript    $('.h-dz-title > i')[1].click()
+#     Click Element    //strong[contains(@class,'name ng-binding') and contains(text(),'robot_stg_store1 - สินค้า flashsale near soldout')]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=flashsale
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    \    \    ${item_detail}
+#
+# TC_MC_04309
+#     [Documentation]    [Mobile] [CheckOut Step2] [FlashSale] Verify price of FlashSale will not include discount promotion
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_PORTAL}
+#     Click Element    ${h_flashsale_c}${h_flashsale_arrow}
+#     Click Element    //strong[contains(@class,'name ng-binding') and contains(text(),'robot_stg_store1 - สินค้า Promotion &amp; FlashSale')]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     Click Element    ${m_leveld_addtocart}
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_price_by_price}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Price Condition Mobile
+#     Click Element    ${m_select_qty}[2]
+#     ${item2_name}=    Get Text    ${m_leveld_p_name}
+#     ${item2_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item2_price}=    Remove String    ${item2_price}    ,    ${SPACE}    บาท
+#     ${item2_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item2_quantity}    Convert To Integer    ${item2_quantity}
+#     ${item2_total}=    Evaluate    ${item2_price} * ${item2_quantity}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=flashsale    itemname2=${item2_name}    itemattr2=None    itemqty2=${item2_quantity}    itemtotal2=${item2_total}    itemtype2=${promotion_name}
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${cart_summary}    Get Promotion Price Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Price Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#
+# TC_MC_04310
+#     [Documentation]    [Mobile] [CheckOut Step2] Other product not in promotion will not calculate include with promotion
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     Click Element    ${m_leveld_addtocart}
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_price_by_price}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Price Condition Mobile
+#     Click Element    ${m_select_qty}[2]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item2_name}=    Get Text    ${m_leveld_p_name}
+#     ${item2_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item2_price}=    Remove String    ${item2_price}    ,    ${SPACE}    บาท
+#     ${item2_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item2_quantity}    Convert To Integer    ${item2_quantity}
+#     ${item2_total}=    Evaluate    ${item2_price} * ${item2_quantity}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=None    itemname2=${item2_name}    itemattr2=None    itemqty2=${item2_quantity}    itemtotal2=${item2_total}    itemtype2=${promotion_name}
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${cart_summary}    Get Promotion Price Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Price Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+
+TC_MC_04320
+    [Documentation]    [Mobile] [CheckOut Step3] [ByCart] Verify display price leght type discount price and show badge Promotion name
+    [Tags]    Regression    Medium
+    ${result}=    Check Element    ${h_user_icon}
+    Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+    Delete All Product In Cart Mobile
+    Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_price_by_price}
+    Click Element    ${m_select_qty}[2]
+    Wait Until Element Is Visible    ${m_leveld_p_name}
+    ${item1_name}=    Get Text    ${m_leveld_p_name}
+    ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+    ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+    ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+    ${item1_quantity}    Convert To Integer    ${item1_quantity}
+    ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+    ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+    ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+    ${promotion_condition}    Get Promotion Discount Price Condition Mobile
+    Click Element    ${m_leveld_addtocart}
+    Wait Until Element Is Visible    ${m_leveld_goto_cart}
+    Click Element    ${m_leveld_goto_cart}
+    ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=${promotion_name}
+    ${cart_summary}    Get Promotion Price Summary Mobile
+    ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+    ${promotion_discount}    Verify Promotion Discount Price Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+    Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+    Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+    Click Element    ${btn_selectaddr}
+    Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+    Execute Javascript    ${shipping_post}.click()
+    Execute Javascript    ${payment_ATM}.click()
+    Execute Javascript    $('.btn_step3_confirm').eq(1).click()
+
+# TC_MC_04320
+#     [Documentation]    [Mobile] [CheckOut Step3] [ByCart] Verify display price leght type discount% and show badge Promotion name
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_percent_by_price}
+#     Click Element    ${m_select_qty}[2]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Percent Condition Mobile
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=${promotion_name}
+#     ${cart_summary}    Get Promotion Price Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Percent Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     Click Element    ${btn_selectaddr}
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     ${exclude_shipping}=    Get Amount Before
+#     Execute Javascript    ${shipping_post}.click()
+#     Execute Javascript    ${payment_ATM}.click()
+#     Execute Javascript    $('.btn_step3_confirm').eq(1).click()
+#
+# TC_MC_04321
+#     [Documentation]    [Mobile] [CheckOut Step3] [ByCart] Verify display piece leght type discount by piece and show badge Promotion name
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_price_by_qty}
+#     Click Element    ${m_select_qty}[3]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Price Condition Mobile
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=${promotion_name}
+#     ${cart_summary}    Get Promotion Quantity Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Price Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     Click Element    ${btn_selectaddr}
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     ${exclude_shipping}=    Get Amount Before
+#     Execute Javascript    ${shipping_post}.click()
+#     Execute Javascript    ${payment_ATM}.click()
+#     Execute Javascript    $('.btn_step3_confirm').eq(1).click()
+#
+# TC_MC_04322
+#     [Documentation]    [Mobile] [CheckOut Step3] [ByCart] Verify display piece leght type discount% and show badge Promotion name
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_percent_by_qty}
+#     Click Element    ${m_select_qty}[7]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Percent Condition Mobile
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=${promotion_name}
+#     ${cart_summary}    Get Promotion Quantity Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Percent Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     Click Element    ${btn_selectaddr}
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     ${exclude_shipping}=    Get Amount Before
+#     Execute Javascript    ${shipping_post}.click()
+#     Execute Javascript    ${payment_ATM}.click()
+#     Execute Javascript    $('.btn_step3_confirm').eq(1).click()
+#
+# TC_MC_04323
+#     [Documentation]    [Mobile] [CheckOut Step3] [FlashSale] Verify display badge FlashSale under product name
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_PORTAL}
+#     Execute Javascript    $('.h-dz-title > i')[1].click()
+#     Click Element    //strong[contains(@class,'name ng-binding') and contains(text(),'robot_stg_store1 - สินค้า flashsale near soldout')]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=flashsale
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    \    \    ${item_detail}
+#     Click Element    ${btn_selectaddr}
+#     Verify Step Summary    \    \    ${item_detail}
+#     Execute Javascript    ${shipping_ems}.click()
+#     Execute Javascript    ${payment_ATM}.click()
+#     Execute Javascript    $('.btn_step3_confirm').eq(1).click()
+#     Execute Javascript    ${thx_box_pay_sum_js}.click()
+#     Element Should Be Visible    ${thx_item_flashsale}
+#
+# TC_MC_04324
+#     [Documentation]    [Mobile] [CheckOut Step3] [FlashSale] Verify price of FlashSale will not include discount promotion
+#     [Tags]    Regression    Medium
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_PORTAL}
+#     Execute Javascript    $('.h-dz-title > i')[1].click()
+#     Click Element    //strong[contains(@class,'name ng-binding') and contains(text(),'robot_stg_store1 - สินค้า Promotion &amp; FlashSale')]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     Click Element    ${m_leveld_addtocart}
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_price_by_price}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Price Condition Mobile
+#     Click Element    ${m_select_qty}[2]
+#     ${item2_name}=    Get Text    ${m_leveld_p_name}
+#     ${item2_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item2_price}=    Remove String    ${item2_price}    ,    ${SPACE}    บาท
+#     ${item2_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item2_quantity}    Convert To Integer    ${item2_quantity}
+#     ${item2_total}=    Evaluate    ${item2_price} * ${item2_quantity}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=flashsale    itemname2=${item2_name}    itemattr2=None    itemqty2=${item2_quantity}    itemtotal2=${item2_total}    itemtype2=${promotion_name}
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${cart_summary}    Get Promotion Price Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Price Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     Click Element    ${btn_selectaddr}
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     Execute Javascript    ${shipping_post}.click()
+#     Execute Javascript    ${payment_ATM}.click()
+#     Execute Javascript    $('.btn_step3_confirm').eq(1).click()
+#
+# TC_MC_04325
+#     [Documentation]    [Mobile] [CheckOut Step3] Other product not in promotion will not calculate include with promotion
+#     [Tags]    Regression    Medium
+#     Go to    ${URL_PORTAL}
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     Click Element    ${m_leveld_addtocart}
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_price_by_price}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Price Condition Mobile
+#     Click Element    ${m_select_qty}[2]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item2_name}=    Get Text    ${m_leveld_p_name}
+#     ${item2_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item2_price}=    Remove String    ${item2_price}    ,    ${SPACE}    บาท
+#     ${item2_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item2_quantity}    Convert To Integer    ${item2_quantity}
+#     ${item2_total}=    Evaluate    ${item2_price} * ${item2_quantity}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=None    itemname2=${item2_name}    itemattr2=None    itemqty2=${item2_quantity}    itemtotal2=${item2_total}    itemtype2=${promotion_name}
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${cart_summary}    Get Promotion Price Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Price Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     Click Element    ${btn_selectaddr}
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     Execute Javascript    ${shipping_post}.click()
+#     Execute Javascript    ${payment_ATM}.click()
+#     Execute Javascript    $('.btn_step3_confirm').eq(1).click()
+#
+# TC_MC_04336
+#     [Documentation]    [Mobile] [CheckOut ThankU][ByCart] Display summary promotion name and condition promotion
+#     [Tags]    Regression    Medium    Checkout-Web
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_price_by_price}
+#     Click Element    ${m_select_qty}[2]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Price Condition Mobile
+#     ${condition_text}    Get Promotion Price Match Condition Mobile    ${promotion_condition}    ${item1_total}
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=${promotion_name}
+#     ${cart_summary}    Get Promotion Price Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Price Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     Click Element    ${btn_selectaddr}
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     ${exclude_shipping}=    Get Amount Before
+#     Execute Javascript    ${shipping_post}.click()
+#     ${shipping_cost}    Execute Javascript    return ${post_cost}.text()
+#     ${shipping_cost}=    Check Shipping Cost    ${shipping_cost}
+#     Execute Javascript    ${payment_ATM}.click()
+#     Execute Javascript    $('.btn_step3_confirm').eq(1).click()
+#     Execute Javascript    ${thx_box_pay_sum_js}.click()
+#     Verify Thankyou Page Product Summary    \    ${item_detail}
+#     ${netamt}=    Verify Thankyou Page Order Summary    ${exclude_shipping}    Promotion    ${promotion_name}    ${promotion_discount}    ${shipping_cost}
+#     Element Should Contain    ${thx_promotion_detail}//span    ${promotion_name}
+#     ${thx_promotion_condition}    Get Text    ${thx_promotion_detail}
+#     ${thx_promotion_condition}    Remove String    ${thx_promotion_condition}    ${promotion_name}${\n}    ${SPACE}
+#     ${thx_promotion_condition}    Remove String Using Regexp    ${thx_promotion_condition}    \n+
+#     ${condition_text}    Remove String    ${condition_text}    ${SPACE}
+#     Should Contain    ${thx_promotion_condition}    ${condition_text}
+#     Verify Order Reference    ${netamt}    ATM
+#
+# TC_MC_04337
+#     [Documentation]    [Mobile] [CheckOut ThankU][ByCart] Display summary total price and total discount promotion
+#     [Tags]    Regression    Medium    Checkout-Web
+#     ${result}=    Check Element    ${h_user_icon}
+#     Run Keyword If    '${result}'=='FAIL'    Mobile Login    ${mobile_checkout}    ${mobile_checkout_pass}
+#     Delete All Product In Cart Mobile
+#     Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_percent_by_price}
+#     Click Element    ${m_select_qty}[2]
+#     Wait Until Element Is Visible    ${m_leveld_p_name}
+#     ${item1_name}=    Get Text    ${m_leveld_p_name}
+#     ${item1_price}=    Get Text    //div[@class='box-price-item']//div//span[@class='price']
+#     ${item1_price}=    Remove String    ${item1_price}    ,    ${SPACE}    บาท
+#     ${item1_quantity}=    Get Text    //span[@class='input-select ng-binding']
+#     ${item1_quantity}    Convert To Integer    ${item1_quantity}
+#     ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+#     ${item_shopname}=    Get Text    ${m_leveld_top_shopname}
+#     ${promotion_name}    Get Text    ${m_leveld_promotion_name}
+#     ${promotion_condition}    Get Promotion Discount Percent Condition Mobile
+#     ${condition_text}    Get Promotion Percent Match Condition Mobile    ${promotion_condition}    ${item1_total}
+#     Click Element    ${m_leveld_addtocart}
+#     Wait Until Element Is Visible    ${m_leveld_goto_cart}
+#     Click Element    ${m_leveld_goto_cart}
+#     ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}    itemtype1=${promotion_name}
+#     ${cart_summary}    Get Promotion Price Summary Mobile
+#     ${sum_promotion}    Get From Dictionary    ${cart_summary}    promotion
+#     ${promotion_discount}    Verify Promotion Discount Percent Mobile    ${promotion_condition}    ${sum_promotion}    ${promotion_name}
+#     Click Element    //div[contains(@class,'btn-orange ng-scope') and contains(text(),'สั่งซื้อสินค้าร้านนี้')]
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     Click Element    ${btn_selectaddr}
+#     Verify Step Summary    ${promotion_name}    ${promotion_discount}    ${item_detail}
+#     ${exclude_shipping}=    Get Amount Before
+#     Execute Javascript    ${shipping_post}.click()
+#     ${shipping_cost}    Execute Javascript    return ${post_cost}.text()
+#     ${shipping_cost}=    Check Shipping Cost    ${shipping_cost}
+#     Execute Javascript    ${payment_ATM}.click()
+#     Execute Javascript    $('.btn_step3_confirm').eq(1).click()
+#     Execute Javascript    ${thx_box_pay_sum_js}.click()
+#     Verify Thankyou Page Product Summary    \    ${item_detail}
+#     ${netamt}=    Verify Thankyou Page Order Summary    ${exclude_shipping}    Promotion    ${promotion_name}    ${promotion_discount}    ${shipping_cost}
+#     Element Should Contain    ${thx_promotion_detail}//span    ${promotion_name}
+#     ${thx_promotion_condition}    Get Text    ${thx_promotion_detail}
+#     ${thx_promotion_condition}    Remove String Using Regexp    ${thx_promotion_condition}    \n+
+#     ${thx_promotion_condition}    Remove String    ${thx_promotion_condition}    ${promotion_name}    ${SPACE}
+#     ${condition_text}    Remove String    ${condition_text}    ${SPACE}
+#     Should Contain    ${condition_text}    ${thx_promotion_condition}
+#     Verify Order Reference    ${netamt}    ATM

@@ -1,0 +1,172 @@
+*** Setting ***
+Suite Setup       Go to Login and Check Seller Login    ${URL_PORTAL}    ${BROWSER}    ${storename_slug_feedback}    ${user_login_feedback}    ${pass_login_feedback}
+Suite Teardown    Clear All Test
+Test Setup        Create order credit card channel    ${storename_slug_feedback}    ${product_inpage}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+Force Tags        Feedback-API    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Account_History.txt
+Resource          ../../../../Keyword/Common/Account_Detail.txt
+Resource          ../../../../Keyword/Common/Account_Refund.txt
+Resource          ../../../../Keyword/Common/Store_Detail.txt
+Resource          ../../../../Keyword/Common/Store_History.txt
+Resource          ../../../../Keyword/Common/Account_Feedback.txt
+Resource          ../../../../Keyword/Common/ManageOrder.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/AccountHistory.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/AccountDetail.txt
+
+*** Test Cases ***
+TC_MC_05496
+    [Tags]    Regression    High    Feedback-API    SmokeTest
+    [Documentation]    Give feedback on account history page after buyer receive
+    Go To Store Order History    ${storename_slug_feedback}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    ${message}    Buyer receive the order
+    Run Keyword If    '${message}' == 'รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'    Fail    รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง
+    Close feedback pop up
+    Click Give Feedback button
+    Give Comment And Feedback Excellent Rate    สินค้าดี    ${order_id_sub}
+    Check status order on account history page    คุณได้รับสินค้าเรียบร้อยแล้ว
+    Check Feedback After Give Score    ${feedback_excellent}    พอใจ
+    Check Text    ${element_countdowntime_account_history}    เหลือเวลาอีก 15 วัน
+    Check Link Edit Score Feedback    ${order_id_sub}    แก้ไขความพึงพอใจ
+
+TC_MC_05498
+    [Tags]    Medium    Feedback-API
+    [Documentation]    Give feedback on account history page after auto receive
+    Go To Store Order History    ${storename_slug_feedback}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Login admin manage order web
+    Go to order web manage date time
+    Search order id on manage datetime page    ${order_id_sub}
+    Set Receive Expire Time    ${order_id_sub}
+    Set Auto Receive With API    ${order_id_sub}
+    Go to account order detail page    ${order_id}
+    Click Give Feedback button
+    Give Comment And Feedback Excellent Rate    สินค้าดีมาก    ${order_id_sub}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Check status order on account history page    คุณได้รับสินค้าเรียบร้อยแล้ว
+    Check Feedback After Give Score    ${feedback_excellent}    พอใจ
+    Check Text    ${element_countdowntime_account_history}    เหลือเวลาอีก 15 วัน
+    Check Link Edit Score Feedback    ${order_id_sub}    แก้ไขความพึงพอใจ
+
+TC_MC_05501
+    [Tags]    Medium    Feedback-API
+    [Documentation]    Auto give feedback
+    Go To Store Order History    ${storename_slug_feedback}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    ${message}    Buyer receive the order
+    Run Keyword If    '${message}' == 'รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'    Fail    รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง
+    Login admin manage order web
+    API Order Manage Escrow Datetime    1     feedback_expired_time    เพิ่ม-ลด    -30    Day
+    Run Cron Auto Feedback on admin manage order web    ${order_id_sub}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Check Feedback After Give Score    ${feedback_good}    ปานกลาง
+    Check Text    ${element_countdowntime_account_history}    เหลือเวลาอีก 15 วัน
+    Check Link Edit Score Feedback    ${order_id_sub}    แก้ไขความพึงพอใจ
+
+TC_MC_05503
+    [Tags]    Regression    Medium    Feedback-API
+    [Documentation]    Check status on account history page in case expired ship and accept refund
+    Login admin manage order web
+    Go to order web manage date time
+    Search order id on manage datetime page    ${order_id_sub}
+    API Order Manage Escrow Datetime    1     ship_expired_time    เพิ่ม-ลด    -4    Day
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Buyer request refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า    A02.jpg
+    Go to store order detail    ${storename_slug_feedback}    ${order_id}
+    Seller accept the refund request    ${password_store_order}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Check status order on account history page    ร้านค้ายอมรับการขอเงินคืน
+    Check Text    ${give_feedback_button}    ให้คะแนนความพึงพอใจ
+    Check Text    ${element_countdowntime_account_history}    เหลือเวลาอีก 30 วัน
+
+TC_MC_05516
+    [Tags]    High    Feedback-API
+    [Documentation]    Check text after update give feedback day
+    Go To Store Order History    ${storename_slug_feedback}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    ${message}    Buyer receive the order
+    Run Keyword If    '${message}' == 'รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'    Fail    รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง
+    Login admin manage order web
+    API Order Manage Escrow Datetime    1     feedback_expired_time    เพิ่ม-ลด    -2    Day
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Check Text    ${give_feedback_button}    ให้คะแนนความพึงพอใจ
+    Check Text    ${element_countdowntime_account_history}    เหลือเวลาอีก 28 วัน
+
+TC_MC_05517
+    [Tags]    Medium    Feedback-API
+    [Documentation]    Give feedback with comment over 255 character
+    Go To Store Order History    ${storename_slug_feedback}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    ${message}    Buyer receive the order
+    Run Keyword If    '${message}' == 'รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'    Fail    รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง
+    Close feedback pop up
+    Click Give Feedback button
+    Give Comment And Feedback Good Rate    ☺aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa55555    ${order_id_sub}
+    Click Link Edit Score Feedback    ${order_id_sub}
+    Check Feedback Feeling Active Detail    ${feedback_good_active}
+    Check Star Active On Feedback Detail    ${order_id_sub}    ${row_star1}    ${star_3}
+    Check Star Active On Feedback Detail    ${order_id_sub}    ${row_star2}    ${star_3}
+    Check Star Active On Feedback Detail    ${order_id_sub}    ${row_star3}    ${star_3}
+    Check Star Active On Feedback Detail    ${order_id_sub}    ${row_star4}    ${star_3}
+    Check Text    ${comment_box}    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+TC_MC_05518
+    [Tags]    Medium    Feedback-API
+    [Documentation]    Give feedback with comment text and emoji
+    Go To Store Order History    ${storename_slug_feedback}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    ${message}    Buyer receive the order
+    Run Keyword If    '${message}' == 'รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'    Fail    รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง
+    Close feedback pop up
+    Click Give Feedback button
+    Give Comment And Feedback Good Rate    สินค้าดี☺    ${order_id_sub}
+    Select Emotional Feedback    ${icon_good}
+    Click Link Edit Score Feedback    ${order_id_sub}
+    Check Feedback Feeling Active Detail    ${feedback_good_active}
+    Check Star Active On Feedback Detail    ${order_id_sub}    ${row_star1}    ${star_3}
+    Check Star Active On Feedback Detail    ${order_id_sub}    ${row_star2}    ${star_3}
+    Check Star Active On Feedback Detail    ${order_id_sub}    ${row_star3}    ${star_3}
+    Check Star Active On Feedback Detail    ${order_id_sub}    ${row_star4}    ${star_3}
+    Check Text    ${comment_box}    สินค้าดี
+
+TC_MC_05519
+    [Tags]    Regression    High    Feedback-API
+    [Documentation]    Give feedback without comment
+    Go To Store Order History    ${storename_slug_feedback}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    ${message}    Buyer receive the order
+    Run Keyword If    '${message}' == 'รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'    Fail    รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง
+    Close feedback pop up
+    Click Give Feedback button
+    Give Feedback Rate Without Comment    ${order_id_sub}
+    Element Should Contain    ${text_comment_error}    *คุณยังไม่ได้กรอกความคิดเห็นต่อรายการสั่งซื้อนี้

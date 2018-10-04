@@ -1,0 +1,64 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Force Tags        Account-Web    Member    SignIn    Ligo
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00123
+	[Documentation]    [Wemall] User which have no store registered can sign in to website successfully
+    [Tags]    Regression    SmokeTest    Sprint2017MC5    High    Iczy1
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Execute JavaScript    ${myacc}.mouseover()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Element Should Contain    ${profile_email}    ${buyer_account}
+    Clear Active Login
+
+TC_MC_00125
+	[Documentation]    [Wemall] User which have only WeStore registered can sign in to website successfully
+    [Tags]    Regression    SmokeTest    Sprint2017MC5    High
+    Go to Login    ${seller_user_001}    ${seller_pwd_001}
+    Execute JavaScript    ${myshop}.mouseover()
+    Element Should Not Be Visible    ${westore}
+    Element Should Not Be Visible    ${youstore}
+    Execute JavaScript    ${myshop}.mouseout()
+    Execute JavaScript    ${myacc}.mouseover()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Element Should Contain    ${profile_email}    ${seller_user_001}
+    Clear Active Login
+
+TC_MC_00131
+	[Documentation]    [Wemall] User fill incorrect password, user cannot sign in to website
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Go to    ${URL_PORTAL}
+    Execute JavaScript    window.scrollTo(0,0)
+    Execute JavaScript    ${login}.click()
+    Sleep    1s
+    Execute Javascript    ${login_username}.val('buyer_test01@mailinator.com')
+    Execute Javascript    ${login_password}.val('abcedefgh')
+    Wait Until Element Is Enabled    ${btn_login}    ${EXPECT_LOADTIME}
+    Click Button    ${btn_login}
+    ${over_login}=    Check Element    //input[@name='captcha_enable']
+    Run Keyword If    '${over_login}'=='FAIL'    Element Should Contain    //div[@class='alert alert-error bg-danger']    ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบ
+    Run Keyword If    '${over_login}'=='PASS'    Element Should Contain    //div[@class='alert alert-error bg-danger']    คุณกรอกรหัสผ่านไม่ถูกต้องเกินจำนวนครั้งที่กำหนด.. กรุณากรอกรหัสผ่านของคุณอีกครั้ง
+
+TC_MC_00145
+	[Documentation]    [Wemall] Login with user that havn't activated yet
+    [Tags]    Regression    Sprint2017MC5    High    Mock
+    Go to    ${URL_PORTAL}
+    Execute JavaScript    window.scrollTo(0,0)
+    Execute JavaScript    ${login}.click()
+    Sleep    1s
+    Execute Javascript    ${login_username}.val('${buyer_account_not_confirm}')
+    Execute Javascript    ${login_password}.val('${buyer_account_not_confirm_pass}')
+    Wait Until Element Is Enabled    ${btn_login}    ${EXPECT_LOADTIME}
+    Click Button    ${btn_login}
+    Element Should Contain    ${login_errorverifyemail}    คุณยังไม่ได้ทำการยืนยันอีเมล

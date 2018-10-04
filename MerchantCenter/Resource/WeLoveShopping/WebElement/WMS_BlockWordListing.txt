@@ -1,0 +1,14 @@
+*** variable ***
+### Locators ###
+${add_blockword}    //a[@id="add_new_blockword"]
+${blockword}    $("textarea[id='inputError']").eq(0).val("QaTestBlockWord")
+${block_type}    //select[@name="block_type_id"]
+${click_cate}    $('button[class="multiselect dropdown-toggle btn btn-default btn-sm"]').click();
+${select_cate}    $("label:contains('งานอดิเรก') > input").click()
+${status_type}    //select[@name="online"]
+${block_level}    //select[@name="block_level"]
+${comment}    $("textarea[id='inputError']").eq(1).val("Testblockword")
+${reset}    $("button[type='reset']").click()
+${search_blockword}    $("button[class='btn btn-info']").click()
+${delete_blockword}    $("i[class='ace-icon fa fa-trash-o bigger-130']").click()
+${comfirm_delete}    $("button[id='btn_confrirm_delete_by_one']").click()

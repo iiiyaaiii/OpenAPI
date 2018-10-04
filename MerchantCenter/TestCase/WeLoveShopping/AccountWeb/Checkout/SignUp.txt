@@ -1,0 +1,103 @@
+*** Settings ***
+Test Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Prepare Product In Cart And Go To Checkout Page
+Test Teardown    Run Keywords    Delete All Product In Cart    AND    Close All Browsers
+Suite Teardown    Close All Browsers
+Force Tags        Account-Web    mc-wls
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignUp.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_Register.txt
+
+*** Test Cases ***
+TC_MC_00008
+    [Documentation]    [Welove]Checkout - Register - Invalid Password - Minimum Range
+    [Tags]    Regression     Low
+    [Template]    Member_Register.Validate Registration Form
+    Password            123456                  Password Range        ${EMPTY}    ${EMPTY}
+    Password            P@ss01                  Password Range        ${EMPTY}    ${EMPTY}
+
+TC_MC_00010
+    [Documentation]    [Welove]Checkout - Register - Invalid Password - Incorrect Data Type
+    [Tags]    Regression     Low
+    [Template]    Member_Register.Validate Registration Form
+    Password            กกกขขขคคค                   Password Type        ${EMPTY}    ${EMPTY}
+    Password            TestBuyer1เทส               Password Type        ${EMPTY}    ${EMPTY}
+
+TC_MC_00012
+    [Documentation]    [Welove]Checkout - Register - Invalid Password - Incorrect Format
+    [Tags]    Regression    Low
+    [Template]    Member_Register.Validate Registration Form
+    Password            12345678                    Password Format        ${EMPTY}    ${EMPTY}
+    Password            testbuyer                   Password Format        ${EMPTY}    ${EMPTY}
+    Password            TESTSBUYER                  Password Format        ${EMPTY}    ${EMPTY}
+    Password            testbuyer1                  Password Format        ${EMPTY}    ${EMPTY}
+    Password            TESTBUYER1                  Password Format        ${EMPTY}    ${EMPTY}
+    Password            TEST@buyer                  Password Format        ${EMPTY}    ${EMPTY}
+    Password            123!4567                    Password Format        ${EMPTY}    ${EMPTY}
+
+TC_MC_00014
+    [Documentation]    [Welove]Checkout - Register - Invalid Confirm Password - Mismatch
+    [Tags]    Regression    Low
+    [Template]    Member_Register.Validate Registration Form
+    Password            P@ssw0rd                    ${EMPTY}              ${EMPTY}    ${EMPTY}
+    Confirm Password    password                    Password Mismatch     ${EMPTY}    ${EMPTY}
+
+TC_MC_00016
+    [Documentation]    [Welove]Checkout - Register - Invalid Mobile Number - Incorrect Format
+    [Tags]    Regression    Low
+    [Template]    Member_Register.Validate Registration Form
+    Mobile Number       01234567                  Mobile Format         ${EMPTY}    ${EMPTY}
+
+TC_MC_00018
+    [Documentation]    [Welove]Checkout - Register - Invalid Mobile Number - Leading Zero
+    [Tags]    Regression    Low
+    [Template]    Member_Register.Validate Registration Form
+    Mobile Number       1234567890                Mobile Leading         ${EMPTY}    ${EMPTY}
+
+TC_MC_00020
+    [Documentation]    [Welove]Checkout - Register - Invalid Mobile Number - Incorrect Data Type
+    [Tags]    Regression    Low
+    [Template]    Member_Register.Validate Registration Form
+    Mobile Number       กกกขขขคคคก                Mobile Type         ${EMPTY}    ${EMPTY}
+
+TC_MC_00022
+    [Documentation]    [Welove]Checkout - Register - Check hint password
+    [Tags]    Regression    Low
+    Member_Register.Check To Change Register Tab
+    Member_Register.Hint Message Should Be Appeared    รหัสผ่านต้องมีความยาวตั้งแต่ 8 ตัว ขึ้นไป ประกอบด้วย
+    Member_Register.Hint Message Should Be Appeared    - ตัวอักษร (A-Z) ตัวใหญ่ อย่างน้อย 1 ตัว
+    Member_Register.Hint Message Should Be Appeared    - ตัวอักษร (a-z) ตัวเล็ก อย่างน้อย 1 ตัว
+    Member_Register.Hint Message Should Be Appeared    - ตัวเลข อย่างน้อย 1 ตัว
+
+TC_MC_00038
+    [Documentation]    [Welove]Checkout - Register - Success
+    [Tags]    Regression    Low
+    Generate Username
+    Member_Register.Check To Change Register Tab
+    Member_Register.Enter Email    ${newUserName}
+    Member_Register.Enter Password    P@ssw0rd
+    Member_Register.Enter Confirm Password    P@ssw0rd
+    Member_Register.Enter Mobile Number    0811111111
+    Member_Register.Tick On Agreement Checkbox
+    Member_Register.Click Register Button
+    Member_Register.Successfully Register Page Should Be Appeared
+
+*** Keywords ***
+Prepare Product In Cart And Go To Checkout Page
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_use}&refresh=changeme
+    Checkout.Add Product To Cart And Go Checkout
+    Checkout.Your Cart Page Should Be Appeared
+    Checkout.Checkout On The Selected Shop    ${store_name1}
+    Checkout.Register Page On Checkout Step Should Be Appeared
+
+Generate Username
+    ${time}=    Get Time    epoch
+    ${newUserName}=    Catenate    SEPARATOR=    wlstest    ${time}    @mailinator.com
+    Set Test Variable    ${newUserName}

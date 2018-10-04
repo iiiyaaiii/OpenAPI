@@ -1,0 +1,312 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Force Tags        Portal-Web    Ligo    Sprint2017MC8    mc-wls
+Test Timeout      3 minutes
+Test Teardown     Close All Browsers
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+
+*** Test Cases ***
+TC_MC_01772
+    [Documentation]    [Welove] [Join Campaign]: Campaign product 250 show 40 product per page
+    [Tags]    Medium    mock
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id}
+    Element Should Be Visible    ${campaign_total_product}
+    Element Should Contain    ${campaign_total_product}    แสดงทั้งหมด
+    ${count_all_product}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[2]/div[2]/div[1]/div/div[1]/span
+    Should Be True    ${count_all_product} > 250
+    ${count_product_per_page}=    Get Matching Xpath Count    //*[@id="wrapper"]/div[3]/div[2]/div[2]/div[2]/ul[1]/li
+    Should Be True    ${count_product_per_page} == 40
+
+TC_MC_01776
+    [Documentation]    [Welove] Product show 500 at campaign page (after approved)
+    [Tags]    Regression    Medium    mock
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id}
+    Element Should Be Visible    ${campaign_total_product}
+    Element Should Contain    ${campaign_total_product}    แสดงทั้งหมด
+    Element Should Be Visible     ${campaign_list_prodoct}
+    Element Should Be Visible     ${campaign_list_prodoct}//li
+    ${count_page}    Execute Javascript    return $('.portal-pagination > li').length
+    ${count_page}    Evaluate    ${count_page} - 2
+    Execute Javascript    $('.portal-pagination > li > a')[${count_page}].click()
+    Wait Until Element Is Visible    ${campaign_list_prodoct}//li
+    ${count_lastpage}    Get Matching Xpath Count    ${campaign_list_prodoct}//li
+    ${count_product}    Evaluate    ((${count_page} - 1) * 40) + ${count_lastpage}
+    ${count_product}    Convert To String    ${count_product}
+    Element Should Contain    ${campaign_total_product}    ${count_product}
+
+TC_MC_01797
+    [Documentation]    [Welove] Join Campaign : Campaign is active but don't have product in campaign
+    [Tags]    Regression    Medium    mock
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/promotion/${empty_join_campaign_id}
+    Sleep    1
+    Element Should Contain    //span[@class="font-22px"]    แคมเปญนี้ยังไม่มีสินค้าเข้าร่วมรายการ
+
+TC_MC_01798
+    [Documentation]    [Welove] Join Campaign : Campaign is expired
+    [Tags]    Regression    Medium
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/promotion/${expired_join_campaign_id}&refresh=changeme
+    Sleep    1
+    Element Should Contain    //div[@class="box-cant-join"]//strong    ขออภัยค่ะ แคมเปญ [QA-Automation] Join Campaign Expired สิ้นสุดการขายแล้ว
+    Element Should Contain    //div[@class="box-cant-join"]//a[@href="/campaign"]    ดูแคมเปญอื่นที่นี่
+
+TC_MC_01799
+    [Documentation]    [Welove] Join Campaign : Campaign can next page
+    [Tags]    Regression    Medium    mock
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id}
+    Sleep    1
+    ${count_page}    Execute Javascript    return $('.portal-pagination > li').length
+    Should Be True    ${count_page} > 0
+    Execute Javascript    $('.portal-pagination > li > a')[2].click()
+    Sleep    1
+    Element Should Be Visible    //ul[@class='pagination portal-pagination']//li[@class='active']//a[contains(text(),'2')]
+    ${count_product}    Get Matching Xpath Count    ${campaign_list_prodoct}//li
+    Should Be True    ${count_product} <= 40
+    Execute Javascript    $('.portal-pagination > li > a')[3].click()
+    Sleep    1
+    Element Should Be Visible    //ul[@class='pagination portal-pagination']//li[@class='active']//a[contains(text(),'3')]
+    ${count_product}    Get Matching Xpath Count    ${campaign_list_prodoct}//li
+    Should Be True    ${count_product} <= 40
+
+TC_MC_02980
+    [Documentation]    [Welove] [JoinCampaign] OFF and Show campaign will no show campaign on campaign list
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_close}
+    Checked Campaign Show    ${radio_campaign_show}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/campaign?refresh=changeme
+    ${interval}=    Set Variable    2
+    : FOR    ${i}    IN RANGE    0    ${interval}
+    \    Reload Page
+    Page Should Not Contain    [QA-Automate] JoinCampaign ON/OFF
+
+TC_MC_02981
+    [Documentation]    [Welove] [JoinCampaign] OFF and Show campaign will no show on directness channel
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_close}
+    Checked Campaign Show    ${radio_campaign_show}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Go To    ${URL_PORTAL}/promotion/${join_campaign_id_on_off}-${join_campaing_slug_on_off}?refresh=changeme
+    ${interval}=    Set Variable    3
+    : FOR    ${i}    IN RANGE    0    ${interval}
+    \    Reload Page
+    Page Should Contain    ไม่พบหน้านี้ในระบบ
+
+TC_MC_02982
+    [Documentation]    [Welove] [JoinCampaign] OFF and Show campaign will no check limit
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_close}
+    Checked Campaign Show    ${radio_campaign_show}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Add Cookie    fav_detail    fav_detail
+    Go To    ${URL_LEVEL_D}/L90578652
+    Wait Until Element Is Visible    //div[@id='product_quantity_increase']    ${EXPECT_LOADTIME}
+    Execute Javascript    $("#product_quantity_increase").click()
+    Execute Javascript    $("#product_quantity_increase").click()
+    Wait Until Element Is Visible    //button[@id='btn-add-cart']    ${EXPECT_LOADTIME}
+    Execute Javascript    $("#btn-add-cart").click()
+    Wait Until Element Is Visible    //p[@id='modal-option']    ${EXPECT_LOADTIME}
+    Page Should Contain    เพิ่มสินค้า 3 ชิ้น เข้าตะกร้า
+    Page Should Contain    จำนวน : 3
+
+TC_MC_02983
+    [Documentation]    [Welove] [JoinCampaign] OFF and Hide campaign will no show campaign on campaign list
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_close}
+    Checked Campaign Show    ${radio_campaign_hide}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/campaign?refresh=changeme
+    ${interval}=    Set Variable    2
+    : FOR    ${i}    IN RANGE    0    ${interval}
+    \    Reload Page
+    Page Should Not Contain    [QA-Automate] JoinCampaign ON/OFF
+
+TC_MC_02984
+    [Documentation]    [Welove] [JoinCampaign] OFF and Hide campaign will no show on directness channel
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_close}
+    Checked Campaign Show    ${radio_campaign_hide}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Go To    ${URL_PORTAL}/promotion/${join_campaign_id_on_off}-${join_campaing_slug_on_off}?refresh=changeme
+    ${interval}=    Set Variable    3
+    : FOR    ${i}    IN RANGE    0    ${interval}
+    \    Reload Page
+    Page Should Contain    ไม่พบหน้านี้ในระบบ
+
+TC_MC_02985
+    [Documentation]    [Welove] [JoinCampaign] OFF and Hide campaign will no check limit
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_close}
+    Checked Campaign Show    ${radio_campaign_hide}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Add Cookie    fav_detail    fav_detail
+    Go To    ${URL_LEVEL_D}/L90578652
+    Wait Until Element Is Visible    //div[@id='product_quantity_increase']    ${EXPECT_LOADTIME}
+    Execute Javascript    $("#product_quantity_increase").click()
+    Execute Javascript    $("#product_quantity_increase").click()
+    Wait Until Element Is Visible    //button[@id='btn-add-cart']    ${EXPECT_LOADTIME}
+    Execute Javascript    $("#btn-add-cart").click()
+    Wait Until Element Is Visible    //p[@id='modal-option']    ${EXPECT_LOADTIME}
+    Page Should Contain    เพิ่มสินค้า 3 ชิ้น เข้าตะกร้า
+    Page Should Contain    จำนวน : 3
+
+TC_MC_02986
+    [Documentation]    [Welove] [JoinCampaign] ON and Show campaign will show campaign on campaign list
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/campaign?refresh=changeme
+    ${interval}=    Set Variable    2
+    : FOR    ${i}    IN RANGE    0    ${interval}
+    \    Reload Page
+    Wait Until Element Is Visible    //ul[@class='sale-promotion-list-lvd']    ${EXPECT_LOADTIME}
+    Page Should Contain    [QA-Automate] JoinCampaign ON/OFF
+
+TC_MC_02987
+    [Documentation]    [Welove] [JoinCampaign] ON and Show campaign will show on directness channel
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/campaign?refresh=changeme
+    ${interval}=    Set Variable    2
+    : FOR    ${i}    IN RANGE    0    ${interval}
+    \    Reload Page
+    Wait Until Element Is Visible    //ul[@class='sale-promotion-list-lvd']    ${EXPECT_LOADTIME}
+    Page Should Contain    [QA-Automate] JoinCampaign ON/OFF
+    Go To    ${URL_PORTAL}/promotion/${join_campaign_id_on_off}-${join_campaing_slug_on_off}?refresh=changeme
+    Page Should Contain    [QA-Automate] JoinCampaign ON/OFF
+
+TC_MC_02988
+    [Documentation]    [Welove] [JoinCampaign] ON and Show campaign will check limit
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/campaign?refresh=changeme
+    ${interval}=    Set Variable    2
+    : FOR    ${i}    IN RANGE    0    ${interval}
+    \    Reload Page
+    Wait Until Element Is Visible    //ul[@class='sale-promotion-list-lvd']    ${EXPECT_LOADTIME}
+    Page Should Contain    [QA-Automate] JoinCampaign ON/OFF
+    Add Cookie    fav_detail    fav_detail
+    Go To    ${URL_LEVEL_D}/L90578652
+    Wait Until Element Is Visible    //div[@id='product_quantity_increase']    ${EXPECT_LOADTIME}
+    Execute Javascript    $("#product_quantity_increase").click()
+    Execute Javascript    $("#product_quantity_increase").click()
+    Wait Until Element Is Visible    //button[@id='btn-add-cart']    ${EXPECT_LOADTIME}
+    Execute Javascript    $("#btn-add-cart").click()
+    Wait Until Element Is Visible    //div[@class='lvd-alert-box pull-left ng-binding ng-scope']    ${EXPECT_LOADTIME}
+    Element Should Contain    //div[@class='lvd-alert-box pull-left ng-binding ng-scope']    *จำกัดการซื้อสูงสุด 2 ชิ้นต่อครั้ง
+
+TC_MC_02989
+    [Documentation]    [Welove] [JoinCampaign] ON and Hide campaign will no show campaign on campaign list
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_hide}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/campaign?refresh=changeme
+    ${interval}=    Set Variable    2
+    : FOR    ${i}    IN RANGE    0    ${interval}
+    \    Reload Page
+    Wait Until Element Is Visible    //ul[@class='sale-promotion-list-lvd']    ${EXPECT_LOADTIME}
+    Page Should Not Contain    [QA-Automate] JoinCampaign ON/OFF
+
+TC_MC_02990
+    [Documentation]    [Welove] [JoinCampaign] ON and Hide campaign will show on directness channel
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_hide}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/campaign?refresh=changeme
+    ${interval}=    Set Variable    2
+    : FOR    ${i}    IN RANGE    0    ${interval}
+    \    Reload Page
+    Wait Until Element Is Visible    //ul[@class='sale-promotion-list-lvd']    ${EXPECT_LOADTIME}
+    Page Should Not Contain    [QA-Automate] JoinCampaign ON/OFF
+    Go To    ${URL_PORTAL}/promotion/${join_campaign_id_on_off}-${join_campaing_slug_on_off}?refresh=changeme
+    Page Should Contain    [QA-Automate] JoinCampaign ON/OFF
+
+TC_MC_02991
+    [Documentation]    [Welove] [JoinCampaign] ON and Hide campaign will check limit
+    [Tags]    High    mock
+    Switch Browser    2
+    Go To    ${URL_WMS}/campaign/collection-join/edit/${join_campaign_id_on_off}
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_hide}
+    Execute Javascript    $("button.btn-info").click()
+    ## Verify expected result
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/campaign?refresh=changeme
+    ${interval}=    Set Variable    2
+    : FOR    ${i}    IN RANGE    0    ${interval}
+    \    Reload Page
+    Wait Until Element Is Visible    //ul[@class='sale-promotion-list-lvd']    ${EXPECT_LOADTIME}
+    Page Should Not Contain    [QA-Automate] JoinCampaign ON/OFF
+    Add Cookie    fav_detail    fav_detail
+    Go To    ${URL_LEVEL_D}/L90578652
+    Wait Until Element Is Visible    //div[@id='product_quantity_increase']    ${EXPECT_LOADTIME}
+    Execute Javascript    $("#product_quantity_increase").click()
+    Execute Javascript    $("#product_quantity_increase").click()
+    Wait Until Element Is Visible    //button[@id='btn-add-cart']    ${EXPECT_LOADTIME}
+    Execute Javascript    $("#btn-add-cart").click()
+    Wait Until Element Is Visible    //div[@class='lvd-alert-box pull-left ng-binding ng-scope']    ${EXPECT_LOADTIME}
+    Element Should Contain    //div[@class='lvd-alert-box pull-left ng-binding ng-scope']    *จำกัดการซื้อสูงสุด 2 ชิ้นต่อครั้ง

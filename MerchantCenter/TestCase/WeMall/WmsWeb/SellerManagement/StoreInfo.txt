@@ -1,0 +1,40 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    StoreInfo    mock
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/WMS_StoreInfo.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/WMS_StoreInfo.txt
+
+*** Test Case ***
+TC_MC_08853
+    [Documentation]    [Wemall] Change unique URL store on Store Info page
+    [Tags]    Medium
+    Go To    ${URL_WMS}/storeinfo
+    Search store id    L939516
+    Change url store name to be    qamcautomate000
+    Check that url store name updates successfully
+
+TC_MC_08854
+    [Documentation]    [Wemall] Change URL store as already existing on Store Info page
+    [Tags]    Regression    Medium
+    Go To    ${URL_WMS}/storeinfo
+    Search store id    L939521
+    Change url store name to be    robot_stg_store1
+    Check the notify message displays    URL นี้ถูกใช้งานแล้ว
+
+TC_MC_08855
+    [Documentation]    [Wemall] Change URL store as Welove's URL store  on Store Info page
+    [Tags]    Medium
+    Go To    ${URL_WMS}/storeinfo
+    Search store id    L939521
+    Change url store name to be    robot_store2
+    Check that url store name updates successfully
+
+
+

@@ -1,0 +1,64 @@
+*** variable ***
+#${profile}        //*[@id="titan"]/div[2]/div/div[3]/div[2]/div/ul/li[2]
+${bar_title}    //div[@class='box-bar-title']
+${profile}    //*[@id="titan"]/div[2]/div/div[2]/div[3]
+${profile_displayname}    //*[@id="content-container"]/div/div/div[1]/div/div[2]/span[2]
+${profile_name}    //*[@id="content-container"]/div/div/div[2]/div[2]/div[1]/div[2]
+${profile_surname}    //*[@id="content-container"]/div/div/div[2]/div[2]/div[1]/div[4]
+${profile_email}    //*[@id="content-container"]/div/div/div[2]/div[2]/div[3]/div[2]
+${profile_myacc}    //a[@title="บัญชีของฉัน"]
+${profile_gender}    //*[@id="content-container"]/div/div/div[2]/div[2]/div[2]/div[2]
+${profile_bday}    //*[@id="content-container"]/div/div/div[2]/div[2]/div[2]/div[4]
+${profile_phone}    //*[@id="content-container"]/div/div/div[2]/div[2]/div[4]/div[2]
+${profile_id}     //*[@id="content-container"]/div/div/div[2]/div[2]/div[5]/div[2]
+${profile_logout}    //li[@ng-click="accountRefTo('logout')"]
+${myshop}         $("a[title='ร้านค้าของฉัน']")
+${checklogin}     //div[@class='col-1']//button[@disabled='disabled']
+${youstore}       //div[@class='w-dropdown-list']//li[@ng-if='profile.you_store']
+${westore}        //div[@class='w-dropdown-list']//li[@ng-if='profile.we_store']
+${wemall}         //div[@class='w-dropdown-list']//li[@ng-if='profile.we_mall']
+${invalidlogin}    //*[@id="login_user"]/div[4]/div
+${invalidlogin_over}    //*[@id="login_user"]/div[5]/div
+${login_errorverifyemail}    //*[@id="content-container"]/div[1]/div/div/h2
+${login_forgetpass}    //*[@id="login_user"]/div[3]/div[2]/a
+${profile_changepass}    //ul[@class='nav navbar-nav myprofile-menu']/li[contains(@title,'เปลี่ยนรหัสผ่าน')]
+${change_oldpass}    //*[@id='input-old-pass']
+${change_newpass}    //*[@id='input-new-pass']
+${change_confirmpass}    //*[@id='input-confirm-pass']
+${change_messagenewpass}    //*[@id="change_pass"]/div[1]/div[2]/div
+${profile_edit}    //*[@id="content-container"]/div/div/div[2]/div[1]/a
+${edit_displayname}    //input[@name='display_name']
+${edit_name}      //input[@name='firstname']
+${edit_surname}    //input[@name='lastname']
+${edit_gender}    //input[@name='user_sex']
+${edit_bdate}     //*[@id="bdate"]/option[9]
+${edit_bmonth}    //*[@id="bmonth"]/option[2]
+${edit_byear}     //*[@id="byear"]/option[53]
+${edit_phone}     //input[@name='phone']
+${profile_address}    //ul[@class='nav navbar-nav myprofile-menu']/li[contains(@title,'ที่อยู่จัดส่ง')]
+${address_add}    //*[@id="content-container"]/div/div/div[2]/div[1]/a
+${address_addr}    //textarea[@name='address']
+${address_bkk}    //*[@id="province"]/option[2]
+${address_city}    //*[@id="city"]/option[40]
+${address_district}    //*[@id="district"]/option[3]
+${address_zipcode}    //input[@name='zipcode']
+${address_shippingemail}    //input[@name='shipping_email']
+${address_info}    //div[@class='box-address-detail']
+#${address_edit}    //*[@id="content-container"]/div/div/div[2]/div[2]/ul/li[2]/div[2]/button[1]
+${address_edit}    //button[@class='btn btn-action-address btn_edit']
+${address_editcity}    //*[@id="city"]/option[4]
+${address_editdistrict}    //*[@id="district"]/option[2]
+#${address_remove}    //*[@id="content-container"]/div/div/div[2]/div[2]/ul/li[2]/div[2]/button[2]
+${address_remove}    $('.btn_delete').eq(0)
+${responsive_menu_name}    //span[@class='wls-nav-title']
+${fav_shopname}    //h4[@class='media-heading ']
+${address_info}    //div[@class='box-address-detail']
+${btn_confirmChangePwd}    //button[@class='btn btn-form-submit']
+${btn_cancelChangePwd}    btn_cancel
+${alert_changePwd}    //div[@class='alert box-alert']
+${alert_newPwd}    input-new-pass-error
+${alert_newConfirmPwd}    input-confirm-pass-error
+${alert_changeSuccess}    //div[@class='alert alert-success bg-green']
+${change_oldpass_js}    $("*[id='input-old-pass']")
+${change_newpass_js}    $("*[id='input-new-pass']")
+${change_confirmpass_js}    $("*[id='input-confirm-pass']")

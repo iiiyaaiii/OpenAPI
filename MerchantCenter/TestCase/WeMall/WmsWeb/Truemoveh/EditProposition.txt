@@ -1,0 +1,214 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_06770
+    [Documentation]    Edit proposition page display error message if user leaves "Proposition Name" field as blank
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible           ${input_name}                  ${TIMEOUT}
+    Input Text                              ${input_name}                  ${EMPTY}
+    Click Element                           ${input_campaign_code}
+    Wait Until Element Is Visible           ${error_input_name}
+    Element Should Contain                  ${error_input_name}            The name field is required.
+
+TC_MC_06772
+    [Documentation]    Edit proposition page display error message when user input proposition name is existing in system
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Set Test Variable                       ${test_name}            robotNAME01
+    Set Test Variable                       ${already_name}         robotNAME02
+    Proposition - Delete Existing Name      ${test_name}
+    Proposition - Delete Existing Name      ${already_name}
+    Proposition - Delete Existing Nas Code        robotNAS01
+    Proposition - Delete Existing Nas Code        robotNAS02
+    Create Proposition one merchant          ${test_name}    True Move   CP01    robotNAS01   PN01    599.00     12     2000.00    sim     robot_ts    robot_tl    active
+    Create Proposition one merchant          ${already_name}    True Move   CP01    robotNAS02   PN01    599.00     12     2000.00    sim     robot_ts    robot_tl    active
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible           ${input_name}                  ${TIMEOUT}
+    Input Text                              ${input_name}                  ${already_name}
+    Click Element                           ${btn_submit}
+    Wait Until Element Is Visible           ${result_error}
+    Element Should Contain                  ${result_error}                The name ${already_name} has already been taken.
+
+TC_MC_06779
+    [Documentation]    Edit proposition page display error message if user leaves "Nas Code" field as blank
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible           ${input_nas_code}                  ${TIMEOUT}
+    Input Text                              ${input_nas_code}                  ${EMPTY}
+    Click Element                           ${input_campaign_code}
+    Wait Until Element Is Visible           ${error_input_nas_code}
+    Element Should Contain                  ${error_input_nas_code}            The nas code field is required.
+
+TC_MC_06783
+    [Documentation]    Edit proposition page display error message when user input nas code is existing in system
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Set Test Variable                       ${test_nas_code}            robotNAS01
+    Set Test Variable                       ${already_nas_code}         robotNAS02
+    Proposition - Delete Existing Nas Code  ${test_nas_code}
+    Proposition - Delete Existing Nas Code  ${already_nas_code}
+    Create Proposition one merchant          robotNAME01    True Move   CP01    ${test_nas_code}   PN01    599.00     12     2000.00    sim     robot_ts    robot_tl    active
+    Create Proposition one merchant          robotNAME02    True Move   CP01    ${already_nas_code}   PN01    599.00     12     2000.00    sim     robot_ts    robot_tl    active
+    Proposition - Click Edit                ${test_nas_code}
+    Wait Until Element Is Visible           ${input_nas_code}           ${TIMEOUT}
+    Input Text                              ${input_nas_code}           ${already_nas_code}
+    Click Element                           ${btn_submit}
+    Wait Until Element Is Visible           ${result_error}
+    Element Should Contain                  ${result_error}             The nas code ${already_nas_code} has already been taken.
+
+TC_MC_06790
+    [Documentation]    Edit proposition page display error message if user leaves "Contract" field as blank
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible           ${input_contract}                  ${TIMEOUT}
+    Input Text                              ${input_contract}                  ${EMPTY}
+    Click Element                           ${input_campaign_code}
+    Wait Until Element Is Visible           ${error_input_contract}
+    Element Should Contain                  ${error_input_contract}            The contract field is required.
+
+TC_MC_06793
+    [Documentation]    Edit proposition page display error message if user leaves "Penalty" field as blank
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible           ${input_penalty}                  ${TIMEOUT}
+    Input Text                              ${input_penalty}                  ${EMPTY}
+    Click Element                           ${input_campaign_code}
+    Wait Until Element Is Visible           ${error_input_penalty}
+    Element Should Contain                  ${error_input_penalty}            The penalty field is required.
+
+TC_MC_06796
+    [Documentation]    Edit proposition page display error message if user leaves "Source Type" field as blank
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible           ${select_source_type}
+    Click Element                           ${select_source_type}
+    Select From List by Value               ${select_source_type}           ${EMPTY}
+    Click Element                           ${input_campaign_code}
+    Wait Until Element Is Visible           ${error_select_source_type}
+    Element Should Contain                  ${error_select_source_type}     The source type field is required.
+
+TC_MC_06798
+    [Documentation]    Edit proposition page display error message if user leaves "Term & Condition (Short)" field as blank
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible           ${input_term_short}                  ${TIMEOUT}
+    Input Text                              ${input_term_short}                  ${EMPTY}
+    Click Element                           ${input_campaign_code}
+    Wait Until Element Is Visible           ${error_input_term_short}
+    Element Should Contain                  ${error_input_term_short}            The term & condition (short) field is required.
+
+TC_MC_06801
+    [Documentation]    Edit proposition page display error message if user leaves "Term & Condition (Long)" field as blank
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible           ${input_term_short}
+    Execute Javascript                      CKEDITOR.instances['term_long'].setData('test');
+    Execute Javascript                      CKEDITOR.instances['term_long'].setData('');
+    Click Element                           ${input_campaign_code}
+    Wait Until Element Is Visible           ${error_input_term_long}
+    Element Should Contain                  ${error_input_term_long}            The term & condition (long) field is required.
+
+TC_MC_06805
+    [Documentation]    Proposition page display edit entries after edit proposition by using criteria:1. Status = Active
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible           ${input_status_active}
+    Click Element                           ${input_status_active}
+    Click Element                           ${btn_submit}
+    Set Test Variable                       ${nas_code}     robotNAS01
+    Go To                                   ${url_proposition}
+    Verify data proposition status          active
+
+TC_MC_06806
+    [Documentation]    "Proposition page display edit entries after edit proposition by using criteria:1. Status = Inactive
+    [Tags]    Regression    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible           ${input_status_inactive}
+    Click Element                           ${input_status_inactive}
+    Click Element                           ${btn_submit}
+    Set Test Variable                       ${nas_code}     robotNAS01
+    Go To                                   ${url_proposition}
+    Verify data proposition status          inactive
+
+TC_MC_09526
+    [Documentation]    Verify select Merchant field on Edit merchant on the existing proposition
+    [Tags]    Medium    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible    ${click_merchant}
+    ${merchant}    Get Text    //div[@id="merchant-text"]
+    Run Keyword if    '${merchant}'=='True Move'    Select 1 Merchant In Proposition    2
+    ...    ELSE    Select 1 Merchant In Proposition    1
+    Click Element                           ${btn_submit}
+    Element Should Contain    ${notify_message}    Successful :)
+
+TC_MC_09527
+    [Documentation]    Verify select multiple Merchant field on Edit merchant on the existing proposition
+    [Tags]    Medium    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible    ${click_merchant}
+    ${merchant}    Get Text    //div[@id="merchant-text"]
+    Run Keyword if    '${merchant}'=='True Move,Seer Nitikit'    Select Multiple Merchant In Proposition    2    3
+    ...    ELSE    Select Multiple Merchant In Proposition    1    2
+    Click Element                           ${btn_submit}
+    Element Should Contain    ${notify_message}    Successful :)
+
+TC_MC_09523
+    [Documentation]    Verify select Merchant field on Edit merchant on the existing proposition
+    [Tags]    Medium    High
+    Go To                                   ${url_proposition}
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   robotNAS01
+    Proposition - Click Edit                robotNAS01
+    Click Element    ${click_merchant}
+    Execute Javascript    $(".chk_merchant_ids").prop("checked",false)
+    Click Element    ${input_name}
+    Element Should Contain    id=merchant_ids_hide-with-errors    The merchant field is required.
+
+TC_MC_09832
+    [Documentation]    Edit proposition page if change the value of source type from Sim to Bundle
+    [Tags]    Regression    High
+    Go To                               ${url_proposition}
+    Proposition - Delete Existing Name          robotNAME01
+    Proposition - Delete Existing Nas Code      robotNAS01
+    Go To                               ${url_proposition}/create
+    Create Proposition one merchant          robotNAME01    True Move   CP01    robotNAS01   PN01    599.00     12     2000.00    sim    robot_ts    robot_tl    active
+    Proposition - Click Edit                robotNAS01
+    Wait Until Element Is Visible           ${input_name}                  ${TIMEOUT}
+    Select From List by Value           ${select_source_type}          bundle
+    Element Is Visible    //*[@id="mobile_nas_codes_chosen"]/ul/li/input
+    Select 1 Mobile Number Nas Code    1
+    Click Element                           ${btn_submit}

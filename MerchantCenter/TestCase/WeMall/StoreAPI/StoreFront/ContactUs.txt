@@ -1,0 +1,46 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Test Teardown     Run Keywords	Capture Page Screenshot	AND 	Close Browser
+Force Tags        Store-API
+Resource          ../../../../Resource/WeMall/Configuration/Staging/serverconfig.txt
+Resource          ../../../../Resource/WeMall/Configuration/Staging/robotdata.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Store_Front.txt
+Resource          ../../../../Keyword/Common/ContactUs.txt
+
+*** Keywords ***
+Go To Contact Us Page
+	[Arguments]	${storeName}
+	Store_Front.Open Store Front page 	${storeName}
+	ContactUs.Open Contact Us page
+	ContactUs.Contact Us page should be appeared
+
+Validate Social Network Icon
+	[Arguments]	${socialNetwork}	${expectedResult}
+	Run Keyword If	'${expectedResult}'=='Invisible'	Element Should Not Be Visible	${socialNetwork}
+	Run Keyword If	'${expectedResult}'=='Visible'		Element Should Be Visible		${socialNetwork}
+	[Teardown]	Capture Page Screenshot
+
+*** Test Cases ***
+TC_MC_05233
+	[Documentation]	Verify social contact on Store Front page - Without setup
+	[Tags]	Smoke	Regression	Ligo	Sprint2017MC13
+	[Setup]	Go To Contact Us Page 	${seller_name001}
+	[Template]	Validate Social Network Icon
+	${wemall_facebook_icon}		Invisible
+	${wemall_pinterest_icon}	Invisible
+	${wemall_googlePlus_icon}	Invisible
+	${wemall_twitter_icon}		Invisible
+	${wemall_instagram_icon}	Invisible
+
+TC_MC_05234
+	[Documentation]	Verify social contact on Store Front page - With setup
+	[Tags]	Smoke	Regression	Ligo	Sprint2017MC13
+	[Setup]	Go To Contact Us Page 	${wmShop_name_001}
+	[Template]	Validate Social Network Icon
+	${wemall_facebook_icon}		Visible
+	${wemall_pinterest_icon}	Visible
+	${wemall_googlePlus_icon}	Visible
+	${wemall_twitter_icon}		Visible
+	${wemall_instagram_icon}	Visible

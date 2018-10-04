@@ -1,0 +1,10 @@
+*** Variables ***
+### Data ###
+${select_list_status_feedback}    feedback-fields
+${select_list_type_feedback}    feedback-type
+${select_list_unit}    feedback-unit
+### Locator ###
+${select_list_status_feedback}     //select[@id="feedback-fields"]
+${select_list_type_feedback}     //select[@id="feedback-type"]
+${input_feedback_time}    //input[@id="feedback-time"]
+${update_feedback_button}    //input[@id="feedback-btn"]

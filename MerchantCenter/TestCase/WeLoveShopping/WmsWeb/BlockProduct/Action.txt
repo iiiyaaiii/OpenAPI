@@ -1,0 +1,218 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    mock    blockproduct2    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_BlockProduct.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Product.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_01576
+    [Documentation]    [Welove] Input Paging = 2
+    Go To    ${url_block_product_portal}
+    #Select From List By Label    ${select_product_status}    เปิด
+    Select From List By Label    ${select_product_status}    ปิด
+    Click Button    ${btn_bp_search}
+    ${show_all}=    Get Text    //div[@id="table_report_info"]
+    Element Should Be Visible    ${paging}
+    Click Element    //*[@id="sample-table-2_paginate"]/ul/li[3]/a
+    #Location Should Contain    ${URL_WMS}/block_product?product-ids=&store-id=&update-date=&status=2&search-btn=&page=2
+    Location Should Contain    ${URL_WMS}/block_product?product-ids=&store-id=&update-date=&status=2&search-btn=&_section=1&page=2
+    ${count_per_page}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count_per_page} == 50
+
+TC_MC_01578
+    [Documentation]    [Welove] "Change Product status to "Block" (Select 1 Product id)"
+    [Tags]    Regression    High
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_product_id}    ${product_block1}
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count} == 1
+    ## Select action block status = Closed
+    Click Element    ${check_top_record}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Select From List By Label    ${select_action_pstatus}    ปิด
+    Sleep    1s
+    Execute Javascript    $('select#form-reason').val(1).change()
+    Execute Javascript    $('button[id="action-confirm-save"]').click()
+    Wait Until Element Is Visible    ${box_notify}    ${EXPECT_LOADTIME}
+    Element Should Contain    ${box_notify}    คุณต้องการ ปิด สินค้าใช่หรือไม่?
+    Click Element    ${btn_ok_action}
+    Sleep    3s
+    ## Verify expect result
+    ${p_status_close}=    Get Matching Xpath Count    //i[@data-original-title="ปิด"]
+    Should Be True    ${p_status_close} == 1
+    ${last_update}=    Get Time    ${column_last_update}
+    ## Change action block status = Show
+
+TC_MC_01580
+    [Documentation]    [Welove] "Change Product status to "Block" (Select Multi Listing)"
+    Execute Javascript    $("textarea[name='product-ids']").val('${product_block2}')
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count} == 2
+    ## Select action block status = Closed
+    Click Element    ${check_record_tr1}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Click Element    ${check_record_tr2}
+    Select From List By Label    ${select_action_pstatus}    ปิด
+    Execute Javascript    $('select#form-reason').val(1).change()
+    Execute Javascript    $('button[id="action-confirm-save"]').click()
+    Wait Until Element Is Visible    ${box_notify}    ${EXPECT_LOADTIME}
+    Element Should Contain    ${box_notify}    คุณต้องการ ปิด สินค้าใช่หรือไม่?
+    Click Element    ${btn_ok_action}
+    Sleep    2s
+    ## Verify expect result
+    Input Text    ${input_product_id}    ${product_block2}
+    Click Button    ${btn_bp_search}
+    ${p_status_close}=    Get Matching Xpath Count    //i[@data-original-title="ปิด"]
+    Should Be True    ${p_status_close} == 2
+    ${last_update}=    Get Time    ${column_last_update}
+    ## Change action block status = Show
+    Click Element    ${check_record_tr1}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Click Element    ${check_record_tr2}
+    ## Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Select From List By Label    ${select_action_pstatus}    แสดง
+    Input Text    ${input_reason}    ok
+    Execute Javascript    $('button[id="action-confirm-save"]').click()
+    Wait Until Element Is Visible    ${box_notify}    ${EXPECT_LOADTIME}
+    Element Should Contain    ${box_notify}    คุณต้องการ แสดง สินค้าใช่หรือไม่?
+    Click Element    ${btn_ok_action}
+    Sleep    2s
+
+TC_MC_01582
+    [Documentation]    [Welove] "Change Product status to "Block" (Select All Listing)"
+    Go To    ${url_block_product_portal}
+    Execute Javascript    $("textarea[name='product-ids']").val('${product_block2}')
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count} == 2
+    ## Select action block status = Closed
+    Click Element    ${check_all_record}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Select From List By Label    ${select_action_pstatus}    ปิด
+    Execute Javascript    $('select#form-reason').val(1).change()
+    Execute Javascript    $('button[id="action-confirm-save"]').click()
+    Wait Until Element Is Visible    ${box_notify}    ${EXPECT_LOADTIME}
+    Element Should Contain    ${box_notify}    คุณต้องการ ปิด สินค้าใช่หรือไม่?
+    Click Element    ${btn_ok_action}
+    Sleep    2s
+    ## Verify expect result
+    ${p_status_close}=    Get Matching Xpath Count    //i[@data-original-title="ปิด"]
+    Should Be True    ${p_status_close} == 2
+    ${last_update}=    Get Time    ${column_last_update}
+    ## Change action block status = Show
+    Click Element    ${check_all_record}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Select From List By Label    ${select_action_pstatus}    แสดง
+    Input Text    ${input_reason}    ok
+    Execute Javascript    $('button[id="action-confirm-save"]').click()
+    Wait Until Element Is Visible    ${box_notify}    ${EXPECT_LOADTIME}
+    Element Should Contain    ${box_notify}    คุณต้องการ แสดง สินค้าใช่หรือไม่?
+    Click Element    ${btn_ok_action}
+    Sleep    2s
+
+TC_MC_01584
+    [Documentation]    [Welove] "Change Product status to "Show" (Select 1 Product id)"
+    Execute Javascript    $("textarea[name='product-ids']").val('${product_block2}')
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count} == 2
+    ## Select action block status = Closed
+    Click Element    ${check_record_tr1}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Click Element    ${check_record_tr2}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Select From List By Label    ${select_action_pstatus}    แสดง
+    Input Text    ${input_reason}    ok
+    Execute Javascript    $('button[id="action-confirm-save"]').click()
+    Wait Until Element Is Visible    ${box_notify}    ${EXPECT_LOADTIME}
+    Element Should Contain    ${box_notify}    คุณต้องการ แสดง สินค้าใช่หรือไม่?
+    Click Element    ${btn_ok_action}
+    Sleep    2s
+    ## Verify expect result
+    Execute Javascript    $("textarea[name='product-ids']").val('${product_block2}')
+    Click Button    ${btn_bp_search}
+    Capture Page Screenshot
+    ${p_status_show}=    Get Matching Xpath Count    //i[@data-original-title="เปิด"]
+    Should Be True    ${p_status_show} == 2
+    ${last_update}=    Get Time    ${column_last_update}
+    ## Change action block status = Show
+    Click Element    ${check_record_tr1}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Click Element    ${check_record_tr2}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Select From List By Label    ${select_action_pstatus}    ปิด
+    Execute Javascript    $('select#form-reason').val(1).change()
+    Execute Javascript    $('button[id="action-confirm-save"]').click()
+    Wait Until Element Is Visible    ${box_notify}    ${EXPECT_LOADTIME}
+    Element Should Contain    ${box_notify}    คุณต้องการ ปิด สินค้าใช่หรือไม่?
+    Click Element    ${btn_ok_action}
+    Sleep    3s
+
+TC_MC_01586
+    [Documentation]    [Welove] "Change Product status to "Show" (Select Multi Listing)"
+    Input Text    ${input_product_id}    ${product_block2}
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count} == 2
+    ## Select action block status = Closed
+    Click Element    ${check_all_record}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Select From List By Label    ${select_action_pstatus}    แสดง
+    Input Text    ${input_reason}    ok
+    Execute Javascript    $('button[id="action-confirm-save"]').click()
+    Wait Until Element Is Visible    ${box_notify}    ${EXPECT_LOADTIME}
+    Element Should Contain    ${box_notify}    คุณต้องการ แสดง สินค้าใช่หรือไม่?
+    Click Element    ${btn_ok_action}
+    Sleep    3s
+    ## Verify expect result
+    ${p_status_show}=    Get Matching Xpath Count    //i[@data-original-title="เปิด"]
+    Should Be True    ${p_status_show} == 2
+    ${last_update}=    Get Time    ${column_last_update}
+    ## Change action block status = Show
+    Click Element    ${check_all_record}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Select From List By Label    ${select_action_pstatus}    ปิด
+    Execute Javascript    $('select#form-reason').val(1).change()
+    Execute Javascript    $('button[id="action-confirm-save"]').click()
+    Wait Until Element Is Visible    ${box_notify}    ${EXPECT_LOADTIME}
+    Element Should Contain    ${box_notify}    คุณต้องการ ปิด สินค้าใช่หรือไม่?
+    Click Element    ${btn_ok_action}
+    Sleep    3s
+
+TC_MC_01588
+    [Documentation]    [Welove] "Change Product status to "Show" (Select All Listing)"
+    [Tags]    Regression    High    SmokeTest
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_product_id}    ${product_block1}
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count} == 1
+    Wait Until Element Is Visible    ${check_top_record}    ${EXPECT_LOADTIME}
+    Click Element    ${check_top_record}
+    Wait Until Element Is Visible    ${select_action_pstatus}    ${EXPECT_LOADTIME}
+    Select From List By Label    ${select_action_pstatus}    แสดง
+    Input Text    ${input_reason}    ok
+    Execute Javascript    $('button[id="action-confirm-save"]').click()
+    Wait Until Element Is Visible    ${box_notify}    ${EXPECT_LOADTIME}
+    Element Should Contain    ${box_notify}    คุณต้องการ แสดง สินค้าใช่หรือไม่?
+    Click Element    ${btn_ok_action}
+    Sleep    4s
+    Account Login    ${store_email2}    ${store_password2}
+    Goto    ${URL_STORE}/${store_url2}/admin/product
+    Sleep    3s
+    Input Text    ${input_keyword}    ${product_block1}
+    Click Button    //*[@id="table_report_filter"]/button
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    Element Should Not Be Visible    ${top_record_p_error}    คุณไม่สามารถแก้ไขสินค้าได้
+    ${Status3}    Get Text    ${top_record_p_status}
+    ${Status4}    Convert To String    ${status3}
+    Should Contain    ${Status4}    ผ่านการตรวจสอบ

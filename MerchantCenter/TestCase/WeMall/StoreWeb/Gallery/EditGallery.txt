@@ -1,0 +1,33 @@
+*** Settings ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close Browser
+Test Setup        Go To    ${URL_STORE}/${user_s001}/admin/gallery
+Force Tags        Store-Web    Gallery
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Gallery.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00438
+    [Documentation]    [Wemall] Verify edit album name. If User does not enter album name.
+    [Tags]    Regression    Low
+    Select Album For Edit    Default Album
+    Click Edit Name Album    1
+    Clear Element Text    ${input_name}
+    Click Submit button
+    Verify Message Alert Clear Name Album
+
+TC_MC_00440
+    [Documentation]    [Wemall] Verify edit album name. If User enter character to album name.
+    [Tags]    Regression    High
+    Select Album For Edit    Default Album
+    Click Edit Name Album    1
+    Edit Album Name
+    Click Submit button
+    Display Alert Footer
+    Verify After Edit Album Name

@@ -1,0 +1,156 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        WMS-Web    mock    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/AccountHistory.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_OrderTracking.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/ManageOrder.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Account_History.txt
+Resource          ../../../../Keyword/Common/Store_History.txt
+Resource          ../../../../Keyword/Common/WMS_OrderTracking.txt
+
+*** Test Cases ***
+TC_MC_03868
+    [Documentation]    WLSWMSOrderTracking : View History Search and Order Menu
+    [Tags]    RECON2017MC11    Low    WMS-Web
+    WMS Switch Project    wls
+    Go to Order Tracking Page
+    Check search fields and buttons on Order Tracking page
+    Check column name on Order Tracking
+
+TC_MC_03871
+    [Documentation]    WLSWMSOrderTracking : Search by Order ID
+    [Tags]    Medium    WMS-Web
+    WMS Switch Project    wls
+    Go to Order Tracking Page
+    Search order id on wms order tracking    800011399254
+    Check Order Tracking on store id    L939488
+    Check Order Tracking on store name    reconteststore
+    Check Order Tracking on order id    800011399254
+    Check Order Tracking on payment ref    ref 1 : 01104779\nref 2 : 800011399254\nref no : 9171027527977
+    Check Order Tracking on customer name    ชื่อเจ้าของร้าน นามสกุลชื่อเจ้าของร้านTEST
+    Check Order Tracking on payment method    CCW
+    Check Order Tracking on amount    120.00
+    Check Order Tracking on promotion code    RE271017
+    Check Order Tracking on discount    30.00
+
+TC_MC_03872
+    [Documentation]    WLSWMSOrderTracking : Search by Store ID
+    [Tags]    Regression    Medium    WMS-Web
+    WMS Switch Project    wls
+    Go to Order Tracking Page
+    Search store id on wms order tracking    L939488
+    Check Order Tracking on store id    L939488
+    Check Order Tracking on store name     reconteststore
+    Check Order Tracking on payment ref    ref 1 : 01104779
+    Check Order Tracking on customer name    ชื่อเจ้าของร้าน นามสกุลชื่อเจ้าของร้านTEST
+
+TC_MC_03873
+    [Documentation]    WLSWMSOrderTracking : Search by Store Name
+    [Tags]    Regression    Medium    WMS-Web
+    WMS Switch Project    wls
+    Go to Order Tracking Page
+    Search store name on wms order tracking    reconteststore
+    Check Order Tracking on store id    L939488
+    Check Order Tracking on store name     reconteststore
+    Check Order Tracking on payment ref    ref 1 : 01104779
+    Check Order Tracking on customer name    ชื่อเจ้าของร้าน นามสกุลชื่อเจ้าของร้านTEST
+
+TC_MC_03884
+    [Documentation]    WLSWMSOrderTracking : Search by Limit 20
+    [Tags]    Regression    Medium    WMS-Web
+    WMS Switch Project    wls
+    Go to Order Tracking Page
+    Select value search on wms order tracking    ${select_limit}    20
+    Check the order tracking record    Showing 1 to 20
+
+TC_MC_03903
+    [Documentation]    WLSWMSOrderTracking : Search by Promotion Code
+    [Tags]    Regression    Medium    WMS-Web
+    WMS Switch Project    wls
+    Go to Order Tracking Page
+    Search promotion code on wms order tracking    RE271017
+    Check Order Tracking on promotion code    RE271017
+
+TC_MC_06020
+    [Documentation]    WLSWMSOrderTracking Check item status after place order
+    [Tags]    Regression    Medium    WMS-Web
+    Account Login    ${user_store_order}    ${password_store_order}
+    Create order offline channel    ${storename_slug_feedback}    ${product_inpage}    ${select_address}    ${shipping_post}    ${cs_channel_radio_button}    ${lbl_payment_cs_ref2_number}
+    WMS Login
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    รอการชำระเงิน
+
+
+TC_MC_06021
+    [Documentation]    WLSWMSOrderTracking Check item status after expired payment
+    [Tags]    Medium    WMS-Web
+    Account Login    ${user_store_order}    ${password_store_order}
+    Create order credit card channel    ${storename_slug_feedback}    ${product_inpage}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Login admin manage order web
+    API Order Manage Datetime    payment_expired_time    เพิ่ม-ลด    -4    day
+    Run cron order expire on admin manage order web    ${order_id_sub}
+    WMS Login
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    รายการถูกยกเลิก
+
+TC_MC_06022
+    [Documentation]    WLSWMSOrderTracking Check item status in case payment failed
+    [Tags]    Regression    Medium    WMS-Web
+    Account Login    ${user_store_order}    ${password_store_order}
+    Create order ewallet channel    ${storename_slug_feedback}    ${product_inpage}    ${select_address}    ${shipping_post}    ${ew_channel_radio_button}
+    WMS Login
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    การชำระเงินไม่สำเร็จ
+
+TC_MC_06023
+    [Documentation]    WLSWMSOrderTracking Check item status after payment
+    [Tags]    Regression    Medium    WMS-Web
+    Account Login    ${user_store_order}    ${password_store_order}
+    Create order credit card channel    ${storename_slug_feedback}    ${product_inpage}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    WMS Login
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    รอการแจ้งจัดส่งสินค้า
+
+TC_MC_06024
+    [Documentation]    WLSWMSOrderTracking Check item status after seller ship full
+    [Tags]    Regression    Medium    WMS-Web
+    Account Login    ${user_store_order}    ${password_store_order}
+    Create order credit card channel    ${slug_order_store}    ${robot_inpage_product_product}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${slug_order_store}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123120380TH
+    WMS Login
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    รอยืนยันรับสินค้า
+
+TC_MC_06025
+    [Documentation]    WLSWMSOrderTracking Check item status after receive full
+    [Tags]    Medium    WMS-Web
+    Account Login    ${user_store_order}    ${password_store_order}
+    Create order credit card channel    ${slug_order_store}    ${robot_inpage_product_product}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${slug_order_store}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123120380TH
+    Login admin manage order web
+    API Order Manage Escrow Datetime    1     escrow_products.receive_expired_time    เพิ่ม-ลด    -17    Day
+    Run cron auto receive on admin manage order web    ${order_id_sub}
+    WMS Login
+    Go to Order Tracking Page
+    Search order id on wms order tracking    ${order_id}
+    Check Order Tracking on status    ดำเนินการเรียบร้อย
+
+
+

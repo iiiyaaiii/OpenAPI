@@ -1,0 +1,89 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Test Setup        Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Teardown     Close All Browsers
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Force Tags        Portal-Web    mc-wls
+
+*** Test Cases ***
+TC_MC_08440
+    [Documentation]    Shop have shipping type : Thailand post ลงทะเบียน "แบบเหมา : ฟรีค่าจัดส่ง"
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme
+    Element Should Be Visible    ${leveld_shipping}
+    Element Should Be Visible    //p[@ng-if="shipping_list.thailand_post[0].method == 'POST'"]
+    #    Click Element    //p[@ng-if="shipping_list.thailand_post[0].method == 'POST'"]
+    Execute Javascript    $("p[ng-if*='shipping_list.thailand_post[0].method'] > a")[0].click()
+    Sleep    2
+    Element Should Be Visible    //div[@ng-if="!isOldStore"]
+    Element Should Be Visible    //div[@class="shipment-title ng-scope"][1]
+    Element Should Be Visible    //div[@ng-repeat="item in shipping.thailand_post"][1]
+    Element Should Contain    //div[@ng-repeat="item in shipping.thailand_post"][1]    จัดส่งแบบลงทะเบียน โดยคิดตาม “แบบเหมา” ต่อรายการสั่งซื้อ : ฟรีค่าจัดส่ง ระยะเวลาประมาณ 3-7 วัน (นับจากวันแจ้งจัดส่ง)
+
+TC_MC_08443
+    [Documentation]    Tab Feedback : no feedback
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme
+    Element Should Be Visible    ${leveld_tap_description}[4]
+    Click Element    ${leveld_tap_description}[4]
+    Element Should Be Visible    ${leveld_no_feedback}
+
+TC_MC_08444
+    [Documentation]    Tab Feedback : have feedback
+    [Tags]    Regression    Medium    Portal-Web    mock
+    Go to    ${URL_LEVEL_D}/${robot_store_other_feedback}?refresh=changeme
+    Element Should Be Visible    ${leveld_tap_description}[4]
+    Click Element    ${leveld_tap_description}[4]
+    Element Should Be Visible    ${leveld_feedback}
+
+TC_MC_08449
+    [Documentation]    Shop have shipping type : Thailand post EMS "แบบเหมา : ฟรีค่าจัดส่ง"
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme
+    Element Should Be Visible    ${leveld_shipping}
+    Element Should Be Visible    //p[@ng-if="shipping_list.thailand_post[1].method == 'EMS'"]
+    #    Click Element    //p[@ng-if="shipping_list.thailand_post[1].method == 'EMS'"]
+    Execute Javascript    $("p[ng-if*='shipping_list.thailand_post[1].method'] > a")[0].click()
+    Sleep    2
+    Element Should Be Visible    //div[@ng-if="!isOldStore"]
+    Element Should Be Visible    //div[@class="shipment-title ng-scope"][1]
+    Element Should Be Visible    //div[@ng-repeat="item in shipping.thailand_post"][2]
+    Element Should Contain    //div[@ng-repeat="item in shipping.thailand_post"][2]    จัดส่งแบบ EMS โดยคิดตาม “แบบเหมา” ต่อรายการสั่งซื้อ : ฟรีค่าจัดส่ง ระยะเวลาประมาณ 3-5 วัน (นับจากวันแจ้งจัดส่ง)
+
+TC_MC_08454
+    [Documentation]    Shop have shipping type : Kerry Express "แบบเหมา : ฟรีค่าจัดส่ง"
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme
+    Element Should Be Visible    ${leveld_shipping}
+    Element Should Be Visible    //p[@ng-if="shipping_list.kerry_express"]
+    # Click Element    //p[@ng-if="shipping_list.kerry_express"]
+    Execute Javascript    $("p[ng-if='shipping_list.kerry_express'] > a")[0].click()
+    Sleep    2
+    Element Should Be Visible    //div[@ng-if="!isOldStore"]
+    Element Should Be Visible    //div[@class="shipment-title ng-scope"][2]
+    Element Should Be Visible    //div[@ng-repeat="item in shipping.kerry_express"]
+    Element Should Contain    //div[@ng-repeat="item in shipping.kerry_express"]    โดยคิดตาม “แบบเหมา” ต่อรายการสั่งซื้อ : ฟรีค่าจัดส่ง ระยะเวลาประมาณ 1-3 วัน (นับจากวันแจ้งจัดส่ง)
+
+TC_MC_08459
+    [Documentation]    Shop have shipping type : Custom "แบบเหมา : ฟรีค่าจัดส่ง"
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme
+    Element Should Be Visible    ${leveld_shipping}
+    Element Should Be Visible    //p[@ng-if="shipping_list.custom"]
+    Execute Javascript    $("p[ng-if='shipping_list.custom'] > a")[0].click()
+    Sleep    3
+    Wait Until Element Is Visible    //div[@class="shipment-detail"]
+    Element Should Be Visible    //div[@class="shipment-detail"]
+    Element Should Contain    //div[@class="shipment-detail"]    โดยคิดตาม “แบบเหมา” ต่อรายการสั่งซื้อ : ฟรีค่าจัดส่ง ระยะเวลาประมาณ 2 วัน (นับจากวันแจ้งจัดส่ง)
+
+TC_MC_08465
+    [Documentation]    Shop have Thailand post and Kerry Express shipping type
+    [Tags]    Regression    Portal-Web    High    mock
+    Go to    ${URL_LEVEL_D}/${robot_store_other_feedback}?refresh=changeme
+    Click Element    ${leveld_tap shipping}
+    Element Should Be Visible    //div[@ng-if="!isOldStore"]
+    Element Should Be Visible    //div[@class="shipment-title ng-scope"][1]
+    Element Should Be Visible    //div[@ng-repeat="item in shipping.thailand_post"][1]
+    Element Should Contain    //div[@ng-repeat="item in shipping.thailand_post"][1]    จัดส่งแบบลงทะเบียน โดยคิดตาม “แบบเหมา” ต่อรายการสั่งซื้อ : ฟรีค่าจัดส่ง ระยะเวลาประมาณ 3-7 วัน (นับจากวันแจ้งจัดส่ง)
+    Element Should Be Visible    //div[@class="shipment-title ng-scope"][2]
+    Element Should Be Visible    //div[@ng-repeat="item in shipping.kerry_express"]
+    Element Should Contain    //div[@ng-repeat="item in shipping.kerry_express"]    โดยคิดตาม “แบบเหมา” ต่อรายการสั่งซื้อ : ค่าจัดส่ง 100.00 บาท ระยะเวลาประมาณ 1-3 วัน (นับจากวันแจ้งจัดส่ง)
+

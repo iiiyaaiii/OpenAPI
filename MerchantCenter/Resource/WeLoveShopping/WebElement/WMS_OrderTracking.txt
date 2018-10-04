@@ -1,0 +1,69 @@
+*** Variables ***
+${wms_ordertracking_input_storeid}     //input[@name="store_id"]
+${search_button_on_wms_order_tracking}    //input[@value="Search"]
+${wms_ordertracking_input_store_name}    //input[@name="store_name"]
+${txtPromoCode}    //input[@name="promo_code"]
+${select_limit}    //select[@name="limit"]
+${wms_order_tracking_status_order_on_table}    //table[@class="table table-striped table-bordered table-condensed table-hover"]/tbody/tr[2]/td[10]/span
+${txt_thankyou_page_offline}    //*[@class="color-wetrust"]
+${txt_search_keyword}    name=keyword
+${txt_search_order_id}    name=secure_key
+${txt_search_store_id}    name=store_id
+${txt_search_store_name}    name=store_name
+${txt_search_payment_ref_1}    name=payment_ref1
+${txt_search_payment_ref_2}    name=payment_ref2
+${txt_search_place_order_date}    id=order_date
+${txt_search_payment_ref_no}    name=payment_refno
+${txt_search_payment_methods}    //select[@name="payment_method"]
+${txt_search_limit}    //select[@name="limit"]
+${txt_search_test_store}    //select[@name="store_policy"]
+${txt_search_status}    //span[@id="ddcl-order-statuses-code"]
+${txt_search_order_promotion}    //span[@id="ddcl-promotion-filter-code"]
+${txt_search_promotion_code}    name=promo_code
+${txt_search_amount_min_price}    name=amount_min
+${txt_search_amount_max_price}    name=amount_max
+${txt_search_payment_date}    id=payment_date
+${txt_search_receive_date}    id=receive_date
+${txt_search_ship_date}    id=ship_date
+${txt_search_expired_ship_date}    id=ship_expired_date
+${btn_search}    //input[@value="Search"]
+${btn_reset}    //a[@href="order"]
+${btn_export_order}    id=export_excel
+${btn_export_product}    id=export_product
+${tbl_store}    //th[text()='Store']
+${tbl_order_store_name}    //tr/th[contains(text(),'Store Name')]
+${tbl_order_id}    //tr/th[contains(text(),'Order ID')]
+${tbl_payment_ref}    //tr/th[contains(text(),'Payment Ref')]
+${tbl_customer_name}    //tr/th[contains(text(),'Customer Name')]
+${tbl_payment_Method}    //th[text()='Method']
+${tbl_amount}    //tr/th[contains(text(),'Amount')]
+${tbl_promotoin_code}    //tr/th[contains(text(),'Promotion Name(Code)')]
+${tbl_discount}    //tr/th[contains(text(),'Discount')]
+${tbl_status}    //tr/th[contains(text(),'Status')]
+${tbl_place_order}    //tr/th[contains(text(),'Place Order')]
+${tbl_pay}    //tr/th[contains(text(),'Pay')]
+${tbl_ship}    //tr/th[contains(text(),'Ship')]
+${tbl_receive}    //tr/th[contains(text(),'Receive')]
+
+${store_value}    //table[1]//tbody//tr[2]//td[1]
+${store_name_value}    //table[1]//tbody//tr[2]//td[2]
+${order_id_value}    //table[1]//tbody//tr[2]//td[3]
+${payment_ref_value}    //table[1]//tbody//tr[2]//td[4]
+${customer_name_value}    //table[1]//tbody//tr[2]//td[5]
+${payment_method_value}    //table[1]//tbody//tr[2]//td[6]
+${amount_value}    //table[1]//tbody//tr[2]//td[9]
+${lblPromoCode}    //table[1]//tbody//tr[2]//td[10]
+${discount_value}    //table[1]//tbody//tr[2]//td[11]
+${table_records}    //div[@id="table_report_info"]
+${status_record}    //table/tbody/tr[2]/td[12]//span[@class]
+${search_button}    //input[@class="btn btn-sm btn-primary margin-bottom-5 "]
+${btnWeTrustSystem}    //*[@id="sidebar"]//following-sibling::span[text()[contains(.,'WeTrust System')]]
+${ddlOrderTracking}    //*[@id="sidebar"]//following-sibling::span[text()[contains(.,'Order Tracking')]]
+${btnSwitchSection}    //*[@id="choose-user-section"]/div/ul/li[2]/a/i
+${imgWemallLogo}    //*[@id="choose-user-section"]/div/ul/li[2]/a/img[@src[contains(.,'logo_wemall')]]
+${btnWemallSection}    //*[@id="choose-user-section"]//following-sibling::a[@onclick="changeCurrentSection('3')"]
+${lnkOrderTracking}    //*[@id="breadcrumbs"]//following-sibling::li[text()='Order Tracking']
+${txt_secure_key}    name=secure_key
+
+###DATA###
+${expect_load_time}    30

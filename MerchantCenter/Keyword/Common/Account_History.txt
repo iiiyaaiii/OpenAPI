@@ -1,0 +1,231 @@
+*** Settings ***
+Library           SeleniumLibrary
+#Resource          ../../Resource/WeMall/WebElement/Account_History.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/AccountHistory.txt
+Resource          Account_History.txt
+
+*** Keywords ***
+Go To Account Order History
+    [Documentation]    Use for open account order history page
+    Go to    ${URL_ACCOUNT}/profile/report
+
+Go To Store Order History
+    [Documentation]    Use for open store order history page
+    [Arguments]    ${store_name}
+    Go to    ${URL_STORE}/${store_name}/admin/orders
+
+Search product name on account order history
+    [Documentation]    Use for search order by product name
+    [Arguments]    ${product_name}
+    Input text    ${input_product_name}    ${product_name}
+
+Search order id on account order history
+    [Documentation]    Use for search order by order id on account order history
+    [Arguments]    ${order_id}
+    Check Element Visible    ${input_orderid}    ${expect_load_time}
+    Input text    ${input_orderid}    ${order_id}
+    Click search button on account order history
+
+Search store name on account order history
+    [Documentation]    Use for search order by store name
+    [Arguments]    ${store_name}
+    Input text    ${input_store_name}    ${store_name}
+
+Search place order date on account order history
+    [Documentation]    Use for search order by place order date
+    [Arguments]    ${placeorder_date}
+    Execute Javascript    $("input[id='id-date-range-picker-1']").val("${placeorder_date}")
+
+Search order status search on account order history
+    [Documentation]    Use for search order by status
+    [Arguments]    ${status}
+    Select From List    ${input_order_status_dropdown_list}    ${status}
+
+Click search button on account order history
+    [Documentation]    Use for click search button
+    Click Element    ${search_button_on_account_history}
+
+Check status order on account history page
+    [Documentation]    Use for check status order on account history page
+    [Arguments]    ${status}
+    Element Should Contain    ${status_text_on_account_history}    ${status}
+
+Check countdown time text on account history page
+    [Documentation]    Use for check countdown time text on account history page
+    [Arguments]    ${countdown_time_text}
+    ${countdown_time}    Get Text    ${countdown_time_text}
+    Should Not Match Regexp    ${countdown_time}    เหลือเวลาภายใน\n([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})
+
+Check countdown time bubble on account history page
+    [Documentation]    Use for check countdown time text on account history page
+    [Arguments]    ${countdown_time_text}
+    ${countdown_time}    Get Text    ${countdown_time_text}
+    Should Not Match Regexp    ${countdown_time}    เหลือเวลา\n([0-9]{1}\sวัน\s:\s[0-9]{2}\s:\s[0-9]{2}\s:\s[0-9]{2})
+
+Check request refund link on account history page
+    Element Should Contain    ${request_refund_link}    ขอเงินคืน
+
+Click view order detail link on account history page
+    Click Element    ${lnk_view_order_detail}
+
+Check location url
+    [Arguments]    ${url}
+    Location Should Be    ${url}
+
+Get count row orderlist on account history page
+    ${count}    Get Matching Xpath Count    ${order_list_row}
+    Return From Keyword    ${count}
+
+Check title table
+    [Documentation]    Use for check title table on account history page
+    Check Text    ${element_box_items_title_table}    รายการสินค้า
+    Check Text    ${element_box_price_title_table}    ราคาต่อหน่วย\n(บาท)
+    Check Text    ${element_box_piece_title_table}    จำนวน
+    Check Text    ${element_box_status_title_table}    สถานะ
+
+# Login admin manage order web
+#     [Documentation]    Use for login admin manage order-web
+#     Go To    ${URL_ORDER}/admin/login
+#     Input Text        ${input_username_admin_orderweb}    ${user_admin_manage_orderweb}
+#     Input Password    ${input_password_admin_orderweb}    ${pass_admin_manage_orderweb}
+#     Click Element    ${login_button_admin_orderweb}
+#     Wait Until Element Is Visible    ${user_sign_admin_orderweb}
+
+Go to order web manage date time
+    [Documentation]    Use for go to manage date time page
+    Go To    ${URL_ORDER}/admin/manage/datetime
+
+Check Element Visible
+    [Documentation]    Use for check element is visible
+    [Arguments]    ${locator}    ${expect_load_time}
+    Wait Until Element Is Visible    ${locator}    ${expect_load_time}
+
+Input tracking number on store order history
+    [Documentation]    Use for input tracking number on store order history
+    [Arguments]    ${tracking_number}
+    Input Text    ${input_tracking_number}    ${tracking_number}
+
+Click check box for request tracking
+    [Documentation]    Use for click check box for request tracking
+    [Arguments]    ${product_name}
+    Execute Javascript    $("input[data-name='${product_name}']").click()
+
+Click refund link on account order history
+    [Documentation]    Use for click refund link on account order history
+    Click Element    ${refund_link_account_history}
+
+Select checkbox all product for refund
+    [Documentation]    Use for select all product when user refund
+    ${prod_count}=    Get Matching Xpath Count    //input[@type="checkbox"]
+    Log To Console    ${prod_count}
+    : FOR    ${i}    IN RANGE    1    ${prod_count} + 1
+    \    Click Element    //*[@class="box-table-product-list"]/li[${i}]//input[@type="checkbox"]
+
+Select checkbox product for refund by product name
+    [Documentation]    Use for select product name when user refund
+    [Arguments]    ${product_name}
+    Click Element    jquery=ul.box-table-product-list li:contains('${product_name}') input.refund_chk
+
+Select reason refund on account refund page
+    [Documentation]    Use for select reason refund on account refund page
+    [Arguments]    ${reason_refund}
+    Select From List    ${element_reason_refund}    ${reason_refund}
+
+Input description refund to shop
+    [Documentation]    Use for input description refund to shop
+    [Arguments]    ${description_refund}
+    Input Text    ${element_description_refund}    ${description_refund}
+
+Choose file upload
+    [Documentation]    Use for choose file for rquest refund
+    [Arguments]    ${file_upload}
+    ${file_path}    Replace String    ${CURDIR}    ${/}Keyword${/}Common    ${/}Resource${/}${BU}
+    Choose File    ${element_browse_file}    ${file_path}${/}Image${/}${file_upload}
+
+Click request refund button on account refund page
+    [Documentation]    Use for click request refund button on account refund page
+    Click Element    ${request_refund_button}
+
+Click button refund detail on account detail page
+    [Documentation]    Use for click refund detail button on account detail page
+    Execute JavaScript    ${account_refund_detail_button}.click()
+
+Click button cancel refund on account refund detail page
+    [Documentation]    Use for click cancel request refund button on account refund page
+    Click Element    ${cancel_refund_button}
+    Confirm Action
+
+Click confirm action
+    [Documentation]    Use for click confirm action
+    Confirm Action
+
+Go to store order detail
+    [Documentation]    Use for go to store order detail
+    [Arguments]    ${store_name}    ${order_id}
+    Go To    ${URL_STORE}/${store_name}/admin/orders/show/${order_id}
+
+Seller ship the order with tracking number
+   [Documentation]    Seller ship the order
+   [Arguments]    ${tracking_number}
+    Check Element Visible    ${request_tracking_button}    ${expect_load_time}
+    Click Element    ${request_tracking_button}
+    Check Element Visible    ${request_tracking_modal}    ${expect_load_time}
+    Click Element    ${input_tracking_button}
+    Check Element Visible    ${tracking_modal}    ${expect_load_time}
+    Input tracking number on store order history    ${tracking_number}
+    Click Element    ${confirm_tracking_button}
+    Page Should Contain    รอยืนยันรับสินค้า
+
+Seller partial ship
+    [Documentation]    Seller ship the order by partial ship
+    [Arguments]    ${tracking_number}    ${product}
+    Check Element Visible    ${request_tracking_button}    ${expect_load_time}
+    Click Element    ${request_tracking_button}
+    Click check box for request tracking    ${product}
+    Check Element Visible    ${request_tracking_modal}    ${expect_load_time}
+    Click Element    ${input_tracking_button}
+    Check Element Visible    ${tracking_modal}    ${expect_load_time}
+    Input tracking number on store order history    ${tracking_number}
+    Click Element    ${confirm_tracking_button}
+    Page Should Contain    รอยืนยันรับสินค้า
+
+Buyer receive the order
+   [Documentation]    Buyer receive the order
+    Check Element Visible    ${receive_button_account_history}    ${expect_load_time}
+    Click Element    ${receive_button_account_history}
+    Wait Until Element Is Visible    ${confirm_receive_button}
+    Click Element    ${confirm_receive_button}
+    Wait Until Element Is Visible    //span[@id="notify-msg"]    60
+    ${message}=    Get Text    //span[@id="notify-msg"]
+    [Return]    ${message}
+
+Buyer request refund on account refund page
+    [Arguments]    ${refund_reason}    ${description_refund}    ${image_file}
+    Click refund link on account order history
+    Select checkbox all product for refund
+    Select reason refund on account refund page    ${refund_reason}
+    Input description refund to shop    ${description_refund}
+    Choose file upload    ${image_file}
+    Click request refund button on account refund page
+    Click confirm action
+    Check Text    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการภายในระยะเวลา
+
+Promotion Tag Displays On Main Product Correctly
+    Wait Until Element Is Visible    ${lbl_promotion_tag}
+    Element Should Be Visible    ${lbl_promotion_tag}
+
+Get Text Installment Channel
+    [Documentation]    Use for get installment channel
+    [Arguments]    ${locator}
+    ${lbl_installment_payment_channel}    Get Text    ${locator}
+    Return From Keyword    ${lbl_installment_payment_channel}
+
+Compare Text Installment Channel
+    [Documentation]    Use for compare installment channel text
+    [Arguments]    ${lbl_installment}    ${lbl_installment_payment_channel}
+    Should Be Equal As Strings    ${lbl_installment_payment_channel}    ${lbl_installment}
+
+Click view order detail link
+    [Documentation]    Use for click view order detail link
+    [Arguments]    ${locator}
+    Click Element    ${locator}

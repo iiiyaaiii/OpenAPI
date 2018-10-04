@@ -1,0 +1,262 @@
+*** Settings ***
+Library     BuiltIn
+Library     String
+Resource    Common.txt
+Resource    ../../Resource/WeMall/Configuration/Staging/serverconfig.txt
+Resource    ../../Resource/WeMall/WebElement/Widget.txt
+Resource    ../../Resource/WeMall/WebElement/Portal.txt
+Resource    ../../Resource/WeLoveShopping/WebElement/Portal.txt
+
+*** Variables ***
+&{wemallDict}	mainMenu=xpath=//div[@class='mc-maincat-list']/a[@title='_tabName']
+...	subCat=xpath=//div[@class='mc-subcat-list']//following-sibling::a[@title='_subCat']
+...	selectedSubCat=xpath=//a[(@class='list-item ${SPACE}active') and (normalize-space(text())='_optionName')]
+...	accOption=xpath=//div[@ng-if="isLogin"]//following-sibling::*[contains(.,"_optionName")]
+...	selectedPage=xpath=//div[@class='title-lvc']/h2[text()='_pageName']
+...	noResultTag=xpath=//p[@class='no-result-title']/span[text()='"_keyword"']
+...	sectionName=xpath=//div[@class='header-title']/h4[normalize-space(text())='_title']
+...	sectionFilter=xpath=//div[@class='categories-title']//following-sibling::*[contains(.,'_filterName')]
+...	brandIcon=xpath=//span[@class='brand-name active']//following::img[@alt='_brandName']
+...	brandName=xpath=//a[normalize-space(text())='_brandName']
+...	breadcrumbText=xpath=//ul[@class='breadcrumb-box']
+...	ccPromotionDetails=xpath=//div[@class='row list-credit']//following-sibling::h3[text()='_promotionName']/following-sibling::a
+...	ccPromotionSelected=xpath=//a[@class='nl-main-cat active']/span
+
+*** Keywords ***
+##COMMON KEYWORDS FOR HOME PAGE
+Open Wemall Portal page
+	Common.Open Custom Browser 	${URL_PORTAL} 	${BROWSER}
+
+Wemall Portal page should be appeared
+	Wait Until Element Is Visible	${fre_wm_home}
+
+User is logged-in to system
+	Wait Until Element Is Visible	${wemall_myAcc}
+
+User is logged-out from Portal page
+	Home.Wemall Portal page should be appeared
+	Element Should Not Be Visible	${wemall_myAcc}
+
+User is logged-out from Account page
+	Home.เข้าสู่ระบบ page should be appeared
+	Element Should Not Be Visible	${wemall_myAcc}
+
+Scroll Down to section
+	[Arguments]	${sectionName}
+	${locator}=	String.Replace String	&{wemallDict}[sectionName]	_title	${sectionName}
+	Common.Scroll Element Into View		${locator}
+
+##LOGIN FORM
+Open Login page
+	Click Element 	${wemall_login}
+
+Enter Username
+	[Arguments]	${username}
+	Input Text 		${wemall_username}	${username}
+
+Enter password
+	[Arguments]	${password}
+	Input Text 		${wemall_password}	${password}
+
+Click Login button
+	Click Element 	${login_btn}
+
+##WIDGET
+Click WeMall Logo
+	Click Element 	${wemall_logo}
+
+Click สมัครสมาชิก button
+	Wait Until Element Is Visible    ${wemall_register}
+	Click Element 	${wemall_register}
+
+สมัครสมาชิก page should be appeared
+	Wait Until Element Is Visible	//div[@class='wls-regist-box']
+
+Click เข้าสู่ระบบ button
+	Click Element 	${wemall_login}
+
+เข้าสู่ระบบ page should be appeared
+	Wait Until Element Is Visible	//div[@class='wls-login-box']
+
+Click ตะกร้าสินค้า icon
+	Click Element 	${wemall_cart}
+
+ตะกร้าสินค้า page should be appeared
+	Wait Until Element Is Visible	//div[@class='cart-box ng-scope']
+
+Mouse over บัญชีของฉัน icon
+	Mouse over 	${wemall_myAcc}
+
+Select รายการสั่งซื้อ option
+	Click Element 	${wemall_optReport}
+
+Select ข้อมูลส่วนตัว option
+	Click Element 	${wemall_optProfile}
+
+Select ออกจากระบบ option
+	Click Element 	${wemall_optSignout}
+
+รายการสั่งซื้อ page should be appeared
+	Wait Until Element Is Visible	//div[@class='box-bar-title']//following-sibling::*[contains(.,'รายการสั่งซื้อ')]
+
+ข้อมูลส่วนตัว page should be appeared
+	Wait Until Element Is Visible	//div[@class='box-bar-title']//following-sibling::*[contains(.,'ข้อมูลส่วนตัว')]
+
+Click ร้านค้าของฉัน icon
+	Click Element 	${wemall_myShop}
+
+Manage Store page should be appeared
+	[Arguments]	${shopName}
+	Select Window	url=https://store.wemall-dev.com/${shopName}/admin/dashboard/summary
+	Wait Until Element Is Visible	//div[@class='short-info']/h3
+
+##PRODUCT CATEGORY - SIDEBAR
+Mouse Over Product Category
+	[Arguments]	${productCat}
+	${locator}=	String.Replace String	&{wemallDict}[mainMenu]	_tabName	${productCat}
+	Mouse Over	${locator}
+
+Select Product Category
+	[Arguments]	${productCat}
+	${locator}=	String.Replace String	&{wemallDict}[mainMenu]	_tabName	${productCat}
+	Wait Until Element Is Visible    ${locator}
+	Click Element	${locator}
+
+Select Product Sub-Category
+	[Arguments]	${subCat}
+	${locator}=	String.Replace String	&{wemallDict}[subCat]	_subCat	${subCat}
+	Wait Until Element Is Visible	${locator}
+	Click Element	${locator}
+
+Selected product should be appeared
+	[Arguments]	${selectedOption}
+	${locator}=	String.Replace String	&{wemallDict}[selectedPage]	_pageName	${selectedOption}
+	Wait Until Element Is Visible	${locator}
+
+##PRODUCT SEARCH
+Enter Search Keyword
+	[Arguments]	${keyword}
+	Input Text 	${wemall_searchBox}	${keyword}
+
+Click Search button
+	Click Element 	${wemall_searchIcon}
+
+Click Product For Search
+    [Arguments]    ${keyword}
+    Execute Javascript    $('a:contains("${keyword}")')[1].click()
+
+Search Result should not be found
+	[Arguments]	${keyword}
+	${locator}=	String.Replace String	&{wemallDict}[noResultTag]	_keyword	${keyword}
+	Element Should Be Visible	${locator}
+
+##SHOP BY BRAND SECTION
+Select Brand Filter
+	[Arguments]	${filterName}
+	${locator}=	String.Replace String	&{wemallDict}[sectionFilter]	_filterName	${filterName}
+	Mouse Over 	${locator}
+
+Select Brand Icon
+	[Arguments]	${brandName}
+	${locator}=	String.Replace String	&{wemallDict}[brandIcon]	_brandName	${brandName}
+	Element Should Be Visible	${locator}
+	Click Element 	${locator}
+
+Selected Brand page should be appeared
+	[Arguments]	${brandName}	${pageTitle}
+	##TEST URLs NEED TO BE SETUP VIA CMS ADMIN TOOLS
+	${brandURL}=	String.Convert To Lowercase 	${brandName}
+	Select Window	url=http://www.wemall.com/shop/${brandURL}
+	Title Should Be 	${pageTitle}
+
+Open View All Brands link
+	Click Element 	${wemall_viewAllBrand}
+
+View All Brand page should be appeared
+	Wait Until Element Is Visible	//div[@class='brand-title']
+
+Shop by Brand Breadcrumb should be appeared
+	${getBreadcrumb}=	Get Text 	&{wemallDict}[breadcrumbText]
+	BuiltIn.Should Match	'${getBreadcrumb}'	'หน้าหลัก > Shop by Brand'
+
+Click Brand Name
+	[Arguments]	${brandName}
+	${locator}=	String.Replace String	&{wemallDict}[brandName]	_brandName	${brandName}
+	Click Element 	${locator}
+
+##CREDIT CARD PROMOTION
+Mouse Over Credit Card Promotion
+	Mouse Over 	${wemall_creditCardPromo}
+
+Select View All Credit Card Promotion
+	Wait Until Element Is Visible	${wemall_viewAllCredit}
+	Click Element 	${wemall_viewAllCredit}
+
+Credit Card Promotion Landing page should be appeared
+	Page Should Contain Element	${wemall_viewAllCreditSelected}
+
+Default Credit Card Promotion Breadcrumb should be appeared
+	${getBreadcrumb}=	Get Text 	&{wemallDict}[breadcrumbText]
+	BuiltIn.Should Match	'${getBreadcrumb}'	'หน้าหลัก > สิทธิพิเศษกับบัตรเครดิต > promotions'
+
+View Credit Card Promotion Details
+	[Arguments]	${creditCardPromotion}
+	${locator}=	String.Replace String	&{wemallDict}[ccPromotionDetails]	_promotionName	${creditCardPromotion}
+	Click Element 	${locator}
+
+Credit Card Promotion Sidebar Menu is selected
+	[Arguments]	${creditCardPromotion}
+	${selectedMenu}=	Get Text 	&{wemallDict}[ccPromotionSelected]
+	BuiltIn.Should Match	${selectedMenu}	${creditCardPromotion}
+
+Select Category
+    [Documentation]    Select Category
+    [Arguments]    ${type}    ${position}
+    Sleep    2
+    ${main_category_name}    Run Keyword If    '${type}'=='main'    Execute Javascript    return $('.nl-main-cat ').eq(${position}).text().trim()
+    ${sublv1_category_name}    Run Keyword If    '${type}'=='sublv1'    Execute Javascript    return $('.nl-cat-name').eq(${position}).text().trim()
+    ${sublv2_category_name}    Run Keyword If    '${type}'=='sublv2'    Execute Javascript    return $('.nl-sub-cat-list-lv-1 > li > a > span').eq(${position}).text().trim()
+    Run Keyword If    '${type}'=='main'    Click Element    //a[contains(@class,'nl-main-cat ') and contains(text(),'${main_category_name}')]
+    Run Keyword If    '${type}'=='sublv1'    Click Element    //span[contains(@class,'nl-cat-name') and contains(text(),'${sublv1_category_name}')]
+    Run Keyword If    '${type}'=='sublv2'    Click Element    //span[contains(@class,'nl-cat-name') and contains(text(),'${sublv2_category_name}')]
+    ${list_category}=    Create List    ${main_category_name}    ${sublv1_category_name}    ${sublv2_category_name}
+    [return]    ${list_category}
+
+Search Product On Wemall By Product Name
+	[Arguments]    ${product_name}
+    Input Text    ${txt_search}    ${product_name}
+    Click Element    ${btn_portal_search}
+
+Click Sim Product
+    Click Element    ${img_sim_product}
+
+Go To Wemall Contact Us Page
+    Click Element    ${lnk_contactus}
+    Wait Until Element Is Visible     ${fre_contactus}
+
+Check The Wemall Information Correctly
+    Element Should Contain    ${lab_wm_contactus}    WeMall.com : แหล่งช้อปปิ้งออนไลน์ สินค้าแบรนด์เนมที่แรกของไทย
+    Element Should Contain    ${lab_email_contactus}    support@wemall.com
+
+Go To WeLoveShopping Contact Us Page
+    Click Element    ${lnk_contactus}
+    Wait Until Element Is Visible     ${fre_wls_contactus}
+
+Check The WeLoveShopping Information Correctly
+    Element Should Contain    ${lab_wls_contactus}     WeLoveShopping แหล่งนัดพบของร้านค้าที่ถูกใจ
+    Element Should Contain    ${lab_wls_email_contactus}    support@weloveshopping.com
+
+Check WeMall Live Chat
+    Wait Until Element Is Visible    ${tab_wm_live_chat}
+    Element Should Be Visible    ${tab_wm_live_chat}
+
+Verify Wemall Live Chat Popup
+    Click Element    ${tab_wm_live_chat}
+    Element Should Be Visible    ${fre_wm_live_chat}
+
+
+
+
+
+
+

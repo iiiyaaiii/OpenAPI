@@ -1,0 +1,463 @@
+*** variable ***
+### Member Only ###
+${buyer_user_only}    member_only@mailinator.com
+${buyer_pwd_member}    P@ssw0rd
+
+### Facebook account ###
+${buyer_user_fb1}    login.facebook.qa@gmail.com
+${buyer_pwd_fb1}    wlstest
+### SELLER ###
+${wms_user}    automatewls@gmail.com
+${wms_pass}    P@ssw0rd
+###Shop Indiv###
+${seller_user_001}    qawlsautomate@gmail.com
+${seller_pwd_001}    12345678
+${user_s001}      qawlsautomate
+
+${seller_user_002}    wlsautomate26@mailinator.com
+${seller_pwd_002}    12345678
+${seller_id_002}    L939484
+${user_s002}    wlsautomate26
+
+###Shop No have feedback score###
+${seller_user_004}    wlsautomate25@mailinator.com
+${seller_pwd_004}    12345678
+${user_s004_id}    L939508
+${user_s004_url}    wlsautomate25
+${user_s004}    wlsautomate25
+
+###Shop for test 4step incomplete###
+${seller_user_4step}    wlsautomate29@mailinator.com
+${seller_pwd_4step}    12345678
+${user_4step_id}    L939499
+${user_4step_url}    wlsautomate29
+${user_4step}    wlsautomate29
+
+${migrate_exuser_3}    migrate_exuser_3@mailinator.com
+${migrate_expwd_3}    Joy@123456
+${migrate_exuser_id3}    L939497
+${migrate_exuser_url3}    migrate_exuser_3
+${migrate_exuser_name3}    migrate_exuser_3
+
+###Shop Corporate###
+${user_corp_001}    wlscpr1464062638@mailinator.com
+${pwd_corp_001}    Joy@123456
+${corp_001}       wlscpr1464062638
+
+${client_user_corp1}    user_client_corp1@mailinator.com
+${client_pwd_corp1}    Joy@123456
+
+###Shop Corporate for test 4step incomplete###
+${user_corp_4step}    migrate_exuser_5@mailinator.com
+${pwd_corp_4step}    Joy@123456
+${user_corp_4step_id}    L939503
+${user_corp_4step_url}    migrate_exuser_5
+${corp_4step}    migrate_exuser_5
+
+
+${seller_user_block}    wlsatm1467272404@mailinator.com
+${seller_pwd_block}    Abcd0001
+${user_block}     wlsatm1467272404
+${store_id}       L926070
+${promotion_id}    112
+
+###account E-wallet###
+${email_ewallet}    welove@9que.com
+${pass_ewallet}    Quedesign123
+
+
+${shop_open}      wlsatm1467272404@mailinator.com
+${shop_close}     wlsatm1467273855@mailinator.com
+
+${seller_promotion_robot}    6151
+${reg_user_001}    qawlsautomate1@mailinator.com
+${reg_pass_001}    12345678
+${shopname_user001}    qawlsautomate1
+
+### USER ###
+${seller_user_tesco}    wls_tesco@mailinator.com
+${seller_pwd_tesco}    Welcome1
+${tesco_store_id}    L939506
+${tesco_store_url}    wlstesco
+${tesco_store_name}    wlstesco
+
+### WMS ###
+${AttributeName}    Test Add Attribute
+${EditAttributeName}    Update Attribute
+${PermissionUser}    iczy.kung@gmail.com
+${EditRole}       Test Permission
+
+### USERS FOR TEST REGISTER SHOP ###
+${member_user_001}    sellertest01@mailinator.com
+${member_pwd_001}    12345678
+
+### USERS FOR TEST CATEGORY ###
+${category_user_002}    qawlsautomate1@mailinator.com
+${category_pwd_002}    12345678
+${category_shopname2}    qawlsautomate1
+${category_shopid2}    926235
+
+### API Product
+${client_id}    82df3e278325806f
+${client_secret}    d14e4330b8ca7b289b98600e9d10448c
+
+### Shop test open/close shop ###
+${migrate_exuser_3}    migrate_exuser_3@mailinator.com
+${migrate_expwd_3}    Joy@123456
+${migrate_exuser_id3}    L939497
+${migrate_exuser_url3}    migrate_exuser_3
+${migrate_exuser_name3}    migrate_exuser_3
+
+## ACCOUNT ##
+${buyer_product_we_nocredit}    L90578758
+${buyer_product_we_credit}    L90578749
+${buyer_account}    user_stg_buyer@mailinator.com
+${buyer_account_pass}    123456
+${store_we_you_user}    joyjorjar@hotmail.com
+${store_we_you_pass}    P@ssw0rd
+${buyer_account_not_confirm}    user_stg_not_confirm@mailinator.com
+${buyer_account_not_confirm_pass}    123456
+${buyer_account_change_pwd}    user_stg_change_pwd@mailinator.com
+${buyer_account_change_pwd_old}    P@ssw0rd
+${buyer_account_change_pwd_new}    Welcome@1
+${buyer_cart}     user_stg_cart@mailinator.com
+${buyer_cart_pass}    123456
+${buyer_checkout}    user_stg_checkout@mailinator.com
+${buyer_checkout_pass}    123456
+${buyer_mobile}    user_stg_mobile@mailinator.com
+${buyer_mobile_pass}    123456
+${mobile_checkout}    mobile_stg_checkout@mailinator.com
+${mobile_checkout_pass}    P@ssw0rd
+${store_email1}    robot_stg_store1@mailinator.com
+${store_password1}    123456
+${store_name1}    robot_store1
+${store_url1}     robot_store1
+${store_robotId1}     L939478
+${store_email2}    robot_stg_store2@mailinator.com
+${store_password2}    123456
+${store_url2}     robot_store2
+${store_robotId2}     L939482
+${store_name2}    robot_store2
+${blockstore_email1}    robot_stg_blockstore1@mailinator.com
+${blockstore_password1}    P@ssw0rd
+${blockstore_id1}    L939486
+${blockstore_url1}    robot_blockstore1
+${blockstore_name1}    robot_blockstore1
+${blockstore_email2}    robot_stg_blockstore2@mailinator.com
+${blockstore_password2}    P@ssw0rd
+${blockstore_id2}    L939487
+${blockstore_url2}    robot_blockstore2
+${blockstore_name2}    robot_blockstore2
+${blockstore_email3}    robot_stg_blockstore3@mailinator.com
+${blockstore_password3}    P@ssw0rd
+${blockstore_id3}    L939490
+${blockstore_url3}    robot_blockstore3
+${blockstore_name3}    robot_blockstore3
+
+## PRODUCT Shop store_name1##
+${robot_store1_instock_type_new}    L91199601
+${robot_store1_instock_type_new2}	L91530573
+${robot_store1_instock_type_new3}    L91530576
+${robot_store1_instock_type_use}    L91199575
+${robot_store1_have_weight}    L91199576
+${robot_store1_1attr_1inv}    L91199577
+${robot_store1_1attr_3inv}    L91199578
+${robot_store1_2attr_1inv}    L91199581
+${robot_store1_2attr_3inv}    L91199582
+${robot_store1_flashsale1}    L91199583
+${robot_store1_flashsale1_attr}    L91199584
+${robot_store1_flashsale2}    L91199585
+${robot_store1_flashsale2_attr}    L91199586
+${robot_store1_flashsale3}    L91199587
+${robot_store1_flashsale3_attr}    L91199588
+${robot_store1_join_camapign}    L91199589
+${robot_store1_none_join_camapign}    L91199590
+${robot_store1_custom_price}    L91199591
+${robot_store1_promotion_item_price}    L91199592
+${robot_store1_promotion_item_percent}    L91199593
+${robot_store1_promotion_cart_price_by_price}    L91199594
+${robot_store1_promotion_cart_percent_by_price}    L91199595
+${robot_store1_promotion_cart_price_by_qty}    L91199596
+${robot_store1_promotion_cart_percent_by_qty}    L91199597
+${robot_store1_preorder_use_stock_soldout}    L91199598
+${robot_store1_test_promotion_item}    L91199599
+${robot_store1_promotion_flashsale}    L91199600
+${robot_store1_sellerpromotion}    L91199601
+${robot_store1_sellerpromotion_flashsale}    L91199602
+${robot_store1_more_price}    L91199603
+${robot_store1_less_qty}    L91199604
+${robot_store1_test_promotion_cart1}    L91199605
+${robot_store1_test_promotion_item2}    L91199606
+${robot_store1_preorder_ignore_stock}    L91199609
+${robot_store1_preorder_ignore_stock_inv}    L91199610
+${robot_store1_preorder_use_stock}    L91199611
+${robot_store1_preorder_use_stock_inv}    L91199612
+${robot_store1_preorder_use_stock_allow}    L91199613
+${robot_store1_preorder_use_stock_inv_allow}    L91199615
+${robot_store1_instock_soldout}    L91199620
+${robot_store1_instock_soldout_inv}    L91199622
+${robot_store1_preorder_use_stock_soldout}    L91199623
+${robot_store1_preorder_use_stock_inv_soldout}    L91199624
+${robot_store1_preorder_use_stock_allow_soldout}    L91199625
+${robot_store1_preorder_use_stock_inv_allow_soldout}    L91199626
+${robot_store1_promotion_custom_test1}    L91199685
+${knockprice_product}    L91199567
+${robot_store1_join_promotion_item}    L91199855
+${robot_store1_join_promotion_cart}    L91199851
+${robot_store1_promotion_custom_edit}    L91199857
+${robot_store1_promotion_by_admin}    L91199859
+
+## PRODUCT Shop store_name2##
+${robot_store2_instock_type_new}    L91199632
+${robot_store2_instock_type_use}    L91199633
+${robot_store2_have_weight}    L91199634
+${robot_store2_1attr_1inv}    L91199635
+${robot_store2_1attr_3inv}    L91199636
+${robot_store2_2attr_1inv}    L91199638
+${robot_store2_2attr_3inv}    L91199641
+${robot_store2_flashsale1}    L91199642
+${robot_store2_flashsale1_attr}    L91199643
+${robot_store2_flashsale2}    L91199644
+${robot_store2_flashsale2_attr}    L91199645
+${robot_store2_flashsale3}    L91199646
+${robot_store2_flashsale3_attr}    L91199647
+${robot_store2_join_camapign}    L91199648
+${robot_store2_none_join_camapign}    L91199649
+${robot_store2_custom_price}    L91199650
+${robot_store2_promotion_item_price}    L91199651
+${robot_store2_promotion_item_percent}    L91199652
+${robot_store2_promotion_cart_price_by_price}    L91199653
+${robot_store2_promotion_cart_percent_by_price}    L91199654
+${robot_store2_promotion_cart_price_by_qty}    L91199655
+${robot_store2_promotion_cart_percent_by_qty}    L91199656
+${robot_store2_preorder_use_stock_soldout}    L91199657
+${robot_store2_test_promotion_item}    L91199658
+${robot_store2_promotion_flashsale}    L91199659
+${robot_store2_sellerpromotion}    L91199660
+${robot_store2_sellerpromotion_flashsale}    L91199661
+${robot_store2_more_price}    L91199662
+${robot_store2_less_qty}    L91199663
+${robot_store2_test_promotion_cart1}    L91199664
+${robot_store2_test_promotion_item2}    L91199665
+${robot_store2_preorder_ignore_stock}    L91199666
+${robot_store2_preorder_ignore_stock_inv}    L91199667
+${robot_store2_preorder_use_stock}    L91199668
+${robot_store2_preorder_use_stock_inv}    L91199669
+${robot_store2_instock_soldout}    L91199677
+${robot_store2_instock_soldout_inv}    L91199678
+${robot_store2_preorder_use_stock_soldout}    L91199679
+${robot_store2_preorder_use_stock_inv_soldout}    L91199680
+${robot_store2_preorder_use_stock_allow_soldout}    L91199681
+${robot_store2_preorder_use_stock_inv_allow_soldout}    L91199682
+${robot_store2_preorder_use_stock_allow}    L91199683
+${robot_store2_preorder_use_stock_inv_allow}    L91199684
+${robot_store2_promotion_custom_test1}    L91199686
+${robot_store2_join_promotion_item}    L91199852
+${robot_store2_join_promotion_cart}    L91199853
+${robot_store2_promotion_custom_edit}    L91199854
+${robot_store2_promotion_by_admin}    L91199860
+
+## PRODUCT Shop blockstore_name1##
+${robot_blockstore1_instock_type_new}    L91199719
+${robot_blockstore1_instock_type_new2}    L91530571
+${robot_blockstore1_instock_type_new3}    L91530601
+${robot_blockstore1_instock_type_use}    L91199720
+${robot_blockstore1_have_weight}    L91199721
+${robot_blockstore1_1attr_1inv}    L91199722
+${robot_blockstore1_1attr_3inv}    L91199723
+${robot_blockstore1_2attr_1inv}    L91199724
+${robot_blockstore1_2attr_3inv}    L91199725
+
+## PRODUCT Shop blockstore_name2##
+${robot_blockstore2_have_weight}    L91199740
+${robot_blockstore2_1attr_1inv}    L91199741
+${robot_blockstore2_instock_type_new}    L91199742
+${robot_blockstore2_instock_type_use}    L91199743
+${robot_blockstore2_1attr_3inv}    L91199744
+${robot_blockstore2_2attr_1inv}    L91199745
+${robot_blockstore2_2attr_3inv}    L91199746
+
+
+## PRODUCT Shop blockstore_name3##
+${robot_blockstore3_instock_type_new}    L91199795
+${robot_blockstore3_instock_type_use}    L91199796
+${robot_blockstore3_have_weight}    L91199797
+${robot_blockstore3_1attr_1inv}    L91199798
+${robot_blockstore3_1attr_3inv}    L91199799
+${robot_blockstore3_2attr_1inv}    L91199800
+${robot_blockstore3_2attr_3inv}    L91199801
+${robot_blockstore3_instock_type_new}    L91199802
+
+## PRODUCT OTHER ##
+${robot_store_other_feedback}    L91199821
+${robot_store2_fix_join_campaign}    L91199785
+${robot_store_other_product_normal}    L90756374
+
+
+###Product For Dealzap###
+${current_deal_product}    ${robot_store1_flashsale1} ${robot_store1_flashsale1_attr} ${robot_store1_less_qty} ${robot_store1_promotion_flashsale} ${robot_store1_sellerpromotion_flashsale} ${robot_store2_flashsale1} ${robot_store2_flashsale1_attr} ${robot_store2_flashsale3} L91199698 L91199706 L91199718 L91199732 L91199739 L90547895 L90649980 L91201392
+${current_deal_fashion}    L90909807 L90494782 L91006145 L91199463 L91199469 L91199458 L91199464 L91199452 L91199448 L91199454 L91199445 L91083764 L91199429 L91199427 L91199424 L91199418 L91199401 L91199396 L91199297 L91199293 L91201392
+${current_deal_beauty}    L91199557 L91199550 L91199552 L91199556 L91199554 L91199551 L91078059 L90976688 L90760403 L90760409 L90760395 L90760414 L90760532 L91124178 L90720812 L90979296 L90976680 L90979291 L91147012 L91061686 L91201392
+${current_deal_mobile}    L91135669 L91128775 L91135647 L91135652 L91135591 L91139814 L91139328 L90870042 L91083728 L91186762 L90976754 L91157757 L91188413 L91188489 L91166175 L90898541 L90979848 L91153004 L91194801 L91004585 L91201392
+${next_deal_beauty}    L91191113 L90706079 L90947920 L90703594 L91132102 L91103765 L90740931 L90740887 L90779404 L90779199 L90740164 L90741163 L90741119 L91038115 L90607676 L91117541 L91166390 L90760438 L90886250 L90760423 L90874431 L91002210 L91001378 L91199046 L90897465 L91181802 L90932945 L91176576 L91109396 L90897671 L91201392
+${next_deal_product}    ${robot_store1_flashsale2} ${robot_store1_flashsale2_attr} ${robot_store2_flashsale2} ${robot_store2_flashsale2_attr} L90547895 L90649980 L91201392
+
+###Product other###
+${non_join_multi_product}    L91030989 L91097914 L91160409 L91073190 L91030994 L91094035 L91159493 L91073185 L91073188 L91077675 L91077679 L91077682 L91077684 L91077698 L91077702 L91077707 L91077710 L91078691 L91078699 L91078719 L91079475 L91116278 L91116286 L91127875 L90999173 L90999205 L91157950 L91157716 L91157525 L91155674 L91155636 L91069996 L91069990 L91069977 L91153768 L90836960 L90837020 L91136806 L90883939 L90783407 L90783410 L90783379 L91138290 L91138315 L91143737 L90887186 L91143727 L90887138 L90976948 L90883274 L91099680 L91136820 L91136822 L91136814 L91093367 L90872863 L90870048 L91138275 L90938714 L91134103 L91131257 L91131260 L91131251 L91131239 L91131219 L91131172 L91131164 L91131163 L91131129 L91131110 L91131108 L91131105 L91131069 L90869800 L91095253 L91126851 L91077523 L91077509 L90852275 L90852328 L90675037 L90674339 L90675042 L90662096 L90662111 L90662043 L91010525 L91010515 L90872888 L90864805 L90864820 L90864784 L90864807 L90778090 L90778098 L91095258 L91085422 L90948230 L91085069 L91079110
+${robot_store2_fix_next_deal}    L91200035
+${robot_store2_fix_current_deal}    L91200036
+
+
+###CAMPAIGN other###
+${empty_join_campaign_id2}    386148
+${join_campaign_id2}    386148
+${join_campaign_id_limit2}    386487
+${join_campaign_id_on_off}    386214
+${join_campaing_slug_on_off}    test-join-campaign-on-off
+${non_join_campaign_slug_on_off}    qa-robot-non-join-onoff
+${non_join_campaign_id_on_off}    253158
+${promotion_expire_id}    386422
+${buyer_product_chk_102}    L90578852
+${buyer_product_chk_103}    L90577144
+
+
+### CAMPAIGN ###
+${join_campaign_id}    3477
+${empty_join_campaign_id}    3478
+${expired_join_campaign_id}    3479
+${none_join_campaign_id}    3480
+${empty_none_join_campaign_id}    3481
+${expired_none_join_campaign_id}    3482
+${promotion_item_fixprice_id}    3483
+${promotion_cart_price_by_price_id}    3484
+${promotion_cart_percent_by_price_id}    3485
+${promotion_cart_price_by_qty_id}    3486
+${promotion_cart_percent_by_qty_id}    3487
+${promotion_item_for_edit_id}    3488
+${promotion_cart_price_for_edit_id}    3489
+${promotion_item_inactive_id}    3490
+${promotion_cart_price_inactive_id}    3491
+${promotion_custom_price}    3492
+${empty_promotion_custom_price}    3493
+${expire_promotion_custom_price}    3494
+${promotion_custom_price_for_edit}    3495
+${none_join_campaign_onoff_id}    3496
+${knock_price_id}    2801
+${promotion_item_percent_id}    3497
+${store_campaign1}    L939482
+${join_campaign_id_limit}    3506
+${join_campaign_Fee_Zero_limit}    3530
+
+#####################################
+${promo_code}     AUTOTEST
+${promo_name}     Autotest
+${promo_code_hide}    QA0006
+${promo_name_hide}    checkout hide
+${promo_code_expired}    QA0004
+${promo_name_expired}    test expried
+
+${orderweb_wls_slug_name}    nyxorderweb
+${user_orderweb_wls}    nyxorderweb@gmail.com
+${pass_orderweb_wls}    Escrow@1234
+${user_login_feedback}     reconfeedback@gmail.com
+${pass_login_feedback}     Escrow@1234
+${storename_slug_feedback}    reconfeedback
+${email_ewallet}    welove@9que.com
+${pass_ewallet}    Quedesign123
+${storename}      AmyShop
+${product_inpage}    Robotreconfeedback normal product
+${orderweb_wls_normal_product}    Normal Product
+${username_wms}    testadmin@gmail.com
+${password_wms}    escrow123
+${expire_promotion_custom_price}    385317
+${user_corporate}    wlsatm1462764151@mailinator.com
+${password_corporate}    Abcd001
+${storename_corporate}    autocorp
+${corporate_product}    corporate_product
+
+${normal_product1}    Robotreconorder normal product
+${normal_product2}    Robotreconorder normal product2
+${normal_product1_reconstore}    Robotreconteststore normal product
+${normal_product2_reconstore}    Robotreconteststore normal product 2
+${user_reconorder}    reconorder@gmail.com
+${password_reconorder}    Escrow@1234
+${id_reconorder}     L939485
+${reconorder_slug}    reconorder
+${user_reconnodata}    reconnodata@gmail.com
+${password_reconnodata}    Escrow@1234
+${reconnodata_slug}    reconnodata
+${user_reconteststore}    reconteststore@gmail.com
+${password_reconteststore}    Escrow@1234
+${reconteststore_slug}    reconteststore
+${ems_tracking}    EX123456789TH
+${user_order_admin}    automate
+${pass_order_admin}    Tfs7o8JMRwcr
+${expect_load_time}    60
+${visa1}    5555
+${visa2}    5555
+${visa3}    5555
+${visa4}    4444
+${lbl_credit1}    5555
+${lbl_credit2}    5555
+${lbl_credit3}    5555
+${lbl_credit4}    4444
+${cardname}    WLS TEST
+${cnv}    123
+${month}    10
+${year}    2019
+${type_card}    Visa
+${buyer_wallet}    enjoyfighting@gmail.com
+${buyer_wallet_pass}    joisune22
+
+### MOBILE NO. FOR TEST ###
+${mobileno_test}    0647016834
+${idcard}    1212121212121
+${product_block1}    L91199749
+${product_block2}    L91199749,L91199750
+
+###Data for test Migration###
+${seller_user3_4step}    stg_4step_store3@mailinator.com
+${seller_pwd3_4step}    Joy@123456
+${user3_4step_id}    L939501
+${user3_4step_url}    stg_4step_store3
+${user3_4step}    stg_4step_store3
+
+${user2_corp_4step}    migrate_exuser_7@mailinator.com
+${pwd2_corp_4step}    Joy@123456
+${corp_4step_id2}    L939504
+${corp_4step_url2}     migrate_exuser_7
+
+${user3_corp_4step}    migrate_exuser_8@mailinator.com
+${pwd3_corp_4step}    Joy@123456
+${corp_4step_id3}     L939505
+${corp_4step_url3}     migrate_exuser_8
+
+
+${product_id}    91200019
+
+${PRODUCT_TESCO}    91199846
+${open_api_method_price}    price
+${open_api_method_stock}    corporate_stock
+
+
+${cart_robot_store1}    //*[@id="L939478"]
+${cart_robot_store2}    //*[@id="L939482"]
+${cart_robot_store_name_store1}    robot_store1
+${cart_robot_store_name_store2}    robot_store2
+${cart_robot_store1_product}    //*[@id="L90130130"]
+${cart_robot_store2_product}    //*[@id="L91199632"]
+${cart_robot_store1_product_name}    robot_store1 - สินค้า Seller Promotion
+${cart_robot_store2_product_name}    robot_store1 - สินค้า FlashSale 1
+
+
+
+###Estamp###
+${client_id_estamp}    414fa5a34659e5ada94e54f06122eddc
+${client_secret_estamp}    5f4dcc3b5aa765d61d8327deb882cf99
+${grant_type}    client_credentials
+${test_promo_exact}    GGPROMO
+${test_promo_partial}    GGPRO
+${test_expected_promo}    GGPROMO
+${test_mc_exact}    gg testing mc code
+${test_mc_partial}    testing mc code
+${test_expected_mc}    gg testing mc code

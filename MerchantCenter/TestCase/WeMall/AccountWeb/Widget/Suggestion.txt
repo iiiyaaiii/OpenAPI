@@ -1,0 +1,38 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Force Tags        Account-Web
+Test Timeout      3 minutes
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+** Test Cases ***
+TC_MC_00095
+    [Documentation]    Search product by Thai keyword
+    [Tags]    High
+    Go to    ${URL_PORTAL}
+    Input Text    ${input_search}    กางเกงขาสั้น
+    Sleep    2
+    Element Should Be Visible    ${suggestion_box}
+    Element Should Contain    ${suggest_keyword_search}    กางเกงขาสั้น
+    ${suggest_cat}    Get Matching Xpath Count    ${suggest_incat}
+    Should Be True    ${suggest_cat} > 0
+    ${suggest_keyword}    Get Matching Xpath Count    ${suggest_keyword}
+    Should Be True    ${suggest_keyword} > 0#
+TC_MC_00099
+    [Documentation]    Search Shop by keyword
+    [Tags]    High
+    Go to    ${URL_PORTAL}
+    Execute Javascript    ${search_type}.mouseover()
+    Execute Javascript    ${search_shop}.click()
+    Input Text    ${input_search}    fashion
+    Sleep    2
+    Element Should Be Visible    ${suggestion_box}
+    ${suggest_keyword}    Get Matching Xpath Count    ${suggest_keyword}
+    Should Be True    ${suggest_keyword} > 0
+

@@ -1,0 +1,5 @@
+*** variable ***
+### Locators ###
+${search}    //input[@type='submit']
+${column_type}    //table[@id='sample-table-2']/tbody//tr[1]//td[3]
+${column_status}    //table[@id='sample-table-2']/tbody//tr//td[7]

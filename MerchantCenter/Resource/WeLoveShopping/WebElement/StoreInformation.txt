@@ -1,0 +1,81 @@
+*** Variables ***
+### Data ###
+#${url_shopinfo_incomplete}    ${URL_STORE}/wlsautomate07/admin/store
+${char_less_80}    มาร์กบำรุงผิวหน้าMark!@#$%12345
+${char_more_80}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky
+${char_equal_80}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345
+${char_more_170}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky1234567890
+${char_equal_170}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345
+${char_less_170}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345
+###
+### Locator ###
+${input_facebook}    //input[@id="social_Facebook"]
+${input_googleplus}    //input[@id="social_GooglePlus"]
+${input_instagram}    //input[@id="social_Instagram"]
+${input_pinterest}    //input[@id="social_Pinterest"]
+${input_twitter}    //input[@id="social_Twitter"]
+${btn_add_social}    //button[@id="btn_add_social"]
+${social_instagram}    $("li[id=list_add_social_Instagram] > a").click()
+${social_googleplus}    $("li[id=list_add_social_GooglePlus] > a").click()
+${social_facebook}    $("li[id=list_add_social_Facebook] > a").click()
+${social_pinterest}    $("li[id=list_add_social_Pinterest] > a").click()
+${social_twitter}    $("li[id=list_add_social_Twitter] > a").click()
+${input_instagram}    //input[@id="social_Instagram"]
+${icon_del_facebook}    //*[@id="show_Facebook"]/div/span[2]/a
+${icon_del_googleplus}    //*[@id="show_GooglePlus"]/div/span[2]/a
+${icon_del_instagram}    //*[@id="show_Instagram"]/div/span[2]/a
+${icon_del_pinterest}    //*[@id="show_Pinterest"]/div/span[2]/a
+${icon_del_twitter}    //*[@id="show_Twitter"]/div/span[2]/a
+${show_map}       //div[@id="show_map"]
+${switch_status_googlemap}    //input[@name="map_status" and @class="ace-switch-show"]
+${switch_status_shop}    //input[@name="status" and @class="ace-switch-open"]
+${icon_shop_close}    //div[@class="img-error"]
+${msg_shop_close}    //div[@class="txt-error"]//h3
+${box_shop_profile}    //div[@class="shop-profile-box"]
+${display_shop_name}    //*[@id="row-body"]/div/div/div[2]/div/div[2]/h1
+${shop_name_info}    //*[@name="title_th"]
+${shop_desc}      //*[@name="description_th"]
+${shop_address_info}    //*[@name="street_th"]
+${shop_province_info}    //*[@name="province_id_th"]
+${shop_city_info}    //*[@name="city_id_th"]
+${shop_district_info}    //*[@name="district_id_th"]
+${shop_zipcode}    //*[@name="zipcode_th"]
+${shop_category_info}    //*[@name="category"]
+${shop_mobile_info}    //*[@name="mobile"]
+${shop_phone_info}    //*[@name="phone"]
+${shop_fax}       //*[@name="fax"]
+${shop_email}     //*[@name="email"]
+${shop_URL_info}    //*[@id="storeForm"]/div/div[1]/div/div[2]/div/div[4]/div/span[1]
+${status_shop}    //*[@id="storeForm"]/div[2]/div/div/div/div/div[8]/div/div[2]/div/div[2]/strong
+${shop_dbd}       //*[@name="dbd"]
+${btn_save_info}    //*[@id="storeForm"]/div/div[7]/button[2]
+${btn_cancel}     //*[contains(@class, "delete_button")]
+${s_error_shop_name}    //*[@for="title_th" and @class="help-inline"]
+${error_shop_address}    //*[@for="street_th" and @class="help-inline"]
+${s_error_shop_province}    //*[@for="province_id_th" and @class="help-inline"]
+${s_error_shop_zipcode}    //*[@for="zipcode_th" and @class="help-inline"]
+${error_shop_mobile}    //*[@for="mobile" and @class="help-inline"]
+${s_error_shop_category}    //*[@for="category" and @class="help-inline"]
+${s_error_shop_email}    //*[@for="email" and @class="help-inline"]
+${error_shop_dbd}    //*[@for="dbd" and @class="help-inline"]
+${logo_error}     //div[@class="help-inline" and @id="logo_error"]
+${btn_choose_logo}    //a[@id="btn_select_logo"]
+${thumb_logo_upload}    //div[@class="shopinfo-logo-img"]//img
+${thumb_map_upload}    //div[@class="shopinfo-map-img"]//img
+${btn_ok}         /html/body/div[6]/div[2]/a[2]
+${icon_trash_logo}    //span[@id="trash_logo"]//a[@id="del_logo_old"]
+${icon_trash_map}    //span[@id="trash_map"]//a[@id="del_map_old"]
+${icon_trash_dbd}    //span[@id="trash_dbd"]//a[@id="del_dbd"]
+${icon_trash_idcard}    //span[@id="trash_idcard"]//a[@id="del_idcard_old"]
+${firstname}      //*[@id="storeForm"]/div/div[2]/div/div[2]/div/div[1]/div/span
+${lastname}       //*[@id="storeForm"]/div/div[2]/div/div[2]/div/div[2]/div/span
+${idcard}         //*[@id="storeForm"]/div/div[2]/div/div[2]/div/div[3]/div/span
+${status_idcard}    //*[@id="storeForm"]/div/div[2]/div/div[2]/div/div[4]/div/div[4]/p[1]/a
+${input_add_mobile_1}    //div[@id="mobile-container"]//div[1][@class="morephone-box"]//input[@class=" input-mask-mobile"]
+${input_add_mobile_2}    //div[@id="mobile-container"]//div[2][@class="morephone-box"]//input[@class=" input-mask-mobile"]
+${input_add_mobile_3}    //div[@id="mobile-container"]//div[3][@class="morephone-box"]//input[@class=" input-mask-mobile"]
+${icon_facebook}    //div[@class="shop-follow"]//a[1]//i[@class="icon-white-facebook"]
+${icon_google}    //div[@class="shop-follow"]//a[2]//i[@class="icon-white-google"]
+${icon_pinstagram}    //div[@class="shop-follow"]//a[3]//i[@class="icon-white-pinstagram"]
+${icon_twitter}    //div[@class="shop-follow"]//a[4]//i[@class="icon-white-twitter"]
+${icon_instagram}    //div[@class="shop-follow"]//a[5]//i[@class="icon-white-instagram"]

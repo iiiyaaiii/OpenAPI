@@ -1,0 +1,163 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_06732
+    [Documentation]    Create proposition page display error message if user leaves Proposition Name field as blank
+    [Tags]    Regression    High
+    Go To                            	${url_proposition}/create
+ 	Wait Until Element Is Visible       ${input_name}
+    Click Element 						${input_name}
+    Input Text 							${input_name} 					${EMPTY}
+    Click Element 						${input_campaign_code}
+    Wait Until Element Is Visible       ${error_input_name}
+    Element Should Contain 				${error_input_name}			    The name field is required.
+
+TC_MC_06734
+    [Documentation]    Create proposition page display error message when user input proposition name is existing in system
+    [Tags]    Regression    High
+    Go To Menu Proposition
+	Proposition - Delete Existing Name       robot01
+	Proposition - Delete Existing Nas Code 	 robot01
+	Proposition - Delete Existing Nas Code 	 robot02
+    Create Proposition one merchant
+    Create Proposition one merchant     				robot01    True Move  		${EMPTY} 		robot02
+    Wait Until Element Is Visible       ${result_error}
+    Element Should Contain              ${result_error}                 The name robot01 has already been taken.
+
+TC_MC_06741
+    [Documentation]    Create proposition page display error message if user leaves "Nas Code" field as blank
+    [Tags]    Regression    High
+    Go To                            	${url_proposition}/create
+ 	Wait Until Element Is Visible       ${input_nas_code}
+    Click Element 						${input_nas_code}
+    Input Text 							${input_nas_code} 				${EMPTY}
+    Click Element 						${input_campaign_code}
+    Wait Until Element Is Visible       ${error_input_nas_code}
+    Element Should Contain 				${error_input_nas_code}			The nas code field is required.
+
+TC_MC_06745
+    [Documentation]    Create proposition page display error message when user input nas code is existing in system
+    [Tags]    Regression    High
+    Go To Menu Proposition
+	Proposition - Delete Existing Nas Code 	 robot01
+    Create Proposition one merchant
+    Create Proposition one merchant     				robot01
+    Wait Until Element Is Visible       ${result_error}
+    Element Should Contain              ${result_error}                 The nas code robot01 has already been taken.
+
+TC_MC_06752
+    [Documentation]    Create proposition page display error message if user leaves "Contact" field as blank
+    [Tags]    Regression    High
+    Go To                            	${url_proposition}/create
+ 	Wait Until Element Is Visible       ${input_contract}
+    Click Element 						${input_contract}
+    Input Text 							${input_contract} 				${EMPTY}
+    Click Element 						${input_campaign_code}
+    Wait Until Element Is Visible       ${error_input_contract}
+    Element Should Contain 				${error_input_contract}			The contract field is required.
+
+TC_MC_06755
+    [Documentation]    Create proposition page display error message if user leaves "Penalty" field as blank
+    [Tags]    Regression    High
+    Go To                            	${url_proposition}/create
+ 	Wait Until Element Is Visible       ${input_penalty}
+    Click Element 						${input_penalty}
+    Input Text 							${input_penalty} 				${EMPTY}
+    Click Element 						${input_campaign_code}
+    Wait Until Element Is Visible       ${error_input_penalty}
+    Element Should Contain 				${error_input_penalty}			The penalty field is required.
+
+TC_MC_06758
+    [Documentation]    Create proposition page display error message if user leaves "Source Type" field as blank
+    [Tags]    Regression    High
+    Go To                            	${url_proposition}/create
+ 	Wait Until Element Is Visible       ${select_source_type}
+    Click Element 						${select_source_type}
+    Select From List by Value           ${select_source_type}          ${EMPTY}
+    Click Element 						${input_campaign_code}
+    Wait Until Element Is Visible       ${error_select_source_type}
+    Element Should Contain 				${error_select_source_type}	   The source type field is required.
+
+TC_MC_06760
+    [Documentation]    Create proposition page display error message if user leaves "Term & Condition (Short)" field as blank
+    [Tags]    Regression    High
+    Go To                            	${url_proposition}/create
+ 	Wait Until Element Is Visible       ${input_term_short}
+    Click Element 						${input_term_short}
+    Input Text 							${input_term_short} 				${EMPTY}
+    Click Element 						${input_campaign_code}
+    Wait Until Element Is Visible       ${error_input_term_short}
+    Element Should Contain 				${error_input_term_short}			The term & condition (short) field is required.
+
+TC_MC_06763
+    [Documentation]    Create proposition page display error message if user leaves "Term & Condition (Long)" field as blank
+    [Tags]    Regression    High
+    Go To                            	${url_proposition}/create
+ 	Wait Until Element Is Visible       ${input_term_short}
+    Execute Javascript                  CKEDITOR.instances['term_long'].setData('test');
+    Execute Javascript                  CKEDITOR.instances['term_long'].setData('');
+    Click Element 						${input_campaign_code}
+    Wait Until Element Is Visible       ${error_input_term_long}
+    Element Should Contain 				${error_input_term_long}			The term & condition (long) field is required.
+
+TC_MC_06766
+    [Documentation]    Propositions page display new entries after create proposition by using criteria: 1. Status = Active
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Proposition - Delete Existing Name          robotNAME01
+    Proposition - Delete Existing Nas Code      robotNAS01
+    Go To                               ${url_proposition}/create
+    Create Proposition one merchant          robotNAME01    True Move   CP01    robotNAS01   PN01    599.00     12     2000.00    sim    robot_ts    robot_tl
+    Verify data proposition one merchant     robotNAME01    True Move   CP01    robotNAS01   PN01    599.00     12     2000.00    sim     robot_ts    robot_tl
+
+TC_MC_06767
+    [Documentation]    Propositions page display new entries after create proposition by using criteria: 1. Status = Inactive
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Proposition - Delete Existing Name          robotNAME01
+    Proposition - Delete Existing Nas Code 	    robotNAS01
+    Go To                               ${url_proposition}/create
+    Create Proposition one merchant          robotNAME01	True Move    CP01	robotNAS01	PN01	599.00	   12	  2000.00	 sim	 robot_ts	 robot_tl
+    Verify data proposition one merchant     robotNAME01    True Move    CP01    robotNAS01   PN01    599.00     12     2000.00    sim     robot_ts    robot_tl
+
+TC_MC_09525
+    [Documentation]    Verify select muti Merchant field on Create new proposition (sim)
+    [Tags]    Regression    Medium
+    Go To Menu Proposition
+    Proposition - Delete Existing Name          robotNAME01
+    Proposition - Delete Existing Nas Code      robotNAS01
+    Go To                               ${url_proposition}/create
+    Create Proposition Muti merchant         robotNAME01    True Move,Trust Move   CP01    robotNAS01   PN01    599.00     12     2000.00    sim     robot_ts    robot_tl
+    Verify data proposition muti merchant    robotNAME01    True Move Trust Move   CP01    robotNAS01   PN01    599.00     12     2000.00    sim     robot_ts    robot_tl
+
+TC_MC_09829
+    [Documentation]    Create proposition page if the value of source type is "Bundle"
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Proposition - Delete Existing Name          robotNAME01
+    Proposition - Delete Existing Nas Code      robotNAS01
+    Go To                               ${url_proposition}/create
+    Create Proposition one merchant          robotNAME01    True Move   CP01    robotNAS01   PN01    599.00     12     2000.00    bundle    robot_ts    robot_tl
+    Verify data proposition one merchant     robotNAME01    True Move   CP01    robotNAS01   PN01    599.00     12     2000.00    bundle     robot_ts    robot_tl
+
+TC_MC_09831
+    [Documentation]    Verify select muti Mobile Number Nas Code field on Create new proposition
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Proposition - Delete Existing Name          robotNAME01
+    Proposition - Delete Existing Nas Code      robotNAS01
+    Go To                               ${url_proposition}/create
+    Create Proposition Muti merchant          robotNAME01    True Move   CP01    robotNAS01   PN01    599.00     12     2000.00    bundle    robot_ts    robot_tl
+    Verify data proposition muti merchant     robotNAME01    True Move   CP01    robotNAS01   PN01    599.00     12     2000.00    bundle     robot_ts    robot_tl

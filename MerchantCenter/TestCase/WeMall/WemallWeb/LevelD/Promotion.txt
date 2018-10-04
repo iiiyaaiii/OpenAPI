@@ -1,0 +1,248 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Login    AND    WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+#Suite Teardown    Close All Browsers
+Test Timeout      3 minutes
+Force Tags        Wemall-Web    Ligo    Sprint2017MC8
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Cart.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/LevelD.txt
+
+*** Test Cases ***
+# TC_WLS_02619
+#     [Documentation]    [ByItem] Display discount% to promotion
+#     [Tags]    Regression    Medium    Portal-Web    mock
+#     [setup]    Remove Product from Campaign    ${promotion_item_percent_id}    ${robot_stg_store1_test_promotion_item}    promotion
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_test_promotion_item}?refresh=changeme
+#     # Repeat Keyword    2 times    Wait And Reload
+#     Element Should Be Visible    //strong[@id="product-price"]
+#     ${before_price}    Get Text    //strong[@id="product-price"]
+#     ${before_price}    Remove String    ${before_price}    ,
+#     ${before_price}    Convert To Integer    ${before_price}
+#     ${portal_location}    Get Location
+#     # Go to CMS
+#     Select Product to Campaign    ${promotion_item_percent_id}    ${robot_stg_store1_test_promotion_item}    promotion
+#     # ${cms_location}    Get Location
+#     # Select Window    url=${portal_location}
+#     Sleep    5
+#     Go to    ${portal_location}
+#     # Repeat Keyword    2 times    Wait And Reload
+#     : FOR    ${i}    IN RANGE    0    5
+#     \    Sleep    5s
+#     \    ${price_promotion}    Get Text    //strong[@id='product-price']
+#     \    ${price_change}    Run Keyword And Return Status    Should Be True    '${price_promotion}' != '${before_price}'
+#     \    Run Keyword If    '${price_change}' == 'True'    Exit FOR Loop
+#     \    Reload Page
+#     Element Should Not Be Visible    ${leveld_box_promotion}
+#     Element Should Be Visible    //strong[@id="product-price"]
+#     ${after_price}    Get Text    //strong[@id="product-price"]
+#     ${after_price}    Remove String    ${after_price}    ,
+#     ${after_price}    Convert To Integer    ${after_price}
+#     ${discount}    Evaluate    (${before_price} * 10) / 100
+#     ${calculate_price}    Evaluate    ${before_price} - ${discount}
+#     Should Be Equal    ${calculate_price}    ${after_price}
+#     ${portal_location}    Get Location
+#     # Select Window    url=${cms_location}
+#     #Remove Product from Campaign    ${promotion_item_percent_id}    ${robot_stg_store1_test_promotion_item}    promotion
+#     # Close Window
+#     # Select Window    url=${portal_location}
+#     # Reload Page
+#     #Sleep    5s
+#     #Go to    ${portal_location}
+#     # Repeat Keyword    2 times    Wait And Reload
+#     #: FOR    ${i}    IN RANGE    0    5
+#     #\    Sleep    5s
+#     #\    ${price_promotion}    Get Text    //strong[@id='product-price']
+#     #\    ${price_change}    Run Keyword And Return Status    Should Be True    '${price_promotion}' == '${before_price}'
+#     #\    Run Keyword If    '${price_change}' == 'True'    Exit FOR Loop
+#     #\    Reload Page
+#     #Element Should Be Visible    //strong[@id="product-price"]
+#     #${reset_price}    Get Text    //strong[@id="product-price"]
+#     #${reset_price}    Remove String    ${reset_price}    ,
+#     #${reset_price}    Convert To Integer    ${reset_price}
+#     #Should Be True    ${reset_price} == ${before_price}
+
+#TC_WLS_02620
+#    [Documentation]    [ByCart] Display row promotion condition type discount by price of price length
+#    [Tags]    Regression    Medium    Portal-Web    mock
+#    Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_price_by_price}?refresh=changeme
+#    Element Should Be Visible    ${leveld_box_promotion}
+#    Element Should Contain    ${leveld_title_promotion}    โปรโมชั่นพิเศษ
+#    Element Should Contain    ${leveld_name_promotion}    [QA-Automation] WLS Promotion by Cart [ซื้อครบ xx บาท ลด yy บาท]
+#    ${name_campaign}    Get Text    ${leveld_name_promotion}
+#    Click Element    ${leveld_name_promotion}//a
+#    Sleep    1
+#    Element Should Contain    ${header_campaignname_product}    ${name_campaign}
+
+#TC_WLS_02621
+#    [Documentation]    [ByCart] Display row promotion condition type discount by % of price length
+#    [Tags]    Regression    Medium    Portal-Web    mock
+#    Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_percent_by_price}?refresh=changeme
+#    Element Should Be Visible    ${leveld_box_promotion}
+#    Element Should Contain    ${leveld_title_promotion}    โปรโมชั่นพิเศษ
+#    Element Should Contain    ${leveld_name_promotion}    [QA-Automation] WLS Promotion by Cart [ซื้อครบ xx บาท ลด yy %]
+#    ${name_campaign}    Get Text    ${leveld_name_promotion}
+#    Click Element    ${leveld_name_promotion}//a
+#    Sleep    1
+#    Element Should Contain    ${header_campaignname_product}    ${name_campaign}
+
+#TC_WLS_02622
+#    [Documentation]    [ByCart] Display row promotion condition type discount by price of piece length
+#    [Tags]    Regression    Medium    Portal-Web    mock
+#    Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_price_by_qty}?refresh=changeme
+#    Element Should Be Visible    ${leveld_box_promotion}
+#    Element Should Contain    ${leveld_title_promotion}    โปรโมชั่นพิเศษ
+#    Element Should Contain    ${leveld_name_promotion}    [QA-Automation] WLS Promotion by Cart [ซื้อครบ xx ชิ้น ลด yy บาท]
+#    ${name_campaign}    Get Text    ${leveld_name_promotion}
+#    Click Element    ${leveld_name_promotion}//a
+#    Sleep    1
+#    Element Should Contain    ${header_campaignname_product}    ${name_campaign}
+
+#TC_WLS_02623
+#    [Documentation]    [ByCart] Display row promotion condition type discount by % of piece length
+#    [Tags]    Regression    Medium    Portal-Web    mock
+#    Go to    ${URL_LEVEL_D}/${robot_store1_promotion_cart_percent_by_qty}?refresh=changeme
+#    Element Should Be Visible    ${leveld_box_promotion}
+#    Element Should Contain    ${leveld_title_promotion}    โปรโมชั่นพิเศษ
+#    Element Should Contain    ${leveld_name_promotion}    [QA-Automation] WLS Promotion by Cart [ซื้อครบ xx ชิ้น ลด yy %]
+#    ${name_campaign}    Get Text    ${leveld_name_promotion}
+#    Click Element    ${leveld_name_promotion}//a
+#    Sleep    1
+#    Element Should Contain    ${header_campaignname_product}    ${name_campaign}
+
+# TC_WLS_02881
+#     [Documentation]    [Seller Promotion] Display row promotion condition type discount by price of price length
+#     [Tags]    Regression    Medium    Portal-Web    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_sellerpromotion}?refresh=changeme
+#     Element Should Be Visible    ${leveld_box_promotion}
+#     Element Should Contain    ${leveld_title_promotion}    โปรโมชั่นพิเศษ
+#     Element Should Contain    ${leveld_name_promotion}    Robot Store2 : Promotion จากผู้ชาย
+#     # รอหน้า store ถึงจะใช้ได้
+#     #${name_campaign}    Get Text    ${leveld_name_promotion}
+#     #${temp}    Get Location
+#     #Click Element    ${leveld_name_promotion}//a
+#     #Sleep    1
+#     #Select Window    title=Weloveshopping
+#     #Element Should Contain    //div[@class='caption caption-pro']//h2    ${name_campaign}
+
+# TC_WLS_02882
+#     [Documentation]    [Seller Promotion] Display row promotion condition type discount by % of price length
+#     [Tags]    Regression    Medium    Portal-Web    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_sellerpromotion}?refresh=changeme
+#     Element Should Be Visible    ${leveld_box_promotion}
+#     Element Should Contain    ${leveld_title_promotion}    โปรโมชั่นพิเศษ
+#     Element Should Contain    ${leveld_name_promotion}    Robot Store1 : Promotion จากผู้ชาย
+#     # รอหน้า store ถึงจะใช้ได้
+#     #${name_campaign}    Get Text    ${leveld_name_promotion}
+#     #${temp}    Get Location
+#     #Click Element    ${leveld_name_promotion}//a
+#     #Sleep    1
+#     #Select Window    title=Weloveshopping
+#     #Element Should Contain    //div[@class='caption caption-pro']//h2    ${name_campaign}
+
+# TC_WLS_03529
+#     [Documentation]    [New promotion type nonejoin custom price] Display fix price to promotion
+#     [Tags]    Regression    High    Portal-API    Portal-Web    mock
+#     ${previous_url}    Get Location
+#     # Go to CMS
+#     Select Product to Campaign    ${promotion_custom_price}    ${robot_stg_store1_promotion_custom_test1}    promotion_type3
+#     Sleep    2
+#     # ${cms_url}    Get Location
+#     # Select Window    url=${previous_url}
+#     # Go to    ${URL_PORTAL}/campaign?refresh=changeme
+#     Go to    ${URL_PORTAL}/promotion/${promotion_custom_price}?refresh=changeme
+#     ${location}    Get Location
+#     Go to    ${location}?refresh=changeme
+#     : FOR    ${i}    IN RANGE    0    10
+#     \    Sleep    3s
+#     \    ${product_display}    Run Keyword And Return Status    Element Should Be Visible    //ul[@class='items-list-box']/li//a[@href='${URL_LEVEL_D}/${robot_stg_store2_promotion_custom_test1}']
+#     \    Run Keyword If    '${product_display}' == 'True'    Exit FOR Loop
+#     \    Reload Page
+#     # ${count}    Get Matching Xpath Count    //ul[@class='items-list-box']/li
+#     # Should Be True    ${count} > 0
+#     Click Element    //a[@href='${URL_LEVEL_D}/${robot_stg_store1_promotion_custom_test1}']
+#     ${location}    Get Location
+#     Go to    ${location}?refresh=changeme
+#     Sleep    1
+#     # : FOR    ${i}    IN RANGE    1    2
+#     # \    Sleep    3s
+#     # \    Reload page
+#     # Wait Until Element Is Visible    //strong[@id='product-price']    5
+#     : FOR    ${i}    IN RANGE    0    10
+#     \    Sleep    3s
+#     \    ${price_promotion}    Get Text    //strong[@id='product-price']
+#     \    ${product_display}    Run Keyword And Return Status    Should Be True    '${price_promotion}' == '99'
+#     \    Run Keyword If    '${product_display}' == 'True'    Exit FOR Loop
+#     \    Reload Page
+#     ${price_promotion}=    Get Text    //strong[@id='product-price']
+#     ${price_promotion}    Convert To Integer    ${price_promotion}
+#     Should Be True    ${price_promotion} == 99
+#     ${previous_url}    Get Location
+#     Sleep    1
+#     # Select Window    url=${cms_location}
+#     Remove Product from Campaign    ${promotion_custom_price}    ${robot_stg_store1_promotion_custom_test1}    promotion_type3
+#     # Close Window
+#     # Select Window    url=${previous_url}
+#     # : FOR    ${i}    IN RANGE    1    2
+#     # \    Sleep    2s
+#     # \    Reload page
+#     Go to    ${previous_url}
+#     : FOR    ${i}    IN RANGE    0    10
+#     \    Sleep    3s
+#     \    ${reset_price}    Get Text    //strong[@id='product-price']
+#     \    ${product_display}    Run Keyword And Return Status    Should Be True    '${reset_price}' != '99'
+#     \    Run Keyword If    '${product_display}' == 'True'    Exit FOR Loop
+#     \    Reload Page
+#     ${reset_price}    Get Text    //strong[@id='product-price']
+#     Should Be True    '${reset_price}' != '99'
+
+# TC_WLS_03531
+#     [Documentation]    [New promotion type nonejoin custom price] New promotion type nonejoin custom price inactive, Product will not change price to promotion
+#     [Tags]    Regression    Medium    Portal-API    Portal-Web    mock
+#     ${previous_url}    Get Location
+#     Edit Campaign    ${promotion_custom_price_for_edit}    promotion        OFF
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_promotion_custom_edit}?refresh=changeme
+#     Wait Until Element Is Visible    //strong[@id='product-price']    10
+#     : FOR    ${i}    IN RANGE    0    3
+#     \    ${result}    Run Keyword AND Return Status    Element Should Contain    //strong[@id='product-price']    300
+#     \    Run Keyword If    '${result}' == 'True'    Exit FOR Loop    ELSE    Reload Page
+#     ${price_normal}=    Get Text    //strong[@id='product-price']
+#     Should Be True    ${price_normal} == 250
+#     ${previous_url}    Get Location
+#     Edit Campaign    ${promotion_custom_price_for_edit}    promotion    ON
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_promotion_custom_edit}
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_promotion_custom_edit}?refresh=changeme
+#     : FOR    ${i}    IN RANGE    0    3
+#     \    ${result}    Run Keyword AND Return Status    Element Should Contain    //strong[@id='product-price']    199
+#     \    Run Keyword If    '${result}' == 'True'    Exit FOR Loop    ELSE    Reload Page
+#     # Repeat Keyword    3 times    Reload Page
+#     ${price_promotion}=    Get Text    //strong[@id='product-price']
+#     Should Be True    ${price_promotion} == 199
+
+#TC_WLS_03532
+#    [Documentation]    [New promotion type nonejoin custom price] New promotion type nonejoin custom price exprie, Product will change to normal price
+#    # [Tags]    Regression
+#    ${previous_url}    Get Location
+#    Edit Campaign    ${promotion_custom_price_for_edit}    promotion    Expire
+#    Go to    ${URL_LEVEL_D}/${robot_stg_store1_promotion_custom_edit}?refresh=changeme
+#    Wait Until Element Is Visible    //strong[@id='product-price']    10
+#    ${price_normal}=    Get Text    //strong[@id='product-price']
+#    Should Be True    ${price_normal} == 250
+#    Edit Campaign    ${promotion_custom_price_for_edit}    promotion    On-Time
+#    Go to    ${URL_LEVEL_D}/${robot_stg_store1_promotion_custom_edit}
+#    Go to    ${URL_LEVEL_D}/${robot_stg_store1_promotion_custom_edit}?refresh=changeme
+#    ${price_normal}=    Get Text    //strong[@id='product-price']
+#    Should Be True    ${price_normal} == 199

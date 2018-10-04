@@ -1,0 +1,47 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Force Tags        WeMall-Web    Ligo
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Category.txt
+Resource          ../../../../Resource/WeMall/WebElement/Product_Highlight.txt
+Resource          ../../../../Resource/WeMall/WebElement/Search.txt
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeMall/WebElement/Search.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Product_Collection.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+
+*** Test Cases ***
+# TC_WLS_05460
+#     [Documentation]    SideBar category: Verify side bar main category
+#     [Tags]    Regression     Ligo    Medium    Sprint2017MC12
+#     Open Browser    ${URL_PORTAL}/${seller_name001}/collection    ${BROWSER}
+#     ${IS_HAS_CHILD}    Check Parent Category By Name    กระโปรงแฟชั่น
+#     Should Be True    ${IS_HAS_CHILD} == False
+#     ${URL_Category}    Get Category Url By Name    กระโปรงแฟชั่น
+#     Go To    ${URL_Category}
+#     ${AMOUNT_PRODUCT}    Get Category Total Product
+#     Should Be True    ${AMOUNT_PRODUCT}>0
+#     Maximize Browser Window
+
+# TC_WLS_05461
+#     [Documentation]    SideBar category: Verify side bar main category
+#     [Tags]    Regression     Ligo    Medium    Sprint2017MC12
+#     Open Browser    ${URL_PORTAL}/${seller_name001}/collection    ${BROWSER}
+#     ${IS_HAS_CHILD}    Check Parent Category By Name    กระเป๋าเอกสาร
+#     Should Be True    ${IS_HAS_CHILD} == True
+#     ${URL_Category}    Get Category Url By Name    กระเป๋าเอกสาร
+#     Go To    ${URL_Category}
+#     ${AMOUNT_PRODUCT}    Get Category Total Product
+#     Should Be True    ${AMOUNT_PRODUCT}>0
+#     ${IS_HAS_CHILD}    Check Parent Category By Name    กระเป๋าโน๊ตบุ๊ค
+#     Should Be True    ${IS_HAS_CHILD} == True
+#     ${URL_Category}    Get Category Url By Name    กระเป๋าโน๊ตบุ๊ค
+#     Go To    ${URL_Category}
+#     ${AMOUNT_PRODUCT}    Get Category Total Product
+#     Should Be True    ${AMOUNT_PRODUCT}>0
+#     Maximize Browser Window

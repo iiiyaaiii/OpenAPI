@@ -1,0 +1,26 @@
+*** Variable ***
+#### Locators
+#
+${url_search_analysis}    ${URL_WMS}/wordsanalysis
+${url_search_wordsphrase}    ${URL_WMS}/wordsphrase
+${url_create_wordsphrase}    ${URL_WMS}/wordsphrase/create
+${input_keywords}    //*[@id="q"]
+${input_keywords_last}    //*[@id="keyword"]
+${btn_analyse_value}    //*[@id="analysesubmit"]
+${btn_phrase_search}    //*[@id="frm_search"]/a[1]
+${btn_create_phrase}    //*[@class="btn btn-sm btn-primary"]
+${a_create_phrase}    //*[@id="frm_delete"]/table/tbody/tr/td/a
+${btn_save_phrase}    //*[@id="edit-basic"]/div[2]/button[1]
+${word_analysis_result}    //*[@id="table-sort"]
+${input_wordsphrase}    //*[@id="keyword"]
+${btn_save}    //*[@id="edit-basic"]/div[2]/button[1]
+${noti_save_sucess}    //*[@id="notify-top"]
+${btn_phrase_reset}    //*[@id="edit-basic"]/div[2]/button[2]
+${icon_edit}    //*[@id="frm_delete"]/table/tbody[1]/tr/td[3]/div/a[1]
+${icon_delete}    //*[@id="frm_delete"]/table/tbody[1]/tr/td[3]/div/a[2]
+${btn_delete}    //*[@id="btn_delete"]
+${btn_edit}    //*[@class="btn btn-info"]
+${input_keywords_edit}    //*[@name="keyword[]"]
+${btn_import}    //*[@id="frm_search"]/a[3]
+${Browse_ImportFile}    //*[@id="import_file"]
+${btn_save_import}    //*[@id="edit-basic"]/div[2]/button[1]

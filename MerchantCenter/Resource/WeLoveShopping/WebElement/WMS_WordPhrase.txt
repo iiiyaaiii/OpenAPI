@@ -1,0 +1,53 @@
+*** Variable ***
+#### Locators
+#
+${url_search_analysis}    ${URL_WMS}/wordsanalysis
+${url_search_wordsphrase}    ${URL_WMS}/wordsphrase
+${url_create_wordsphrase}    ${URL_WMS}/wordsphrase/create
+${input_keywords}    //*[@id="q"]
+${input_keywords_last}    //*[@id="keyword"]
+${btn_analyse_value}    //*[@id="analysesubmit"]
+#${btn_phrase_search}    //*[@id="frm_search"]/a[1]
+${btn_phrase_search}    $('a[class="btn btn-sm btn-primary"]').click()
+${btn_create_phrase}    //*[@class="btn btn-sm btn-primary"]
+${a_create_phrase}    //*[@id="frm_delete"]/table/tbody/tr/td/a
+${btn_save_phrase}    //*[@id="edit-basic"]/div[2]/button[1]
+${word_analysis_result}    //*[@id="table-sort"]
+${input_wordsphrase}    //*[@id="keyword"]
+${btn_save}    //*[@id="edit-basic"]/div[2]/button[1]
+${noti_save_sucess}    //*[@id="notify-top"]
+${btn_phrase_reset}    //*[@id="edit-basic"]/div[2]/button[2]
+${icon_edit}    //*[@id="frm_delete"]/table/tbody[1]/tr/td[3]/div/a[1]
+${icon_delete}    //*[@id="frm_delete"]/table/tbody[1]/tr/td[3]/div/a[2]
+${btn_delete}    //*[@id="btn_delete"]
+${btn_edit}    //*[@class="btn btn-info"]
+${input_keywords_edit}    //*[@name="keyword[]"]
+${btn_import}    //*[@id="frm_search"]/a[3]
+${Browse_ImportFile}    //*[@id="import_file"]
+${btn_save_import}    //*[@id="edit-basic"]/div[2]/button[1]
+
+
+
+${request_name}    //table[1]//thead//tr[1]//th[2]
+${transfer_bank_name}    //table[1]//thead//tr[1]//th[3]
+${bank_account}    //table[1]//thead//tr[1]//th[4]
+${last_update_doc_date}    //table[1]//thead//tr[1]//th[5]
+${order_ID}    //table[1]//thead//tr[1]//th[6]
+${account_name}    //table[1]//thead//tr[1]//th[7]
+${payment_channel}   //table[1]//thead//tr[1]//th[8]
+${shipping_name}    //table[1]//thead//tr[1]//th[9]
+${amount_order}    //table[1]//thead//tr[1]//th[10]
+${amount_refund}    //table[1]//thead//tr[1]//th[11]
+${payment_from_text_file}    //table[1]//thead//tr[1]//th[12]
+${payment_from_system}    //table[1]//thead//tr[1]//th[13]
+${merchant_ID}    //table[1]//thead//tr[1]//th[14]
+${order_status}    //table[1]//thead//tr[1]//th[15]
+${request_refund_date}    //table[1]//thead//tr[1]//th[16]
+${accept_refund_date}    //table[1]//thead//tr[1]//th[17]
+${reason_refund}    //table[1]//thead//tr[1]//th[18]
+${refund_ID}    //table[1]//thead//tr[1]//th[19]
+${store_ID}    //table[1]//thead//tr[1]//th[20]
+${admin _status}    //table[1]//thead//tr[1]//th[21]
+${reject_by}    //table[1]//thead//tr[1]//th[22]
+${detail}    //table[1]//thead//tr[1]//th[23]
+${auto_refund}    //table[1]//thead//tr[1]//th[24]

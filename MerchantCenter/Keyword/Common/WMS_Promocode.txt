@@ -1,0 +1,417 @@
+﻿*** Settings ***
+Resource        ../../Resource/WeMall/WebElement/WMWMSPromoCode.txt
+
+*** Keyword ***
+Hide Promocode
+    [Documentation]    Hide Promocode
+    [Arguments]    ${id}    ${text}    ${status}
+    Go to    ${URL_WMS}/promotioncode/edit/${id}
+    Run Keyword If    '${status}' == 'ซ่อน'    Click Element    //p[2]//label[@class="inline"]//span[@class="lbl middle"]
+    # Click Element    //p[2]//label[@class="inline"]//span[@class="lbl middle"]
+    Sleep    3
+    Run Keyword If    '${status}' == 'ซ่อน'    Input Text    //p[@ng-show="display_coupon_hide_text"]//textarea    ${text}
+    Run Keyword If    '${status}' == 'แสดง'    Click Element    //p[1]//label[@class="inline"]//span[@class="lbl middle"]
+    Click Element    //button[@id="btn_submit"]
+    Sleep    2
+
+Hide Promocode No Text
+    [Documentation]    Hide Promocode No Text
+    [Arguments]    ${id}    ${status}
+    Go to    ${URL_WMS}/promotioncode/edit/${id}
+    Run Keyword If    '${status}' == 'ซ่อน'    Click Element    //p[2]//label[@class="inline"]//span[@class="lbl middle"]
+    Run Keyword If    '${status}' == 'แสดง'    Click Element    //p[1]//label[@class="inline"]//span[@class="lbl middle"]
+    Click Element    //button[@id="btn_submit"]
+    Sleep    2
+
+Expired Promocode
+    [Documentation]    Expired Promocode
+    [Arguments]    ${id}
+    Go to    ${URL_WMS}/promotioncode
+    Element Should Be Visible    //*[@class="green btnedit"]
+
+Go to promotion code on wms page
+    [Documentation]    Use for go to promotion code on wms page
+    Go to    ${URL_WMS}/promotioncode
+
+Click add promotioncode button
+    [Documentation]    Use for click add promotioncode
+    Click Button    ${btn_add_promotioncode}
+
+Select create promotion code for product
+    [Documentation]    Use for create promotion code for promotion code or mc code
+    [Arguments]    ${value}
+    Execute Javascript    $("input[name='mc_code']").eq(${value}).click()
+
+Select type promotion code
+    [Documentation]    Use for select type promotion code
+    [Arguments]    ${type}
+    Execute Javascript    $("input[value='${type}']").click()
+
+Select amount be usable coupon
+    [Documentation]    Use for select amount be usable coupon
+    [Arguments]    ${amount}
+    Execute Javascript    $("input[value='${amount}']").click()
+
+Select commission fee for promotioncode
+    [Documentation]    Use for select commission fee for promotioncode
+    [Arguments]    ${value}
+    Execute Javascript    $("input[name='has_fee']").eq(${value}).click()
+
+Input promotioncode name
+    [Documentation]    Use for input promotion code name
+    [Arguments]    ${promotioncode_name}
+    Input Text    ${txt_promotioncode_name}    ${promotioncode_name}
+
+Input promotioncode
+    [Documentation]    Use for input promotion code
+    [Arguments]    ${promotioncode}
+    Input Text    ${txt_promotioncode}    ${promotioncode}
+
+Get secs for create promotion code
+    ${secs}    Get Time    epoch
+    Return From Keyword    ${secs}
+
+Input prefix promotioncode
+    [Documentation]    Use for input prefix promotioncode
+    [Arguments]    ${prefix_promotioncode}
+    Input Text    ${txt_prefix}    ${prefix_promotioncode}
+
+Input amount unique code
+    [Documentation]    Use for input amount unique code
+    [Arguments]    ${amount_unique_code}
+    Execute Javascript    $("input[id='total_unique_code']").val(${amount_unique_code})
+
+Select amount per person be usable coupon
+    [Documentation]    Use for select amount per person be usable coupon
+    [Arguments]    ${value}
+    Execute Javascript    $("input[name='user_limit']").eq(${value}).click()
+
+Select period time for promotioncode
+    [Documentation]    Use for select period time for promotioncode
+    Execute Javascript    $('#form-field-date').val("2017-03-02 00:00:00 - 2017-12-31 23:59:00")
+
+Select display or non display promotion code on product detail page
+    [Documentation]    Use for select display or non display promotion code on product detail page
+    [Arguments]    ${value}
+    Execute Javascript    $("input[name='display_coupon']").eq(${value}).click()
+
+Select discount type for promotion code on product detail page
+    [Documentation]    Use for select discount type for promotion code on product detail page
+    [Arguments]    ${discount_type}    ${discount_amount}    ${discount_max}    ${minimum_price}
+    Execute Javascript    $("input[value='${discount_type}']").click()
+    Input discount    ${discount_amount}
+    Input discount max    ${discount_max}
+    Input minimum price    ${minimum_price}
+
+Input discount
+    [Documentation]    Use for input discount for promotion code
+    [Arguments]    ${discount}
+    Input Text    ${txt_discount}    ${discount}
+
+Input discount max
+    [Documentation]    Use for input discount max for promotion code
+    [Arguments]    ${discount_max}
+    Input Text    ${txt_discount_max}    ${discount_max}
+
+Input minimum price
+    [Documentation]    Use for input minimum price for promotion code
+    [Arguments]    ${minimum_price}
+    Input Text    ${txt_minimum_price}    ${minimum_price}
+
+Select promotioncode condition
+    [Documentation]    Use for select promotioncode condition
+    [Arguments]    ${condition}
+    Execute Javascript    $("input[value='${condition}']").click()
+
+Add product to promotioncode
+    [Documentation]    Add product to promotion code
+    [Arguments]    ${add_product_modal}    ${product_id}    ${product_list_table}
+    Click add/edit product button
+    Check Element Visible    ${add_product_modal}    ${expect_load_time}
+    Search product by productid    ${product_id}
+    Click search product button
+    Check Element Visible    ${product_list_table}    ${expect_load_time}
+    Click checkbox select all for choose product
+    Click add product button
+    Click save promotioncode button
+
+Click add/edit product button
+    [Documentation]    Use for click add/edit product button
+    Execute Javascript    $('button:contains(Add/Edit Product)').click()
+
+Search product by productid
+    [Documentation]    Use for search product by productid
+    [Arguments]    ${productid}
+    Input Text    ${txt_search_productid}    ${productid}
+
+Click search product button
+    [Documentation]    Use for click search product button
+    Execute Javascript    $('button:contains(ค้นหาสินค้า)').click()
+
+Click check box for choose product
+    [Documentation]    Use for click checkbox for select product into campaign
+    Execute Javascript    $("input[class='pd-checkbox']").click()
+
+Click checkbox select all for choose product
+    [Documentation]    Use for click checkbox select all for choose product
+    Execute Javascript    $("input[id='pd-all']").click()
+
+Click add product button
+    [Documentation]    Use for click add product button
+    Execute Javascript    $('button:contains(เพิ่มสินค้า)').click()
+
+Click add category button
+    [Documentation]    Use for click add category button
+    Execute Javascript    $('button:contains(Add Category)').click()
+
+Select bank issuer
+    [Documentation]    Use for select bank issuer
+    [Arguments]    ${bank_issuer}
+    Execute Javascript    $("input[id='${bank_issuer}']").click()
+
+Click save promotioncode button
+    [Documentation]    Use for save promotioncode button
+    Click Element    ${btn_save_promotioncode}
+
+Click select box on promotioncode list page
+    [Documentation]    Use for select box on promotioncode list page
+    [Arguments]    ${index}
+    Execute Javascript    $("input[type='checkbox']").eq(${index}).click()
+
+Click open promotioncode button
+    [Documentation]    Use for click open promotioncode button
+    Click Element    ${btn_open_promotioncode}
+
+Click close promotioncode button
+    [Documentation]    Use for click close promotioncode button
+    Click Element    ${btn_close_promotioncode}
+
+Click yes button on confirm modal
+    [Documentation]    Use for click yes button on confirm modal
+    Click Element    ${btn_yes}
+
+Click no button on confirm modal
+    [Documentation]    Use for click yes button on confirm modal
+    Click Element    ${btn_no}
+
+Check result on promotioncode list page after add promotioncode success
+    [Documentation]    Use for check result on promotioncode list after add promotioncode success
+    [Arguments]    ${result}
+    Check Element Visible    ${txt_result_promotion_name}    ${expect_load_time}
+    Check Text    ${txt_result_promotion_name}    ${result}
+
+Click remove link on product list
+    [Documentation]    Use for click remove link on product list
+    Execute Javascript    $('a:contains(Remove)').click()
+
+Count row product list after select product
+    [Documentation]    Use for count row product list after select product
+    ${row}    Get Matching Xpath Count    ${row_product_list}
+    Return From Keyword    ${row}
+
+Click add/edit category button
+    [Documentation]    Use for click add/edit category button
+    Execute Javascript    $('button:contains(Add/Edit Category)').click()
+
+Expand all category
+    [Documentation]    Use for click expand all category
+    Execute Javascript    $("li[class='tree-item root_category'] > i").click()
+
+Click check box for choose category
+    [Documentation]    Use for click checkbox for select category into campaign
+    [Arguments]    ${category}
+    Click Element    //li//span[contains(.,'${category}')]
+
+Select One Product exclusion
+    Wait Until Element Is Visible    //*[@id="product-table"]/thead/tr    ${EXPECT_LOADTIME}
+    Click Element    //*[@id="product-table"]/tbody/tr[1]/td[5]/label/input
+    Execute Javascript    $("button[id='addproduct']").click()
+
+Click add exclusion for category
+    [Arguments]    ${categoryname}
+    Click Element    //*[@id="body_category"]/tr/td/a[@data-cat="${categoryname}"]
+
+Search promotion code
+    [Documentation]    Search promotion or MC code on promotion code list page
+    [Arguments]    ${promotion_code}
+    Input Text    ${search_txt_field}    ${promotion_code}
+    Click Button    ${btn_search_code}
+
+View detail this promotion code on view page
+    [Documentation]    View promotion code after searching unique code by clicking eye icon
+    Click button    ${btn_view_promotion_code}
+    Wait Until Page Contains    รายละเอียด
+
+The history log table should be displayed
+    [Documentation]    Verify that the ประวัติการแก้ไข table is displayed on page
+    Check Text    ${tbl_history_table_title}    ประวัติการแก้ไข
+
+The history log table should display column headers
+    [Documentation]    Check 3 column headers of ประวัติการแก้ไข table
+    [Arguments]    ${date_time}    ${description}    ${editor}
+    Check Text    ${tbl_date_time_column_header}    ${date_time}
+    Check Text    ${tbl_description_column_header}    ${description}
+    Check Text    ${tbl_editor_column_header}    ${editor}
+
+The history records are sorted by time in descending order correctly
+    [Documentation]    Check that history logs should be stored and sorted by time in descending order.
+    ${Count} =    Get matching xpath count    //table[@id='tbl_log']/tbody/tr
+    : FOR    ${i}    IN RANGE    2    ${Count}
+    \    ${txt_now} =    Get Text    //*[@id="tbl_log"]/tbody/tr[${i}]/td[1]
+    \    ${date_now} =    Convert Date    ${txt_now}    result_format=timestamp
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${txt_next} =    Get Text    //*[@id="tbl_log"]/tbody/tr[${i_next}]/td[1]
+    \    ${date_next} =    Convert Date    ${txt_next}    result_format=timestamp
+    \    Should Be True    '${date_now}' >= '${date_next}'
+
+Go to edit page for this promotion code
+    [Documentation]    Go to edit page after searching unique promotion code by clicking pencil icon
+    Click Button    ${btn_edit_promotion_code}
+    Wait Until Page Contains    แก้ไข
+
+The Promotion Code Type option could not be changed
+    [Documentation]    Check that "ประเภท Promotion Code" option on edit page can't be changed
+    ${unselected_radio_bth}=    Run Keyword And Return Status    Element Should Be Disabled    ${opt_single_coupon_type}
+    Run Keyword If    '${unselected_radio_bth}'=='True'    Element Should Be Enabled    ${opt_multiple_coupon_type}
+    ...    ELSE    Element Should Be Enabled    ${opt_single_coupon_type}
+
+Edit the number of coupon limit value and update successfully
+    [Documentation]    Edit the number of จำกัด on จำนวนครั้งที่สามารถใช้ได้ option and check that updated successfully
+    [Arguments]    ${promotion_code}
+    ${old_limit}=    Get Value    ${txt_coupon_limit_value}
+    ${new_limit}    Add Operation    ${old_limit}    1
+    Clear Element Text    ${txt_coupon_limit_value}
+    Input Text    ${txt_coupon_limit_value}    ${new_limit}
+    Click Button    ${btn_save_promotioncode}
+    Element Should Contain    ${alert_message}    แก้ไขข้อมูลสำเร็จ
+    Click Link    ${lnk_breadcrumb_promotion_code}
+    Search promotion code    ${promotion_code}
+    View detail this promotion code on view page
+    ${get_coupon_limit}    Get Value    ${txt_coupon_limit_value}
+    Should Be Equal As Integers    ${get_coupon_limit}    ${new_limit}
+
+Edit the number of coupon limit per customer and update successfully
+    [Documentation]    Edit the number of จำกัด on ลูกค้า 1 คน สามารถใช้ได้กี่ครั้ง option and check that updated successfully
+    [Arguments]    ${promotion_code}
+    ${old_user_limit}=    Get Value    ${txt_user_limit}
+    ${new_user_limit}    Add Operation    ${old_user_limit}    1
+    Clear Element Text    ${txt_user_limit}
+    Input Text    ${txt_user_limit}    ${new_user_limit}
+    Click Button    ${btn_save_promotioncode}
+    Element Should Contain    ${alert_message}    แก้ไขข้อมูลสำเร็จ
+    Click Link    ${lnk_breadcrumb_promotion_code}
+    Search promotion code    ${promotion_code}
+    View detail this promotion code on view page
+    ${get_user_limit}    Get Value    ${txt_user_limit}
+    Should Be Equal As Integers    ${get_user_limit}    ${new_user_limit}
+
+Go to edit page from view page successfully
+    [Documentation]    Go to edit page successfully
+    Click Button    ${btn_edit}
+    Wait Until Page Contains    แก้ไข
+
+The campaign fee option could not be changed
+    [Documentation]    Check that "ค่าธรรมเนียมเข้าร่วมแคมเปญ" option on edit page can't be changed
+    Element Should Be Disabled    ${opt_has_fee}
+    Element Should Be Disabled    ${opt_non_fee}
+
+
+Edit the promotion code to be
+    [Documentation]    Edit the promotion code on Promotion Code option
+    [Arguments]    ${promotion_code}
+    Clear Element Text    ${txt_promotioncode}
+    Input Text    ${txt_promotioncode}    ${promotion_code}
+    Click Button    ${btn_save_promotioncode}
+
+Edit the promotion name to be
+    [Documentation]    Edit the promotion code on Promotion Code option
+    [Arguments]    ${promotion_name}
+    Clear Element Text    ${txt_promotioncode_name}
+    Input Text    ${txt_promotioncode_name}    ${promotion_name}
+    Click Button    ${btn_save_promotioncode}
+    Return From Keyword    ${promotion_name}
+
+Edit the promotion name and update successfully
+    [Documentation]    Edit the promotion name on ชื่อเรียก Promotion and check that save successfully
+    [Arguments]    ${promotion_code}
+    ${old_promotion_name}=    Get Value    ${txt_promotioncode_name}
+    Clear Element Text    ${txt_promotioncode_name}
+    ${new_promotion_name} =    Run Keyword If    '${old_promotion_name}'=='ROBOTTEST'    Edit the promotion name to be    ROBOT2TEST    ELSE    Edit the promotion name to be    ROBOTTEST
+    Click Link    ${lnk_breadcrumb_promotion_code}
+    Search promotion code    ${promotion_code}
+    View detail this promotion code on view page
+    ${get_promotion_name}    Get Value    ${txt_promotioncode_name}
+    Should Be Equal As Strings    ${get_promotion_name}    ${new_promotion_name}
+
+The error message should be displayed
+    [Documentation]    Check that the error message displays correctly
+    [Arguments]    ${error}
+    Element Should Contain    ${alert_message}    ${error}
+
+Edit the promotion period and update successfully
+    [Documentation]    Change period of the promotion code and check that save successfully
+    [Arguments]    ${promotion_code}    ${start_date}    ${end_date}
+    Execute javascript    $("input[name='date_range']").val("${start_date} 00:00:00 - ${end_date} 23:59:00");
+    Click Button    ${btn_save_promotioncode}
+    Element Should Contain    ${alert_message}    แก้ไขข้อมูลสำเร็จ
+    Click Link    ${lnk_breadcrumb_promotion_code}
+    Search promotion code    ${promotion_code}
+    View detail this promotion code on view page
+    ${get_period}    Get Value    ${cal_period}
+    Should Be Equal    ${get_period}    ${start_date} 00:00:00 - ${end_date} 23:59:00
+
+Add new promotion code type
+    [Documentation]    Add promotion and input promotion name
+    [Arguments]    ${promotion_type}
+    Check Element Visible    ${btn_add_promotioncode}    ${expect_load_time}
+    Click add promotioncode button
+    Select type promotion code    ${promotion_type}
+    ${secs}    Get secs for create promotion code
+    Input promotioncode name    RobotTest${secs}
+
+Identify prefix promotioncode and amount unique code
+    [Documentation]    Input prefix and unique code and select period time
+    [Arguments]    ${prefix_code}    ${unique_code}
+    Input prefix promotioncode    ${prefix_code}
+    Input amount unique code    ${unique_code}
+    Select period time for promotioncode
+
+Check columns and button on promotion list page
+    [Documentation]    Check column name and button on promotion list page
+    Check Text    ${txt_id_column}    ID
+    Check Text    ${txt_promotionname_column}    Promotion Name
+    Check Text    ${txt_condition_column}    Condition
+    Check Text    ${txt_discount_column}    Discount
+    Check Text    ${txt_period_column}    Period
+    Check Text    ${txt_status_column}    Status
+    Check Text    ${txt_viewdetail_column}    View Detail
+    Check Element Is Visible    ${btn_add_promotioncode}
+    Check Element Is Visible    ${btn_open_promotioncode}
+    Check Element Is Visible    ${btn_close_promotioncode}
+
+Set status to the first promotion code
+    [Documentation]    Change status the first promotion code on promotion list page
+    [Arguments]    ${status}
+    Click select box on promotioncode list page    1
+    Run Keyword If    '${status}'=='active' or '${status}'=='open'   Click open promotioncode button
+    ...  ELSE    Click close promotioncode button
+    Check Element Is Visible    ${confirm_usable_modal}
+    Click yes button on confirm modal
+
+Select Radio Button By Product
+    Click Element    ${rdo_select_by_product}
+    Click Element    ${btn_add_edit_product_byproduct}
+
+Search Product ID
+    [Arguments]    ${productid}
+    Wait Until Element Is Visible    ${fre_add_product_byproduct}
+    Input Text    ${lbl_product_id}    ${productid}
+    Click Element    ${btn_search_product}
+
+Verify Search Product ID
+    [Arguments]    ${productbefore}
+    Wait Until Element Is Visible    ${tbl_list_productlist}
+    ${productidafter}    Get Text    ${tbc_productid}
+    Should Be Equal    ${productbefore}    ${productidafter}
+
+

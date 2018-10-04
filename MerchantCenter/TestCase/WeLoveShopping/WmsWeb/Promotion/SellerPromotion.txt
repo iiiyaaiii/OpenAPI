@@ -1,0 +1,138 @@
+*** Settings ***
+Suite Setup     Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Login    AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        WMS-Web    mock    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_SellerPromotion.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_01472
+    [Documentation]    Search by Store ID
+    [Tags]    Medium
+    Go to    ${URL_WMS}/sellerpromotions
+    Input Text    //input[@name="store_id"]    L926248
+    Click Element    ${search}
+    ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    //table[@id='sample-table-2']/tbody//tr[1]//td[1]    L926248
+
+TC_MC_01474
+    [Documentation]    Search by Store Name
+    [Tags]    Medium
+    Go to    ${URL_WMS}/sellerpromotions
+    Input Text    //input[@name="store_title"]    robot_store1
+    Click Element    ${search}
+    ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    //table[@id='sample-table-2']/tbody//tr[1]//td[2]    robot_store1
+
+TC_MC_01476
+    [Documentation]    Search by Promotion Type = "ลดแบบ %"
+    [Tags]    Medium
+    Go to    ${URL_WMS}/sellerpromotions
+    Click Element    //select[@id="discount_type"]
+    Select From List By Label    //select[@id="discount_type"]    ลดแบบ %
+    Click Element    ${search}
+        ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    ${column_type}    ลดแบบ %
+
+TC_MC_01478
+    [Documentation]    Search by Promotion Type = "ลดแบบ บาท"
+    [Tags]    Medium
+    Go to    ${URL_WMS}/sellerpromotions
+    Click Element    //select[@id="discount_type"]
+    Select From List By Label    //select[@id="discount_type"]    ลดแบบ บาท
+    Click Element    ${search}
+        ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    ${column_type}    ลดแบบ บาท
+
+TC_MC_01484
+    [Documentation]    Search by Promotion Status = "Show"
+    [Tags]    Medium
+    Go to    ${URL_WMS}/sellerpromotions
+    Click Element    //select[@id="discount_type"]
+    Select From List By Label    //select[@id="status"]    แสดง
+    Click Element    ${search}
+        ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    ${column_status}    แสดง
+
+TC_MC_01486
+    [Documentation]    Search by Promotion Status = "Hide"
+    [Tags]    Medium
+    Go to    ${URL_WMS}/sellerpromotions
+    Click Element    //select[@id="discount_type"]
+    Select From List By Label    //select[@id="status"]    ซ่อน
+    Click Element    ${search}
+        ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    ${column_status}    ซ่อน
+
+TC_MC_01488
+    [Documentation]    Search by Store ID and Type = "ลดแบบ %"
+    [Tags]    Medium
+    Go to    ${URL_WMS}/sellerpromotions
+    Input Text    //input[@name="store_id"]    L926248
+    Click Element    //select[@id="discount_type"]
+    Select From List By Label    //select[@id="discount_type"]    ลดแบบ %
+    Click Element    ${search}
+    ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    //table[@id='sample-table-2']/tbody//tr[1]//td[1]    L926248
+    Element Should Contain    ${column_type}    ลดแบบ %
+
+TC_MC_01490
+    [Documentation]    Search by Promotion Type = "ลดแบบ บาท" and Status "Show"
+    [Tags]    Medium
+    Go to    ${URL_WMS}/sellerpromotions
+    Click Element    //select[@id="discount_type"]
+    Select From List By Label    //select[@id="discount_type"]    ลดแบบ บาท
+    Click Element    //select[@id="discount_type"]
+    Select From List By Label    //select[@id="status"]    แสดง
+    Click Element    ${search}
+    ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    ${column_type}    ลดแบบ บาท
+    Element Should Contain    ${column_status}    แสดง
+
+TC_MC_01494
+    [Documentation]    Search by Store name and Status = "Hide"
+    [Tags]    Medium
+    Go to    ${URL_WMS}/sellerpromotions
+    Input Text    //input[@name="store_title"]    robot_store2
+    Select From List By Label    //select[@id="status"]    ซ่อน
+    Click Element    ${search}
+    ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    //table[@id='sample-table-2']/tbody//tr[1]//td[2]    robot_store2
+    Element Should Contain    ${column_status}    ซ่อน
+
+TC_MC_01496
+    [Documentation]    Verify If search not found
+    [Tags]    Medium
+    Go to    ${URL_WMS}/sellerpromotions
+    Input Text    //input[@name="store_title"]    robot_store1
+    Select From List By Label    //select[@id="status"]    ซ่อน
+    Click Element    ${search}
+    ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    //table[@id='sample-table-2']/tbody//tr[1]//td[@class="center text-danger txt_no_data"]    ไม่พบข้อมูล
+

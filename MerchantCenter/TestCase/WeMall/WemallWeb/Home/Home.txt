@@ -1,0 +1,171 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Test Teardown     Run Keywords    Capture Page Screenshot    AND    Close Browser
+Force Tags        Wemall-Web
+Resource          ../../../../Resource/WeMall/Configuration/Staging/serverconfig.txt
+Resource          ../../../../Resource/WeMall/Configuration/Staging/robotdata.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Home.txt
+
+*** Keywords ***
+Access to Wemall with valid credential
+    [Arguments]    ${username}    ${password}
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+    Home.Click เข้าสู่ระบบ button
+    Home.Enter Username    ${username}
+    Home.Enter Password    ${password}
+    Home.Click Login button
+    Home.User is logged-in to system
+
+Open WeMall Portal page
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+
+Validate Valid Search Keywords
+    [Arguments]    ${keyword}
+    Home.Enter Search Keyword    ${keyword}
+    Home.Click Search button
+    Home.Selected product should be appeared    ${keyword}
+    [Teardown]    Capture Page Screenshot
+
+Validate Invalid Search Keywords
+    [Arguments]    ${keyword}
+    Home.Enter Search Keyword    ${keyword}
+    Home.Click Search button
+    Home.Search Result should not be found    ${keyword}
+    [Teardown]    Capture Page Screenshot
+
+*** Test Cases ***
+TC_MC_05120
+    [Documentation]    [Portal] Widget: Verify Widget items - Navigation link for WeMall Logo
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+    Home.Click WeMall Logo
+    Home.Wemall Portal page should be appeared
+
+TC_MC_05121
+    [Documentation]    [Portal] Widget: Verify Widget items - Navigation link for สมัครสมาชิก
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+    Home.Click เข้าสู่ระบบ button
+    Home.Click สมัครสมาชิก button
+    Home.สมัครสมาชิก page should be appeared
+
+TC_MC_05122
+    [Documentation]	[Portal] Widget: Verify Widget items - Navigation link for เข้าสู่ระบบ
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+    Home.Click เข้าสู่ระบบ button
+    Home.เข้าสู่ระบบ page should be appeared
+
+TC_MC_05123
+    [Documentation]    [Portal] Widget: Verify Widget items - Navigation link for ตะกร้าสินค้า
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+    Home.Click ตะกร้าสินค้า icon
+    Home.ตะกร้าสินค้า page should be appeared
+
+TC_MC_05124
+    [Documentation]    [Portal] Widget: Verify Widget items - Navigation link for บัญชีของฉัน
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    [Setup]    Access to Wemall with valid credential    ${seller_user_001}    ${seller_pwd_001}
+    Home.Mouse over บัญชีของฉัน icon
+    Home.Select รายการสั่งซื้อ option
+    Home.รายการสั่งซื้อ page should be appeared
+    Home.Mouse over บัญชีของฉัน icon
+    Home.Select ข้อมูลส่วนตัว option
+    Home.ข้อมูลส่วนตัว page should be appeared
+
+TC_MC_05125
+    [Documentation]    [Portal] Widget: Verify Widget items - Navigation link for บัญชีของฉัน - ออกจากระบบ - Portal page
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    [Setup]	Access to Wemall with valid credential    ${seller_user_001}    ${seller_pwd_001}
+    Home.Mouse over บัญชีของฉัน icon
+    Home.Select ออกจากระบบ option
+    Home.Open Wemall Portal page
+    Home.User is logged-out from Portal page
+
+TC_MC_05126
+    [Documentation]	[Portal] Widget: Verify Widget items - Navigation link for บัญชีของฉัน - ออกจากระบบ - Account page
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    [Setup]    Access to Wemall with valid credential    ${seller_user_001}    ${seller_pwd_001}
+    Home.Mouse over บัญชีของฉัน icon
+    Home.Select ข้อมูลส่วนตัว option
+    Home.ข้อมูลส่วนตัว page should be appeared
+    Home.Mouse over บัญชีของฉัน icon
+    Home.Select ออกจากระบบ option
+    Home.User is logged-out from Account page
+
+TC_MC_05127
+    [Documentation]    [Portal] Widget: Verify Widget items - Navigation link for ร้านค้าของฉัน
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    [Setup]    Access to Wemall with valid credential    ${seller_user_001}    ${seller_pwd_001}
+    Home.Click ร้านค้าของฉัน icon
+    Home.Manage Store page should be appeared    ${seller_name001}
+
+TC_MC_05129
+    [Documentation]    [Portal] Widget: Verify Product Search Box - Valid Keyword
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    [Setup]    Open WeMall Portal page
+    [Template]    Validate Valid Search Keywords
+    สินค้า flashsale
+    robot_stg_store
+    1511946203
+
+TC_MC_05130
+    [Documentation]    [Portal] Widget: Verify Product Search Box - Invalid Keyword
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    [Setup]    Open WeMall Portal page
+    [Template]    Validate Invalid Search Keywords
+    หาไม่เจอ
+    invalid result
+    098765
+    !@#$%
+
+TC_MC_05139
+    [Documentation]    [Portal] Main Sidemenu: Product Level C page - Main Category
+    [Tags]    Ligo    Sprint2017MC13
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+    Home.Select Product Category    โปรโมชั่น & สิทธิพิเศษ
+    Home.Selected product should be appeared    สินค้าแนะนำ
+
+TC_MC_05140
+    [Documentation]    [Portal] Main Sidemenu: Product Level C page - Sub-Category Title
+    [Tags]    Ligo    Sprint2017MC13
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+    Home.Mouse Over Product Category    โปรโมชั่น & สิทธิพิเศษ
+    Home.Select Product Sub-Category    โปรโมชั่น
+    Home.Selected product should be appeared    สินค้าแนะนำ
+
+TC_MC_05141
+    [Documentation]    [Portal] Main Sidemenu: Product Level C page - Sub-Category
+    [Tags]    Smoke    Ligo    Sprint2017MC13
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+    Home.Mouse Over Product Category    โปรโมชั่น & สิทธิพิเศษ
+    Home.Select Product Sub-Category    Buy 1 get 1 free
+    Home.Selected product should be appeared    สินค้าแนะนำ
+
+TC_MC_11898
+    [Documentation]    [Portal] Verify information of Contact us menu on Wemall website
+    [Tags]    Regression
+    Home.Open Wemall Portal page
+    Home.Go To Wemall Contact Us Page
+    Home.Check The Wemall Information Correctly
+
+TC_MC_11902
+    [Documentation]    [Desktop] Verify Chat Live section on Wemall Homepage 
+    [Tags]    Regression
+    Home.Open Wemall Portal page
+    Home.Check WeMall Live Chat
+    Home.Verify Wemall Live Chat Popup
+

@@ -1,0 +1,60 @@
+*** Variables ***
+#Data#
+${user_buyer_bulktracking}    qatest001@mailinator.com
+${password_buyer_bulktracking}    qatest
+${slug_name_shop_no_data}    wlsautomate27
+${user_nodata}    wlsautomate27@mailinator.com
+${password_nodata}    12345678
+${user_store_order}    trustorder@lackmail.ru
+${password_store_order}    P@ssw0rd
+${slug_order_store}    trustorder
+${user_bulktracking}    kusuma.chom@gmail.com
+${pass_bulktracking}    Escrow@1234
+${bulktracking_shop_name}    AmyShop
+${robot_inpage_product_product}    robot_inpage_product [เทสระบบห้ามลบ]
+
+#Text#
+${error_text}    ขออภัยค่ะ ไม่สามารถเข้าใช้งาน url นี้ได้
+${text_ship_order}    แจ้งจัดส่งทั้งออเดอร์ (จำนวนออเดอร์ : 0 รายการ)
+${text_ship_item}    แจ้งจัดส่งแบบรายชิ้น (จำนวนสินค้า : 0 รายการ)
+${txt_status_bulktracking_success}    //li[@class="status-success"]
+
+#Locator#
+${text_login_user}    //*[@id="login_user"]/div[1]
+${text_login_password}    //*[@id="login_user"]/div[2]
+${locator_error_text}    //*[@id="error_text"]
+${muti_ship_button}    //a[@id="btn-bulk"]
+${download_button_on_bulktracking}    //*[@class="btn btn-download"]
+${radio_type_bulktracking}    ship_type
+${input_file_tracking}    //input[@id="file-tracking"]
+${tracking_button}    //*[@class="btn btn-tacking"]
+${comfirm_button}    //*[@class="btn btn-primary"]
+${locator_text_already}    //*[@id="headloading"]/h2
+${locator_alert_text_ship}    //*[@id="headloading"]/p
+${locator_text_total}    //*[@class="status-total"]
+${locator_text_success}    //*[@class="status-success"]
+${locator_text_fail}    //*[@class="status-fail"]
+${here_link}    //*[@id="headloading"]/p/a
+${locator_error_message}    //*[@class="notic-error"]
+${error_download_modal}    //div[@id="shipError"]//div//div[@class="modal-content"]
+${error_text_header}    //div[@id="shipError"]//div//div[@class="modal-content"]
+${error_text_body}    //div[@id="shipError"]//div//div[@class="modal-content"]//div[@class="modal-body"]//div[@class="caution-body"]
+${text_after_click_download}    //*[@id="waitshipping"]
+${view_detail_link}    //*[@id="wrapper"]/div/div[2]/div[2]/p/a
+${how_to_use_file_modal}    //*[@id="how-to"]
+${how_to_use_file_header}    //*[@id="how-to"]//div[@class="modal-header"]
+${caution_title}    //*[@id="how-to"]/div/div/div[2]/p
+${caution_content_first}    //*[@id="how-to"]/div/div/div[2]/ol/li[1]
+${caution_content_second}    //*[@id="how-to"]/div/div/div[2]/ol/li[2]
+${logo}    //*[@id="header"]/div/div/a/img
+${input_import_tracking_file}    //*[@id="import-file-tracking"]
+${bulktracking_title}    //div[@id="wrapper"]//h2
+${step_first_title}    //div[@class="step"][1]//p[@class="title-info"]
+${suggest_download_file}    //*[@id="wrapper"]/div/div[1]/div[2]
+${step_second_title}    //div[@class="step"][2]//p[@class="title-info"]
+${suggest_open_file}    //*[@id="wrapper"]/div/div[2]/div[2]
+${step_third_title}    //div[@class="step"][3]//p[@class="title-info"]
+${suggest_upload_file}    //*[@id="wrapper"]/div/div[3]/div[2]
+${txt_date_after_download}    //p[@class="order-update-datetime"]
+
+

@@ -1,0 +1,46 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Test Setup        Go to    ${URL_PORTAL}
+Force Tags        Checkout-Web    Ligo    Sprint2017MC9
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Cart.txt
+Resource          ../../../../Resource/WeMall/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+
+*** Test Cases ***
+TC_MC_04022
+    [Documentation]    [Wemall] Checkout with already logon
+    [Tags]    Regression    High    mock
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Go to Login    ${buyer_checkout}    ${buyer_checkout_pass}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    Click Element       ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Checkout Button
+    Wait Until Page Does Not Contain Element    login_user
+    Element Should Not Be Visible    login_user
+
+TC_MC_04024
+    [Documentation]    [Wemall] Checkout without logon
+    [Tags]    Regression    High    mock
+    Clear Active Login
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    Click Element       ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Click Element    ${btn_checkout}
+    Wait Until Element Is Visible    login_user
+    Element Should Be Visible    login_user
+    Execute Javascript    ${login_username}.val('${buyer_checkout}')
+    Execute Javascript    ${login_password}.val('${buyer_checkout_pass}')
+    Click Element    ${btn_login}
+    Wait Until Page Does Not Contain Element    login_user
+    Element Should Not Be Visible    login_user
+    Location Should Be    ${URL_CHECKOUT}/store/step2

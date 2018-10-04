@@ -1,0 +1,93 @@
+*** Setting ***
+Suite Setup       Account Login    ${reg_user_001}    ${reg_pass_001}
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+Force Tags        Store-Web    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Backend_Sellerpromotion.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Case ***
+TC_MC_01660
+    [Documentation]    Verify Click "add promotion" button on "จัดการโปรโมชั่น" page.
+    [Tags]    Regression    Medium
+    Execute Javascript    $('[class="btn btn-success btn-addPromotion"]').click()
+    ${breadcrumb_1}    Execute Javascript    return $('.breadcrumb li a').eq(1).text().trim();
+    ${breadcrumb_2}    Execute Javascript    return $('.breadcrumb li a').eq(2).text().trim();
+    Should Be Equal    ${breadcrumb_1}    จัดการโปรโมชั่น
+    Should Be Equal    ${breadcrumb_2}    เพิ่มโปรโมชั่น
+
+TC_MC_01664
+    [Documentation]    To ensure display promotion listing . incase มี promotion ที่สิ้นสุดเวลาแล้ว
+    [Tags]    Medium
+    Account Login    ${reg_user_001}    ${reg_pass_001}    #User: Automate20
+    Get shop name
+    Go To    ${URL_STORE}/${shop_name}/admin/promotion
+    Wait Until Page Contains Element    ${promotion_list_box}
+    ${label_length}    Execute Javascript    return $("span.label").length;
+    Should Be True    ${label_length} > 0
+    Run Keyword If    ${label_length} > 0    Page Should Contain    หมดอายุ
+
+TC_MC_01668
+    [Documentation]    To ensure display promotion listing . incase that promotion no have product to join.
+    #${text}    Execute Javascript    return $(".promotion-alert").text().trim();
+    Wait Until Element Is Visible    ${alert_promotion}
+    ${text}    Get Text    ${alert_promotion}
+    Should Be Equal    ${text}    ไม่แสดงโปรโมชั่นหน้าร้านเนื่องจากไม่มีสินค้าในโปรโมชั่น
+
+TC_MC_01670
+    [Documentation]    Verify when click ปุ่ม เพื่อจัดการโปรโมชั่น icon.
+    ${text}    Execute Javascript    return $(".promotion-manage-menu:eq(0) a:eq(0)").text().trim()
+    Should Be Equal    ${text}    จัดการสินค้า
+    ${text}    Execute Javascript    return $(".promotion-manage-menu:eq(0) a:eq(1)").text().trim()
+    Should Be Equal    ${text}    เลือกสินค้าไฮไลท์
+
+TC_MC_01672
+    [Documentation]    Verify change status SHOW to HIDE.
+    [Tags]    High
+    ${count_promotion}    Execute Javascript    return $(".promotion-name-seller").length;
+    Sleep    1s
+    Execute Javascript    ${select_all}
+    Sleep    1s
+    Execute Javascript    ${icon_hide}
+    #Click OK Alert Box
+    Sleep    5s
+    Execute Javascript    ${comfim}
+    Sleep    10s
+    #Wait Until Element Is Not Visible    ${confirm_Hide&Show_popup}
+    Wait Until Element Is Visible    ${icon_gray_eye}
+    ${length}    Execute Javascript    return $(".icon-eye-hide-grey").length;
+    Should Be Equal As Integers    ${length}    ${count_promotion}
+
+TC_MC_01674
+    [Documentation]    Verify change status HIDE to SHOW.
+    [Tags]    High
+    ${count_promotion}    Execute Javascript    return $(".promotion-name-seller").length;
+    ${count_promotion} =    Evaluate    ${count_promotion}+1
+    Sleep    1s
+    Execute Javascript    ${select_all}
+    Sleep    1s
+    Execute Javascript    ${icon_show}
+    #Click OK Alert Box
+    Sleep    2s
+    Execute Javascript    ${comfim}
+    #Wait Until Element Is Not Visible    ${confirm_Hide&Show_popup}
+    Wait Until Element Is Visible    ${icon_green_eye}
+    ${length}    Execute Javascript    return $(".icon-eye-show-green").length;
+    Should Be Equal As Integers    ${length}    ${count_promotion}
+
+TC_MC_01678
+    [Documentation]    Verify delete seller promotion button
+    [Tags]    Low
+    Sleep    2
+    Execute Javascript    $('#checkedAll')[0].click()
+    ${count_data}=    Execute Javascript    return $('.checkbox-select').length
+    Run Keyword If    ${count_data} == 0    Pass Execution    No Data
+    Run Keyword If    ${count_data} > 0    Execute Javascript    $('button#btn_delete')[0].click()
+    Wait Until Element Is Visible    //div[@id='alertbefore-submit']/div[@class='modal-body']/div
+    Element Should Contain    //div[@id='alertbefore-submit']/div[@class='modal-body']/div    คุณยืนยันที่จะลบโปรโมชั่นนี้หรือไม่ ?
+

@@ -1,0 +1,61 @@
+*** Variables ***
+##File Bank##
+${NAME_20CHARS}    AUTOMATED TESTERFILE
+${scb_mid_day_header}    H0000010141063011711TRUE MONEY CO.,LTD.${SPACE * 21}HEADER_DATE
+${scb_mid_day_content}    DSEQNUM0141063011711TRANS_DATE123208NAME_20CHARS${SPACE * 40}REF18CHR${SPACE * 8}REF2_12_CHRS${SPACE * 22}PAY_METHODTR_AMOUNT${SPACE * 67}0000000000
+${scb_mid_day_tailing}    T000002014106301171100000000000000000000000002315100000008
+${scb_net_pay_method}    00682550CNET
+${scb_atm_pay_method}    34832000CATM
+${scb_csh_pay_method}    03372327CCSH
+${default_encoding}    ISO-8859-1
+### Data ####
+${user_store_order}    recontestreport@gmail.com
+${password_store_order}    Escrow@1234
+${slug_order_store}    recontestreport
+${robot_inpage_product_product}    Robotrecontestreport Seller Promotion
+${recon_orange_product}    Recon Orange
+${expect_load_time}    60
+${user_admin_manage_orderweb}    automate
+${pass_admin_manage_orderweb}    Tfs7o8JMRwcr
+${username_wms}    testadmin@gmail.com
+${password_wms}    escrow123
+${user_wlsapprove}    wlsapprove@recon.com
+${password_approve}    escrow123
+${user_tmnreview}    tmnreview@recon.com
+${user_tmnverify}    tmnverify@recon.com
+${user_tmnapprove}    tmnapprove@recon.com
+${user_closerefund}    closerefund@recon.com
+${ref1}    01104782
+
+### Locator ###
+${check_box_account_refund_page}    //input[@type="checkbox"]
+${element_reason_refund_error_message}    //span[@id="order_request_reasons_code-error"]
+${element_description_error_message}    //span[@id="request_description-error"]
+${element_upload_file_error_message}    //span[@id="error_evidence"]
+${view_refund_detail_button_on_order_detail_page}    //a[@class="btn-black  btn__send-file pull-right"]
+${element_accept_refund_text}    //div[@class="refund-status"]
+${cancel_refund_button_account_refund}    //a[@class="btn-black cancel_refund"]
+${text_status_on_refund_table}    //div[@class="history-body"]//div[@class="row"][1]//div[6]
+${element_total_price_account_detail}    //div[@class="col-xs-4 col-sm-6 col-md-5 text-right order__detail_summary"]//strong
+${create_reconcline_file}    //a[@id="add_new_group"]
+${element_select_bank_reconcline}    //select[@name="batch_code"]
+${element_input_file_reconcline}    //input[@id="file"]
+${element_save_button_on_reconclie}    //*[@class="btn btn-info text-loading"]
+${element_select_bank}    //select[@name="refund_bank_name"]
+${element_input_bank_no}    //input[@name="refund_bank_number"]
+${element_checkbox_confirm_document}    $("input[name='refund_accept']").click()
+${send_document_button}    //button[@class="btn-black"]
+${element_error_message_on_send_offline_document}    //div[@class="validate-placement"]
+${element_browse_refund_offline_file}    //input[@name="file_upload[1]"]
+${input_search_orderid_refund_success_page}    //input[@name="secure_key"]
+${btn_search_on_refund_success_page}    //input[@value="Search"]
+${input_username_wms}    //*[@id="login-box"]/div/div/form/fieldset/label[1]/span/input
+${input_password_wms}    //*[@id="login-box"]/div/div/form/fieldset/label[2]/span/input
+${logon_button_wms}    //*[@id="login-box"]/div/div/form/fieldset/div[3]/button
+${txt_waiting_check_refund_document}    //div[@class="product-refund-form"]//p[1]
+${txt_reject_account_name_account_refund_page}    //*[@id="content-container"]/div/div/div[2]/div[2]/div[2]/form/div[1]/div[1]/div/p[1]/span
+${txt_reject_bank_account_refund_page}    //*[@id="content-container"]/div/div/div[2]/div[2]/div[2]/form/div[1]/div[1]/div/p[2]/span
+${txt_reject_book_bank_refund_page}    //*[@id="content-container"]/div/div/div[2]/div[2]/div[2]/form/div[1]/div[1]/div/p[4]/span
+
+
+

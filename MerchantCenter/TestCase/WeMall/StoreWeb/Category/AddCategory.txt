@@ -1,0 +1,276 @@
+*** Settings ***
+Suite Setup       Account Login    ${category_user_002}    ${category_pwd_002}
+Suite Teardown    Close Browser
+Test Setup        Go To    ${url_category_add}
+Force Tags        Store-Web
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Category.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Backend_Category.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Test Cases ***
+TC_MC_01181
+    [Documentation]    [Wemall] Add Category Success (no have category image)(main category)
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Execute Javascript    $('#title_th').val('${category_name}')
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${category_name}
+
+TC_MC_01183
+    [Documentation]    [Wemall] Add Category Success - category image upload image correct.
+    [Tags]    Regression    SmokeTest    High
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Upload Image To Gallery    ${img_category1}    ${upload_file}
+    Execute Javascript    $('.btn-save').eq(0).click()
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${category_name}
+    Sleep   3s
+    Search By Keyword Found Result    ${category_name}
+    Execute Javascript    ${check_record}.first().click();
+    Sleep   3s
+    Execute Javascript    $('#btn_delete_cat').click()
+    Click OK Alert Box V2
+
+TC_MC_01185
+    [Documentation]    [Wemall] Add Category Success - category image with Choose image Gallery.
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('#btn_select_photo').click()
+    Choose Image From Gallery Correct2
+    Sleep    2s
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${category_name}
+
+TC_MC_01187
+    [Documentation]    [Wemall] Add Category Fail - Duplicated main category name
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Set Test Variable    ${category_name}    กระโปรงแฟชั่น
+    Input Text    ${input_category_name}    ${category_name}
+    Click Button Save And Display Alert    ชื่อหมวดหมู่นี้มีอยู่แล้ว
+
+TC_MC_01189
+    [Documentation]    [Wemall] Add Category Fail - Doesn't enter required field
+    [Tags]    Regression    Low
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Clear Element Text    ${input_category_name}
+    Click Button Save
+    ${alert_error}    Execute Javascript    return $('.help-inline').text()
+
+TC_MC_01191
+    [Documentation]    [Wemall] Add Category Fail - Category name is invalid data
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Input Text    ${input_category_name}    ${char_over_80}
+    Focus    ${input_category_name}
+    ${text}    Execute Javascript    return $("#title_th:input").val()
+    ${text_str}    Convert To String    ${text}
+    Should Be Equal    ${text_str}    ${char_equal_80}
+
+TC_MC_01193
+    [Documentation]    [Wemall] Add Category Fail - category image upload file type is not supported
+    [Tags]    Regression    Medium
+    Set Selenium Speed    1
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Upload Image To Gallery    ${img_category2}    ${upload_file}
+    ${msg_error_img}    Get Alert Message
+    Sleep    1s
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${category_name}
+
+TC_MC_01195
+    [Documentation]    [Wemall] Add Category Fail - category image upload file size over limit
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Upload Image To Gallery    ${upload_image}    Over3MB.jpg    ${upload_file}
+    Click Button Save
+    Verify Category Has Successfully Created    ${category_name}
+    Verify image without Save
+
+TC_MC_01197
+    [Documentation]    [Wemall] Add Category Fail - category image with choose image from album over limit
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('#btn_select_photo').click()
+    Choose Image From Gallery Incorrect
+    Sleep    3s
+    Execute Javascript    $(':contains("ปิด")').click()
+    Sleep    3s
+    Execute Javascript    $('#btn_create_cat').click()
+
+TC_MC_01199
+    [Documentation]    [Wemall] Add Category Success and HIDE this category
+    [Tags]    Regression    High
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Execute Javascript    $('#title_th').val('${category_name}')
+    Execute Javascript    $('.ace-switch-show').click()
+    Execute Javascript    $('#modal-error .btn-primary').click()
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    #Sleep    3s
+    Verify Category Has Successfully Created    ${category_name}
+    Check Top Record Status Is Hide
+
+TC_MC_01201
+    [Documentation]    [Wemall] Add Category Success and SHOW this category
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Execute Javascript    $('#title_th').val('${category_name}')
+    Click Button Save
+    Verify Category Has Successfully Created    ${category_name}
+    Check Top Record Status Is Show
+
+TC_MC_01203
+    [Documentation]    [Wemall] Add Category Success - enter SEO Title valid format.
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Click Element    ${btn_edit_seo}
+    Input Text    ${input_seo_title}    ${char_less_80}
+    ${show_title}    Execute Javascript    return $('.wls-snippet').find("a").text()
+    Should Be Equal    ${show_title}    ${char_less_80}
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${category_name}
+
+TC_MC_01205
+    [Documentation]    [Wemall] Add Category Success - enter SEO Title invalid format.
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Click Element    ${btn_edit_seo}
+    Input Text    ${input_seo_title}    ${char_over_80}
+    ${show_title}    Execute Javascript    return $('.wls-snippet').find("a").text()
+    Should Be Equal    ${show_title}    ${char_equal_80}
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${category_name}
+
+TC_MC_01207
+    [Documentation]    [Wemall] Add Category Success - enter SEO Description valid format.
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Click Element    ${btn_edit_seo}
+    Input Text    ${input_seo_desc}    ${char_less_170}
+    ${show_desc}    Execute Javascript    return $('.snippet-desc').text()
+    Should Be Equal    ${show_desc}    ${char_less_170}
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${category_name}
+
+TC_MC_01209
+    [Documentation]    [Wemall] Add Category Success - enter SEO Description invalid format.
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Click Element    ${btn_edit_seo}
+    Input Text    ${input_seo_desc}    ${char_over_170}
+    ${show_desc}    Execute Javascript    return $('.snippet-desc').text()
+    Should Be Equal    ${show_desc}    ${char_equal_170}
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${category_name}
+
+TC_MC_01215
+    [Documentation]    [Wemall] Verify SAVE Button
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('#btn_select_photo').click()
+    Choose Image From Gallery Correct2
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${category_name}
+
+TC_MC_01217
+    [Documentation]    [Wemall] Verify SAVE and NEW Button
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Click Button Save And New
+    Display Alert Footer
+
+TC_MC_01211
+    [Documentation]    [Wemall] Verify CANCEL Button
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('#btn_select_photo').click()
+    Execute Javascript    $('.modal-addimg tbody tr').eq(0).click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click();
+    Execute Javascript    $('.save_photo').click()
+    Sleep    1s
+    Click Element    ${btn_cancel_add}
+    Confirm Action
+    Wait Until Page Does Not Contain    ${category_name}    ${EXPECT_LOADTIME}
+
+TC_MC_01213
+    [Documentation]    [Wemall] Verify bin button to SHOW/HIDE
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Genarate Category Name    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Sleep    3s
+    Execute Javascript    $('#btn_select_photo').click()
+    Execute Javascript    $('.modal-addimg tbody tr').eq(0).click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click();
+    Execute Javascript    $('.save_photo').click()
+    Sleep    3s
+    Execute Javascript    $('i.icon-trash').click()
+    Click OK Alert Box
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Go To    ${url_category_list}
+    Search By Keyword Found Result    AddByRobot
+    Execute Javascript    ${check_all}.click()
+    #Execute Javascript    $('#btn_delete_cat').click()
+    Click Element    id=btn_delete_cat
+    Click OK Alert Box V2
+
+TC_MC_01315
+    [Documentation]    [Wemall] Add Category Success (no have category image)(main category and sub category)
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    ${time}    Get Time    epoch
+    Input Text    ${input_category_name}    AddByRobot${time}
+    Execute Javascript    $('a#subcategory_alter_add').click()
+    Execute Javascript    $('#input-name').val('AddByRobot${time}')
+    #Execute Javascript    $('#btn_select_photo').click()
+    #Choose Image From Gallery Correct2
+    #Sleep    2s
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    AddByRobot${time}
+    Execute Javascript    $('i.icon-plus-sign-alt').click()
+
+TC_MC_01319
+    [Documentation]    [Wemall] Add Category Fail - Duplicated sub category name
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Set Test Variable    ${category_name}    AddByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('a#subcategory_alter_add').click()
+    Execute Javascript    $('#input-name').val('AddByRobot')
+    Sleep    2s
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Go To    ${url_category_list}
+    Search By Keyword Found Result    ${category_name}
+    #Capture Page ScreenShot
+    Sleep    2s
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Execute Javascript    ${check_all}.click()
+    Sleep    2s
+    #Wait Until Element Is Enabled    //button[@id="btn_delete_cat"]    ${EXPECT_LOADTIME}
+    #Execute Javascript    $('#btn_delete_cat').click()
+    #Click Element    //button[@id="btn_delete_cat"]
+    Click Element    id=btn_delete_cat
+    Click OK Alert Box V2

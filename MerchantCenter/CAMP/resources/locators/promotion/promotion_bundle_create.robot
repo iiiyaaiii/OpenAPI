@@ -1,0 +1,35 @@
+*** Variables ***
+&{create_bundle}    txt_promotion_name=nameLocal
+...    txt_promotion_name_translate=nameEN
+...    txt_promotion_short=shortDescriptionLocal
+...    txt_promotion_short_translate=shortDescriptionEN
+...    content_promotion_desc=descriptionLocal
+...    content_promotion_desc_translate=descriptionEN
+...    txt_promotion_period=period
+...    calendar_promotion_start=daterangepicker_start
+...    calendar_promotion_stop=daterangepicker_end
+...    btn_promotion_period_apply=//button[@class='applyBtn btn btn-sm btn-success']
+...    chk_promotion_status=enabled
+...    chk_member=memberSpan
+...    chk_non_member=nonMemberSpan
+...    upload_promo_web=imgWebDropzoneDiv
+...    upload_promo_web_translate=imgWebTranslationDropzoneDiv
+...    upload_promo_mobile=imgMobileDropzoneDiv
+...    upload_promo_mobile_translate=imgMobileTranslationDropzoneDiv
+...    content_bundle_note=noteLocal
+...    content_bundle_note_translate=noteEN
+...    txt_primary_variant=bundledVariant1
+...    rdo_primary_discount_type=discountRadio1
+...    txt_primary_discount_percent=discountPercent1
+...    txt_primary_discount_thb=discountFixed1
+...    txt_second_variant=bundledVariant2
+...    rdo_second_discount_type=discountRadio2
+...    txt_second_discount_percent=discountPercent2
+...    txt_second_discount_thb=discountFixed2
+...    txt_third_variant=bundledVariant3
+...    rdo_third_discount_type=discountRadio3
+...    txt_third_discount_percent=discountPercent3
+...    txt_third_discount_thb=discountFixed3
+...    btn_add=addVariantBtn
+...    btn_cancel=cancelBtn
+...    btn_create=submitBtn

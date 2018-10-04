@@ -1,0 +1,118 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Check and Reset Seller Login    ${category_shopname2}    ${category_user_002}    ${category_pwd_002}    AND    Check And Set Category    [Test]FixCategory1    [Test]FixCategory2    test123
+Test Setup        Go To    ${URL_STORE}/${category_shopname2}/admin/category
+Suite Teardown    Close Browser
+Force Tags        feature-StoreAdmin    Store-Web    DeleteCategory    mc-wls
+Library           OperatingSystem
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Category.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Backend_Category.txt
+
+*** Keywords ***
+Check And Set Category
+    [Arguments]    ${categoryname}    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบข้อมูล
+    Run Keyword If    ${Result} == True    Create Category    ${categoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    ${category_id}    Get Element Attribute    //*[@class="table-catlist-body"]//ul[1]//li[1]@id
+    ${category_id}    Remove String    ${category_id}    category_id_
+    Set Suite Variable    ${category_id}
+#    [return]    ${category_id}
+    Input Text    search    ${categoryname2}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบข้อมูล
+    Run Keyword If    ${Result} == True    Create category have subcate    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname2}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    ${category_id2}    Get Element Attribute    //*[@class="table-catlist-body"]//ul[1]//li[1]@id
+    ${category_id2}    Remove String    ${category_id2}    category_id_
+    Set Suite Variable    ${category_id2}
+#    [return]    ${category_id2}
+
+Create Category
+    [Arguments]    ${categoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/create
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('.row-fluid .btn-primary').click()
+    Display Alert Footer
+
+Create category have subcate
+    [Arguments]    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/create
+    Input Text    ${input_category_name}    ${categoryname2}
+    Execute Javascript    $('a#subcategory_alter_add').click()
+    Execute Javascript    $('#input-name').val('${subcategoryname}')
+    #Execute Javascript    $('#btn_select_photo').click()
+    #Choose Image From Gallery Correct2
+    #Sleep    2s
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${categoryname2}
+    Execute Javascript    $('i.icon-plus-sign-alt').click()
+
+
+*** Test Cases ***
+TC_MC_01248
+    [Documentation]    [Welove] Verify Cancel Delete Category
+    Execute Javascript    ${check_record}.first().click();
+    #Execute Javascript    $('#btn_delete_cat').click()
+    Click Element    //button[@class="btn btn-small btn-lightwhite btn_action tooltip-info"]
+    Click Cancel Alert Box V2
+
+TC_MC_01250
+    [Documentation]    [Welove] Verify Delete main category at campaign pages
+    Search By Keyword Found Result    กระเป๋าเอกสาร
+    Execute Javascript    ${check_record}.first().click();
+    Execute Javascript    $('#btn_delete_cat').click()
+    Click OK Alert Box V2
+
+TC_MC_01252
+    [Documentation]    [Welove] Verify Delete main category have product
+    Add Category No Image    ForDelete
+    Go To    ${url_category_list}
+    Search By Keyword Found Result    ForDelete
+    Sleep    3s
+    Execute Javascript    ${check_all}.click()
+    Execute Javascript    $('#btn_delete_cat').click()
+    #Click Element    //button[@class="btn btn-small btn-lightwhite btn_action tooltip-info"]
+    Click OK Alert Box V2
+
+TC_MC_01324
+    [Documentation]    [Welove] Verify Delete per sub category at category pages
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('.subcategory_remove').eq(1).click()
+    Sleep    2s
+    ${message_error}    Execute Javascript    return $('.modal-body .modal-desc-box .text-center').text();
+    Should Contain    ${message_error}    คุณยืนยันที่จะลบหมวดหมู่ย่อยนี้ใช่หรือไม่?
+
+TC_MC_01326
+    [Documentation]    [Welove] Verify Delete main category have sub category at category pages
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('.subcategory_remove').eq(0).click()
+    Sleep    2s
+    ${message_error}    Execute Javascript    return $('.modal-body .modal-desc-box .text-center').text();
+    Should Contain    ${message_error}    หมวดหมู่ย่อยนี้ไม่สามารถลบได้เนื่องจากมีสนค้าอยู่ กรุณาย้ายสินค้าออกจากหมวดหมู่ย่อยนี้ให้หมดก่อนทำการลบ
+
+TC_MC_01328
+    [Documentation]    [Welove] Verify Delete sub category have product
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('.subcategory_remove').eq(0).click()
+    Sleep    2s
+    ${message_error}    Execute Javascript    return $('.modal-body .modal-desc-box .text-center').text()
+    Should Contain    ${message_error}    หมวดหมู่ย่อยนี้ไม่สามารถลบได้เนื่องจากมีสนค้าอยู่
+    Should Contain    ${message_error}    กรุณาย้ายสินค้าออกจากหมวดหมู่ย่อยนี้ให้หมดก่อนทำการลบ

@@ -1,0 +1,103 @@
+*** Variables ***
+## Locator ##
+${addtocart}    id=btn-add-cart
+${btn_addtocart}    //a[@href="/cart"]
+${continue_shopping}    $('a:contains(ดูสินค้าต่อ)')
+${gotocart}    $('.btn-popup-add-cart')[0]
+${addfavshop}    $('.btn-fav')
+${leveld_increase}    //*[@id="product_quantity_increase"]
+${leveld_increase_js}    $('#product_quantity_increase')
+${leveld_decrease}    //*[@id="product_quantity_decrease"]
+${quantity_err}    //span[@ng-bind='errorMsg']
+${leveld_quantity}    //*[@id="product_quantity_input"]
+${leveld_itemname}    //h1[@itemprop='name']
+${leveld_itemprice}    //strong[@id='product-price']
+${leveld_compareprice}    //span[@class='compare-price ng-binding']
+${leveld_shopname}    //a[@id="store_url"]/span
+${lnk_leveld_installment_detail}    //span[@class='more-txt']
+${lbl_leveld_installment_maxmonths}    //div[@class='installment-desc']
+${lbl_leveld_installment_desc_months}    //div[@id='moreinfo_installment']
+
+${alert_option_color}    //div[@id='alert-option-color']
+${alert_option_size}    //div[@id='alert-option-size']
+${attribute_boxdetail_color}    //div[@class="product-option-color option-selector"]
+${attribute_boxdetail_size}    //div[@class="product-option-size option-selector"]
+${attribute_textselect_color}    //span[@class="topic-option"]
+${attribute_textselect_size}    //div[@data-option-label="ขนาด"]//span[@class="topic-option"]
+${attribute_color}    //div[@data-option-label='สี']
+${attribute_size}    //div[@data-option-label='ขนาด']
+${attribute_size_disable}    //span[@class='box-option-size option-selector-item disable']
+${attribute_color_disable}    //div[@class='box-option-color option-selector-item disable']
+${attribute_color_text}    //span[@class='product-cname']
+${selected_color}    //div[@data-option-label='สี']//div[@class='box-option-color option-selector-item selected']
+${selected_size}    //div[@data-option-label='ขนาด']//span[@class='box-option-size option-selector-item selected']
+${out_of_stock}    //button[@class='btn-lvd btn-add-cart']
+${tag_soldout}    //div[@class='sold-out ']/span
+${tag_promo}    //div[@class='tag-promocode']
+${product_pic}    //div[@class='zoomContainer']
+${product_pic_large}    //div[@class='product-img-l']
+${product_pic_small}    //*[@id='product-thumb-scroller']//ul
+${pic_thumb}    //*[@id='product-thumb-scroller']//ul//li
+${product_type1}    //div[@class='product-type']//div[@class='col-1']
+${product_type2}    //div[@class='product-type']//div[@class='col-2']
+${leveld_promotion_name}    $('.promotion-name')
+${shop_info}    //div[@class="lvd-shop-info "]
+${shop_start}    //ul[@class="shop-stat"]//li
+${shop_all_product}    //ul[@class="shop-product-list"]//li[5]
+${leveldpopup_itemprice}    //span[@itemprop='price']
+${leveld_itemname_fl}    //h1[@itemprop='name']
+${leveld_active_fl}    //div[@class="box-dealzapp"]
+${leveld_off_fl}    //div[@class="box-dealzapp off"]
+${leveld_tap_description}    //li[@ng-click="howtoActiveTab = 'description'"]
+${leveld_box_description}    //div[@itemprop="description"]
+${leveld_shipping}    //li[@ng-click="howtoActiveTab = 'policy_tab_1'"]
+${leveld_box_shipping}    //div[@class="wm-delivery-box"]
+${leveld_payment}    //li[@ng-click="howtoActiveTab = 'payment'"]
+${leveld_box_payment}    //div[@ng-if="paymentChannel"]
+${leveld_Credit}    //div[@ng-if="payWithCreditCard"]
+${leveld_ATM}    //div[@ng-if="payWithAtm"]
+${leveld_related_product}    //h4[@class="lvd-sub-title"]
+${breadcrumb_new}    //*[@class='breadcrumb-box']
+${leveld_box_related}    //div[@class="box-relate-product"]
+${leveld_IBank}    //div[@ng-if="payWithIbank"]
+${leveld_InternetBanking}    //div[@ng-if="payWithBanktrans"]
+${leveld_Service}    //div[@ng-if="payWithCs"]
+${leveld_no_feedback}    //div[@ng-if="ratings.default === true"]
+${leveld_feedback}    //div[@class="box-feedback-detail ng-scope"][@ng-if="ratings.default === false"]
+${leveld_shop_no_feedback}    //div[@class="w-feedback ng-scope"][@ng-if="ratings.default === true"]
+${leveld_shop_feedback}    //div[@ng-feedback]//a[@id="trustPopup"]
+${leveld_limit}    //div[@class="lvd-alert-box pull-left ng-binding ng-scope"]
+${leveld_box_promotion}    //div[@class="product-promotion promotion-ribbon-box"]
+${leveld_title_promotion}    //div[@class="promotion-title"]
+${leveld_name_promotion}    //div[@class="promotion-name"]
+${leveld_promotion_condition}    //ul[@class='new-promotion-list']
+${pictuer_product_list}    //td[@class="center "]
+##HEADER LEVELD
+${product_recommend1}    //div[@class="product-recommend-show"]//ul[@class="items-list-box"]//li[1]
+${header_mainmenu}    //ul[@class="menu-list"]//li[1]
+${header_productmenu}    //ul[@class="menu-list"]//li[2]
+${header_categorymenu}    //ul[@class="menu-list"]//li[3]
+${header_promotionstoremenu}    //ul[@class="menu-list"]//li[4]//a[@href="https://www.wemall-dev.com/qamcautomate001/promotion"]
+${header_contactmenu}    //ul[@class="menu-list"]//li[5]//a[@href="https://www.wemall-dev.com/qamcautomate001/info"]
+${breadcrumb_product}    //div[@class="wls-breadcrumbs"]//ul//li[2]//span
+${category_store}    $('ul[class="submenu"] li[class="s2-top"]')
+${main_category1}    //a[@href="https://www.wemall-dev.com/qamcautomate001/category/153022"]
+${main_category2}    //a[@href="https://www.wemall-dev.com/qamcautomate001/category/152914"]
+${breadcrumb_cate}    //li[@class="active"]
+${subcategory}    //a[@href="https://www.wemall-dev.com/qamcautomate001/category/153026"]
+${message_no_promotion}    //div[@class="noresult-box"]
+###FREEBIE###
+${img_freebie}    //div[@class="freebie-tag"]
+${lbl_nameproduct}    //a[contains(text(),'-freebie')]
+#### Truepoint ####
+${btn_truepoint_wm}    //button[@class="btn-lvd btn-truepoint"]
+
+### TruePoint ###
+${txt_truepoint_info}    //div[@class="product-superpoint-info"]
+${txt_truepoint_condition}    //div[@class="product-superpoint-description"]
+${btn_truepoint}    //button[@class="btn-lvd btn-truepoint"]
+${img_truepoint_thumbnail}    //div[@class="superpoint-tag superpoint_box"]
+${btn_attribute_black}    //div[@data-option-id="1044"]
+${btn_attribute_red}    //div[@data-option-id="1043"]
+${popup_error_msg}    //div[@class="popup-superpoint-title"]
+${btn_at_popup_truepoint_continue}    //button[@class="btn btn-default btn-popup-truepoint"]
