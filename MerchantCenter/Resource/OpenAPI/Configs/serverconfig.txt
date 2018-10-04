@@ -1,4 +1,10 @@
 *** Variables ***
+### Locator ###
+${STAGING_HOST}                https://kritsanunnun-eval-test.apigee.net
+${ACCESS_TOKEN}                /oauth/client_credential/accesstoken?grant_type=client_credentials
+${ACCOUNT_AUTH}                /ecom/account/auth
+${ACCOUNT_AUTH_SOCIAL}         /ecom/account/auth/social
+
 ### Get  Product ###
 ${STAGING_HOST}                https://kritsanunnun-eval-test.apigee.net
 ${Product_multiple}            /ecom/products
