@@ -1,4 +1,5 @@
 *** Settings ***
+Suite Setup     Get Authorized token
 Library     RequestsLibrary
 Library     Selenium2Library
 Resource    ../../../../Resource/OpenAPI/Configs/serverconfig.txt
@@ -27,9 +28,18 @@ TC_MC_13139
 
 
 *** Keywords ***
+Get Authorized token
+    ${auth}=  Create List  ${auth_user}  ${auth_passwd}
+    Create Session    wemall_account    ${STAGING_HOST}   auth=${auth}
+    &{headers}=  Create Dictionary  Content-Type=application/json
+    ${resp}=  Post Request  wemall_account  ${ACCESS_TOKEN}  headers=${headers}
+    ${TOKEN}=     Set Variable     ${resp.json()['access_token']}
+    Set Global Variable     ${TOKEN}
+    Log To Console    TOKEN= ${TOKEN}
+
 Get store detail Success
     Create Session    Get_store    ${STAGING_HOST}
-    &{headers}=  Create Dictionary  Authorization=${Bearer1_success}  Content-Type=application/json
+    &{headers}=  Create Dictionary  Authorization=Bearer ${TOKEN}  Content-Type=application/json
     ${resp}=  Get Request  Get_store  ${Store_single}    headers=${headers}
     Log To Console    	${resp.status_code}
     Should Be Equal As Strings    ${resp.status_code}    200
@@ -45,7 +55,7 @@ Get store detail Failed
 
 Get multiple store category Success
     Create Session    Get_store    ${STAGING_HOST}
-    &{headers}=  Create Dictionary  Authorization=${Bearer1_success}  Content-Type=application/json
+    &{headers}=  Create Dictionary  Authorization=Bearer ${TOKEN}  Content-Type=application/json
     ${resp}=  Get Request  Get_store  ${Store_categories}    headers=${headers}
     Log To Console    	${resp.status_code}
     Should Be Equal As Strings    ${resp.status_code}    200

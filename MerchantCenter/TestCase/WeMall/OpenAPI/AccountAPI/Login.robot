@@ -24,7 +24,7 @@ Get Authorized token
     ${resp}=  Post Request  wemall_account  ${ACCESS_TOKEN}  headers=${headers}
     ${TOKEN}=     Set Variable     ${resp.json()['access_token']}
     Set Global Variable     ${TOKEN}
-    # Log To Console    TOKEN= ${TOKEN}
+    Log To Console    TOKEN= ${TOKEN}
 
 Login with Facebook success
     Create Session    wemall_account    ${STAGING_HOST}
