@@ -1,0 +1,183 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Force Tags        Wemall-Web    Ligo
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+
+*** Test Cases ***
+TC_MC_05175
+    [Documentation]    [Welove] [ByItem] Check fix price product of promotion
+    [Tags]    Regression    Medium    mock
+    Switch Browser    1
+    Go to    ${URL_LEVEL_D}/${robot_stg_store1_promotion_item_price}    #create product 1
+    Wait Until Element Is Visible    ${leveld_itemprice}    30s
+    Element Should Be Visible    ${leveld_itemprice}
+    ${price_old}=    Get Text    ${leveld_itemprice}
+    ${portal_location}    Get Location
+    Switch Browser    2
+    Select Product to Campaign    ${promotion_item_fixprice_id}    ${robot_stg_store1_promotion_item_price}    promotion
+    ${wms_location}    Get Location
+    Sleep    5    #add sleep for process
+    : FOR    ${i}    IN RANGE    0    10
+    \    Go to    ${portal_location}&refresh=changeme
+    \    ${price}=    Get Text    ${leveld_itemprice}
+    \    ${price_change}    Run Keyword And Return Status    Should Be True    '${price}' == '99'
+    \    Run Keyword If    '${price_change}' == 'True'    Exit FOR Loop
+    ${portal_location}    Get Location
+    Remove Product from Campaign    ${promotion_item_fixprice_id}    ${robot_stg_store1_promotion_item_price}    promotion
+    Sleep    5    #add sleep for process
+    : FOR    ${i}    IN RANGE    0    10
+    \    Go to    ${portal_location}&refresh=changeme
+    \    ${price}=    Get Text    ${leveld_itemprice}
+    \    ${price_change}    Run Keyword And Return Status    Should Be True    '${price}' == '${price_old}'
+    \    Run Keyword If    '${price_change}' == 'True'    Exit FOR Loop
+
+TC_MC_05194
+    [Documentation]    Promotion : Sorting product campaign by Product Price ASC
+    [Tags]    Medium    mock
+    Go to    ${URL_PORTAL}/promotion/${promotion_item_percent_id}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_asc}.click()
+    Sleep    1
+    ${campaign_product}    Get Matching Xpath Count    //ul[@class='items-list-box']/li
+    : FOR    ${i}    IN RANGE    1    ${campaign_product}
+    \    ${price_now}    Get Text    //ul[@class='items-list-box']/li[${i}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}    Get Text    //ul[@class='items-list-box']/li[${i_next}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${price_now}    Remove String    ${price_now}    ฿
+    \    ${price_next}    Remove String    ${price_next}    ฿
+    \    Should Be True    ${price_now} <= ${price_next}
+
+TC_MC_05195
+    [Documentation]    Promotion : Sorting product campaign by Product Price DESC
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_PORTAL}/promotion/${promotion_item_percent_id}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_desc}.click()
+    Sleep    1
+    ${campaign_product}    Get Matching Xpath Count    //ul[@class='items-list-box']/li
+    : FOR    ${i}    IN RANGE    1    ${campaign_product}
+    \    ${price_now}    Get Text    //ul[@class='items-list-box']/li[${i}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}    Get Text    //ul[@class='items-list-box']/li[${i_next}]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    \    ${price_now}    Remove String    ${price_now}    ฿
+    \    ${price_next}    Remove String    ${price_next}    ฿
+    \    Should Be True    ${price_now} >= ${price_next}
+
+TC_MC_05196
+    [Documentation]    Promotion : Filter product by price mininum
+    [Tags]    Medium    mock
+    Go to    ${URL_PORTAL}/promotion/${promotion_item_percent_id}
+    Input Text    ${input_price_min}    100
+    Sleep    1
+    Click Element    ${button_ok_fillterprice}
+    Sleep    2
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_asc}.click()
+    Sleep    1
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    ฿
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} >= 100
+
+TC_MC_05197
+    [Documentation]    Promotion : Filter product by price maximum
+    [Tags]    Medium    mock
+    Go to    ${URL_PORTAL}/promotion/${promotion_item_percent_id}
+    Input Text    ${input_price_max}    1000
+    Sleep    1
+    Click Element    ${button_ok_fillterprice}
+    Sleep    2
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_desc}.click()
+    Sleep    1
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    ฿
+    ${price_now}    Remove String    ${price_now}    ,
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} <= 1000
+
+TC_MC_05198
+    [Documentation]    Promotion : Filter product by price lenght
+    [Tags]    Medium    mock
+    Go to    ${URL_PORTAL}/promotion/${promotion_item_percent_id}
+    Input Text    ${input_price_min}    100
+    Input Text    ${input_price_max}    1000
+    Click Element    ${button_ok_fillterprice}
+    Sleep    1
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_asc}.click()
+    Sleep    1
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    ฿
+    ${price_now}    Remove String    ${price_now}    ,
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} >= 100
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_desc}.click()
+    Sleep    1
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    ฿
+    ${price_now}    Remove String    ${price_now}    ,
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} <= 1000
+
+TC_MC_05199
+    [Documentation]    Don't show badge Promotion on product new promotion type nonejoin custome price
+    [Tags]    Regression    High    mock
+    Go to    ${URL_PORTAL}/promotion/${promotion_item_percent_id}
+    Sleep    0.3s
+    Execute Javascript    ${sorting}.click()
+    Sleep    0.3s
+    Click Element    //*[@id="select_order"]/ul/li[3]/a
+    Element Should Be Visible    ${campaign_list_prodoct}/li[1]
+    Element Should Not Contain    ${campaign_list_prodoct}/li[1]    ส่วนลดเพิ่มเติมของสินค้านี้
+
+TC_MC_05202
+    [Documentation]    [Wemall] [New promotion type nonejoin custom price] New promotion type nonejoin custom price inactive, Promotion not show in Campaign promotion
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_PORTAL}/promotion/${empty_promotion_custom_price}
+    Page Should Contain    กิจกรรมส่งเสริมการขายนี้ยังไม่มีสินค้าเข้าร่วมรายการ
+
+TC_MC_05203
+    [Documentation]    [Wemall] [New promotion type nonejoin custom price] exprie, Promotion not show in Campaign promotion
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_PORTAL}/promotion/${expire_promotion_custom_price}
+    Page Should Contain    ขออภัยค่ะ กิจกรรมส่งเสริมการขาย
+    Page Should Contain    สิ้นสุดการขายแล้ว
+
+TC_MC_05206
+   [Documentation]    Validate new Handle url field in Wlspromotion campaing create page
+    [Tags]    Regression    High    mock
+    ${my_campaign_id}    Create WLS Promotion    qa-wls-promotion-testhandle////12345    2
+    ${groupcampignid}    Get Group Campaign ID     ${my_campaign_id}
+    Verify Handle URL After Save    qa-wls-promotion-testhandle12345    ${my_campaign_id}
+    ${handleurl}    Set Variable    qa-wls-promotion-testhandle12345
+    Go to    ${URL_PORTAL}/campaign/${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}-${handleurl}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    WMS Login
+    Delete My Campaign    promotion    ${my_campaign_id}
+
+TC_MC_05200
+    [Documentation]    Check price product of new promotion type nonejoin custome price
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/promotion/${promotion_custom_price}
+    ${product_count}    Get Matching Xpath Count    //ul[@class='box-thumb-view-detail ng-isolate-scope']//li
+    : FOR    ${i}    IN RANGE    1    ${product_count} + 1
+    \    ${result}    Run Keyword And Return Status    Element Should Contain    //ul[@class='box-thumb-view-detail ng-isolate-scope']//li[${i}]//div//div[2]//a    robot_stg_store1 - สินค้า Promotion custom price
+    \    Run Keyword If    '${result}' == 'True'    Element Should Contain    //ul[@class='box-thumb-view-detail ng-isolate-scope']//li[${i}]//div//div[3]//div//span    399
+    \    Run Keyword If    '${result}' == 'True'    Exit For Loop

@@ -1,0 +1,207 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../../Resource/WeLoveShopping/WebElement/WMS_OrderTracking.txt
+Resource          Common.txt
+
+*** Keywords ***
+Go to Order Tracking page
+    [Documentation]    Go to WMS Order Tracking Page
+    Go to    ${URL_WMS}/order
+
+Check search fields and buttons on Order Tracking page
+    [Documentation]    Check search fields and buttons on Search Order Tracking
+    Element Should Be Visible    ${txt_search_keyword}
+    Element Should Be Visible    ${txt_search_order_id}
+    Element Should Be Visible    ${txt_search_store_id}
+    Element Should Be Visible    ${txt_search_store_name}
+    Element Should Be Visible    ${txt_search_payment_ref_1}
+    Element Should Be Visible    ${txt_search_payment_ref_2}
+    Element Should Be Visible    ${txt_search_place_order_date}
+    Element Should Be Visible    ${txt_search_payment_ref_no}
+    Element Should Be Visible    ${txt_search_payment_methods}
+    Element Should Be Visible    ${txt_search_limit}
+    Element Should Be Visible    ${txt_search_test_store}
+    Element Should Be Visible    ${txt_search_status}
+    Element Should Be Visible    ${txt_search_order_promotion}
+    Element Should Be Visible    ${txt_search_promotion_code}
+    Element Should Be Visible    ${txt_search_amount_min_price}
+    Element Should Be Visible    ${txt_search_amount_max_price}
+    Element Should Be Visible    ${txt_search_payment_date}
+    Element Should Be Visible    ${txt_search_receive_date}
+    Element Should Be Visible    ${txt_search_ship_date}
+    Element Should Be Visible    ${txt_search_expired_ship_date}
+    Element Should Be Visible    ${btn_search}
+    Element Should Be Visible    ${btn_reset}
+    Element Should Be Visible    ${btn_export_order}
+    Element Should Be Visible    ${btn_export_product}
+
+Check column name on Order Tracking
+    [Documentation]    Check column name Order Tracking
+    Element Should Contain    ${tbl_store}    Store
+    Element Should Contain    ${tbl_order_store_name}    Store Name
+    Element Should Contain    ${tbl_order_id}    Order ID
+    Element Should Contain    ${tbl_payment_ref}    Payment Ref
+    Element Should Contain    ${tbl_customer_name}    Customer Name
+    Element Should Contain    ${tbl_payment_Method}    Payment\nMethod
+    Element Should Contain    ${tbl_amount}    Amount
+    Element Should Contain    ${tbl_promotoin_code}    Promotion Name(Code)
+    Element Should Contain    ${tbl_discount}    Discount
+    Element Should Contain    ${tbl_status}    Status
+    Element Should Contain    ${tbl_place_order}    Place Order
+    Element Should Contain    ${tbl_pay}    Pay
+    Element Should Contain    ${tbl_ship}    Ship
+    Element Should Contain    ${tbl_receive}    Receive
+
+Search store id on wms order tracking
+    [Documentation]    Use for search order by store id on wms order tracking
+    [Arguments]    ${store_id}
+    Check Element Visible    ${wms_ordertracking_input_storeid}    ${expect_load_time}
+    Input Text    ${wms_ordertracking_input_storeid}    ${store_id}
+    Click search button on wms order tracking
+
+Search store name on wms order tracking
+    [Documentation]    Use for search order by store name on wms order tracking
+    [Arguments]    ${store_name}
+    Check Element Visible    ${wms_ordertracking_input_store_name}    ${expect_load_time}
+    Input Text    ${wms_ordertracking_input_store_name}    ${store_name}
+    Click search button on wms order tracking
+
+Select value search on wms order tracking
+    [Documentation]    Use for select order by select value on wms order tracking
+    [Arguments]    ${element_select_list}    ${value_select}
+    Check Element Visible    ${element_select_list}    ${expect_load_time}
+    Select From List By Value    ${element_select_list}    ${value_select}
+
+Search promotion code on wms order tracking
+    [Documentation]    Use for search order by order id on wms order tracking
+    [Arguments]    ${promotion_code}
+    Check Element Visible    ${txtPromoCode}    ${expect_load_time}
+    Input Text    ${txtPromoCode}    ${promotion_code}
+    Click search button on wms order tracking
+
+Search order id on wms order tracking
+    [Documentation]    Use for search order by order id on wms order tracking
+    [Arguments]    ${order_id}
+    Check Element Is Visible    ${txt_secure_key}
+    Input Text    ${txt_secure_key}    ${order_id}
+    Click search button on wms order tracking
+
+Click search button on wms order tracking
+    [Documentation]    Use for click search button
+    Click Element    ${search_button_on_wms_order_tracking}
+    Wait Until Page Contains Element    ${search_button_on_wms_order_tracking}
+
+Check status order on WMS Order Tracking
+    [Documentation]    Use for check status order on table wms order tracking page
+    [Arguments]    ${text_status}
+    Check Text    ${wms_order_tracking_status_order_on_table}    ${text_status}
+
+Check Order Tracking on store id
+    [Documentation]    Check value on store id field after searching
+    [Arguments]    ${store_id}
+    Element Should Contain    ${store_value}    ${store_id}
+
+Check Order Tracking on store name
+    [Documentation]    Check value on store id field after searching
+    [Arguments]    ${store_name}
+    Element Should Contain    ${store_name_value}    ${store_name}
+
+Check Order Tracking on order id
+    [Documentation]    Check value on order id field after searching
+    [Arguments]    ${order_id}
+    Element Should Contain    ${order_id_value}    ${order_id}
+
+Check Order Tracking on payment ref
+    [Documentation]    Check value on Payment Ref field after searching
+    [Arguments]    ${payment_ref}
+    Element Should Contain    ${payment_ref_value}    ${payment_ref}
+
+Check Order Tracking on customer name
+    [Documentation]    Check value on customer name field after searching
+    [Arguments]    ${customer_name}
+    Element Should Contain    ${customer_name_value}    ${customer_name}
+
+Check Order Tracking on payment method
+    [Documentation]    Check value on payment method field after searching
+    [Arguments]    ${payment_method}
+    Element Should Contain    ${payment_method_value}    ${payment_method}
+
+Check Order Tracking on amount
+    [Documentation]    Check value on amount field after searching
+    [Arguments]    ${amount}
+    Element Should Contain    ${amount_value}    ${amount}
+
+Check Order Tracking on promotion code
+    [Documentation]    Check value on promotion code field after searching
+    [Arguments]    ${promotoin_code}
+    Element Should Contain    ${lblPromoCode}    ${promotoin_code}
+
+Check Order Tracking on discount
+    [Documentation]    Check value on discount field after searching
+    [Arguments]    ${discount}
+    Element Should Contain    ${discount_value}    ${discount}
+
+Check the order tracking record
+    [Documentation]    Check order tracking record showing
+    [Arguments]    ${order_record}
+    Element Should Contain    ${table_records}    ${order_record}
+
+Check Order Tracking on status
+    [Documentation]    Check value on status field after searching
+    [Arguments]    ${status}
+    ${has_contain}    Get Text    ${status_record}
+    Should Be Equal As Strings    ${status}    ${has_contain}
+
+Search Order By Promotion/MC Code
+    [Documentation]    Search by Promotion/MC Code
+    [Arguments]     ${searchKeyword}
+    Input Text    ${txtPromoCode}    ${searchKeyword}
+    Click search button on wms order tracking
+
+Order With Promotion/MC Code Should Be Found
+    [Arguments]    ${searchKeyword}
+    Element Should Contain    ${lblPromoCode}    ${searchKeyword}
+
+Select Wemall User Section
+    ${visible}=     Run Keyword And Return Status    Element Should Be Visible    ${imgWemallLogo}
+    Run Keyword If    '${visible}' == 'False'    Switch To Wemall Site
+
+Switch To Wemall Site
+    Click Element    ${btnSwitchSection}
+    Click Element    ${btnWemallSection}
+
+Open Wemall Order Tracking Page
+    Select Wemall User Section
+    Mouse Over    ${btnWeTrustSystem}
+    Click Element    ${ddlOrderTracking}
+
+Order Tracking Page Should Be Appeared
+    Wait Until Element Is Visible    ${lnkOrderTracking}
+
+Switch Project
+    [Arguments]    ${project}
+    [Documentation]    Use for switch project on wms
+    ${project}    Convert To Lowercase    ${project}
+    ${Project} =    Set Variable If    '${Project}' == 'wls'    westore    ${Project}
+    ${Project} =    Set Variable If    '${Project}' == 'wm'    wemall    ${Project}
+    ${WMS_GetCurrentBU}    Get Matching Xpath Count    //li[@class="light-blue user-min"][1]/a//img[contains(@src,'logo_${Project}.png')]
+    Run Keyword If    '${WMS_GetCurrentBU}' == '0'    Change Project    ${Project}
+#    ${project} =    Set Variable If    '${project}' == 'wls'    westore    ${project}
+#    ${project} =    Set Variable If    '${project}' == 'wm'    wemall    ${project}
+#    ${locator}=    Replace String    ${img_project}    site    ${project}
+#    ${img_current_project}    Get Matching Xpath Count    ${locator}
+#    Run Keyword If    '${img_current_project}' == '0'    Change Project    ${project}
+
+Get wms order tracking url
+    [Documentation]    Use for get order tracking url
+    ${lbl_url_detail_ordertracking}    Get Element Attribute    ${lbl_url_detail_ordertracking}
+    Go To    ${lbl_url_detail_ordertracking}
+
+Admin manage order request refund
+    [Documentation]    Use for admin accept and decline refund on wms
+    [Arguments]    ${btn_manage}
+    Click Element    ${btn_refund_item}
+    Element Should Be Visible    ${ifr_refund}
+    Click Element    ${chk_refund_full_wms}
+    Click Element    ${btn_manage}
+    Confirm Action

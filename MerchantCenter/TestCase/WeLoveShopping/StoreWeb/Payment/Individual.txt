@@ -1,0 +1,62 @@
+*** Setting ***
+Suite Teardown    Close All Browsers
+Test Teardown     Clear Active Login
+Force Tags        Store-Web    mock    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Payment.txt
+
+*** Test Case ***
+TC_MC_03700
+    [Documentation]    Verify True money wallet Setting. Incase Store does not register e-wallet account.
+    [Tags]    Regression    Medium
+    Account Login    ${seller_user_4step}    ${seller_pwd_4step}
+    Go To    ${URL_STORE}/${user_4step_url}/admin/payment
+    Wait Until Element Is Visible    //a[contains(.,'เปิดบัญชี')]
+    Element Should Be Visible    //a[contains(.,'เปิดบัญชี')]
+    Click Element    //a[contains(.,'เปิดบัญชี')]
+    Select Window    register TrueMoney Wallet - Weloveshopping
+    Wait Until Element Is Visible    //a[@class="btn-rg-error"]    ${EXPECT_LOADTIME}
+    Page Should Contain    เชื่อมต่อบัญชี Wallet
+
+TC_MC_03722
+    [Documentation]    Verify Content at Indiv payment channel page. Incase Store dose not register e-wallet account.
+    [Tags]    Low
+    Account Login    ${seller_user_4step}    ${seller_pwd_4step}
+    Go To    ${URL_STORE}/${user_4step_url}/admin/payment
+    Element should Contain    ${menu_page}    ช่องทางการรับชำระเงิน
+    Element should Contain    ${menu_page2}    บัญชี Wallet ของร้าน
+    Element should Contain    ${payment_account}    ชื่อบัญชี Wallet ของร้าน : รอการอัพเดทข้อมูล
+    Element should Contain    ${payment_account}    คุณยังไม่ได้สมัครเปิดบัญชี Wallet เพื่อใช้ในการรับเงินค่าสินค้า
+    Element Should Not Be Visible    //*[@*="payment-table-box"]
+    Element Should Be Visible    ${payment_detail2}
+    ${list_payment_status}    Execute Javascript    return ${list_payment_success}.length
+    ${result1}    Convert To String    ${list_payment_status}
+    Should Contain    ${result1}    0
+    ${list_payment_status2}    Execute Javascript    return ${list_payment_unsuccess}.length
+    Should Be True    ${list_payment_status2}    == 1
+    Go To    ${URL_STORE}/${user_4step_url}/payment
+    Element Should Be Visible    //*[@id="row-body"]/div/div/div[3]/div
+    Element Should Not Be Visible   //*[@id="row-body"]/div/div/div[3]/div/div[2]/div/div[4]
+
+TC_MC_03725
+    [Documentation]    Verify Indiv payment page. Incase Store have been register wallet already.
+    [Tags]    Regression    Medium
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${URL_STORE}/${user_s001}/admin/payment
+    Element should Contain    ${menu_page}    ช่องทางการรับชำระเงิน
+    Element should Contain    ${menu_page2}    บัญชี Wallet ของร้าน
+    Element should Contain    ${payment_account}    ชื่อบัญชี Wallet ของร้าน : ${email_ewallet} คุณสามารถเข้าไปตรวจสอบและจัดการโอนเงินเข้าบัญชีธนาคารที่ต้องการได้ที่ บัญชี Wallet ของคุณ
+    Element Should Be Visible    //*[@*="payment-table-box"]
+    Element Should Be Visible    ${payment_detail2}
+    ${list_payment_status}    Execute Javascript    return ${list_payment_unsuccess}.length
+    ${result1}    Convert To String    ${list_payment_status}
+    Should Contain    ${result1}    0
+    ${list_payment_status2}    Execute Javascript    return ${list_payment_success}.length
+    Should Be True    ${list_payment_status2}    == 1
+    Go To    ${URL_STORE}/${user_s001}/payment
+    Reload Page
+    Element Should Be Visible    //*[@id="row-body"]/div/div/div[3]/div

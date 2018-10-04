@@ -1,0 +1,30 @@
+*** Setting ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${url_product_collection}
+Force Tags        Store-Web    ProductCollection    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Product.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Product_Collection.txt
+
+*** Test Case ***
+TC_MC_01448
+    [Documentation]    Edit highlight product : incase don't have product
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection Without Product
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Validate Edit Is Require Minimum 1 Product
+
+TC_MC_01450
+    [Documentation]    Edit Delete All product
+    [Tags]    Regression    High
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection With Product    50
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Test Remove All Product Collection

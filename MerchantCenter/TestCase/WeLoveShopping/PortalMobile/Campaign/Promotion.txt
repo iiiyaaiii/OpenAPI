@@ -1,0 +1,92 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    Mobile
+Suite Teardown    Close All Browsers
+Test Setup        Clear Mobile Login
+Force Tags        Portal-Mobile    Ligo    Sprint2017MC10    WLSPromotion    mc-wls
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+
+*** Test Cases ***
+TC_MC_03463
+    [Documentation]    [Welove] [Mobile] Don't show badge Promotion on product new promotion type nonejoin custome price
+    [Tags]    Regression    High
+    Go to    ${URL_PORTAL}/promotion/${promotion_custom_price}
+    Wait Until Element Is Visible    //html/body/div[1]/div[4]/div[1]/div/div[3]/div/div[2]/span
+    Click Element    xpath=//html/body/div[1]/div[4]/div[1]/div/div[3]/div/div[2]/span
+    Wait Until Element Is Visible    //ul[@class="sort-list"]    60s
+    Click Element    //ul[@class="sort-list"]/li[2]
+    Wait Until Element Is Visible    //html/body/div[1]/div[4]/div[1]/div/div[3]/ul    60s
+    Element Should Not Contain    xpath=//html/body/div[1]/div[4]/div[1]/div/div[3]/ul/li[1]/div    ส่วนลดเพิ่มเติมของสินค้านี้
+
+TC_MC_03464
+    [Documentation]    [Welove] [Mobile] Check price product of new promotion type nonejoin custome price
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/promotion/${promotion_custom_price}
+    ${product_count}    Get Matching Xpath Count    //ul[@class='box-thumb-view-detail ng-isolate-scope']//li
+    : FOR    ${i}    IN RANGE    1    ${product_count} + 1
+    \    ${result}    Run Keyword And Return Status    Element Should Contain    //ul[@class='box-thumb-view-detail ng-isolate-scope']//li[${i}]//div//div[2]//a    robot_store1 - สินค้า Promotion custom price
+    \    Run Keyword If    '${result}' == 'True'    Element Should Contain    //ul[@class='box-thumb-view-detail ng-isolate-scope']//li[${i}]//div//div[3]//div[1]//span[1]    399
+    \    Run Keyword If    '${result}' == 'True'    Exit For Loop
+
+TC_MC_03466
+    [Documentation]    [Welove] [Mobile][New promotion type nonejoin custom price] New promotion type nonejoin custom price inactive, Promotion not show in Campaign promotion
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/promotion/${empty_promotion_custom_price}
+    Element Should Contain    xpath=//html/body/div[1]/div[4]/div[1]/div/div[3]/center    แคมเปญนี้ยังไม่มีสินค้าเข้าร่วมรายการ
+
+TC_MC_03467
+    [Documentation]    [Welove] [Mobile][New promotion type nonejoin custom price] exprie, Promotion not show in Campaign promotion
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/promotion/${expire_promotion_custom_price}
+    Page Should Contain    ขออภัยค่ะ
+    Page Should Contain    แคมเปญ
+    Page Should Contain    สิ้นสุดการขายแล้ว
+
+TC_MC_03484
+    [Documentation]    [Welove] [Mobile] Promotion : Sorting product campaign by Product Price ASC
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/promotion/${promotion_custom_price}
+    Wait Until Element Is Visible    //div[@class='box-drop-sort view-sort']    ${EXPECT_LOADTIME}
+    Click Element    //div[@class='box-drop-sort view-sort']
+    Click Element    //ul[@class="sort-list"]/li[3]
+    ${product_count}    Get Matching Xpath Count    //ul[@class='box-thumb-view-detail ng-isolate-scope']//li
+    : FOR    ${i}    IN RANGE    0    ${product_count}
+    \    ${n}    Evaluate    ${i} + 1
+    \    Run Keyword If    ${n} == ${product_count}    Exit For Loop
+    \    ${current_price}    Execute Javascript    return $('.price').eq(${i}).text()
+    \    ${current_price}    Get Substring    ${current_price}    \    -4
+    \    ${current_price}    Remove String    ${current_price}    ,
+    \    ${current_price}    Convert To Integer    ${current_price}
+    \    ${next_price}    Execute Javascript    return $('.price').eq(${n}).text()
+    \    ${next_price}    Get Substring    ${next_price}    \    -4
+    \    ${next_price}    Remove String    ${next_price}    ,
+    \    ${next_price}    Convert To Integer    ${next_price}
+    \    Should Be True    ${current_price} <= ${next_price}
+
+TC_MC_03485
+    [Documentation]    [Welove] [Mobile] Promotion : Sorting product campaign by Product Price DESC
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}/promotion/${promotion_custom_price}
+    Wait Until Element Is Visible    //div[@class='box-drop-sort view-sort']    ${EXPECT_LOADTIME}
+    Click Element    //div[@class='box-drop-sort view-sort']
+    Click Element    //ul[@class="sort-list"]/li[4]
+    ${product_count}    Get Matching Xpath Count    //ul[@class='box-thumb-view-detail ng-isolate-scope']//li
+    : FOR    ${i}    IN RANGE    0    ${product_count}
+    \    ${n}    Evaluate    ${i} + 1
+    \    Run Keyword If    ${n} == ${product_count}    Exit For Loop
+    \    ${current_price}    Execute Javascript    return $('.price').eq(${i}).text()
+    \    ${current_price}    Get Substring    ${current_price}    \    -4
+    \    ${current_price}    Remove String    ${current_price}    ,
+    \    ${current_price}    Convert To Integer    ${current_price}
+    \    ${next_price}    Execute Javascript    return $('.price').eq(${n}).text()
+    \    ${next_price}    Get Substring    ${next_price}    \    -4
+    \    ${next_price}    Remove String    ${next_price}    ,
+    \    ${next_price}    Convert To Integer    ${next_price}
+    \    Should Be True    ${current_price} >= ${next_price}

@@ -1,0 +1,43 @@
+*** Variables ***
+### Data ###
+${char_less_80}    มาร์กบำรุงผิวหน้าMark!@#$%12345
+${char_over_80}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky
+${char_equal_80}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345
+${char_over_170}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky1234567890
+${char_equal_170}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345
+${char_less_170}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky
+###
+### Locator ###
+${upload_image}    $("#id-input-file-1")
+${upload_file}    //input[@id="id-input-file-1"]
+${check_all}      $('#check_all')
+${check_record}    $('.checkbox-select')
+${check_record_child}    $('.checkbox-select-child')
+${icon_delete}    $('#btn_delete_cat')
+${link_to_category_edit}    //*[@id="table_report_category"]/tbody/tr[1]/td[2]/a
+${input_category_name}    //input[@id="title_th"]
+${input_seo_title}    //*[@id="seo_title_th"]
+${input_seo_desc}    //*[@id="seo_description_th"]
+${btn_save}       //*[@id="btn_create_cat"]
+${btn_cancel_add}    //*[@id="btn_cancel_frm_create_cat"]
+${input_keyword}    //*[@id="search"]
+${btn_edit_seo}    //*[@id="edit_seo"]
+${btn_update}     //*[@id="btn_create_cat2"]
+${btn_reset}      //*[@id="btn_cancel_frm_create_cat2"]
+${btn_hide}       //button[@id="btn_hide_cat"]
+${btn_show}       //button[@id="btn_visible_cat"]
+${btn_del}        //button[@id="btn_delete_cat"]
+${num_hide}       $('#num_hide_category')
+${num_show}       $('#num_show_category')
+${num_all}        $('#num_all_category')
+${filter_all_category}    //*[@id="page-content"]/div[2]/div[2]/div[1]/div[1]/ul/li[1]/a
+${filter_show_category}    //*[@id="page-content"]/div[2]/div[2]/div[1]/div[1]/ul/li[2]/a
+${filter_hide_category}    //*[@id="page-content"]/div[2]/div[2]/div[1]/div[1]/ul/li[3]/a
+${moveup_top}     //*[@id="frm_category_sel"]/div/div[2]/ul/li[1]/div/div[5]/a[1]
+${movedown_top}    //*[@id="frm_category_sel"]/div/div[2]/ul/li[1]/div/div[5]/a[2]
+${moveup_second}    //*[@id="frm_category_sel"]/div/div[2]/ul/li[2]/div/div[5]/a[1]
+${movedown_second}    //*[@id="frm_category_sel"]/div/div[2]/ul/li[2]/div/div[5]/a[2]
+${movedown_fifth}    //*[@id="frm_category_sel"]/div/div[2]/ul/li[5]/div/div[5]/a[2]
+${num_all_product}    //div[@id="total-product"]//span[@class="all"]
+${num_all_page}    //div[@id="table_report_info"]
+${img_over3M}     //img[@src[contains(.,'Over3MB.jpg')]]

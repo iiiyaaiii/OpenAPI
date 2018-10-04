@@ -1,0 +1,72 @@
+*** Settings ***
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           Collections
+Library           OperatingSystem
+Library           DateTime
+Library           ../PythonLibrary/_customkeyword.py
+
+*** Keywords ***
+Block Shop
+    [Arguments]    ${id}    ${status}
+    [Documentation]    Block Shop
+    Go to    ${URL_WMS}/blockseller
+    Input Text    //input[@name='store_id']    ${id}
+    Sleep    0.5s
+    Press Key    //input[@name='store_id']    \\13
+    Sleep    1.5s
+    ${element_id}    Replace String    ${id}    L    store_
+    #    Execute Javascript    $('#${element_id}').click()
+    Click Element    //label[@class='position-relative']//span
+    # Capture Page Screenshot
+    Sleep    1.5s
+    Select From List By Label    action_block_level    ${status}
+    Select From List By Label    action_reason    จัดส่งสินค้าล่าช้า
+    Input Text    //input[@name='comment']    change shop status by robot
+    # Click Element    //input[@class='btn btn-sm btn-danger margin-bottom-5 ']
+    Execute Javascript    $('.btn.btn-sm.btn-danger.margin-bottom-5').click()
+    Sleep    3s
+
+Search shop on WMS block shop
+    [Documentation]    Search shop on WMS block shop
+    [Arguments]    ${Shop_email}    ${Current_Status}    ${Reason}
+    Set Test Variable    ${Shop_email}
+    Go To    ${url_block_seller}
+    Wait Until Element Is Visible    email
+    Input Text    ${input_email}    ${Shop_email}
+    Click Button    ${btn_block_search}
+    Element Should Be Visible    ${top_record_status}    ${icon_normal}
+    ${Get_Status}    Execute Javascript    return $('.table-striped i:eq(0)').attr("title");
+    Run Keyword If    "${Get_status}" != "${Current_Status}"    Select shop status    ${Current_Status}    ${Reason}
+    Run Keyword If    "${Get_status}" != "${Current_Status}"    Search shop on WMS block shop    ${Shop_email}    ${Current_Status}    ${Reason}
+    Should Be Equal    ${Current_Status}    ${Get_Status}
+    ${Shop_Status}    Set Variable If    "${Shop_email}" == "${shop_close}"    ปิดร้าน    เปิดร้าน
+    Element Text Should Be    ${top_record_shop_status}    ${Shop_Status}
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+    Set Test Variable    ${Get_Status}
+
+Select shop status
+    [Documentation]    Select shop status
+    [Arguments]    ${Current_Status}    ${Reason}
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    ${Change_Status}    Convert To Lowercase    ${Current_Status}
+    Select From List By Label    ${select_action_status}    ${Change_Status}
+    Select From List By Label    ${select_action_reason}    ${Reason}
+    Run Keyword If    "${Reason}" == "อื่นๆ"    Input Text    ${input_comment}    ok
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}    ${EXPECT_LOADTIME}
+    Sleep    1s
+    Set Test Variable    ${Current_Status}
+
+Verify shop status
+    [Documentation]    Verify shop status
+    Input Text    ${input_email}    ${Shop_email}
+    Click Button    ${btn_block_search}
+    Element Should Be Visible    ${top_record_status}    ${icon_beware}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    ${Shop_Status}    Set Variable If    "${Current_Status}" == "Normal"    เปิดร้าน    ${Shop_Status}
+    ${Shop_Status}    Set Variable If    "${Current_Status}" == "Beware"    เปิดร้าน    ${Shop_Status}
+    ${Shop_Status}    Set Variable If    "${Current_Status}" == "Warning"    ปิดร้าน    ${Shop_Status}
+    ${Shop_Status}    Set Variable If    "${Current_Status}" == "Blocked"    ปิดร้าน    ${Shop_Status}
+    ${Shop_Status}    Set Variable If    "${Shop_email}" == "${shop_close}"    ปิดร้าน    ${Shop_Status}
+    Should Be True    '${current_shop_status}' == '${Shop_Status}'

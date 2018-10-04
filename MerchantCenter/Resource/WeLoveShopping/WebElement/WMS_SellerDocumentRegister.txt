@@ -1,0 +1,27 @@
+*** Variables ***
+### Data ###
+${url_Seller_Document_Register}    ${URL_WMS}/sellerregister
+###
+### locator ###
+${wms_input_email}    //input[@name="email"]
+${select_shop_status}    //select[@name="doc_register_status"]
+${select_dealer_auth_status}    //select[@name="dealer_authorized_status"]
+${select_credit_status}    //select[@name="credit_status"]
+${column_shop_status}    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[13]/span
+${column_dealer_auth_status}    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[14]/span
+${column_credit_status}    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[15]/span
+${wms_btn_search}    //button[@type="submit"]
+${input_wms_email}    //input[@type="text" and @name="email"]
+${btn_wms_search}    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+${btn_wms_edit_hide}    //a[@class="btn btn-xs"]
+${btn_wms_edit}    //a[@class="btn btn-xs btn-info"]
+${wms_doc_status}    //*[@id="edit-basic"]/div[2]/div/table/tbody/tr[7]/td[5]/span
+${wms_dealer_status}    //*[@id="edit-basic"]/div[2]/div/table/tbody/tr[21]/td[3]/span
+#${select_doc_manage}    //select[@class="form-control input-sm doc-status"]
+#${select_doc_status}    //select[@name="doc_register_status"]
+${btn_save_wms}    //button[@id="save_sellerregister"]
+${btn_save_dealer}    //button[@id="save_dealer_authorized"]
+${btn_upload_docs}    //*[@id="btn-upload-docs"]
+${btn_save_bookbank}    //*[@id="save_bookbank"]
+${btn_activate_ccw}    //*[@id="activate_credit_card"]
+${btn_save_supplier_code}    //*[@id="save_supplier_code"]

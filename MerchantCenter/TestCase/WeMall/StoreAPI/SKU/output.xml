@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20170824 16:57:56.254" generator="Robot 3.0 (Python 2.7.10 on darwin)">
+<suite source="/Users/preme_won/mywork/application/office/automate/MerchantCenter/TestCase/WeMall/StoreAPI/SKU/sync_stock_single_sku.robot" id="s1" name="Sync Stock Single Sku">
+<test id="s1-t1" name="TC_MC_06884 To verify that the physical stock is calculated correctly when FMS sends an API to request synchronization for multiple SKUs">
+<kw type="setup" name="Register Wemall shop" library="Member_StoreRegister">
+<doc>Register New Corporate shop Wemall Success</doc>
+<arguments>
+<arg>MF</arg>
+<arg>TC_MC_06884</arg>
+</arguments>
+<kw name="Set Selenium Speed" library="SeleniumLibrary">
+<doc>Sets the delay in seconds that is waited after each Selenium command.</doc>
+<arguments>
+<arg>.2</arg>
+</arguments>
+<status status="PASS" endtime="20170824 16:57:56.693" starttime="20170824 16:57:56.692"></status>
+</kw>
+<kw name="Catenate" library="BuiltIn">
+<doc>Catenates the given items together and returns the resulted string.</doc>
+<arguments>
+<arg>${sn}@mailinator.com</arg>
+</arguments>
+<assign>
+<var>${new_email}</var>
+</assign>
+<msg timestamp="20170824 16:57:56.693" level="INFO">${new_email} = TC_MC_06884@mailinator.com</msg>
+<status status="PASS" endtime="20170824 16:57:56.693" starttime="20170824 16:57:56.693"></status>
+</kw>
+<kw name="Open Browser" library="SeleniumLibrary">
+<doc>Opens a new browser instance to given URL.</doc>
+<arguments>
+<arg>${URL_ACCOUNT}/signup/user</arg>
+<arg>${BROWSER}</arg>
+</arguments>
+<msg timestamp="20170824 16:57:56.694" level="INFO">Opening browser 'chrome' to base url 'https://account.wls-dev.com/signup/user'</msg>
+<status status="PASS" endtime="20170824 16:58:01.564" starttime="20170824 16:57:56.693"></status>
+</kw>
+<kw name="Maximize Browser Window" library="SeleniumLibrary">
+<doc>Maximizes current browser window.</doc>
+<status status="PASS" endtime="20170824 16:58:02.265" starttime="20170824 16:58:01.565"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given `text` into text field identified by `locator`.</doc>
+<arguments>
+<arg>${input_email}</arg>
+<arg>${new_email}</arg>
+</arguments>
+<msg timestamp="20170824 16:58:02.279" level="FAIL">Variable '${input_email}' not found.</msg>
+<status status="FAIL" endtime="20170824 16:58:02.280" starttime="20170824 16:58:02.266"></status>
+</kw>
+<status status="FAIL" endtime="20170824 16:58:02.280" starttime="20170824 16:57:56.692"></status>
+</kw>
+<tags>
+<tag>antman</tag>
+<tag>high</tag>
+<tag>ITMA SPRINT-2017S17</tag>
+<tag>regression</tag>
+<tag>smoke</tag>
+<tag>TC_MC_06884</tag>
+</tags>
+<status status="FAIL" endtime="20170824 16:58:02.280" critical="yes" starttime="20170824 16:57:56.690">Setup failed:
+Variable '${input_email}' not found.</status>
+</test>
+<status status="FAIL" endtime="20170824 16:58:02.282" starttime="20170824 16:57:56.271"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="1" pass="0">Critical Tests</stat>
+<stat fail="1" pass="0">All Tests</stat>
+</total>
+<tag>
+<stat fail="1" pass="0">antman</stat>
+<stat fail="1" pass="0">high</stat>
+<stat fail="1" pass="0">ITMA SPRINT-2017S17</stat>
+<stat fail="1" pass="0">regression</stat>
+<stat fail="1" pass="0">smoke</stat>
+<stat fail="1" pass="0">TC_MC_06884</stat>
+</tag>
+<suite>
+<stat fail="1" id="s1" name="Sync Stock Single Sku" pass="0">Sync Stock Single Sku</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

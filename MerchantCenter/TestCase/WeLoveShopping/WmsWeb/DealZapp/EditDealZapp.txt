@@ -1,0 +1,40 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        WMS-Web    mock    Ligo    Sprint2017MC9    dealzapp2    mc-wls
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Library           Collections
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+
+*** Test Cases ***
+TC_MC_08147
+    [Documentation]    [Welove] Edit DealZapp start or end date
+    [Tags]    Regression    Ready
+    WMS Switch Project    wls
+    Go To DealZapp
+    ${dealzap_id}=    Execute Javascript    return $('.label.label-success')[0].id
+    ${dealzap_id}    Remove String    ${dealzap_id}    status-
+    Execute Javascript    $('tr#row-${dealzap_id} td a').click()
+    Sleep    2
+    ${current_date}    Get Current Date    UTC    +7 hours    result_format=datetime    exclude_millis=True
+    ${next_date}    Add Time To Date    ${current_date}    3 days
+    ${current_date}    Convert Date    ${current_date}    result_format=%d/%m/%Y
+    ${current_date_str}    Convert To String    ${current_date}
+    ${current_date_str}    Get Substring    ${current_date_str}    \    10
+    ${next_date}    Convert Date    ${next_date}    result_format=%d/%m/%Y
+    ${next_date_str}    Convert To String    ${next_date}
+    ${next_date_str}    Get Substring    ${next_date_str}    \    10
+    Execute Javascript    $('#date_show_campaign').val('${current_date_str} 10:00 - ${next_date_str} 09:59');
+    Execute Javascript    $('form').submit();
+    Sleep    2
+    Element Should Contain    //div[@id='notify-top']    กรุณากำหนดช่วงเวลา Show Campaign ให้เป็น 48 ชั่วโมง
+    ${alert_msg}    Execute Javascript    return $('#notify-top').text().trim()
+    Should Be Equal    ${alert_msg}    กรุณากำหนดช่วงเวลา Show Campaign ให้เป็น 48 ชั่วโมง

@@ -1,0 +1,120 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        WMS-Web    mock    Ligo    Sprint2017MC9    dealWM1
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Library           Collections
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+
+*** Test Cases ***
+TC_MC_08120
+    [Documentation]    [Wemall] Create Dealzapp
+    [Tags]    SmokeTest
+    WMS Switch Project    wm
+    Go To    ${URL_WMS}/campaign
+    Execute Javascript    $('.btn-group button').eq(2).click();
+    Get Start-End Date
+    Click Element    //button[@onclick="window.location.href='/campaign/dealzapp/create'"]
+    Input Text    id=price_fee    3
+    Input Text    id=campaign_name_th    Test Automate
+    Upload Photo
+    Execute Javascript    $('#date_show_campaign').val('${next_date_start} 9:00 - ${next_date_end} 9:00');
+    Execute Javascript    tinyMCE.get('description_th').setContent('test');
+    Execute Javascript    $('form').submit();
+    Verify DealZapp After Update    Test Automate
+    Clear Pending
+    Delete Robot Dealzapp    Test Automate
+
+TC_MC_08122
+    [Documentation]    [Wemall] Create Dealzapp and select set order product by self
+    [Tags]    Regression    SmokeTest
+    WMS Switch Project    wm
+    Go To    ${URL_WMS}/campaign
+    Execute Javascript    $('.btn-group button').eq(2).click();
+    Get Start-End Date
+    Click Element    //button[@onclick="window.location.href='/campaign/dealzapp/create'"]
+    Input Text    id=price_fee    3
+    Input Text    id=campaign_name_th    [Automate] set order product by self
+    Upload Photo
+    Execute Javascript    $('#date_show_campaign').val('${next_date_start} 9:00 - ${next_date_end} 9:00');
+    Execute Javascript    tinyMCE.get('description_th').setContent('test');
+#    Execute Javascript    $('input[name=order_product]').attr('checked', 'checked');
+    Execute Javascript    $('form').submit();
+    Verify DealZapp After Update    [Automate] set order product by self
+    Clear Pending
+    Delete Robot Dealzapp    [Automate] set order product by self
+
+TC_MC_08166
+    [Documentation]    [Wemall] Manage Show Set order product by self
+    [Tags]    Regression    SmokeTest    Ready
+    WMS Switch Project    wm
+    Go To    ${URL_WMS}/campaign
+    Execute Javascript    $('.btn-group button').eq(2).click();
+    Execute Javascript    $("#sample-table-2 .btn:first").click();
+    Execute Javascript    $(".table:first button:first").click();
+    Sleep    2
+    Execute Javascript    $(".table:first button:first").click();
+    Execute Javascript    $(".table:first button:first").click();
+    Sleep    2
+    Execute Javascript    $('div.alert-warning button').click();
+
+TC_MC_08194
+    [Documentation]    [Wemall] Select collection to product DealZapp on time
+    WMS Switch Project    wm
+    ${current_deal_id}    Check Current Dealzapp
+    Set Collection to Product    ${current_deal_id}    current_deal
+    Verify Collection on dealzapp    current_deal
+
+TC_MC_08198
+    [Documentation]    [Wemall] Select collection to product DealZapp next time
+    WMS Switch Project    wm
+    ${next_deal_id}    Check Dealzapp Next Day
+    Set Collection to Product    ${next_deal_id}    next_deal
+    Verify Collection on dealzapp    next_deal
+
+TC_MC_08138
+    [Documentation]    [Wemall] To Verify seo box and create description seo in dealzapp (deal zapp current date)
+    [Tags]    Regression    High    Portal-web    mock    Ready
+    Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wm
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/dealzapp
+    Verify Seo Description Dealzapp    portal
+
+TC_MC_08140
+    [Documentation]    [Wemall] To Verify seo box and create description seo in dealzapp (Next deal)
+    [Tags]    High    Portal-web    mock    Ready
+    Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wm
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/dealzapp
+    Verify Seo Description Dealzapp    portal
+
+TC_MC_08132
+    [Documentation]    [Wemall] Create DealZapp 1 day
+    [Tags]    Regression    Ready
+    WMS Switch Project    wm
+    Go to    ${URL_WMS}/campaign
+    Click Button Add Campaign    ${btn_add_deal_zapp}    ${URL_WMS}/campaign/dealzapp/create
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] WLSPromotion ปรับระยะเวลา 48 ชั่วโมง
+    Choose Campaign Banner    promotion_itemprice_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    ${current_date}    Get Current Date    UTC    +7 hours    result_format=datetime    exclude_millis=True
+    ${next_date}    Add Time To Date    ${current_date}    1 days
+    ${current_date}    Convert Date    ${current_date}    result_format=%d/%m/%Y
+    ${current_date_str}    Convert To String    ${current_date}
+    ${current_date_str}    Get Substring    ${current_date_str}    \    10
+    ${next_date}    Convert Date    ${next_date}    result_format=%d/%m/%Y
+    ${next_date_str}    Convert To String    ${next_date}
+    ${next_date_str}    Get Substring    ${next_date_str}    \    10
+    Execute Javascript    $('#date_show_campaign').val('${current_date_str} 10:00 - ${next_date_str} 09:59');
+    Click Button Submit Campaign
+    ${alert_msg}    Execute Javascript    return $('#notify-top').text().trim()
+    Should Be Equal    ${alert_msg}    กรุณากำหนดช่วงเวลา Show Campaign ให้เป็น 48 ชั่วโมง

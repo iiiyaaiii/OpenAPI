@@ -1,0 +1,62 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_WMS}    ${BROWSER}
+...               AND    WMS Login
+...               AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Library           SeleniumLibrary
+Resource          ../../../../Resource/WLSResource/init.robot
+Resource          ../../../../Keyword/Common/commonKeyword.txt
+Resource          ../../../../Keyword/Common/BuyerKeyword.txt
+Resource          ../../../../Resource/WLSResource/WebElement/WmsAttribute.txt
+
+*** Test Cases ***
+TC_MC_XXX01
+    Go To    ${URL_WMS}/seller_product_option
+    ###    Add Attribute    ###
+    Wait Until Element Is Visible    ${BtnAdd}
+    Click Element    ${BtnAdd}
+    Wait Until Element Is Visible    title_th
+    Input Text    title_th    ${AttributeName}
+    Input Text    option_value_title_th_1    Test 001
+    Input Text    option_value_description_th_1    A01
+    Click Element    ${BtnAddOption}
+    Input Text    option_value_title_th_2    Test 002
+    Input Text    option_value_description_th_2    A02
+    Click Element    save
+    Wait Until Element Is Visible    table_report
+    Page Should Contain    ${AttributeName}
+
+TC_MC_XXX02
+    Go To    ${URL_WMS}/seller_product_option
+    Wait Until Element Is Visible    ${BtnAdd}
+    Click Element    //a[contains(.,'${AttributeName}')]
+    ###    Verify Before Edit    ###
+    Wait Until Element Is Visible    title_th
+    Page Should Contain Textfield    title_th    ${AttributeName}
+    Page Should Contain Textfield    option_value_title_th_1    Test 001
+    Page Should Contain Textfield    option_value_description_th_1    A01
+    Page Should Contain Textfield    option_value_title_th_2    Test 002
+    Page Should Contain Textfield    option_value_description_th_2    A02
+    ###    Update    ###
+    Click Element    ${BtnDelete}
+    Input Text    title_th    ${EditAttributeName}
+    Input Text    option_value_title_th_1    Update 001
+    Input Text    option_value_description_th_1    U01
+    Click Element    ${BtnSave}
+    Wait Until Element Is Visible    table_report
+    Page Should Contain    ${EditAttributeName}
+
+TC_MC_XXX03
+    Go To    ${URL_WMS}/seller_product_option
+    ###    Add Attribute    ###
+    Wait Until Element Is Visible    ${ChkFirstRow}
+    Click Element    ${ChkAll}
+    Sleep    1
+    Click Element    ${ChkAll}
+    Execute Javascript    $("tr:contains('${EditAttributeName}') span").click()
+    Wait Until Element Is Not Visible    ${BtnDeleteDisable}
+    Click Element    btn_delete
+    Wait Until Element Is Visible    ${BtnOK}
+    Click Element    ${BtnOK}
+    Sleep    3s
+    Page Should Not Contain    ${EditAttributeName}

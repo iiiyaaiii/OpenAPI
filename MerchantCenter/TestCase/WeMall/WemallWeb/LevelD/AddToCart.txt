@@ -1,0 +1,170 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Login    AND    WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Test Timeout      3 minutes
+Force Tags        Wemall-Web    Ligo    Sprint2017MC8
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Cart.txt
+Resource          ../../../../Resource/WeMall/WebElement/Checkout.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Cart.txt
+
+*** Test Cases ***
+TC_MC_02265
+    [Documentation]    [Welove] [NonJoin Campaign]: Increase quantily product Over limit
+    [Tags]    Regression    High    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_stg_store1_none_join_camapign}?refresh=changeme
+    Repeat Keyword    10 times    Execute Javascript    ${leveld_increase_js}.click()
+    Click Element    ${addtocart}
+    Wait Until Element Is Visible    ${leveld_limit}    ${EXPECT_LOADTIME}
+    Element Should Be Visible    ${leveld_limit}
+    Element Should Contain    ${leveld_limit}    *จำกัดการซื้อสูงสุด
+    Element Should Contain    ${leveld_limit}    ชิ้นต่อครั้ง
+
+# TC_WLS_02012
+#     [Documentation]    Add product no attribute to cart
+#     [Tags]    Regression    Portal-API    High    mock
+#     #Delete All Product In Cart รอหน้า cart เสร็จก่อน
+#     Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+#     Sleep    1
+#     Element Should Be Visible    //div[@class="product-detail"]
+#     #    Element Should Contain    ${leveld_itemname}    Automate No Attribute
+#     Element Should Be Visible    ${leveld_itemprice}
+#     #Element Should Be Visible    //div[@class="product-option product-option-area"]
+#     #    Element Should Contain    //div[@class="product-option product-option-area"]//span[@class="font-16px"]    จำนวน
+#     Element Should Be Visible    //div[@class="form-num box-option-num"]
+#     Element Should Be Visible    ${leveld_quantity}
+#     ${name}=    Get Text    ${leveld_itemname}
+#     ${price}=    Get Text    ${leveld_itemprice}
+#     ${quantity}=    Get Value    ${leveld_quantity}
+#     #รอหน้า cart เสร็จก่อน
+#     #Execute Javascript    ${addtocart}.click()
+#     #Verify Cart Popup    ${name}    ${quantity}    ${price}
+
+# TC_WLS_02013
+#     [Documentation]    Add product 1 attributes to cart
+#     [Tags]    Regression    Portal-API    Medium    mock
+#     Delete All Product In Cart
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_1inv}
+#     Element Should Be Visible    //div[@class="product-detail"]
+#     Element Should Be Visible    ${leveld_itemname}
+#     Element Should Be Visible    ${leveld_itemprice}
+#     Element Should Be Visible    ${leveld_quantity}
+#     ${name}=    Get Text    ${leveld_itemname}
+#     ${price}=    Get Text    ${leveld_itemprice}
+#     ${color}=    Selected Attribute    สี    ดำ
+#     ${quantity}=    Get Value    ${leveld_quantity}
+#     Execute Javascript    ${addtocart}.click()
+#     Verify Cart Popup    ${name}    ${quantity}    ${price}    ${color}
+
+# TC_WLS_02014
+#     [Documentation]    Add product 2 attributes to cart
+#     [Tags]    Regression    Portal-API    High    mock
+#     Delete All Product In Cart
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_3inv}?refresh=changeme
+#     Element Should Be Visible    //div[@class="product-detail"]
+#     #    Element Should Contain    ${leveld_itemname}    Automate Attribute 5
+#     Element Should Be Visible    ${leveld_itemprice}
+#     Element Should Be Visible    ${leveld_quantity}
+#     ${name}=    Get Text    ${leveld_itemname}
+#     ${price}=    Get Text    ${leveld_itemprice}
+#     ${color}=    Selected Attribute    สี    ดำ
+#     ${quantity}=    Get Value    ${leveld_quantity}
+#     ${size}=    Selected Attribute    ขนาด    S
+#     Execute Javascript    ${addtocart}.click()
+#     Verify Cart Popup    ${name}    ${quantity}    ${price}    ${color}    ${size}
+
+#TC_WLS_02016
+#    [Documentation]    Add product 2 attributes and 1 inventory to cart but don't select attribute option
+#    [Tags]    Regression    Medium    Portal-Web    mock
+#    Delete All Product In Cart
+#    Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_1inv}?refresh=changeme
+#    Execute Javascript    ${addtocart}.click()
+#    Element Should Contain    //div[@id="alert-option-color"]    *กรุณาเลือกสี
+#    Element Should Contain    //div[@id="alert-option-size"]    *กรุณาเลือกขนาด
+
+#TC_WLS_02017
+#    [Documentation]    Add product 1 attributes and more inventories to cart but don't select attribute option
+#    [Tags]    Regression    Portal-Web    Low    mock
+#    Delete All Product In Cart
+#    Go to    ${URL_LEVEL_D}/${robot_stg_store1_1attr_3inv}?refresh=changeme
+#    Execute Javascript    ${addtocart}.click()
+#    Element Should Contain    //div[@id="alert-option-color"]    *กรุณาเลือกสี
+
+# TC_WLS_02018
+#     [Documentation]    Add product 2 attributes and more inventories to cart but don't select attribute option
+#     [Tags]    Regression    Portal-Web    Low    mock
+#     Delete All Product In Cart
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_2attr_3inv}?refresh=changeme
+#     Execute Javascript    ${addtocart}.click()
+#     Element Should Contain    //div[@id="alert-option-color"]    *กรุณาเลือกสี
+#     Element Should Contain    //div[@id="alert-option-size"]    *กรุณาเลือกขนาด
+
+# TC_WLS_02037
+#     [Documentation]    Increase product quantity over stocks
+#     [Tags]    Regression    Portal-Web    Medium
+#     Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+#     Execute Javascript    $('#product_quantity_input').val(90)
+#     Execute Javascript    ${leveld_increase_js}.click()
+#     Element Should Be Visible    //div[@class='lvd-alert-box pull-left ng-binding ng-scope']
+#     Element Should Contain    //div[@class='lvd-alert-box pull-left ng-binding ng-scope']    *สินค้านี้มีจำนวน
+#     Element Should Contain    //div[@class='lvd-alert-box pull-left ng-binding ng-scope']    ชิ้นเท่านั้น
+
+# TC_WLS_02267
+#     [Documentation]    [Check Stock] Product Westore type availibility : by interested product in cart
+#     #[Tags]    Regression    Portal-Web    High    mock
+#     Delete All Product In Cart
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_instock_type_new}?refresh=changeme
+#     Sleep    0.5s
+#     Execute Javascript    $('#product_quantity_input').val(60)
+#     Sleep    0.5s
+#     Execute Javascript    ${leveld_increase_js}.click()
+#     Sleep    0.5s
+#     Execute Javascript    ${addtocart}.click()
+#     Sleep    0.5s
+#     Execute Javascript    ${continue_shopping}.click()
+#     Sleep    0.5s
+#     Execute Javascript    $('#product_quantity_input').val(30)
+#     Sleep    0.5s
+#     Execute Javascript    ${leveld_increase_js}.click()
+#     Sleep    0.5s
+#     Execute Javascript    ${addtocart}.click()
+#     Wait Until Element Is Visible    ${leveld_limit}
+#     Element Should Contain    ${leveld_limit}    *สินค้านี้มีจำนวน
+#     Element Should Contain    ${leveld_limit}    ชิ้นเท่านั้น
+
+# TC_WLS_01800
+#     [Documentation]    [Join Campaign]: Increase quantily product Over limit
+#     [Tags]    Regression    Medium    Portal-API    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store1_join_camapign}?refresh=changeme
+#     Sleep    1
+#     Repeat Keyword    10 times    Execute Javascript    ${leveld_increase_js}.click()
+#     Execute Javascript    ${addtocart}.click()
+#     Sleep    1
+#     Element Should Be Visible    ${leveld_limit}
+#     Element Should Contain    ${leveld_limit}    *จำกัดการซื้อสูงสุด
+#     Element Should Contain    ${leveld_limit}    ชิ้นต่อครั้ง
+
+# TC_WLS_01805
+#     [Documentation]    Product have to join more than 1 campaign
+#     [Tags]    Regression    Medium    Portal-API    mock
+#     Go to    ${URL_LEVEL_D}/${robot_stg_store2_join_camapign}?refresh=changeme
+#     Sleep    1
+#     Repeat Keyword    3 times    Execute Javascript    ${leveld_increase_js}.click()
+#     Execute Javascript    ${addtocart}.click()
+#     Sleep    1
+#     Element Should Be Visible    ${leveld_limit}
+#     Element Should Contain    ${leveld_limit}    *จำกัดการซื้อสูงสุด 1 ชิ้นต่อครั้ง

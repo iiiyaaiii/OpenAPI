@@ -1,0 +1,30 @@
+*** Settings ***
+Suite Setup       Run Keywords    WMS Login    ${PermissionUser}
+...               AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_WMS}/account
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Permission.txt
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Permission.txt
+
+*** Test Cases ***
+TC_MC_01003
+    [Documentation]    Assign welove only
+    Search email    ${PermissionUser}
+    Edit Account
+    Clear Assign Project
+    Assign Project    westore
+    Click Submit Button
+    Search email    ${PermissionUser}
+    Verify Project On List Page
+    Verify Project Menu
+
+TC_MC_01005
+    [Documentation]    Not Assgin project
+    Search email    ${PermissionUser}
+    Edit Account
+    Clear Assign Project
+    Click Submit Button
+    Verify error message incase not assign project

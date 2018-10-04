@@ -1,0 +1,40 @@
+*** Settings ***
+Test Teardown     Close Browser
+Force Tags        WMS-Web    mock    AddNewsDashboard    mc-wls
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Category.txt
+
+*** Test Cases ***
+TC_MC_00847
+    [Documentation]    [Welove] Add News success
+    [Tags]    Regression    High
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/sellernewsdashboard/create
+    ${time}    Get Time    epoch
+    ${news_title}    Catenate    news_${time}
+    Set Suite Variable    ${news_title}
+    Execute javascript    $("textarea[name='title']").val('${news_title}')
+    Execute javascript    $("input[name='link']").val('https://portal.weloveshopping.com/')
+    ${hour}    Get Time    hour
+    ${min}    Get Time    min    NOW - 2 min
+    ${secs}    Get Time    sec
+    ${year}    Get Time    return year
+    ${month}    Get Time    return month
+    ${day}    Get Time    return day
+    ${hour}    Get Time    hour
+    ${published}    Catenate    ${year}-${month}-${day} ${hour}:${min}:${secs}
+    Input Text    name=published_at    ${published}
+    Execute javascript    $('button[type=submit]').click()
+    ${result_success}    execute javascript    return $('.table.table-striped.table-bordered.table-condensed.table-hover.dataTable tbody tr td').eq(3).text()
+    Should be equal    ${result_success}    ${news_title}
+    Set Suite Variable    ${result_success}
+    Sleep    8s
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${URL_STORE}/${USER_S001}/admin/news
+    Page Should Contain    ${result_success}

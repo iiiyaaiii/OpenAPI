@@ -1,0 +1,1493 @@
+*** Setting ***
+Suite Setup       Account Login    ${seller_user_002}    ${seller_pwd_002}
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_STORE}/${user_s002}/admin/shipping
+Force Tags        Store-Web    Shipping    mock    Ligo    Sprint2017MC10    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Shipping.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Shipping.txt
+
+*** Test Case ***
+TC_MC_03569
+    [Documentation]    The validation icon on avaialble to ship tab (Fail) - preparation period of instock product is zero
+    [Tags]    High
+    Input Text    ${day_instock}    0
+    Click Button Save
+    ${msg_alert}    Execute Javascript    return $('.alert-instock').text()
+    Click Accept Alert Box
+
+TC_MC_03570
+    [Documentation]    The validation icon on avaialble to ship tab (Fail) - preparation period of instock product numeric more than "7"
+    [Tags]    Regression    High
+    Input Text    ${day_instock}    8
+    Click Button Save
+    Click Accept Alert Box
+    ${msg_alert}    Execute Javascript    return $('.alert-instock').text()
+    Input Text    ${day_instock}    10
+    Click Button Save
+    Click Accept Alert Box
+    Textfield Value Should Be    ${day_instock}    1
+
+TC_MC_03571
+    [Documentation]    The validation icon on avaialble to ship tab (Fail) - ordering period of preorder product is zero
+    [Tags]    Regression    High
+    Input Text    ${day_preorder}    0
+    Click Button Save
+    ${msg_alert}    Execute Javascript    return $('.alert-preorder').text()
+    Click Accept Alert Box
+
+TC_MC_03572
+    [Documentation]    The validation icon on avaialble to ship tab (Fail) - preparation period of instock product and ordering period of preorder product is null
+    [Tags]    High
+    Input Text    ${day_instock}    ${EMPTY}
+    Input Text    ${day_preorder}    ${EMPTY}
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03573
+    [Documentation]    The validation icon on avaialble to ship tab (Fail) - preparation period of instock product and ordering period of preorder product enter invalid format character
+    [Tags]    Medium
+    Input Text    ${day_instock}    aa
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${day_instock}    ${EMPTY}
+    Input Text    ${day_instock}    กขค
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${day_instock}    ${EMPTY}
+    Input Text    ${day_instock}    !@#$
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${day_instock}    ${EMPTY}
+    Input Text    ${day_preorder}    aa
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${day_preorder}    ${EMPTY}
+    Input Text    ${day_preorder}    กขค
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${day_preorder}    ${EMPTY}
+    Input Text    ${day_preorder}    !@#$
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${day_preorder}    ${EMPTY}
+
+TC_MC_03574
+    [Documentation]    The validation icon on avaialble to ship tab (Fail) - ordering period of preorder product enter numeric more than 2 digits.
+    [Tags]    Medium
+    Input Text    ${day_instock}    ${EMPTY}
+    Input Text    ${day_preorder}    1000
+    Click Button Save
+    ${msg_alert}    Execute Javascript    return $('.alert-preorder').text()
+    Click Accept Alert Box
+
+TC_MC_03575
+    [Documentation]    The validation icon on avaialble to ship tab (Success), Preparation period of instock product is valid format.
+    [Tags]    Regression    High
+    Input Text    ${day_instock}    1
+    Input Text    ${day_preorder}    ${EMPTY}
+    Click Button Save
+    Textfield Value Should Be    ${day_instock}    1
+    Clear Element Text    ${day_instock}
+    Input Text    ${day_instock}    7
+    Input Text    ${day_preorder}    ${EMPTY}
+    Click Button Save
+    Display Alert Footer
+    Textfield Value Should Be    ${day_instock}    7
+
+TC_MC_03576
+    [Documentation]    The validation icon on avaialble to ship tab (Success), Ordering period of preorder product is valid format.
+    [Tags]    High
+    Input Text    ${day_instock}    ${EMPTY}
+    Input Text    ${day_preorder}    1
+    Click Button Save
+    Textfield Value Should Be    ${day_preorder}    1
+    Input Text    ${day_instock}    ${EMPTY}
+    Clear Element Text    ${day_preorder}
+    Input Text    ${day_preorder}    20
+    Click Button Save
+    Display Alert Footer
+    Textfield Value Should Be    ${day_preorder}    20
+
+TC_MC_03577
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Fail), Shipping type : Post setting Incomplete.
+    [Tags]    High
+    Input Text    ${day_preorder}    0
+    Click Button Save
+    ${msg_alert}    Execute Javascript    return $('.alert-preorder').text()
+    Click Accept Alert Box
+
+TC_MC_03578
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Fail), Shipping type : Post settiing flat shipping price Incomplete.
+    [Tags]    Medium
+    Input Text    ${day_instock}    ${EMPTY}
+    Input Text    ${day_preorder}    ${EMPTY}
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03579
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Fail), Shipping type : Post setting calculate by weight Incomplete.
+    [Tags]    Medium
+    Click Element    ${rd_post_weight}
+    Input Text    ${post_rate_weight_tr1}    ${EMPTY}
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${post_rate_weight_tr1}    ${EMPTY}
+
+TC_MC_03580
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Fail), Shipping type : Post setting calculate by price Incomplete.
+    [Tags]    Medium
+    Click Element    ${rd_post_price}
+    Input Text    ${post_rate_price_tr1}    ${EMPTY}
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${post_rate_price_tr1}    ${EMPTY}
+
+TC_MC_03581
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Fail), Shipping type : Post setting calculate by amount Incomplete.
+    [Tags]    Regression    High
+    Click Element    ${rd_post_price}
+    Input Text    ${post_rate_price_tr1}    ${EMPTY}
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${post_rate_price_tr1}    ${EMPTY}
+
+TC_MC_03582
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Fail), Shipping type : EMS setting Incomplete.
+    [Tags]    Medium
+    Execute Javascript    ${thailand_post}.click()
+    Execute Javascript    ${rd_ems}.click()
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03583
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Fail), Shipping type : EMS setting flat shipping price Incomplete
+    [Tags]    Medium
+    Click Element    ${rd_ems_order}
+    Click Element    ${rd_ems_flat_rate}
+    Input Text    ${ems_flat_price}    ${EMPTY}
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${ems_flat_price}    ${EMPTY}
+
+TC_MC_03584
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Fail), Shipping type : EMS setting calculate by weight Incomplete.
+    [Tags]    Medium
+    Click Element    ${rd_ems_weight}
+    Input Text    ${ems_rate_weight_tr1}    ${EMPTY}
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${ems_rate_weight_tr1}    ${EMPTY}
+
+TC_MC_03585
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Fail), Shipping type : EMS setting calculate by price Incomplete.
+    [Tags]    Medium
+    Click Element    ${rd_ems_price}
+    Input Text    ${ems_rate_price_tr1}    ${EMPTY}
+    Focus    ${btn_save}
+    Textfield Value Should Be    //input[@name="thai_land_post_ems[price][price][0]"]    ${EMPTY}
+
+TC_MC_03586
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Fail), Shipping type : EMS setting calculate by amount Incomplete.
+    [Tags]    Regression    High
+    Click Element    ${rd_ems_amount}
+    Input Text    ${ems_rate_amount_tr1}    ${EMPTY}
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${ems_rate_amount_tr1}    ${EMPTY}
+
+TC_MC_03587
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Success), Shipping type : Post Free Shipping / EMS Free Shipping.
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Sleep    3s
+    Click Element    ${rd_post_order}
+    Click Element    ${rd_post_flat_free}
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Click Element    ${rd_ems_order}
+    Click Element    ${rd_ems_flat_free}
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03588
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Success), Shipping type : Post setting flat shipping price valid format.
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Sleep    3s
+    Click Element    ${rd_post_order}
+    Click Element    ${rd_post_flat_rate}
+    Wait Until Element Is Visible    ${post_flat_price}
+    Input Text    ${post_flat_price}    30
+    Click Button Save And Display Alert    บันทึกข้อมูลเรียบร้อย
+
+TC_MC_03589
+    [Documentation]    The validation icon on Shipping Type : Thailand post tab (Success), Shipping type : EMS setting flat shipping price valid format.
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Sleep    3s
+    Click Element    ${rd_ems_order}
+    Click Element    ${rd_ems_flat_rate}
+    Wait Until Element Is Visible    ${ems_flat_price}
+    Input Text    ${ems_flat_price}    50
+    Click Button Save And Display Alert    บันทึกข้อมูลเรียบร้อย
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03590
+    [Documentation]    Verify Post shipping - Flat shipping price/baht. If user enter invalid format character
+    [Tags]    Medium
+    Click Element    ${rd_post_order}
+    Click Element    ${rd_post_flat_rate}
+    Input Text    ${post_flat_price}    test
+    Click Button Save
+    Sleep    2s
+    Focus    //div[@class="modal-footer"]
+    Click Accept Alert Box
+    Textfield Value Should Be    ${post_flat_price}    ${EMPTY}
+    Clear Element Text    ${post_flat_price}
+    Input Text    ${post_flat_price}    @@
+    Click Button Save
+    Textfield Value Should Be    ${post_flat_price}    ${EMPTY}
+
+TC_MC_03591
+    [Documentation]    Verify Post shipping - Flat shipping price/baht. If user enter Flat shipping price/baht is numeric more than 6 digits.
+    [Tags]    Medium
+    Click Element    ${rd_post_order}
+    Click Element    ${rd_post_flat_rate}
+    Input Text    ${post_flat_price}    1234567
+    Focus    ${btn_save}
+    Textfield Should Contain    ${post_flat_price}    123456
+
+TC_MC_03592
+    [Documentation]    Verify Post shipping - Flat shipping price/baht. If user enter Flat shipping price/baht is "xxxx.xx"
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Click Element    ${rd_post_order}
+    Click Element    ${rd_post_flat_rate}
+    Wait Until Element Is Visible    ${post_flat_price}
+    Input Text    ${post_flat_price}    1234
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03593
+    [Documentation]    Verify enter period weight of Product on Post shipping - Calculate by weight. Incase choose "To"
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Sleep    3s
+    Click Element    ${rd_post_weight}
+    Check Row Shipping Have Two Rows    ${row_post_weight}    ${post_minus_weight}
+    Execute Javascript    ${post_range_weight_tr1}.val('to').change()
+    Input Text    ${post_weight_to_tr1}    111111.11
+    Execute Javascript    $('input[name="thai_land_post_standard[weight][price][0]"]').val(5000000).blur()
+    Wait Until Element Is Visible    ${post_weight_from_tr2}
+    ${value}    Get Text    ${post_weight_from_tr2}
+    Should Be True    ${value} == 111111.12
+    Execute Javascript    ${post_range_weight_tr2}.val('andup').change()
+    Input Text    ${post_rate_weight_tr2}    6000000
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03594
+    [Documentation]    Verify enter period weight of Product on Post shipping - Calculate by weight. Incase choose "Over"
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Sleep    3s
+    Click Element    ${rd_post_weight}
+    Check Row Shipping Have Two Rows    ${row_post_weight}    ${post_minus_weight}
+    Execute Javascript    ${post_range_weight_tr1}.val('andup').change()
+    Element Should Be Disabled    ${post_weight_from_tr1}
+    Element Should Not Be Visible    ${post_weight_to_tr1}
+    Element Should Be Enabled    ${post_rate_weight_tr1}
+    Input Text    ${post_rate_weight_tr1}    50
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03595
+    [Documentation]    Verify enter end Product weight less than start Product weight.
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Sleep    3s
+    Click Element    ${rd_post_weight}
+    Check Row Shipping Have Two Rows    ${row_post_weight}    ${post_minus_weight}
+    Execute Javascript    ${post_range_weight_tr1}.val('to').change()
+    Input Text    ${post_weight_to_tr1}    2.50
+    Execute Javascript    $('input[name="thai_land_post_standard[weight][price][0]"]').val(50).blur()
+    Wait Until Element Is Visible    ${post_weight_from_tr2}
+    ${value}    Get Text    ${post_weight_from_tr2}
+    Should Be True    ${value} == 2.51
+    Execute Javascript    ${post_minus_weight}.click()
+    ${num}    Execute Javascript    return ${row_post_weight}.closest('.panel-group').find('.row-ship').length
+    Should Be True    '${num}' == '1'
+
+TC_MC_03597
+    [Documentation]    Verify enter period price of Product on Post shipping - Calculate by price. Incase choose "To"
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Click Element    ${rd_post_price}
+    Check Row Shipping Have Two Rows    ${row_post_price}    ${post_minus_price}
+    Execute Javascript    ${post_range_price_tr1}.val('to').change()
+    Input Text    ${post_price_to_tr1}    100.11
+    Execute Javascript    $('input[name="thai_land_post_standard[price][price][0]"]').val(2012345).blur()
+    Wait Until Element Is Visible    ${post_price_from_tr2}
+    ${value}    Get Text    ${post_price_from_tr2}
+    Should Be True    ${value} == 100.12
+    Execute Javascript    ${post_range_price_tr2}.val('andup').change()
+    Input Text    ${post_rate_price_tr2}    3012345
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03598
+    [Documentation]    Verify Post shipping - Calculate by Price (Success), Incase choose "Over"
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Sleep    3s
+    Click Element    ${rd_post_price}
+    Check Row Shipping Have Two Rows    ${row_post_price}    ${post_minus_price}
+    Execute Javascript    ${post_range_price_tr1}.val('andup').change()
+    Element Should Be Disabled    ${post_price_from_tr1}
+    Element Should Be Enabled    ${post_rate_price_tr1}
+    Input Text    ${post_rate_price_tr1}    20
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03599
+    [Documentation]    Verify enter end Product price less than start Product price.
+    [Tags]    Regression    High
+    Click Element    ${rd_post_price}
+    Execute Javascript    ${post_range_price_tr1}.val('to').change()
+    Input Text    ${post_price_to_tr1}    100
+    Input Text    ${post_rate_price_tr1}    20
+    #### Click add new row ####
+    Execute Javascript    $('#content_thailandpost > div').eq(0).find('#accordion').eq(3).find('#content_type02 > div > div > div').eq(1).find('.i-shipping').eq(0).find('span').click()
+    ###########################
+    Sleep    1s
+    Element Should Be Disabled    ${post_price_from_tr1}
+    Element Should Be Disabled    ${post_price_to_tr1}
+    Element Should Be Disabled    ${post_price_from_tr2}
+    Element Should Be Visible    ${post_rate_price_tr1}
+    Element Should Be Visible    ${post_rate_price_tr2}
+    #### Check alert display if display click to accept ####
+    ${check_alert}    Run Keyword AND Return Status    Element Should Be Visible    //div[@class='bootbox modal fade in']
+    Run Keyword If    '${check_alert}' == 'True'    Click Accept Alert Box
+    ############################
+    Input Text    ${post_price_to_tr2}    50
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03601
+    [Documentation]    Verify enter period amount of Product on Post shipping - Calculate by amount . Incase choose "To"
+    [Tags]    Medium
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Sleep    3s
+    Click Element    ${rd_post_amount}
+    Check Row Shipping Have Two Rows    ${row_post_amount}    ${post_minus_amount}
+    Execute Javascript    ${post_range_amount_tr1}.val('to').change()
+    Input Text    ${post_amount_to_tr1}    1012.44
+    Execute Javascript    $('input[name="thai_land_post_standard[amount][price][0]"]').val(30222222).blur()
+    Input Text    ${post_rate_amount_tr1}    30222222
+    Press Key    ${post_rate_amount_tr1}    \\9
+    Wait Until Element Is Visible    ${post_amount_from_tr2}
+    ${value}    Get Text    ${post_amount_from_tr2}
+    Should Be True    ${value} == 101245
+    Execute Javascript    ${post_range_amount_tr2}.val('andup').change()
+    Input Text    ${post_rate_amount_tr2}    20222222
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03602
+    [Documentation]    Verify enter period amount of Product on Post shipping - Calculate by amount . Incase choose "Over"
+    [Tags]    Medium
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Click Element    ${rd_post_amount}
+    Check Row Shipping Have Two Rows    ${row_post_amount}    ${post_minus_amount}
+    Execute Javascript    ${post_range_amount_tr1}.val('andup').change()
+    Element Should Be Disabled    ${post_amount_from_tr1}
+    Element Should Be Enabled    ${post_rate_amount_tr1}
+    Input Text    ${post_rate_amount_tr1}    30
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03603
+    [Documentation]    Verify enter end Product amount less than start Product amount.
+    [Tags]    Medium
+    Click Element    ${rd_post_amount}
+    Execute Javascript    ${post_range_amount_tr1}.val('to').change()
+    Input Text    ${post_amount_to_tr1}    10
+    Input Text    ${post_rate_amount_tr1}    30
+    #### Click add new row ####
+    Execute Javascript    $('#content_thailandpost > div').eq(0).find('#accordion').eq(4).find('#content_type02 > div > div > div').eq(1).find('.i-shipping').eq(0).find('span').click()
+    ###########################
+    Sleep    1s
+    Element Should Be Disabled    ${post_amount_from_tr1}
+    Element Should Be Disabled    ${post_amount_to_tr1}
+    Element Should Be Disabled    ${post_amount_from_tr2}
+    Element Should Be Visible    ${post_rate_amount_tr1}
+    Element Should Be Visible    ${post_rate_amount_tr2}
+    #### Check alert display if display click to accept ####
+    ${check_alert}    Run Keyword AND Return Status    Element Should Be Visible    //div[@class='bootbox modal fade in']
+    Run Keyword If    '${check_alert}' == 'True'    Click Accept Alert Box
+    ############################
+    Input Text    ${post_amount_to_tr2}    40
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03605
+    [Documentation]    Verify EMS shipping - Flat shipping price/baht. If user enter invalid format character
+    [Tags]    Medium
+    Click Element    ${rd_ems_order}
+    Click Element    ${rd_ems_flat_rate}
+    Element Should Be Visible    ${ems_flat_price}
+    Input Text    ${ems_flat_price}    test
+    Focus    ${btn_save}
+    Focus    ${day_instock}
+    Textfield Value Should Be    ${ems_flat_price}    ${EMPTY}
+    Clear Element Text    ${ems_flat_price}
+    Input Text    ${ems_flat_price}    @@
+    Focus    ${btn_save}
+    Focus    ${day_instock}
+    Textfield Value Should Be    ${ems_flat_price}    ${EMPTY}
+
+TC_MC_03606
+    [Documentation]    Verify EMS shipping - Flat shipping price/baht. If user enter Flat shipping price/baht is numeric more than 6 digits.
+    [Tags]    Medium
+    Click Element    ${rd_ems_order}
+    Click Element    ${rd_ems_flat_rate}
+    Element Should Be Visible    ${ems_flat_price}
+    Input Text    ${ems_flat_price}    1234567
+    Focus    ${btn_save}
+    Textfield Should Contain    ${ems_flat_price}    123456
+
+TC_MC_03607
+    [Documentation]    Verify EMS shipping - Flat shipping price/baht. If user enter Flat shipping price/baht is "xxxx.xx"
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Click Element    ${rd_ems_order}
+    Click Element    ${rd_ems_flat_rate}
+    Element Should Be Visible    ${ems_flat_price}
+    Input Text    ${ems_flat_price}    123456.56
+    Focus    ${btn_save}
+    Textfield Should Contain    ${ems_flat_price}    123456.56
+    Input Text    ${ems_flat_price}    1234
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03608
+    [Documentation]    Verify enter period weight of Product on EMS shipping - Calculate by weight. Incase choose "To"
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Sleep    3s
+    Click Element    ${rd_ems_weight}
+    Check Row Shipping Have Three Rows    ${row_ems_weight}    ${ems_minus_weight}
+    Execute Javascript    ${ems_range_weight_tr1}.val('to').change()
+    Input Text    ${ems_weight_to_tr1}    111111.11
+    Execute Javascript    $('input[name="thai_land_post_ems[weight][price][0]"]').val(5000000).blur()
+    Wait Until Element Is Visible    ${ems_weight_from_tr2}
+    ${value}    Get Text    ${ems_weight_from_tr2}
+    Should Be True    ${value} == 111111.12
+    Execute Javascript    ${ems_range_weight_tr2}.val('andup').change()
+    Input Text    ${ems_rate_weight_tr2}    5000010
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03609
+    [Documentation]    Verify enter period weight of Product on EMS shipping - Calculate by weight. Incase choose "Over"
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Sleep    3s
+    Click Element    ${rd_ems_weight}
+    Check Row Shipping Have Two Rows    ${row_ems_weight}    ${ems_minus_weight}
+    Execute Javascript    ${ems_range_weight_tr1}.val('andup').change()
+    Element Should Be Disabled    ${ems_weight_from_tr1}
+    Element Should Be Enabled    ${ems_rate_weight_tr1}
+    Input Text    ${ems_rate_weight_tr1}    50
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03610
+    [Documentation]    Verify enter end Product weight less than start Product weight.
+    [Tags]    Medium
+    Input Text    ${day_instock}    1
+    Click Element    ${rd_ems_weight}
+    Execute Javascript    ${ems_range_weight_tr1}.val('to').change()
+    Input Text    ${ems_weight_to_tr1}    2.50
+    Input Text    ${ems_rate_weight_tr1}    50
+    #### Click add new row ####
+    Execute Javascript    $('#content_register > div').eq(1).find('#accordion').eq(1).find('#content_type02 > div > div').eq(0).find('.i-shipping').eq(0).find('span').click()
+    ###########################
+    Sleep    1s
+    Element Should Be Disabled    ${ems_weight_from_tr1}
+    Element Should Be Disabled    ${ems_weight_to_tr1}
+    Element Should Be Disabled    ${ems_weight_from_tr2}
+    Element Should Be Visible    ${ems_rate_weight_tr1}
+    Element Should Be Visible    ${ems_rate_weight_tr2}
+    #### Check alert display if display click to accept ####
+    ${check_alert}    Run Keyword AND Return Status    Element Should Be Visible    //div[@class='bootbox modal fade in']
+    Run Keyword If    '${check_alert}' == 'True'    Click Accept Alert Box
+    ############################
+    Input Text    ${ems_weight_to_tr2}    1.00
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03612
+    [Documentation]    Verify enter period price of Product on EMS shipping - Calculate by price. Incase choose "To"
+    [Tags]    High
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Click Element    ${rd_ems_price}
+    Check Row Shipping Have Two Rows    ${row_ems_price}    ${ems_minus_price}
+    Execute Javascript    ${ems_range_price_tr1}.val('to').change()
+    Input Text    ${ems_price_to_tr1}    100.11
+    Execute Javascript    $('input[name="thai_land_post_ems[price][price][0]"]').val(2012345).blur()
+    Sleep    2s
+    ${value}    Get Text    ${ems_price_from_tr2}
+    Should Be True    ${value} == 100.12
+    Execute Javascript    ${ems_range_price_tr2}.val('andup').change()
+    Input Text    ${ems_rate_price_tr2}    2012355
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03613
+    [Documentation]    Verify enter period price of Product on EMS shipping - Calculate by price. Incase choose "Over"
+    [Tags]    Medium
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Click Element    ${rd_ems_price}
+    Check Row Shipping Have Two Rows    ${row_ems_price}    ${ems_minus_price}
+    Execute Javascript    ${ems_range_price_tr1}.val('andup').change()
+    Element Should Be Disabled    ${ems_price_from_tr1}
+    Element Should Be Enabled    ${ems_rate_price_tr1}
+    Input Text    ${ems_rate_price_tr1}    20
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03614
+    [Documentation]    Verify enter end Product price less than start Product price.
+    [Tags]    Medium
+    Input Text    ${day_instock}    1
+    Execute Javascript    ${thailand_post}.click()
+    Execute Javascript    ${rd_ems}.click()
+    Click Element    ${rd_ems_price}
+    Execute Javascript    ${ems_range_price_tr1}.val('to').change()
+    Execute Javascript    ${ems_price_to_tr1}.val('100')
+    Execute Javascript    ${ems_rate_price_tr1}.val('20')
+    Press Key    ${press_ems_price_tr1}    \\9
+    Sleep    1s
+
+TC_MC_03616
+    [Documentation]    Verify enter period amount of Product on EMS shipping - Calculate by amount . Incase choose "To"
+    [Tags]    High
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Click Element    ${rd_ems_amount}
+    Check Row Shipping Have Two Rows    ${row_ems_amount}    ${ems_minus_amount}
+    Execute Javascript    ${ems_range_amount_tr1}.val('andup').change()
+    Element Should Be Disabled    ${ems_amount_from_tr1}
+    Element Should Be Enabled    ${ems_rate_amount_tr1}
+    Input Text    ${ems_rate_amount_tr1}    30
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03617
+    [Documentation]    Verify enter period amount of Product on EMS shipping - Calculate by amount . Incase choose "Over"
+    [Tags]    Medium
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Sleep    3s
+    Click Element    ${rd_ems_amount}
+    Check Row Shipping Have Three Rows    ${row_ems_amount}    ${ems_minus_amount}
+    Execute Javascript    ${ems_range_amount_tr1}.val('to').change()
+    Input Text    ${ems_amount_to_tr1}    1012.44
+    Execute Javascript    $('input[name="thai_land_post_ems[amount][price][0]"]').val(30222222).blur()
+    Wait Until Element Is Visible    ${ems_amount_from_tr2}
+    ${value}    Get Text    ${ems_amount_from_tr2}
+    Should Be True    ${value} == 101245
+    Execute Javascript    ${ems_range_amount_tr2}.val('andup').change()
+    Input Text    ${ems_rate_amount_tr2}    30222232
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03618
+    [Documentation]    Verify enter end Product amount less than start Product amount.
+    [Tags]    High
+    Click Element    ${rd_ems_amount}
+    Execute Javascript    ${ems_range_amount_tr1}.val('to').change()
+    Input Text    ${ems_amount_to_tr1}    10
+    Input Text    ${ems_rate_amount_tr1}    30
+    Press Key    ${ems_rate_amount_tr1}    \\9
+    Sleep    1s
+    Element Should Be Disabled    ${ems_amount_from_tr1}
+    Element Should Be Disabled    ${ems_amount_to_tr1}
+    Element Should Be Disabled    ${ems_amount_from_tr2}
+    Element Should Be Visible    ${ems_rate_amount_tr1}
+    Element Should Be Visible    ${ems_rate_amount_tr2}
+    Input Text    ${ems_amount_to_tr2}    40
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03620
+    [Documentation]    Verify save button. Incase avaialble to ship and Shipping type setting Complete
+    [Tags]    Regression    High
+    Input Text    ${day_instock}    2
+    Input Text    ${day_preorder}    3
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Sleep    3s
+    Click Element    ${rd_ems_amount}
+    Check Row Shipping Have Three Rows    ${row_ems_amount}    ${ems_minus_amount}
+    Execute Javascript    ${ems_range_amount_tr1}.val('to').change()
+    Input Text    ${ems_amount_to_tr1}    10
+    Execute Javascript    $('input[name="thai_land_post_ems[amount][price][0]"]').val(30).blur()
+    #Input Text    ${ems_rate_amount_tr1}    30
+    #Press Key    ${ems_rate_amount_tr1}    \\9
+    Wait Until Element Is Visible    ${ems_amount_from_tr2}
+    ${value}    Get Text    ${ems_amount_from_tr2}
+    Should Be True    ${value} == 11
+    Execute Javascript    ${ems_range_amount_tr2}.val('andup').change()
+    Input Text    ${ems_rate_amount_tr2}    45
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03621
+    [Documentation]    Verify save button. Incase avaialble to ship Incomplete and Shipping type setting Complete
+    [Tags]    Regression    High
+    Input Text    ${day_instock}    0
+    Input Text    ${day_preorder}    3
+    Click Element    ${rd_post_weight}
+    Execute Javascript    ${post_range_weight_tr1}.val('to').change()
+    Input Text    ${post_weight_to_tr1}    10
+    Input Text    ${post_rate_weight_tr1}    30
+    #### Click add new row ####
+    Execute Javascript    $('#content_thailandpost > div').eq(0).find('#accordion').eq(2).find('#content_type02 > div > div > div').eq(1).find('.i-shipping').eq(0).find('span').click()
+    ###########################
+    Sleep    1s
+    Element Should Be Disabled    ${post_weight_from_tr2}
+    Execute Javascript    ${post_range_weight_tr2}.val('andup').change()
+    ${post_weight_from_tr2}    Get Text    ${post_weight_from_tr2}
+    Should Be True    ${post_weight_from_tr2} == 10.01
+    Input Text    ${post_rate_weight_tr2}    45
+    Execute Javascript    ${post_minus_weight}.click()
+    Element Should Be Visible    ${post_weight_to_tr1}
+
+TC_MC_03622
+    [Documentation]    Verify save button. Incase avaialble to ship Complete and Shipping type setting Incomplete
+    [Tags]    Regression    High
+    Input Text    ${day_instock}    2
+    Input Text    ${day_preorder}    3
+    Click Element    ${rd_post_price}
+    Execute Javascript    ${post_range_price_tr1}.val('to').change()
+    Input Text    ${post_price_to_tr1}    100
+    Input Text    ${post_rate_price_tr1}    20
+    #### Click add new row ####
+    Execute Javascript    $('#content_thailandpost > div').eq(0).find('#accordion').eq(3).find('#content_type02 > div > div > div').eq(1).find('.i-shipping').eq(0).find('span').click()
+    ###########################
+    Sleep    1s
+    ${post_price_from_tr2}    Get Text    ${post_price_from_tr2}
+    Should Be True    ${post_price_from_tr2} == 100.01
+
+TC_MC_03655
+    [Documentation]    Verify Kerry Express shipping - Flat shipping price/baht. If user enter invalid format character
+    [Tags]    Medium
+    ${check_kerry}    Execute Javascript    return $("input[type=checkbox][name='kerry_express_kerry_main_type']").prop('checked')
+    Run Keyword If    '${check_kerry}' == 'False'    Execute Javascript    ${kerry_express}.click()
+    Click Element    ${rd_kerry_order}
+    Click Element    ${rd_kerry_flat_rate}
+    Element Should Be Visible    ${kerry_flat_price}
+    Input Text    ${kerry_flat_price}    test
+    Focus    ${btn_save}
+    Focus    ${day_instock}
+    Textfield Value Should Be    ${kerry_flat_price}    ${EMPTY}
+    Clear Element Text    ${kerry_flat_price}
+    Input Text    ${kerry_flat_price}    @@
+    Focus    ${btn_save}
+    Focus    ${day_instock}
+    Textfield Value Should Be    ${kerry_flat_price}    ${EMPTY}
+
+TC_MC_03656
+    [Documentation]    Verify Kerry Express shipping - Flat shipping price/baht. If user enter Flat shipping price/baht is numeric more than 6 digits.
+    [Tags]    Medium
+    ${check_kerry}    Execute Javascript    return $("input[type=checkbox]name='kerry_express_kerry_main_type']").prop('checked')
+    Run Keyword If    '${check_kerry}' == 'False'    Execute Javascript    ${kerry_express}.click()
+    Click Element    ${rd_kerry_order}
+    Click Element    ${rd_kerry_flat_rate}
+    Element Should Be Visible    ${kerry_flat_price}
+    Input Text    ${kerry_flat_price}    1234567
+    Focus    ${btn_save}
+    Textfield Should Contain    ${kerry_flat_price}    123456
+
+TC_MC_03657
+    [Documentation]    Verify Kerry Express shipping - Flat shipping price/baht. If user enter Flat shipping price/baht is "xxxx.xx"
+    [Tags]    High
+    Check Shipping Type Selected    ${kerry_express}
+    Click Element    ${rd_kerry_order}
+    Click Element    ${rd_kerry_flat_rate}
+    Element Should Be Visible    ${kerry_flat_price}
+    Input Text    ${kerry_flat_price}    123456.56
+    Focus    ${btn_save}
+    Textfield Should Contain    ${kerry_flat_price}    123456.56
+    Input Text    ${kerry_flat_price}    1234
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03658
+    [Documentation]    Verify enter period weight of Product on Kerry Express - Calculate by weight. Incase choose "To"
+    [Tags]    High
+    Check Shipping Type Selected    ${kerry_express}
+    Click Element    ${rd_kerry_weight}
+    Check Row Shipping Have Three Rows    ${row_kerry_weight}    ${kerry_minus_weight}
+    Execute Javascript    ${kerry_range_weight_tr1}.val('to').change()
+    Input Text    ${kerry_weight_to_tr1}    111111.11
+    Execute Javascript    $('input[name="kerry_express_kerry[weight][price][0]"]').val(5000000).blur()
+    Wait Until Element Is Visible    ${kerry_weight_from_tr2}
+    ${value}    Get Text    ${kerry_weight_from_tr2}
+    Should Be True    ${value} == 111111.12
+    Execute Javascript    ${kerry_range_weight_tr2}.val('andup').change()
+    Input Text    ${kerry_rate_weight_tr2}    5000010
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03659
+    [Documentation]    Verify enter period weight of Product on Kerry Express shipping - Calculate by weight. Incase choose "Over"
+    [Tags]    High
+    Check Shipping Type Selected    ${kerry_express}
+    Click Element    ${rd_kerry_weight}
+    Check Row Shipping Have Two Rows    ${row_kerry_weight}    ${kerry_minus_weight}
+    Execute Javascript    ${kerry_range_weight_tr1}.val('andup').change()
+    Element Should Be Disabled    ${kerry_weight_from_tr1}
+    Element Should Be Enabled    ${kerry_rate_weight_tr1}
+    Input Text    ${kerry_rate_weight_tr1}    50
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03660
+    [Documentation]    Verify enter end Product weight less than start Product weight.
+    [Tags]    High
+    Input Text    ${day_instock}    1
+    ${check_kerry}    Execute Javascript    return $("input[type=checkbox][name='kerry_express_kerry_main_type']").prop('checked')
+    Run Keyword If    '${check_kerry}' == 'False'    Execute Javascript    ${kerry_express}.click()
+    Click Element    ${rd_kerry_weight}
+    Execute Javascript    ${kerry_range_weight_tr1}.val('to').change()
+    Input Text    ${kerry_weight_to_tr1}    2.50
+    Input Text    ${kerry_rate_weight_tr1}    50
+    Press Key    ${kerry_rate_weight_tr1}    \\9
+    Sleep    1s
+    Element Should Be Disabled    ${kerry_weight_from_tr1}
+    Element Should Be Disabled    ${kerry_weight_to_tr1}
+    Element Should Be Disabled    ${kerry_weight_from_tr2}
+    Element Should Be Visible    ${kerry_rate_weight_tr1}
+    Element Should Be Visible    ${kerry_rate_weight_tr2}
+    Input Text    ${kerry_weight_to_tr2}    1.00
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03662
+    [Documentation]    Verify enter period price of Product on Kerry Express shipping - Calculate by price. Incase choose "To"
+    [Tags]    High
+    Check Shipping Type Selected    ${kerry_express}
+    Click Element    ${rd_kerry_price}
+    Check Row Shipping Have Two Rows    ${row_kerry_price}    ${kerry_minus_price}
+    Execute Javascript    ${kerry_range_price_tr1}.val('to').change()
+    Input Text    ${kerry_price_to_tr1}    100.11
+    Execute Javascript    $('input[name="kerry_express_kerry[weight][price][0]"]').val(2012345)
+    Execute Javascript    $('input[name="kerry_express_kerry[weight][price][0]"]').blur()
+    Wait Until Element Is Visible    ${kerry_price_from_tr2}
+    ${value}    Get Text    ${kerry_price_from_tr2}
+    Should Be True    ${value} == 100.12
+    Execute Javascript    ${kerry_range_price_tr2}.val('andup').change()
+    Input Text    ${kerry_rate_price_tr2}    2012355
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03663
+    [Documentation]    Verify enter period price of Product on Kerry Express shipping - Calculate by price. Incase choose "Over"
+    [Tags]    High
+    Check Shipping Type Selected    ${kerry_express}
+    Click Element    ${rd_kerry_price}
+    Check Row Shipping Have Two Rows    ${row_kerry_price}    ${kerry_minus_price}
+    Execute Javascript    ${kerry_range_price_tr1}.val('andup').change()
+    Element Should Be Disabled    ${kerry_price_from_tr1}
+    Element Should Be Enabled    ${kerry_rate_price_tr1}
+    Input Text    ${kerry_rate_price_tr1}    20
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03664
+    [Documentation]    Verify enter end Product price less than start Product price.
+    [Tags]    High
+    Input Text    ${day_instock}    1
+    ${check_kerry}    Execute Javascript    return $("input[type=checkbox][name='kerry_express_kerry_main_type']").prop('checked')
+    Run Keyword If    '${check_kerry}' == 'False'    Execute Javascript    ${kerry_express}.click()
+    Click Element    ${rd_kerry_price}
+    Execute Javascript    ${kerry_range_price_tr1}.val('to').change()
+    Input Text    ${kerry_price_to_tr1}    100
+    Input Text    ${kerry_rate_price_tr1}    20
+    Press Key    ${kerry_rate_price_tr1}    \\9
+    Sleep    1s
+    Element Should Be Disabled    ${kerry_price_from_tr1}
+    Element Should Be Disabled    ${kerry_price_to_tr1}
+    Element Should Be Disabled    ${kerry_price_from_tr2}
+    Element Should Be Visible    ${kerry_rate_price_tr1}
+    Element Should Be Visible    ${kerry_rate_price_tr2}
+    Input Text    ${kerry_price_to_tr2}    50
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03666
+    [Documentation]    Verify enter period amount of Product on Kerry Express shipping - Calculate by amount . Incase choose "To"
+    [Tags]    Medium
+    Check Shipping Type Selected    ${kerry_express}
+    Click Element    ${rd_kerry_amount}
+    Check Row Shipping Have Two Rows    ${row_kerry_amount}    ${kerry_minus_amount}
+    Execute Javascript    ${kerry_range_amount_tr1}.val('to').change()
+    Element Should Be Disabled    ${kerry_amount_from_tr1}
+    Element Should Be Enabled    ${kerry_rate_amount_tr1}
+    Input Text    ${kerry_amount_to_tr1}    3
+    Execute Javascript    $('input[name="kerry_express_kerry[amount][price][0]"]').val(30).blur()
+    Wait Until Element Is Visible    ${kerry_amount_from_tr2}
+    ${value}    Get Text    ${kerry_amount_from_tr2}
+    Should Be True    ${value} == 4
+    Execute Javascript    ${kerry_range_amount_tr2}.val('andup').change()
+    Input Text    ${kerry_rate_amount_tr2}    50
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03667
+    [Documentation]    Verify enter period amount of Product on Kerry Express - Calculate by amount . Incase choose "Over"
+    [Tags]    Medium
+    Check Shipping Type Selected    ${kerry_express}
+    Click Element    ${rd_kerry_amount}
+    Check Row Shipping Have Two Rows    ${row_kerry_amount}    ${kerry_minus_amount}
+    Execute Javascript    ${kerry_range_amount_tr1}.val('to').change()
+    Input Text    ${kerry_amount_to_tr1}    1012.44
+    Execute Javascript    $('input[name="kerry_express_kerry[weight][price][0]"]').val(2012345).blur()
+    Wait Until Element Is Visible    ${kerry_amount_from_tr2}    ${EXPECT_LOADTIME}
+    ${value}    Get Text    ${kerry_amount_from_tr2}
+    Should Be True    ${value} == 101245
+    Execute Javascript    ${kerry_range_amount_tr2}.val('andup').change()
+    Input Text    ${kerry_rate_amount_tr2}    4022222
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03668
+    [Documentation]    Verify enter end Product amount less than start Product amount.
+    [Tags]    Medium
+    ${check_kerry}    Execute Javascript    return $("input[type=checkbox][name='kerry_express_kerry_main_type']").prop('checked')
+    Run Keyword If    '${check_kerry}' == 'False'    Execute Javascript    ${kerry_express}.click()
+    Click Element    ${rd_kerry_amount}
+    Execute Javascript    ${kerry_range_amount_tr1}.val('to').change()
+    Input Text    ${kerry_amount_to_tr1}    10
+    Input Text    ${kerry_rate_amount_tr1}    30
+    Press Key    ${kerry_rate_amount_tr1}    \\9
+    Sleep    1s
+    Element Should Be Disabled    ${kerry_amount_from_tr1}
+    Element Should Be Disabled    ${kerry_amount_to_tr1}
+    Element Should Be Disabled    ${kerry_amount_from_tr2}
+    Element Should Be Visible    ${kerry_rate_amount_tr1}
+    Element Should Be Visible    ${kerry_rate_amount_tr2}
+    Input Text    ${kerry_amount_to_tr2}    40
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03670
+    [Documentation]    Verify Custom - Flat shipping price/baht. If user enter invalid format character
+    [Tags]    Medium
+    ${check_custom}    Execute Javascript    return $("input[type=checkbox][name='custom_status[0]']").prop('checked')
+    Run Keyword If    '${check_custom}' == 'False'    Execute Javascript    ${custom_data}.click()
+    Click Element    ${rd_custom_order}
+    Click Element    ${rd_custom_flat_rate}
+    Element Should Be Visible    ${custom_flat_price}
+    Input Text    ${custom_flat_price}    test
+    Focus    ${btn_save}
+    Focus    ${day_instock}
+    Textfield Value Should Be    ${custom_flat_price}    ${EMPTY}
+    Clear Element Text    ${custom_flat_price}
+    Input Text    ${custom_flat_price}    @@
+    Focus    ${btn_save}
+    Focus    ${day_instock}
+    Textfield Value Should Be    ${custom_flat_price}    ${EMPTY}
+
+TC_MC_03671
+    [Documentation]    Verify Custom - Flat shipping price/baht. If user enter Flat shipping price/baht is numeric more than 6 digits.
+    [Tags]    Medium
+    ${check_custom}    Execute Javascript    return $("input[type=checkbox][name='custom_status[0]']").prop('checked')
+    Run Keyword If    '${check_custom}' == 'False'    Execute Javascript    ${custom_data}.click()
+    Click Element    ${rd_custom_order}
+    Click Element    ${rd_custom_flat_rate}
+    Element Should Be Visible    ${custom_flat_price}
+    Input Text    ${custom_flat_price}    1234567
+    Focus    ${btn_save}
+    Textfield Should Contain    ${custom_flat_price}    123456
+
+TC_MC_03672
+    [Documentation]    Verify Custom - Flat shipping price/baht. If user enter Flat shipping price/baht is "xxxx.xx"
+    [Tags]    High
+    Check Shipping Type Selected    ${custom_data}
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[2]/div/input    BTS
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[4]/div/input    3
+    Click Element    ${rd_custom_order}
+    Click Element    ${rd_custom_flat_rate}
+    Element Should Be Visible    ${custom_flat_price}
+    Input Text    ${custom_flat_price}    123456.56
+    Focus    ${btn_save}
+    Textfield Should Contain    ${custom_flat_price}    123456.56
+    Input Text    ${custom_flat_price}    1234
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03673
+    [Documentation]    Verify enter period weight of Product on Custom - Calculate by weight. Incase choose "To"
+    [Tags]    High
+    Check Shipping Type Selected    ${custom_data}
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[2]/div/input    BTS
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[4]/div/input    3
+    Click Element    ${rd_custom_weight}
+    Check Row Shipping Have Two Rows    ${row_custom_weight}    ${custom_minus_weight}
+    Execute Javascript    ${custom_range_weight_tr1}.val('to').change()
+    Input Text    ${custom_weight_to_tr1}    111111.11
+    Execute Javascript    $('input[name="custom_data[0][weight][price][0]"]').val(5000000).blur()
+    Wait Until Element Is Visible    ${custom_weight_from_tr2}
+    ${value}    Get Text    ${custom_weight_from_tr2}
+    Should Be True    ${value} == 111111.12
+    Execute Javascript    ${custom_range_weight_tr2}.val('andup').change()
+    Input Text    ${custom_rate_weight_tr2}    6000000
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03674
+    [Documentation]    Verify enter period weight of Product on Custom - Calculate by weight. Incase choose "Over"
+    [Tags]    High
+    Check Shipping Type Selected    ${custom_data}
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[2]/div/input    BTS
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[4]/div/input    3
+    Click Element    ${rd_custom_weight}
+    Check Row Shipping Have Two Rows    ${row_custom_weight}    ${custom_minus_weight}
+    Execute Javascript    ${custom_range_weight_tr1}.val('andup').change()
+    Element Should Be Disabled    ${custom_weight_from_tr1}
+    Element Should Be Enabled    ${custom_rate_weight_tr1}
+    Input Text    ${custom_rate_weight_tr1}    50
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03675
+    [Documentation]    Verify enter end Product weight less than start Product weight.
+    [Tags]    Medium
+    Input Text    ${day_instock}    1
+    ${check_custom}    Execute Javascript    return $("input[type=checkbox][name='custom_status[0]']").prop('checked')
+    Run Keyword If    '${check_custom}' == 'False'    Execute Javascript    ${custom_data}.click()
+    Click Element    ${rd_custom_weight}
+    Execute Javascript    ${custom_range_weight_tr1}.val('to').change()
+    Input Text    ${custom_weight_to_tr1}    2.50
+    Input Text    ${custom_rate_weight_tr1}    50
+    Press Key    ${custom_rate_weight_tr1}    \\9
+    Sleep    1s
+    Element Should Be Disabled    ${custom_weight_from_tr1}
+    Element Should Be Disabled    ${custom_weight_to_tr1}
+    Element Should Be Disabled    ${custom_weight_from_tr2}
+    Element Should Be Visible    ${custom_rate_weight_tr1}
+    Element Should Be Visible    ${custom_rate_weight_tr2}
+    Input Text    ${custom_weight_to_tr2}    1.00
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03677
+    [Documentation]    Verify enter period price of Product on Custom - Calculate by price. Incase choose "To"
+    [Tags]    High
+    Check Shipping Type Selected    ${custom_data}
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[2]/div/input    BTS
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[4]/div/input    3
+    Click Element    ${rd_custom_price}
+    Check Row Shipping Have Two Rows    ${row_custom_price}    ${custom_minus_price}
+    Execute Javascript    ${custom_range_price_tr1}.val('to').change()
+    Input Text    ${custom_price_to_tr1}    100.11
+    Execute Javascript    $('input[name="custom_data[0][price][price][0]"]').val(5000000).blur()
+    Wait Until Element Is Visible    ${custom_price_from_tr2}
+    ${value}    Get Text    ${custom_price_from_tr2}
+    Should Be True    ${value} == 100.12
+    Execute Javascript    ${custom_range_price_tr2}.val('andup').change()
+    Input Text    ${custom_rate_price_tr2}    3012345
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03678
+    [Documentation]    Verify enter period price of Product on Custom - Calculate by price. Incase choose "Over"
+    [Tags]    Medium
+    Check Shipping Type Selected    ${custom_data}
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[2]/div/input    BTS
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[4]/div/input    3
+    Click Element    ${rd_custom_price}
+    Check Row Shipping Have Two Rows    ${row_custom_price}    ${custom_minus_price}
+    Execute Javascript    ${custom_range_price_tr1}.val('andup').change()
+    Element Should Be Disabled    ${custom_price_from_tr1}
+    Element Should Be Enabled    ${custom_rate_price_tr1}
+    Input Text    ${custom_rate_price_tr1}    20
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03679
+    [Documentation]    Verify enter end Product price less than start Product price.
+    [Tags]    Medium
+    Input Text    ${day_instock}    1
+    ${check_custom}    Execute Javascript    return $("input[type=checkbox][name='custom_status[0]']").prop('checked')
+    Run Keyword If    '${check_custom}' == 'False'    Execute Javascript    ${custom_data}.click()
+    Click Element    ${rd_custom_price}
+    Execute Javascript    ${custom_range_price_tr1}.val('to').change()
+    Input Text    ${custom_price_to_tr1}    100
+    Input Text    ${custom_rate_price_tr1}    20
+    Press Key    ${custom_rate_price_tr1}    \\9
+    Sleep    1s
+    Element Should Be Disabled    ${custom_price_from_tr1}
+    Element Should Be Disabled    ${custom_price_to_tr1}
+    Element Should Be Disabled    ${custom_price_from_tr2}
+    Element Should Be Visible    ${custom_rate_price_tr1}
+    Element Should Be Visible    ${custom_rate_price_tr2}
+    Input Text    ${custom_price_to_tr2}    50
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03681
+    [Documentation]    Verify enter period amount of Product on Custom - Calculate by amount . Incase choose "To"
+    [Tags]    High
+    Check Shipping Type Selected    ${custom_data}
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[2]/div/input    BTS
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[4]/div/input    3
+    Click Element    ${rd_custom_amount}
+    Check Row Shipping Have Two Rows    ${row_custom_amount}    ${custom_minus_amount}
+    Execute Javascript    ${custom_range_amount_tr1}.val('to').change()
+    Element Should Be Disabled    ${custom_amount_from_tr1}
+    Element Should Be Enabled    ${custom_rate_amount_tr1}
+    Input Text    ${custom_amount_to_tr1}    3
+    Execute Javascript    $('input[name="custom_data[0][amount][price][0]"]').val(30).blur()
+    Wait Until Element Is Visible    ${custom_amount_from_tr2}
+    ${value}    Get Text    ${custom_amount_from_tr2}
+    Should Be True    ${value} == 4
+    Execute Javascript    ${custom_range_amount_tr2}.val('andup').change()
+    Input Text    ${custom_rate_amount_tr2}    50
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03682
+    [Documentation]    Verify enter period amount of Product on Custom - Calculate by amount . Incase choose "Over"
+    [Tags]    Medium
+    Check Shipping Type Selected    ${custom_data}
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[2]/div/input    BTS
+    Input Text    //*[@id="content_owner"]/div/div[1]/div/div[4]/div/input    3
+    Click Element    ${rd_custom_amount}
+    Check Row Shipping Have Two Rows    ${row_custom_amount}    ${custom_minus_amount}
+    Execute Javascript    ${custom_range_amount_tr1}.val('to').change()
+    Input Text    ${custom_amount_to_tr1}    1012.44
+    Execute Javascript    $('input[name="custom_data[0][price][price][0]"]').val(30222222)
+    Execute Javascript    $('input[name="custom_data[0][price][price][0]"]').blur()
+    Wait Until Element Is Visible    ${custom_amount_from_tr2}
+    ${value}    Get Text    ${custom_amount_from_tr2}
+    Should Be True    ${value} == 101245
+    Execute Javascript    ${custom_range_amount_tr2}.val('andup').change()
+    Input Text    ${custom_rate_amount_tr2}    30222232
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03683
+    [Documentation]    Verify enter end Product amount less than start Product amount.
+    [Tags]    High
+    ${check_custom}    Execute Javascript    return $("input[type=checkbox][name='custom_status[0]']").prop('checked')
+    Run Keyword If    '${check_custom}' == 'False'    Execute Javascript    ${custom_data}.click()
+    Click Element    ${rd_custom_amount}
+    Execute Javascript    ${custom_range_amount_tr1}.val('to').change()
+    Input Text    ${custom_amount_to_tr1}    10
+    Input Text    ${custom_rate_amount_tr1}    30
+    Press Key    ${custom_rate_amount_tr1}    \\9
+    Sleep    1s
+    Element Should Be Disabled    ${custom_amount_from_tr1}
+    Element Should Be Disabled    ${custom_amount_to_tr1}
+    Element Should Be Disabled    ${custom_amount_from_tr2}
+    Element Should Be Visible    ${custom_rate_amount_tr1}
+    Element Should Be Visible    ${custom_rate_amount_tr2}
+    Input Text    ${custom_amount_to_tr2}    40
+    Click Button Save
+    Click Accept Alert Box
+
+
+TC_MC_03623
+    [Documentation]    Edit shipping (Succuss) - preparation period of instock product is valid format
+    [Tags]    High
+    Input Text    ${day_instock}    ${EMPTY}
+    Input Text    ${day_preorder}    1
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${day_preorder}    1
+    Clear Element Text    ${day_instock}
+    Input Text    ${day_instock}    ${EMPTY}
+    Input Text    ${day_preorder}    20
+    Click Button Save
+    Display Alert Footer
+    Textfield Value Should Be    ${day_preorder}    20
+
+TC_WLS_00339
+    [Documentation]    Edit shipping (Succuss) - ordering period of preorder product is valid format
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Sleep    3s
+    Click Element    ${rd_post_order}
+    Click Element    ${rd_post_flat_rate}
+    Element Should Be Visible    ${post_flat_price}
+    Input Text    ${post_flat_price}    60
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03624
+    [Documentation]    Edit shipping (Succuss) - Selected post shipping and setting data is valid format, Post shipping >> flat shipping price/baht
+    [Tags]    Regression    High
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Sleep    3s
+    Click Element    ${rd_post_order}
+    Click Element    ${rd_post_flat_rate}
+    Element Should Be Visible    ${post_flat_price}
+    Input Text    ${post_flat_price}    80
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Click Element    ${rd_ems_weight}
+    Check Row Shipping Have Three Rows    ${row_ems_weight}    ${ems_minus_weight}
+    Execute Javascript    ${ems_range_weight_tr1}.val('to').change()
+    Input Text    ${ems_weight_to_tr1}    0.5
+    Execute Javascript    $('input[name="thai_land_post_ems[weight][price][0]"]').val(50.00)
+    Execute Javascript    $('input[name="thai_land_post_ems[weight][price][0]"]').blur()
+    Wait Until Element Is Visible    ${ems_weight_from_tr2}
+    ${value}    Get Text    ${ems_weight_from_tr2}
+    Should Be True    ${value} == 0.51
+    Execute Javascript    ${ems_range_weight_tr2}.val('to').change()
+    Input Text    ${ems_weight_to_tr2}    1.00
+    Execute Javascript    $('input[name="thai_land_post_ems[weight][price][1]"]').val(60.00)
+    Execute Javascript    $('input[name="thai_land_post_ems[weight][price][1]"]').blur()
+    Wait Until Element Is Visible    ${ems_weight_from_tr3}
+    ${value}    Get Text    ${ems_weight_from_tr3}
+    Should Be True    ${value} == 1.01
+    Execute Javascript    ${ems_range_weight_tr3}.val('andup').change()
+    Input Text    ${ems_rate_weight_tr3}    90.00
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03625
+    [Documentation]    Edit shipping (Succuss) - Selected post shipping , EMS shipping and setting data is valid format, Post shipping >> flat shipping price/baht ,EMS shipping >> Calculate by weight
+    [Tags]    High
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Click Element    ${rd_post_weight}
+    Check Row Shipping Have Three Rows    ${row_post_weight}    ${post_minus_weight}
+    Execute Javascript    ${post_range_weight_tr1}.val('to').change()
+    Input Text    ${post_weight_to_tr1}    2.50
+    Execute Javascript    $('input[name="thai_land_post_ems[weight][price][0]"]').val(50.00)
+    Execute Javascript    $('input[name="thai_land_post_ems[weight][price][0]"]').blur()
+    Wait Until Element Is Visible    ${post_weight_from_tr2}
+    ${value}    Get Text    ${post_weight_from_tr2}
+    Should Be True    ${value} == 2.51
+    Execute Javascript    ${post_minus_weight}.click()
+    ${num}    Execute Javascript    return ${row_post_weight}.closest('.panel-group').find('.row-ship').length
+    Should Be True    '${num}' == '1'
+
+TC_MC_03596
+    [Documentation]    Verify Post shipping - Calculate by weight delete Tier record (Success)
+    [Tags]    Medium
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Click Element    ${rd_post_price}
+    Check Row Shipping Have Two Rows    ${row_post_price}    ${post_minus_price}
+    Execute Javascript    ${post_range_price_tr1}.val('to').change()
+    Input Text    ${post_price_to_tr1}    100.11
+    Execute Javascript    $('input[name="thai_land_post_standard[price][price][0]"]').val(2012345).blur()
+    Wait Until Element Is Visible    ${post_price_from_tr2}
+    ${value}    Get Text    ${post_price_from_tr2}
+    Should Be True    ${value} == 100.12
+    Execute Javascript    ${post_range_price_tr2}.val('andup').change()
+    Input Text    ${post_rate_price_tr2}    3012345
+    Click Button Save
+    Display Alert Footer
+
+TC_WLS_00343
+    [Documentation]    Verify Edit period price of Product on Post shipping - Calculate by price. Incase choose "To"
+    [Tags]    Medium
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Click Element    ${rd_post_price}
+    Execute Javascript    ${post_range_weight_tr1}.val('andup').change()
+    Element Should Be Disabled    ${post_price_from_tr1}
+    Clear Element Text    ${post_rate_price_tr1}
+    Input Text    ${post_rate_price_tr1}    20
+    Click Button Save
+    Display Alert Footer
+
+TC_WLS_00344
+    [Documentation]    Verify Edit period price of Product on Post shipping - Calculate by price. Incase choose "Over"
+    [Tags]    Low
+    Input Text    ${day_instock}    2
+    Input Text    ${day_preorder}    3
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Click Element    ${rd_ems_amount}
+    Check Row Shipping Have Two Rows    ${row_ems_amount}    ${ems_minus_amount}
+    Execute Javascript    ${ems_range_amount_tr1}.val('to').change()
+    Input Text    ${ems_amount_to_tr1}    10
+    Execute Javascript    $('input[name="thai_land_post_ems[amount][price][0]"]').val(30).blur()
+    Wait Until Element Is Visible    ${ems_amount_from_tr2}
+    ${value}    Get Text    ${ems_amount_from_tr2}
+    Should Be True    ${value} == 11
+    Execute Javascript    ${ems_range_amount_tr2}.val('andup').change()
+    Input Text    ${ems_rate_amount_tr2}    45
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03626
+    [Documentation]    Verify save Edit (Success) vaialble to ship and Shipping type setting Complete
+    [Tags]    Regression    High
+    Input Text    ${day_instock}    {EMPTY}
+    Input Text    ${day_preorder}    {EMPTY}
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Sleep    3s
+    Click Element    ${rd_post_weight}
+    Check Row Shipping Have Two Rows    ${row_post_weight}    ${post_minus_weight}
+    Execute Javascript    ${post_range_weight_tr1}.val('to').change()
+    Input Text    ${post_weight_to_tr1}    10
+    Execute Javascript    $('input[name="thai_land_post_standard[weight][price][0]"]').val(30)
+    Execute Javascript    $('input[name="thai_land_post_standard[weight][price][0]"]').blur()
+    Wait Until Element Is Visible    ${post_weight_from_tr2}
+    ${value}    Get Text    ${post_weight_from_tr2}
+    Should Be True    ${value} == 10.01
+    Execute Javascript    ${post_range_weight_tr2}.val('andup').change()
+    Input Text    ${post_rate_weight_tr2}    45
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03627
+    [Documentation]    Verify save Edit (Fail) avaialble to ship Incomplete and Shipping type setting Complete
+    [Tags]    Medium
+    Input Text    ${day_instock}    2
+    Input Text    ${day_preorder}    3
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Click Element    ${rd_post_weight}
+    Check Row Shipping Have Two Rows    ${row_post_weight}    ${post_minus_weight}
+    Execute Javascript    ${post_range_weight_tr1}.val('to').change()
+    Input Text    ${post_weight_to_tr1}    10
+    Execute Javascript    $('input[name="thai_land_post_standard[weight][price][0]"]').val(30).blur()
+    Wait Until Element Is Visible    ${post_weight_from_tr2}
+    ${value}    Get Text    ${post_weight_from_tr2}
+    Should Be True    ${value} == 10.01
+    Execute Javascript    ${post_minus_weight}.click()
+    ${num}    Execute Javascript    return ${row_post_weight}.closest('.panel-group').find('.row-ship').length
+    Should Be True    '${num}' == '1'
+    Click Button Save
+    Click Accept Alert Box
+
+TC_MC_03628
+    [Documentation]    Verify save Edit button (Fail) avaialble to ship Complete and Shipping type setting Incomplete
+    [Tags]    Medium
+    ${result_instock}    Get Value    ${day_instock}
+    ${result_preorder}    Get Value    ${day_preorder}
+    Log    ${result_instock}
+    Log    ${result_preorder}
+    Input Text    ${day_instock}    ${EMPTY}
+    Input Text    ${day_preorder}    ${EMPTY}
+    Execute Javascript    $('.delete_button').eq(1).click()
+    Sleep    1s
+    Textfield Value Should Be    ${day_instock}    ${result_instock}
+    Textfield Value Should Be    ${day_preorder}    ${result_preorder}
+
+TC_MC_03596
+    [Documentation]    Verify Post shipping - Calculate by weight delete Tier record (Success)
+    [Tags]    Medium
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Click Element    ${rd_post_price}
+    Check Row Shipping Have Two Rows    ${row_post_price}    ${post_minus_price}
+    Execute Javascript    ${post_range_price_tr1}.val('to').change()
+    Input Text    ${post_price_to_tr1}    100.11
+    Execute Javascript    $('input[name="thai_land_post_standard[price][price][0]"]').val(2012345).blur()
+    Wait Until Element Is Visible    ${post_price_from_tr2}
+    ${value}    Get Text    ${post_price_from_tr2}
+    Should Be True    ${value} == 100.12
+    Execute Javascript    ${post_range_price_tr2}.val('andup').change()
+    Input Text    ${post_rate_price_tr2}    3012345
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03600
+    [Documentation]    Verify Post shipping - Calculate by Price delete Tier record (Success)
+    [Tags]    Regression    Medium
+    Choose Shipping Type Thailand Post    ${rd_post}
+    Sleep    3s
+    Click Element    ${rd_post_amount}
+    Check Row Shipping Have Two Rows    ${row_post_amount}    ${post_minus_amount}
+    Execute Javascript    ${post_range_amount_tr1}.val('to').change()
+    Input Text    ${post_amount_to_tr1}    1012.44
+    Execute Javascript    $('input[name="thai_land_post_standard[amount][price][0]"]').val(30222222).blur()
+    Input Text    ${post_rate_amount_tr1}    30222222
+    Press Key    ${post_rate_amount_tr1}    \\9
+    Wait Until Element Is Visible    ${post_amount_from_tr2}
+    ${value}    Get Text    ${post_amount_from_tr2}
+    Should Be True    ${value} == 101245
+    Execute Javascript    ${post_range_amount_tr2}.val('andup').change()
+    Input Text    ${post_rate_amount_tr2}    20222222
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03604
+    [Documentation]    Verify Post shipping - Calculate by Amount delete Tier record (Success)
+    [Tags]    Medium
+    Execute Javascript    ${thailand_post}.click()
+    Execute Javascript    ${rd_ems}.click()
+    Click Element    ${rd_ems_order}
+    Click Element    ${rd_ems_flat_rate}
+    Element Should Be Visible    ${ems_flat_price}
+    Input Text    ${ems_flat_price}    test
+    Focus    ${btn_save}
+    Focus    ${day_instock}
+    Textfield Value Should Be    ${ems_flat_price}    ${EMPTY}
+    Clear Element Text    ${ems_flat_price}
+    Input Text    ${ems_flat_price}    @@
+    Focus    ${btn_save}
+    Focus    ${day_instock}
+    Textfield Value Should Be    ${ems_flat_price}    ${EMPTY}
+
+TC_MC_03611
+    [Documentation]    Verify EMS shipping - Calculate by weight delete Tier record (Success)
+    [Tags]    Medium
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Click Element    ${rd_ems_price}
+    Check Row Shipping Have Two Rows    ${row_ems_price}    ${ems_minus_price}
+    Execute Javascript    ${ems_range_price_tr1}.val('to').change()
+    Input Text    ${ems_price_to_tr1}    100.11
+    Execute Javascript    $('input[name="thai_land_post_ems[price][price][0]"]').val(2012345).blur()
+    Sleep    2s
+    ${value}    Get Text    ${ems_price_from_tr2}
+    Should Be True    ${value} == 100.12
+    Execute Javascript    ${ems_range_price_tr2}.val('andup').change()
+    Input Text    ${ems_rate_price_tr2}    2012355
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03615
+    [Documentation]    Verify EMS shipping - Calculate by Price delete Tier record (Success)
+    [Tags]    Medium
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Click Element    ${rd_ems_amount}
+    Check Row Shipping Have Two Rows    ${row_ems_amount}    ${ems_minus_amount}
+    Execute Javascript    ${ems_range_amount_tr1}.val('andup').change()
+    Element Should Be Disabled    ${ems_amount_from_tr1}
+    Element Should Be Enabled    ${ems_rate_amount_tr1}
+    Input Text    ${ems_rate_amount_tr1}    30
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03619
+    [Documentation]    Verify EMS shipping - Calculate by Amount delete Tier record (Success)
+    [Tags]    Regression    High
+    Input Text    ${day_instock}    2
+    Input Text    ${day_preorder}    3
+    Choose Shipping Type Thailand Post    ${rd_ems}
+    Sleep    3s
+    Click Element    ${rd_ems_amount}
+    Check Row Shipping Have Three Rows    ${row_ems_amount}    ${ems_minus_amount}
+    Execute Javascript    ${ems_range_amount_tr1}.val('to').change()
+    Input Text    ${ems_amount_to_tr1}    10
+    Execute Javascript    $('input[name="thai_land_post_ems[amount][price][0]"]').val(30).blur()
+    Wait Until Element Is Visible    ${ems_amount_from_tr2}
+    ${value}    Get Text    ${ems_amount_from_tr2}
+    Should Be True    ${value} == 11
+    Execute Javascript    ${ems_range_amount_tr2}.val('andup').change()
+    Input Text    ${ems_rate_amount_tr2}    45
+    Click Button Save
+    Display Alert Footer
+
+TC_MC_03629
+    [Documentation]    Verify Cancel button
+    [Tags]    Medium
+    Input Text    ${day_instock}    1
+    Input Text    ${day_preorder}    ${EMPTY}
+    Focus    ${btn_save}
+    Textfield Value Should Be    ${day_instock}    1
+    Clear Element Text    ${day_instock}
+    Input Text    ${day_instock}    7
+    Input Text    ${day_preorder}    ${EMPTY}
+    Click Button Save
+    Display Alert Footer
+    Textfield Value Should Be    ${day_instock}    7
+
+TC_MC_03661
+    [Documentation]    Verify Kerry Express shipping - Calculate by weight delete Tier record (Success)
+    [Tags]    Medium
+    Input Text    ${day_instock}    1
+    ${check_kerry}    Execute Javascript    return $("input[type=checkbox][name='kerry_express_kerry_main_type']").prop('checked')
+    Run Keyword If    '${check_kerry}' == 'False'    Execute Javascript    ${kerry_express}.click()
+    Click Element    ${rd_kerry_weight}
+    Execute Javascript    ${kerry_range_weight_tr1}.val('to').change()
+    Input Text    ${kerry_weight_to_tr1}    2.50
+    Input Text    ${kerry_rate_weight_tr1}    50
+    Press Key    ${kerry_rate_weight_tr1}    \\9
+    Sleep    5s
+    Element Should Be Disabled    ${kerry_weight_from_tr2}
+    ${kerry_weight_from_tr2}    Execute Javascript    return ${kerry_weight_from_tr2}.text()
+    Execute Javascript    ${kerry_minus_weight}.click()
+    ${num}    Execute Javascript    return ${row_kerry_weight}.closest('.panel-group').find('.row-ship').length
+    Should Be True    '${num}' == '1'
+
+TC_MC_03665
+    [Documentation]    Verify Kerry Express shipping - Calculate by Price delete Tier record (Success)
+    [Tags]    Medium
+    ${check_kerry}    Execute Javascript    return $("input[type=checkbox][name='kerry_express_kerry_main_type']").prop('checked')
+    Run Keyword If    '${check_kerry}' == 'False'    Execute Javascript    ${kerry_express}.click()
+    Click Element    ${rd_kerry_price}
+    Execute Javascript    ${kerry_range_price_tr1}.val('to').change()
+    Input Text    ${kerry_price_to_tr1}    100
+    Input Text    ${kerry_rate_price_tr1}    20
+    Press Key    ${kerry_rate_price_tr1}    \\9
+    Sleep    1s
+    ${kerry_price_from_tr2}    Execute Javascript    return ${kerry_price_from_tr2}.text()
+    Execute Javascript    ${kerry_minus_price}.click()
+    ${num}    Execute Javascript    return ${row_kerry_price}.closest('.panel-group').find('.row-ship').length
+    Should Be True    '${num}' == '1'
+
+TC_MC_03669
+    [Documentation]    Verify Kerry Express - Calculate by Amount delete Tier record (Success)
+    ${check_kerry}    Execute Javascript    return $("input[type=checkbox][name='kerry_express_kerry_main_type']").prop('checked')
+       [Tags]    Medium
+    Run Keyword If    '${check_kerry}' == 'False'    Execute Javascript    ${kerry_express}.click()
+    Click Element    ${rd_kerry_amount}
+    Execute Javascript    ${kerry_range_amount_tr1}.val('to').change()
+    Input Text    ${kerry_amount_to_tr1}    10
+    Input Text    ${kerry_rate_amount_tr1}    30
+    Press Key    ${kerry_rate_amount_tr1}    \\9
+    Sleep    1s
+    ${kerry_amount_from_tr2}    Get Text    ${kerry_amount_from_tr2}
+    Should Be True    ${kerry_amount_from_tr2} == 11
+    Execute Javascript    ${kerry_minus_amount}.click()
+    ${num}    Execute Javascript    return ${row_kerry_amount}.closest('.panel-group').find('.row-ship').length
+    Should Be True    ${num} == 1
+
+TC_MC_03676
+    [Documentation]    Verify Custom - Calculate by weight delete Tier record (Success)
+    [Tags]    Medium
+    Input Text    ${day_instock}    1
+    ${check_custom}    Execute Javascript    return $("input[type=checkbox][name='custom_status[0]']").prop('checked')
+    Run Keyword If    '${check_custom}' == 'False'    Execute Javascript    ${custom_data}.click()
+    Click Element    ${rd_custom_weight}
+    Execute Javascript    ${custom_range_weight_tr1}.val('to').change()
+    Input Text    ${custom_weight_to_tr1}    2.50
+    Input Text    ${custom_rate_weight_tr1}    50
+    Press Key    ${custom_rate_weight_tr1}    \\9
+    Sleep    1s
+    Element Should Be Disabled    ${custom_weight_from_tr2}
+    ${custom_weight_from_tr2}    Execute Javascript    return ${custom_weight_from_tr2}.text()
+    Execute Javascript    ${custom_minus_weight}.click()
+    ${num}    Execute Javascript    return ${row_custom_weight}.closest('.panel-group').find('.row-ship').length
+    Should Be True    '${num}' == '1'
+
+TC_MC_03680
+    [Documentation]    Verify Custom - Calculate by Price delete Tier record (Success)
+    [Tags]    Medium
+    ${check_custom}    Execute Javascript    return $("input[type=checkbox][name='custom_status[0]']").prop('checked')
+    Run Keyword If    '${check_custom}' == 'False'    Execute Javascript    ${custom_data}.click()
+    Click Element    ${rd_custom_price}
+    Execute Javascript    ${custom_range_price_tr1}.val('to').change()
+    Input Text    ${custom_price_to_tr1}    100
+    Input Text    ${custom_rate_price_tr1}    20
+    Press Key    ${custom_rate_price_tr1}    \\9
+    Sleep    1s
+    ${custom_price_from_tr2}    Execute Javascript    return ${custom_price_from_tr2}.text()
+    Execute Javascript    ${custom_minus_price}.click()
+    ${num}    Execute Javascript    return ${row_custom_price}.closest('.panel-group').find('.row-ship').length
+    Should Be True    '${num}' == '1'
+
+TC_MC_03684
+    [Documentation]    Verify Custom - Calculate by Amount delete Tier record (Success)
+    [Tags]    High
+    ${check_custom}    Execute Javascript    return $("input[type=checkbox][name='custom_status[0]']").prop('checked')
+    Run Keyword If    '${check_custom}' == 'False'    Execute Javascript    ${custom_data}.click()
+    Click Element    ${rd_custom_amount}
+    Execute Javascript    ${custom_range_amount_tr1}.val('to').change()
+    Input Text    ${custom_amount_to_tr1}    10
+    Input Text    ${custom_rate_amount_tr1}    30
+    Press Key    ${custom_rate_amount_tr1}    \\9
+    Sleep    1s
+    ${custom_amount_from_tr2}    Get Text    ${custom_amount_from_tr2}
+    Should Be True    ${custom_amount_from_tr2} == 11
+    Execute Javascript    ${custom_minus_amount}.click()
+    ${num}    Execute Javascript    return ${row_custom_amount}.closest('.panel-group').find('.row-ship').length
+    Should Be True    ${num} == 1
+

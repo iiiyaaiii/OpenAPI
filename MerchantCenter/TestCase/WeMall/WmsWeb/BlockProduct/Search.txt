@@ -1,0 +1,137 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${url_block_product_history}
+Force Tags        WMS-Web    feature-WMS    mock    blockproduct1
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/WMS_BlockProduct.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/WMS_BlockProduct.txt
+
+*** Test Cases ***
+TC_MC_01553
+    [Documentation]    [Wemall] search by Product ID - Input more than 50 id.
+    [Tags]    Regression    Low
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_product_id}    L90000016,L90000026,L90000027,L90000030,L90000032,L90000039,L90000041,L90000042,L90000043,L90000044,L90000045,L90000051,L90000057,L90000072,L90000076,L90000099,L90000100,L90000105,L90000110,L90000156,L90000162,L90000165,L90000166,L90000205,L90000206,L90000207,L90000208,L90000209,L90000222,L90000223,L90000224,L90000225,L90000227,L90000228,L90000230,L90000232,L90000233,L90000234,L90000235,L90000239,L90000241,L90000245,L90000246,L90000247,L90000248,L90000249,L90000252,L90000254,L90000255,L90000259,L90000262,L90000263,L90000264,L90000265,L90000266,L90000269,L90000270,L90000271,L90000272,L90000273
+    ${msg_over_limit}=    Get Text    //span[@class="help-block error-limit"]
+
+TC_MC_01555
+    [Documentation]    [Wemall] search by Product ID - Case Not Found all product id
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_product_id}    L904453
+    Click Button    ${btn_bp_search}
+    Element Should Be Visible    //div[@id="product-id-missing"]
+    ${msg_not_found}=    Get Text    //*[@id="product-id-missing"]/div/ul/li[1]
+
+TC_MC_01557
+    [Documentation]    [Wemall] search by Product ID - Case Found all product id
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_product_id}    ${product_block2}
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count} == 2
+
+TC_MC_01559
+    [Documentation]    [Wemall] Search by Product ID - Case not found some product id
+    [Tags]    Regression   Medium
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_product_id}    ${product_block2},L11111111,L22222222
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count} == 2
+    Element Should Be Visible    //div[@id="product-id-missing"]
+    ${msg_not_found}=    Get Text    //*[@id="product-id-missing"]/div/ul/li[1]
+
+TC_MC_01561
+    [Documentation]    [Wemall] Search by Store ID - Case found all product of store id
+    [Tags]    Regression    Medium
+    Go To    ${url_block_product_portal}
+    Input Text    ${input_store_id_portal}    ${store_id}
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${column_store_id}
+    Should Be True    ${count} > 0
+    Element Should Contain    ${column_store_id}    ${store_id}
+    ${p_status_show}=    Get Matching Xpath Count    //i[@data-original-title="เปิด"]
+    ${p_status_close}=    Get Matching Xpath Count    //i[@data-original-title="ปิด"]
+    Clear Element Text    ${input_store_id_portal}
+    Input Text    ${input_store_id_portal}    913592
+    ${msg_error_format}=    Get Text    //span[@class="help-block error-format"]
+    Focus    ${input_store_id_portal}
+
+TC_MC_01563
+    [Documentation]   [Wemall] Search by Email
+    [Tags]    Regression    Low
+    Execute javascript    $("input[name='store_email']").val('${seller_user_001}')
+    Execute javascript    $('.btn-primary').click()
+    ${count}=    Get Matching Xpath Count    ${column_email}
+    : FOR    ${i}    IN RANGE    1    ${count}
+    \    ${email}=    Get Text    //*[@id="result-table"]/tbody/tr[${1}]/td[8]
+    \    ${result}=    Get Substring    ${email}    8
+    \    Element Should Contain    //*[@id="result-table"]/tbody/tr[${1}]/td[8]    ${seller_user_001}
+
+TC_MC_01565
+    [Documentation]    [Wemall] Search by Phone
+    [Tags]    Regression    Low
+    #Execute javascript    $("input[name='store_phone']").val('043334343')
+    Execute javascript    $("input[name='store_phone']").val('0891111111')
+    Execute javascript    $('.btn-primary').click()
+    ${count}=    Get Matching Xpath Count    ${column_phone}
+    : FOR    ${i}    IN RANGE    1    ${count}
+    \    ${phone}=    Get Text    //*[@id="result-table"]/tbody/tr[${1}]/td[9]
+    \    Element Should Contain    ${phone}    0891111111
+    #\    Element Should Contain    ${phone}    043334343
+
+TC_MC_01567
+    [Documentation]    [Wemall] BlockProduct History - Search by Store ID
+    [Tags]    Regression    Low
+    Execute javascript    $("input[name='store_id']").val('${store_id}')
+    Execute javascript    $('.btn-primary').click()
+    ${count}=    Get Matching Xpath Count    ${column_store_id}
+    : FOR    ${i}    IN RANGE    1    ${count}
+    \    Element Should Contain    //*[@id="result-table"]/tbody/tr[${1}]/td[7]    ${store_id}
+
+TC_MC_01569
+    [Documentation]    [Wemall] Search by "วันที่อัพเดตสินค้า"
+    Go To    ${url_block_product_portal}
+    Click Element    //i[@class="fa fa-calendar bigger-110"]
+    Click Element    xpath=/html/body/div[8]/div[3]/ul/li[1]
+    Click Button    ${btn_bp_search}
+    ${count}=    Get Matching Xpath Count    ${record_result_found}
+
+TC_MC_01571
+    [Documentation]    [Wemall] Search by Status = show
+    Go To    ${url_block_product_portal}
+    Select From List By Label    ${select_product_status}    แสดง
+    Click Button    ${btn_bp_search}
+    ${count_icon_Status}=    Get Matching Xpath Count    ${icon_status_show}
+    Should Be True    ${count_icon_Status} > 0
+
+TC_MC_01573
+    [Documentation]    [Wemall] Search by Status = block
+    Go To    ${url_block_product_portal}
+    Select From List By Label    ${select_product_status}    ปิด
+    Click Button    ${btn_bp_search}
+    ${count_icon_Status}=    Get Matching Xpath Count    ${icon_status_close}
+    Should Be True    ${count_icon_Status} > 0
+
+TC_MC_01575
+    [Documentation]    [Wemall] Check Paging Product Listing
+    Go To    ${url_block_product_portal}
+    Select From List By Label    ${select_product_status}    แสดง
+    Click Button    ${btn_bp_search}
+    ${show_all}=    Get Text    //div[@id="table_report_info"]
+    ${count_per_page}=    Get Matching Xpath Count    ${record_result_found}
+    Should Be True    ${count_per_page} == 50
+
+TC_MC_08825
+    [Documentation]    [Wemall] BlockProduct portal - Redirect product name link
+    Go To    ${url_block_product_portal}
+    Click Button    ${btn_bp_search}
+    Click product name link on first record in Block Product page
+    Check that link is redirect to product detail page successfully    wemall
+

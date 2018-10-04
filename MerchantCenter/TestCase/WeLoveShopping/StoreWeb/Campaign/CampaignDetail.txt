@@ -1,0 +1,30 @@
+*** Setting ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+#Suite Teardown    Close All Browsers
+Force Tags        Store-Web    Ligo    Sprint2017MC9    WLSPromotion    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+
+*** Test Case ***
+TC_MC_03522
+    [Documentation]    [Welove] Verify "Campaign Detail" page with fee = 0
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${user_s001}/admin/campaign/${join_campaign_Fee_Zero_limit}
+    ${is_title_equal}    Execute Javascript    return $('span[id="c_hasfee"]').text().trim()
+    Should Be Equal    ${is_title_equal}    0% ของยอดขายสินค้าที่ขายได้ภายใต้แคมเปญนี้ (ไม่รวมค่าธรรมเนียมการทำรายการ)
+    ${T&C}    Execute Javascript    return $('span[class="lbl"]').eq(1).text().trim()
+    Should Be Equal    ${T&C}    ข้าพเจ้ายินยอมให้เว็บไซต์เก็บค่าธรรมเนียมการเข้าร่วมแคมเปญ อัตรา 0% ของยอดขายสินค้าที่ขายภายใต้แคมเปญนี้ ทั้งนี้ ข้าพเจ้าขอรับรองต่อบริษัทว่าข้าพเจ้าได้อ่านและเข้าใจรายละเอียด เงื่อนไขการเข้าร่วมแคมเปญโดยตลอดแล้ว และเป็นผู้มีอำนาจในการดำเนินการ และ/หรือ รับมอบอำนาจ และ/หรือ เป็นตัวแทนในการดำเนินการดังกล่าวในนามร้านค้าโดยชอบตามกฎหมาย ดูวิธีคิดค่าธรรมเนียม
+
+TC_MC_03524
+    [Documentation]    [Welove] Verify "Campaign Detail" page with no fee
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${user_s001}/admin/campaign/${promotion_cart_price_by_price_id}
+    ${is_title_equal}    Execute Javascript    return $('span[id="c_nofee"]').text().trim()
+    Should Be Equal    ${is_title_equal}    ฟรีค่าธรรมเนียม
+    ${T&C}    Execute Javascript    return $('span[class="lbl"]').eq(1).text().trim()

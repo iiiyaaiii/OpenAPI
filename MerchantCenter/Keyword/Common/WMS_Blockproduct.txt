@@ -1,0 +1,118 @@
+*** Settings ***
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           Collections
+Library           OperatingSystem
+Library           DateTime
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeMall/WebElement/WMS_BlockProduct.txt
+Resource          ../../Resource/WeMall/WebElement/WMS_BlockWordListing.txt
+
+*** Keywords ***
+Block Product
+    [Arguments]    ${id}    ${status}
+    [Documentation]    Block Product
+    Go to    ${URL_WMS}/block_product
+    Input Text    //textarea[@id='product-ids']    ${id}
+    Sleep    0.5s
+    # Click Element    //button[@name='search-btn']
+    Execute Javascript    $("button[name='search-btn']").click()
+    Sleep    1s
+    # Execute Javascript    $('.open-action').click()
+    Click Element    //label[@class='position-relative']//span
+    ${product_found}    Run Keyword And Return Status    Wait Until Element Is Visible    id=product-id-missing
+    # Capture Page Screenshot
+    Run Keyword If    '${product_found}'=='False'    Change Product Status    ${status}
+
+Change Product Status
+    [Arguments]    ${status}
+    [Documentation]    Change Product Status
+    Sleep    1.5s
+    Select From List By Label    form-status    ${status}
+    Sleep    0.5s
+    Run Keyword If    '${status}' == 'ปิด'    Select From List By Label    form-reason    ละเมิดลิขสิทธิ์รูปภาพ
+    Input Text    //textarea[@id='form-comment']    change product status by robot
+    # Click Element    //button[@class='btn btn-danger']
+    Execute Javascript    $('#action-confirm-save').click()
+    Sleep    0.5s
+    Click Element    //div[@class="modal-footer"]//button[@data-bb-handler="confirm"]
+    Sleep    3s
+
+Monitoring Product
+    [Arguments]    ${id}    ${status}
+    [Documentation]    Monitoring Product
+    Go to    ${URL_WMS}/monitoringlisting
+    Input Text    //input[@name='product_id']    ${id}
+    Press Key    //input[@name='product_id']    \\13
+    Sleep    1s
+    ${product_found}    Run Keyword And Return Status    Wait Until Element Is Visible    //table//tbody//tr//td[contains(@class,'center text-danger txt_no_data') and contains(text(),'ไม่พบข้อมูล')]
+    Run Keyword If    '${product_found}'=='False'    Change Product Monitoring Status    ${id}    ${status}
+
+Change Product Monitoring Status
+    [Arguments]    ${id}    ${status}
+    [Documentation]    Change Product Monitoring Status
+    Execute Javascript    $('td:contains(${id})').click()
+    Sleep    1s
+    Close Window
+    Select Window    title=Monitoring Listing
+    Run Keyword If    '${status}' == 'ไม่ผ่านการตรวจสอบ'    Execute Javascript    $('.dd2-handle')[8].click()
+    Execute Javascript    $('.dd2-handle')[13].click()
+    Sleep    3s
+
+Click product name link on first record in Block Product page
+    Click Element    ${first_product_name_link}
+
+Check that link is redirect to product detail page successfully
+    [Arguments]    ${site}
+    ${product_id}    Get Text    ${first_product_id_link}
+    Run keyword If    '${site}'=='welove'    Select Window    url=https://portal.wls-dev.com/product/${product_id}
+    Run keyword If    '${site}'=='welove'    Location Should Be    https://portal.wls-dev.com/product/${product_id}
+    Run keyword If    '${site}'=='wemall'    Select Window    url=https://www.wemall-dev.com/d/${product_id}
+    Run keyword If    '${site}'=='wemall'    Location Should Be    https://www.wemall-dev.com/d/${product_id}
+
+Check Block Word Type List
+    [Arguments]    ${word}
+    Wait Until Element Is Visible    ${ddl_block_type}
+    Element Should Contain    ${ddl_block_type}    ${word}
+
+Go To Blockword Page
+    Go to    ${URL_WMS}/blockword
+    Wait Until Element Is Visible    ${lbl_blockword}
+
+Click Create Blockword
+    [Arguments]    ${word}
+    Click Element    ${add_blockword}
+    Input Text    ${blockword}    ${word}
+    Select From List By Label    ${ddl_block_type}    คำหยาบ
+    Execute Javascript    ${click_cate}
+    Execute Javascript    ${select_cate}
+    Execute Javascript    ${click_cate}
+    Click Element    ${lbl_status}
+    Click Element    ${lbl_status_type}
+    Click Element    ${lbl_status}
+    Click Element    ${lbl_block}
+    Click Element    ${block_level}
+    Click Element    ${lbl_block}
+    Execute Javascript    ${comment}
+    Click Button    ${btn_submit}
+
+Input Text For Search
+    [Arguments]    ${word}
+    Input Text    ${lbl_text_blockword}    ${word}
+    Wait Until Element Is Visible    ${lbl_blockword}
+    Press Key    ${lbl_enter_blockword}    \\13
+
+Click Button Search
+    Click Element    ${btn_search_blockword}
+
+Verify List Blockword
+    [Arguments]    ${word}
+    Wait Until Element Contains    ${lbl_list_blockword}    ${word}
+
+Delete Blockword
+    Click Element    ${delete_blockword}
+    Click Element    ${comfirm_delete}
+    Wait Until Element Is Visible    ${lbl_blockword}
+
+Verify Not List Blockword
+    [Arguments]    ${text}
+    Element Should Contain    ${lbl_list_all}    ${text}

@@ -1,0 +1,49 @@
+*** Setting ***
+Suite Setup       Run Keywords    WMS Login    AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_WMS}/seller_product_property
+Force Tags        WMS-Web    mock    mc-wls
+Library           SeleniumLibrary
+Library           String
+Library           Collections
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/WMS_PropertyManagement.txt
+
+*** Test Case ***
+TC_MC_00813
+    [Tags]    Regression    Medium
+    [Documentation]    Select property type dropdown for edit property
+    ${count}=    Get Matching Xpath Count    //div[@class="dataTables_wrapper"]//tr
+    : FOR    ${Index}    IN RANGE    3    ${count}
+    \    ${status}=    Execute Javascript   return $('a:contains("Brand")').length
+    \    sleep    3s
+    \    Run Keyword IF    '${status}' == '0'    Click Element    //ul[@class='pagination']/li[${index}]/a
+    \    ${status}=    Execute Javascript   return $('a:contains("Brand")').length
+    \    sleep    3s
+    \    Run Keyword IF    '${status}' == '1'    Execute Javascript    $('a:contains("Brand")')[0].click()
+    \    Exit For Loop If    '${status}' == '1'
+    sleep    2s
+    Wait Until Element Is Visible    //ul[@class='breadcrumb']/li[@class='active']    ${EXPECT_LOADTIME}
+    sleep    3s
+    Element Should Contain    //ul[@class='breadcrumb']/li[@class='active']    แก้ไข ตัวเลือก
+
+TC_MC_00815
+    [Tags]    Medium
+    [Documentation]    Select property type fill form for edit property
+    ${count}=    Get Matching Xpath Count    //div[@class="dataTables_wrapper"]//tr
+    : FOR    ${Index}    IN RANGE    3    ${count}
+    \    ${status}=    Execute Javascript   return $('a:contains("TestRequired")').length
+    \    sleep    3s
+    \    Run Keyword IF    '${status}' == '0'    Click Element    //ul[@class='pagination']/li[${index}]/a
+    \    ${status}=    Execute Javascript   return $('a:contains("TestRequired")').length
+    \    sleep    3s
+    \    Run Keyword IF    '${status}' == '1'    Execute Javascript    $('a:contains("TestRequired")')[0].click()
+    \    Exit For Loop If    '${status}' == '1'
+    sleep    2s
+    Wait Until Element Is Visible    //ul[@class='breadcrumb']/li[@class='active']    ${EXPECT_LOADTIME}
+    sleep    2s
+    Element Should Contain    //ul[@class='breadcrumb']/li[@class='active']    แก้ไข กรอกข้อมูล
+

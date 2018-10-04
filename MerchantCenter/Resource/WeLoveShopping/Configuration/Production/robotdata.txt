@@ -1,0 +1,165 @@
+*** variable ***
+### SELLER ###
+${wms_user}    joyjorjar@hotmail.com
+${wms_pass}    1234
+${mobileno_test}    0647016834
+${idcard}    3779800090701
+${seller_user_001}    prodtest05@mailinator.com
+${seller_pwd_001}    Joy@123456
+${user_s001}      prodtest05
+${seller_user_0010}    qawlsautomate@gmail.com
+${seller_pwd_0010}    Qawls0001
+${user_s0010}     qawlsautomate
+${seller_user_002}    wlsautomate11@mailinator.com
+${seller_pwd_002}    Abcd001
+${user_s002}      qa_wls_test
+${seller_user_003}    wlsautomate13@mailinator.com
+${seller_pwd_003}    Abcd001
+${user_s003}      wlsautomate13
+${seller_user_sanity}    qawlsautomate@gmail.com
+${seller_pwd_sanity}    Qawls0001
+${seller_user_new}    wlsatm1463477587@mailinator.com
+${seller_pwd_new}    Abcd001
+${user_new}       wlsatm1463477587
+${seller_user_4step}    wlsautomate11@mailinator.com
+${seller_pwd_4step}    Abcd001
+${user_4step}     qa_wls_test
+${seller_user_004}    joystaging001@mailinator.com
+${seller_pwd_004}    qatest
+${user_004}       joystaging001
+${trust_user_001}    trustteam.test@gmail.com
+${trust_pwd_001}    escrow123
+${user_trust001}    testescrow
+${store_id}       L926070
+${category_id}    77362
+${product_id}     90530595
+${promotion_id}    112
+${edit_product_id}    90530595
+${edit_product1_id}    90336160
+${edit_product2_id}    90336159
+${edit_product3_id}    90336158
+${edit_product4_id}    90530705
+${move_product}    90981698
+${product_block2}    L90576476,L90547917
+${product_block1}    L90576476
+${email_ewallet}    qawlsautomate@gmail.com
+${pass_ewallet}    qawls0001
+${product_NoAttr}    L90336157
+${product_Attr}    L90336160
+${product_NoStock}    L90981618
+${preorder_Stock}    L90982131
+${preorder_NoAttr}    L90336159
+${seller_user_tc}    qawlsautomate@gmail.com
+${seller_pwd_tc}    qawls0001
+${reg_user_001}    qawlsautomate@gmail.com
+${reg_pass_001}    qawls0001
+${shopname_user001}    qawlsautomate
+${reg_user_002}    wlsautomate13@mailinator.com
+${reg_pass_002}    Abcd001
+${shopname_user002}    wlsautomate13
+
+###Eagle Eye###
+${eagleeye_user}    automationqa
+${eagleeye_password}    P@ssw0rd
+
+###user for test register shop ###
+${member_user_001}    sellertest01@mailinator.com
+${member_pwd_001}    12345678
+
+###user for test category###
+${category_user_001}    wlsautomate13@mailinator.com
+${category_pwd_001}    Abcd001
+${category_shopname}    wlsautomate13
+${category_user_002}    qawlsautomate@gmail.com
+${category_pwd_002}    qawls0001
+${category_shopname2}    qawlsautomate
+${category_shopid2}    926070
+
+###shop for test shipping###
+${blockstore_email2}    wlsautomate13@mailinator.com
+${blockstore_password2}    Abcd001
+${blockstore_name2}    wlsautomate13
+${blockstore_id2}    L927193
+${blockstore_url2}    wlsautomate13
+
+
+
+
+### BUYER ###
+${image_wetrustforkey}    //img[@src="https://cdn-p.weloveshopping.com/themes/titan/assets/images/logo/logo_wetrust.png"]
+${buyer_account}    sanity_user@mailinator.com
+${buyer_account_pass}    123456
+${store_email1}    kusuma.chom@gmail.com
+${store_password1}    Recon@1234
+${store_url1}     AmyShop
+${store_name1}    TestOnly
+${robot_store1_instock_type_new}    L91289388
+${robot_store1_instock_type_use}    L91288353
+${robot_store1_1attr_3inv}    L91288286
+${robot_store1_2attr_3inv}    L90626925
+${robot_store2_instock_type_new}    L90547922
+${buyer_mobile}    sanity_user@mailinator.com
+${buyer_mobile_pass}    123456
+${buyer_cart}     sanity_cart@mailinator.com
+${buyer_cart_pass}    123456
+### TRUST ###
+${login_userprod}     qawlsautomate@gmail.com
+${login_passprod}     Qawls0001
+${numcard}        5270693294989409
+${numcard}        5270691343693386
+${visa1}          5270
+${visa2}          6913
+${visa3}          4369
+${visa4}          3386
+${cardname}       QA WLS
+${cnv}            785
+${month}          03
+${year}           2022
+${lbl_credit1}    5270
+${lbl_credit2}    6913
+${lbl_credit3}    4369
+${lbl_credit4}    3386
+${type_card}      Master
+${product_sanity1}    Product Test 1 [เทสระบบห้ามลบ]
+${product_sanity2}    Product Test 2 [เทสระบบห้ามลบ]
+${email_ewallet}    qawlsautomate@gmail.com
+${pass_ewallet}    qawls0001
+${storename_slug_prod}      qawlsautomate
+${accept_pass}    qawls0001
+${user_wms}       katekrub@gmail.com
+${pass_wms}       escrow
+${customerid}     754170
+${store_comfee}    trustcomfee
+${store_feedback}    trustfeedback
+${store_order}    trustorder
+${ems_tracking}    EX123456789TH
+
+${mcwlsprod_user_1}    mcwlsprodtest_1@mailinator.com
+${mcwlsprod_pass_1}    Joy@123456
+${user_mcwlsprod1_id}    L939921
+${user_mcwlsprod1_url}    mcwlsprodtest_1
+${shopname_mcwlsprod1}    mcwlsprodtest_1
+${mcwlsprod_user_2}    mcwlsprodtest_2@mailinator.com
+${mcwlsprod_pass_2}    Joy@123456
+${user_mcwlsprod2_id}    L939923
+${user_mcwlsprod2_url}    mcwlsprodtest_2
+${shopname_mcwlsprod2}    mcwlsprodtest_2
+${mcwlsprod_user_4}    mcwlsprodtest_4@mailinator.com
+${mcwlsprod_pass_4}    Joy@123456
+${user_mcwlsprod4_id}     L939925
+${user_mcwlsprod4_url}     mcwlsprodtest_4
+${mcwlsprod_user_5}    mcwlsprodtest_5@mailinator.com
+${mcwlsprod_pass_5}    Joy@123456
+${user_mcwlsprod5_id}     L939926
+${user_mcwlsprod5_url}     mcwlsprodtest_5
+${mcwlsprod_user_3}    mcwlsprodtest_3@mailinator.com
+${mcwlsprod_pass_3}    Joy@123456
+${user_mcwlsprod3_id}    L939936
+${user_mcwlsprod3_url}    mcwlsprodtest_3
+${shopname_mcwlsprod3}    mcwlsprodtest_3
+${image_logo}             logo_mi6_seller_3.jpg
+
+###Estamp###
+${client_id_estamp}    bc29a8fa0673466f1a291bdb3a692435
+${client_secret_estamp}    1da40d85b28a036484c67ce77af2dd68
+${grant_type}    client_credentials

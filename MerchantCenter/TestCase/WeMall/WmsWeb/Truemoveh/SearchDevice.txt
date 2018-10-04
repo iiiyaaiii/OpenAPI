@@ -1,0 +1,37 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_07022
+    [Documentation]     Display device correctly when user search by full device is existing in the system
+    [Tags]    Ligo		Sprint2017MC19		Regression 		High
+    Set Test Variable                       ${device_test}           Robot Device 2
+ 	@{sim_types}    						Create List    			 Nano SIM
+	Delete Existing Device Name 			${device_test}
+    Create Device  							${device_test}			 @{sim_types}
+	Verify data device 						${device_test}			 @{sim_types}
+
+TC_MC_07023
+    [Documentation]     Display device correctly when user search by some part of device is existing in the system
+    [Tags]    Ligo		Sprint2017MC19		Regression 		High
+    Set Test Variable                       ${device_test}           Robot Device 2
+ 	@{sim_types}    						Create List    			 Nano SIM
+	Delete Existing Device Name 			${device_test}
+    Create Device  							${device_test}			 @{sim_types}
+    Search Device                       	Device 2
+    ${row_target}=                      	Convert To String        //*[contains(text(), '${device_test}')]/parent::td/parent::tr
+    Wait Until Element Is Visible       	${row_target}/td/span[@data-id="name" and contains(text(), '${device_test}')]     ${TIMEOUT}
+    : FOR    ${sim_type}    IN           	@{sim_types}
+    \     Wait Until Element Is Visible     ${row_target}/td/span[@data-id="sim_type" and contains(text(), '${sim_type}')]
+

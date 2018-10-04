@@ -1,0 +1,35 @@
+*** Settings ***
+Suite Setup       Run Keywords    WMS Login    ${PermissionUser}
+...               AND    WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web
+Test Setup        Go To    ${URL_WMS}/account
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Permission.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Permission.txt
+
+*** Test Cases ***
+TC_MC_01002
+    [Documentation]    Assign wemall only
+    Search email    ${PermissionUser}
+    Edit Account
+    Clear Assign Project
+    Assign Project    wemall
+    Click Submit Button
+    Search email    ${PermissionUser}
+    Verify Project On List Page
+    Verify Project Menu
+
+TC_MC_01004
+    [Documentation]    Assign wemall and welove
+    Search email    ${PermissionUser}
+    Edit Account
+    Clear Assign Project
+    Assign Project    wemall
+    Assign Project    westore
+    Click Submit Button
+    Search email    ${PermissionUser}
+    Verify Project On List Page
+    Verify Project Menu

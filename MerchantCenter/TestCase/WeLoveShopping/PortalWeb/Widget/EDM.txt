@@ -1,0 +1,43 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Test Setup        Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Teardown     Close All Browsers
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Portal.txt
+Force Tags        Portal-Web    mc-wls
+
+*** Test Cases ***
+TC_WLS_03384
+    [Documentation]    Widget - EDM : Not display subscribe on deal zab pages when login already
+    [Tags]    Regression    High    Portal-Web
+    Go to    ${URL_PORTAL}/dealzapp
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Element Should Not Be Visible    ${pop_subscription}
+    Clear Active Login
+    Delete All Cookies
+
+TC_WLS_03386
+    [Documentation]    Widget - EDM : Invalidate email unsuccess in subscribe home pages
+    [Tags]    Regression    High    Portal-Web
+    Go to    ${URL_PORTAL}
+    Click Element    ${pop_subscription}
+    Element Should Be Visible    ${pop_email}
+    Input Text    ${pop_email}    @@!$#@EDQ
+    Click Element    ${subscription_male}
+    Element Should Be Visible    ${pop_warning_message}
+    Element Should Contain    ${pop_warning_message}    กรุณากรอกอีเมลให้ถูกต้อง
+    Delete All Cookies
+
+TC_WLS_03390
+    [Documentation]    Widget - EDM : Invalidate email unsuccess in subscribe on footer
+    [Tags]    Regression    High    Portal-Web
+    Go to    ${URL_PORTAL}/dealzapp
+    Element Should Be Visible    ${footer_email}
+    Input Text    ${footer_email}    @@!$#@EDQ
+    Click Element    ${footer_subscription_male}
+    Element Should Be Visible    ${footer_warning_message}
+    Element Should Contain    ${footer_warning_message}    กรุณากรอกอีเมลให้ถูกต้อง
+    Delete All Cookies

@@ -1,0 +1,81 @@
+*** Settings ***
+Library           SeleniumLibrary
+Library           ExcelLibrary
+
+*** Keywords ***
+Go To Store Bulktracking Page
+    [Documentation]    Use for go to store bulktracking page
+    [Arguments]    ${slug_name}
+    Go To    ${URL_STORE}/${slug_name}/admin/orders/bulk-tracking
+
+Verify Text Username
+    [Documentation]    Use for verify text username on login page
+    Element Text Should Be    ${text_login_user}    ชื่อผู้ใช้
+
+Verify Text Password
+    [Documentation]    Use for verify text password on login page
+    Element Text Should Be    ${text_login_password}    รหัสผ่าน
+
+Go To Order List Waitshipping Tab Store Page
+    [Documentation]    Use for go to order list waitshipping tab store page
+    [Arguments]    ${slug_name}
+    Go To    ${URL_STORE}/${slug_name}/admin/orders?status=waitshipping&sort-by-pay=ASC
+
+Select Window Bulktracking
+    [Documentation]    Use for select window bulktracking
+    [Arguments]    ${window_name}
+    Select Window    ${window_name}
+
+Select Radio Button Type For Download File
+    [Documentation]    Use for select radio button type for download file
+    [Arguments]    ${type}
+    Select Radio Button    ${radio_type_bulktracking}    ${type}
+
+Click muti shipping button
+    [Documentation]    Use for click muti shipping button
+    Click Element    ${muti_ship_button}
+
+Select format file for shipping
+    [Documentation]    Use for seller select format file for shipping
+    [Arguments]    ${type}
+    Execute Javascript    $("input[value='${type}']").click()
+
+Click download button on bulktracking page
+    [Documentation]    Use for download file for shipping
+    Click Element    ${download_button_on_bulktracking}
+
+Upload file for shipping
+    [Documentation]    Use for seller upload file for shipping
+    [Arguments]    ${file}
+    ${file_path}    Get file path
+    Choose File    ${input_file_tracking}    ${file_path}${/}${file}
+    Click Button    ${tracking_button}
+    Check Element Is Visible    ${comfirm_button}
+    Click Button    ${comfirm_button}
+    Check Element Is Visible   ${here_link}
+
+Create and upload shipping file after create the order success
+    [Documentation]    Use for seller upload shipping file when create the order success
+    ${file_path}    Get file path
+    Open Excel    ${file_path}/PrepareShippingWLS.xls
+    Put String To Cell    Sheet1    0    1    EX093592705TH
+    Put String To Cell    Sheet1    1    1    ${order_id}
+    Save Excel    ${file_path}${/}PrepareShippingWLS.xls    true
+    Choose File    ${input_file_tracking}    ${file_path}${/}PrepareShippingWLS.xls
+    Click Button    ${tracking_button}
+    Check Element Is Visible    ${comfirm_button}
+    Click Button    ${comfirm_button}
+
+Go to print preview page
+    [Documentation]    Use for preview before print addresslabel and shipping
+    [Arguments]    ${store_name}
+    Select Window    url=${URL_STORE}/${store_name}/admin/orders/print-preview
+
+Go to other page
+    [Documentation]    Use click pagination for go to other page
+    [Arguments]    ${slug_name}    ${page}
+    Go To    ${URL_STORE}/${slug_name}/admin/orders?page=${page}status=waitshipping&sort-by-pay=ASC
+
+
+
+

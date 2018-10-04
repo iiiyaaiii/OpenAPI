@@ -1,0 +1,112 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.1s
+Force Tags        Store-Web    mock    AlertMessage    Ligo    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/BlockShop.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00939
+    [Documentation]    verify Alert Message on dashboard : case change status normal (shop open) >> Warning
+    [Tags]    Regression    High
+    Go To    ${url_block_seller}
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    Sleep    1s
+    ## Select action block status = Warning
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    warning
+    Select From List By Label    ${select_action_reason}    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Element Should Be Visible    ${top_record_status}    ${icon_warning}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'ปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+    Sleep    1s
+    Account Login    ${seller_user_block}    ${seller_pwd_block}
+    Go To    ${URL_STORE}/${user_block}/admin/dashboard/summary
+    ${alert_info}    Execute javascript    return $('.alert-error').text().trim();
+    ${str2}    Convert To String    ${alert_info}
+    Should Contain    ${str2}    รายการสินค้าจะไม่ถูกแสดง เนื่องจากร้านของคุณถูกระงับการใช้งานชั่วคราว กรุณาติดต่อทีมงานที่ 02-020-2355 เพื่อปรับปรุงแก้ไขให้ถูกกฏระเบียบเว็บไซต์ค่ะ
+    Sleep    1s
+    Go To    ${URL_STORE}/${user_block}/admin/product
+    ${alert_info1}    Execute javascript    return $('.alert-error').text().trim();
+    ${str3}    Convert To String    ${alert_info1}
+    Should Contain    ${str3}    รายการสินค้าจะไม่ถูกแสดง เนื่องจากร้านของคุณถูกระงับการใช้งานชั่วคราว กรุณาติดต่อทีมงานที่ 02-020-2355 เพื่อปรับปรุงแก้ไขให้ถูกกฏระเบียบเว็บไซต์ค่ะ
+    Sleep    1s
+    ## Select action block status = Normal
+    WMS Login
+    Go To    ${url_block_seller}
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    Sleep    1s
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    normal
+    Select From List By Label    ${select_action_reason}    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Element Should Be Visible    ${top_record_status}    ${icon_normal}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'เปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+
+TC_MC_00941
+    [Documentation]    verify Alert Message on dashboard : case change status normal (shop open) >> Blocked
+    [Tags]    Regression    High
+    Go To    ${url_block_seller}
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    Sleep    1s
+    ## Select action block status = blocked
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    blocked
+    Select From List By Label    ${select_action_reason}    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Element Should Be Visible    ${top_record_status}    ${icon_warning}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'ปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+    Sleep    1s
+    ###
+    Account Login    ${seller_user_block}    ${seller_pwd_block}
+    Go To    ${URL_STORE}/${user_block}/admin/dashboard/summary
+    ${alert_shopclose}    Execute javascript    return $('#error_text').text().trim();
+    ${str2}    Convert To String    ${alert_shopclose}
+    Should Contain    ${str2}    ร้านของคุณถูกระงับการใช้งาน
+    Sleep    2s
+    ## Select action block status = Normal
+    Go To    ${URL_STORE}/${user_block}
+    ${alert_shopclose}    Execute javascript    return $('#error_text').text().trim();
+    ${str2}    Convert To String    ${alert_shopclose}
+    Should Contain    ${str2}    ร้านค้าปิดให้บริการชั่วคราวค่ะ
+    Sleep    2s
+    WMS Login
+    Go To    ${url_block_seller}
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    Sleep    1s
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    normal
+    Select From List By Label    ${select_action_reason}    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Element Should Be Visible    ${top_record_status}    ${icon_normal}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'เปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+
+

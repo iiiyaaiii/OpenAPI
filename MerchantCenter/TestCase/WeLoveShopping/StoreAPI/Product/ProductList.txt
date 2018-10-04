@@ -1,0 +1,310 @@
+*** Setting ***
+Suite Setup       Run Keywords    Account Login    ${seller_user_001}    ${seller_pwd_001}    AND    Set product data
+Suite Teardown    Close Browser
+Test Setup        Go To    ${URL_STORE}/${user_s001}/admin/product
+Force Tags        Store-API    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Product.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Category.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_MonitoringListing.txt
+
+*** Keywords ***
+Write Variable to File
+    [Arguments]    ${variable_name}    ${value}
+    ${variable}    Catenate    SEPARATOR=    ${    ${variable_name}    }    ${SPACE}${SPACE}${SPACE}${SPACE}    ${value}
+    #Append To File    ${path}${/}Config${/}${ENV}/robotdata.txt    ${\n}${variable}
+    ${FilePath}    Replace String    ${CURDIR}    /TestCase/WeLoveShopping/StoreAPI/Product    /Resource/${BU}/Configuration/${ENV}
+    Append To File   ${FilePath}${/}robotdata.txt    ${\n}${variable}
+
+Check And Set Category
+    [Arguments]    ${categoryname}
+    Go To    ${URL_STORE}/${user_s001}/admin/category
+    Input Text    search    ${categoryname}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบข้อมูล
+    Run Keyword If    ${Result} == True    Create Category    ${categoryname}
+    Go To    ${URL_STORE}/${user_s001}/admin/product
+
+Create Category
+    [Arguments]    ${categoryname}
+    Go To    ${URL_STORE}/${user_s001}/admin/category/create
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('.row-fluid .btn-primary').click()
+    Display Alert Footer
+
+Check product data
+    [Arguments]    ${productname}
+    Go To    ${URL_STORE}/${user_s001}/admin/product
+    Search product    ${productname}
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบสินค้า
+    ${status}    Run Keyword If    '${Result}' == 'True'    Set Variable    ${Result}
+    [Return]    ${status}
+
+Set product data
+    Set Selenium Speed    .2
+    ${status}    Check product data    productfortestquickedit
+    Run Keyword If    '${status}' == 'True'    Run Keywords    Go To    ${URL_STORE}/${user_s001}/admin/product/create    AND
+    ...    Store Add Product By Add Photo    electronic    robot_product1_1.jpg    productfortestquickedit    productfortestquickedit
+    ...    New    5    1    0    0    1
+    ${status}    Check product data    productattr
+    Run Keyword If    '${status}' == 'True'    Run Keywords    Go To    ${URL_STORE}/${user_s001}/admin/product/create    AND
+    ...    Store Add Product By Add Photo    fashion    robot_product1_7.jpg    productattr    product_Attr    New
+    ...    1000    1    2    3    2
+
+
+*** Test Case ***
+TC_MC_02122
+    [Documentation]    Verify value filter of product status
+    [Tags]    Low
+    Page Should Contain Element    inv_status
+    Page Should Contain Element    //option[contains(.,'แสดงสถานะสินค้าทั้งหมด')]
+    Page Should Contain Element    //option[text()='แสดงสินค้า']
+    Page Should Contain Element    //option[text()='ซ่อนสินค้า']
+
+TC_MC_02123
+    [Documentation]    Verify after user click tooltip filter product status
+    [Tags]    Regression    Low
+    Wait Until Element Is Visible    table_report
+    Page Should Contain Element    ${FilterTooltip}
+    Click Element    ${FilterTooltip}
+    ${ProductList_URL}    Get Location
+    Sleep    3
+    Select Window    title=ตัวกรองแสดงสถานะสินค้า
+    Page Should Contain    ตัวกรองแสดงสถานะสินค้า
+    ${ShopStatus_URL}    Get Location
+    Should Be Equal    http://seller.weloveshopping.com/product-status/    ${ShopStatus_URL}
+    # Close Window
+    # Select Window    url=${ProductList_URL}
+
+TC_MC_02124
+    [Documentation]    Change status to "แสดงสินค้า", Incase found product
+    [Tags]    Regression    Medium
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${URL_STORE}/${user_s001}/admin/product
+    Select From List By Label    inv_status    แสดงสินค้า
+    Wait Until Element Is Visible    table_report
+    ${Check_NumPage}    Execute Javascript    return $('.pagination li').length;
+    : FOR    ${Index}    IN RANGE    0    ${Check_NumPage}-1
+    \    Page Should Contain Element    ${ShowProductStatus}
+    \    Page Should Not Contain Element    ${HideProductStatus}
+    \    Go to next page
+
+TC_MC_02125
+    [Documentation]    Change status to "ซ่อนสินค้า", Incase found product
+    [Tags]    Regression    Medium
+    Select From List By Label    inv_status    ซ่อนสินค้า
+    Wait Until Element Is Visible    table_report
+    ${Check_NumPage}    Execute Javascript    return $('.pagination li').length;
+    : FOR    ${Index}    IN RANGE    0    ${Check_NumPage}-1
+    \    Page Should Not Contain Element    ${ShowProductStatus}
+    \    Page Should Contain Element    ${HideProductStatus}
+    \    Go to next page
+
+TC_MC_02126
+    [Documentation]    Change status to "แสดงสถานะสินค้าทั้งหมด"
+    [Tags]    Regression    Low
+    Select From List By Label    inv_status    แสดงสถานะสินค้าทั้งหมด
+    Wait Until Element Is Visible    table_report
+    ${Check_NumPage}    Execute Javascript    return $('.pagination li').length;
+    : FOR    ${Index}    IN RANGE    0    ${Check_NumPage}-1
+    \    Page Should Contain Element    ${AllProductStatus}
+    \    Go to next page
+
+TC_MC_02127
+    [Documentation]    Change status to "แสดงสินค้า", Incase not found product
+    [Tags]    Regression    Low    mock
+    Check And Set Category    category no product
+    Select From List By Label    filter    category no product
+    Wait Until Element Is Visible    table_report
+    Select From List By Label    inv_status    แสดงสินค้า
+    Wait Until Element Is Visible    table_report
+    Page Should Contain    ไม่พบสินค้า
+    Select From List By Label    inv_status    ซ่อนสินค้า
+    Wait Until Element Is Visible    table_report
+    Page Should Contain    ไม่พบสินค้า
+
+TC_MC_02129
+    [Documentation]    filter display product more than 20
+    [Tags]    Regression    Medium
+    ###    Show Status
+    Select From List By Label    inv_status    แสดงสินค้า
+    Wait Until Element Is Visible    table_report
+    ${GetPage}    Execute Javascript    return $('.pagination li').length;
+    Run Keyword If    ${GetPage} > 0    Go to next page
+    Page Should Contain Element    //*[@*="inv_status"]//option[@selected="selected" and contains(.,'แสดงสินค้า')]
+    Run Keyword If    ${GetPage} > 0    Go to previous page
+    Page Should Contain Element    //*[@*="inv_status"]//option[@selected="selected" and contains(.,'แสดงสินค้า')]
+    ###    Hide Status
+    Select From List By Label    inv_status    ซ่อนสินค้า
+    Wait Until Element Is Visible    table_report
+    ${GetPage}    Execute Javascript    return $('.pagination li').length;
+    Run Keyword If    ${GetPage} > 0    Go to next page
+    Page Should Contain Element    //*[@*="inv_status"]//option[@selected="selected" and contains(.,'ซ่อนสินค้า')]
+    Run Keyword If    ${GetPage} > 0    Go to previous page
+    Page Should Contain Element    //*[@*="inv_status"]//option[@selected="selected" and contains(.,'ซ่อนสินค้า')]
+
+TC_MC_01974
+    [Documentation]    ProductList - Search by productname.
+    [Tags]    Regression    Low
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    ${top_product}    Get Text    //*[@id="table_report"]/tbody/tr[1]/td[3]/div[1]/a[1]
+    Search product    ${top_product}
+    ${result}    Execute Javascript    return $("#table_report tbody tr:eq(0) td:eq(2)").find('a').text()
+    Should Contain    ${result}    ${top_product}
+
+TC_MC_01975
+    [Documentation]    ProductList - Search by productid (Success).
+    [Tags]    Regression    Medium    SmokeTest
+    ${top_pid}    Get Text    //*[@id="table_report"]/tbody/tr/td[2]/a[2]/div
+    Search product    ${top_pid}
+    ${result}    Execute Javascript    return $("#table_report tbody tr:eq(0) td:eq(1)").text()
+    Should Contain    ${result}    ${top_pid}
+
+TC_MC_01976
+    [Documentation]    ProductList - Search by productid (Fail).
+    Search product    L90
+    ${msg_not_found}    Execute Javascript    return $('#errortext').text()
+    Should Be Equal    ${msg_not_found}    ไม่พบสินค้า
+
+TC_MC_01977
+    [Documentation]    ProductList - Search by lower case productid.
+    [Tags]    Low
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Search product    productfortestquickedit
+    ${top_pid}    Get Text    //*[@id="table_report"]/tbody/tr/td[2]/a[2]/div
+    ${pid}    Remove String    ${top_pid}    L
+    #Input Text    ${input_keyword}    l${id}
+    Search product    l${pid}
+    ${result}    Execute Javascript    return $("#table_report tbody tr:eq(0) td:eq(1)").text()
+    Should Contain    ${result}    ${top_pid}
+
+TC_MC_02073
+    [Documentation]    ProductList - Verify product category Incase Move Product to other Category
+    [Tags]    Regression    Medium    SmokeTest
+    Check And Set Category    Category-for-test-moveproduct
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    #${p_category}    Get Text    //*[@id="table_report"]/tbody/tr[1]/td[3]/div[3]/a
+    Select filter product by category    Category-for-test-moveproduct
+    ${before_Count1}    Execute Javascript    return $('.all').text();
+    Select filter product by category    หูฟัง
+#    Wait Until Element Is Visible    //td[3]//a[contains(.,'${p_category}')]
+    ${before_Count2}    Execute Javascript    return $('.all').text();
+    Click checkbox first product in list
+    Move product to category    Category-for-test-moveproduct
+    ${before_Count1}    Evaluate    ${before_Count1} + 1
+    ${before_Count2}    Evaluate    ${before_Count2} - 1
+    Select filter product by category    Category-for-test-moveproduct
+    ${after_Count1}    Execute Javascript    return $('.all').text();
+    Should Be True    ${before_Count1} == ${after_Count1}
+    Select filter product by category    หูฟัง
+    ${after_Count2}    Execute Javascript    return $('.all').text();
+    Should Be True    ${before_Count2} == ${after_Count2}
+    Select filter product by category    Category-for-test-moveproduct
+    Click checkbox first product in list
+    Move product to category    หูฟัง
+
+TC_MC_02078
+    [Documentation]    ProductList - Filter product by Product category
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    # ${p_category}    Get Text    //*[@id="table_report"]/tbody/tr[1]/td[3]/div[3]/a
+    Select filter product by category    หูฟัง
+    Wait Until Element Is Visible    //td[3]//a[contains(.,'หูฟัง')]
+    ${paging}    Execute Javascript    return $('.pagination li').length;
+    Run Keyword If     ${paging} >= 0    Count product on product list have paging
+    Run Keyword If     ${paging} == 0    Count product on product list not have paging
+    ${all_product1}    Execute Javascript    return $('.all').text();
+    Should Be True    '${before_Count1}' == '${all_product1}'
+
+TC_MC_02079
+    [Documentation]    ProductList - Filter product by Status All
+    [Tags]    Regression    Low
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Filter product by status all product
+    ${paging}    Execute Javascript    return $('.pagination li').length;
+    Run Keyword If     ${paging} >= 0    Count product on product list have paging
+    Run Keyword If     ${paging} == 0    Count product on product list not have paging
+    ${all_product1}    Get Text    //*[@id="total-product"]/ul/li[1]/a/span
+    Should Be True    '${before_Count1}' == '${all_product1}'
+
+TC_MC_02080
+    [Documentation]    ProductList - Filter product by Status out of stock
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Filter product by status soldout
+    ${before_Count1}    Get Matching Xpath Count    //*[@id="table_report"]/tbody/tr/td[2]
+    ${all_product1}    Get Text    //*[@id="total-product"]/ul/li[2]/a/span
+    Should Be True    '${before_Count1}' == '${all_product1}'
+
+TC_MC_02081
+    [Documentation]    ProductList - Filter product by Status Reject
+    [Tags]    Regression    Low
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Filter product by status reject
+    ${before_Count1}    Get Matching Xpath Count    //*[@id="table_report"]/tbody/tr/td[2]
+    ${all_product1}    Get Text    //*[@id="total-product"]/ul/li[5]/a/span
+    Should Be True    '${before_Count1}' == '${all_product1}'
+
+TC_MC_02082
+    [Documentation]    ProductList - Filter product by Status Approved
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Filter product by status approved
+    Wait Until Element Is Visible    table_report
+    ${paging}    Execute Javascript    return $('.pagination li').length;
+    Run Keyword If     ${paging} >= 0    Count product on product list have paging
+    Run Keyword If     ${paging} == 0    Count product on product list not have paging
+    ${all_product1}    Get Text    //*[@id="total-product"]/ul/li[3]/a/span
+    Should Be True    '${before_Count1}' == '${all_product1}'
+
+TC_MC_02083
+    [Documentation]    ProductList - Filter product by Status Pending
+    [Tags]    Regression    Low
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Filter product by status pending
+    ${before_Count1}    Get Matching Xpath Count    //*[@id="table_report"]/tbody/tr/td[2]
+    ${all_product1}    Get Text    //*[@id="total-product"]/ul/li[4]/a/span
+    Should Be True    '${before_Count1}' == '${all_product1}'
+
+TC_MC_02182
+    [Documentation]    Move Product to other Category sub category
+    [Tags]    High    mock
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Select From List By Label    filter    กระเป๋าโน๊ตบุ๊ค
+    Wait Until Element Is Visible    //td[3]//a[contains(.,'กระเป๋าโน๊ตบุ๊ค')]
+    ${before_Count2}    Execute Javascript    return $('.all').text();
+    Select From List By Label    filter    กระโปรงแฟชั่น
+    Wait Until Element Is Visible    //td[3]//a[contains(.,'กระโปรงแฟชั่น')]
+    ${before_Count1}    Execute Javascript    return $('.all').text();
+    Click checkbox first product in list
+    Move product to subcategory    กระเป๋าโน๊ตบุ๊ค
+    ${before_Count1}    Evaluate    ${before_Count1} - 1
+    ${before_Count2}    Evaluate    ${before_Count2} + 1
+    Select From List By Label    filter    กระโปรงแฟชั่น
+    Wait Until Element Is Visible    //td[3]//a[contains(.,'กระโปรงแฟชั่น')]
+    ${after_Count1}    Execute Javascript    return $('.all').text();
+    Should Be True    ${before_Count1} == ${after_Count1}
+    Select From List By Label    filter    กระเป๋าโน๊ตบุ๊ค
+    Wait Until Element Is Visible    //td[3]//a[contains(.,'กระเป๋าโน๊ตบุ๊ค')]
+    ${after_Count2}    Execute Javascript    return $('.all').text();
+    Should Be True    ${before_Count2} == ${after_Count2}
+    Click checkbox first product in list
+    Move product to category    กระโปรงแฟชั่น
+
+TC_MC_02183
+    [Documentation]    Filter product by Product category (sub category)
+    [Tags]    Regression    Medium    mock
+    Select From List By Label    filter    กระเป๋าโน๊ตบุ๊ค
+    sleep    2
+    ${count}    Execute Javascript    return $('.all').text();
+    Should Be True    ${count} >= 1
+    Element Should Contain    //div[@class='pd-list-cat']/a[1]    กระเป๋าเอกสาร
+    Element Should Contain    //div[@class='pd-list-cat']/a[2]    กระเป๋าโน๊ตบุ๊ค

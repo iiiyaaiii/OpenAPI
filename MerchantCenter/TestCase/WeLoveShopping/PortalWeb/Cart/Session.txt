@@ -1,0 +1,97 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Test Setup        Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Teardown     Close All Browsers
+Force Tags        Portal-Web    Ligo    Sprint2017MC8    mc-wls
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Cart.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/LevelD.txt
+Resource          ../../../../Keyword/Common/Cart.txt
+
+*** Test Cases ***
+TC_MC_08342
+    [Documentation]    Logon session which old session don't have product into cart
+    [Tags]    Medium    mock
+    Clear Active Login
+    Go to Login    ${buyer_cart}    ${buyer_cart_pass}
+    Delete All Product In Cart
+    Clear Active Login
+    Sleep    1
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Execute Javascript    ${addtocart}.click()
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Go to Login    ${buyer_cart}    ${buyer_cart_pass}
+    Verify Cart Noti    ${quantity}
+    Click Element    ${btn_mycart}
+    ${shop}=    Get Matching Xpath Count    ${cart_shop}${cart_shopname}
+    Element Should Contain    ${total_cart}    ตะกร้าสินค้าของท่าน : ${quantity} ชิ้น จาก ${shop} ร้าน
+    Clear Active Login
+
+TC_MC_08343
+    [Documentation]    Logon session which old session have product into cart
+    [Tags]    Regression    Medium    mock
+    Clear Active Login
+    Go to Login    ${buyer_cart}    ${buyer_cart_pass}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    Sleep    1
+    Repeat Keyword    1 times    Execute Javascript    ${leveld_increase_js}.click()
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    ${shop}=    Get Matching Xpath Count    ${cart_shop}${cart_shopname}
+    ${old_session_in_cart}=    Get All Product In Cart    ${shop}
+    Clear Active Login
+    Sleep    1
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_use}?refresh=changeme
+    Sleep    1
+    Repeat Keyword    1 times    Execute Javascript    ${leveld_increase_js}.click()
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Go to Login    ${buyer_cart}    ${buyer_cart_pass}
+    ${new_session_in_cart}=    Evaluate    ${old_session_in_cart} + ${quantity}
+    Verify Cart Noti    ${new_session_in_cart}
+    Click Element    ${btn_mycart}
+    Element Should Contain    ${total_cart}    ตะกร้าสินค้าของท่าน : ${new_session_in_cart} ชิ้น จาก ${shop} ร้าน
+    Clear Active Login
+
+TC_MC_08344
+    [Documentation]    Logout session
+    [Tags]    Regression    High    mock
+    Clear Active Login
+    Go to Login    ${buyer_cart}    ${buyer_cart_pass}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    Sleep    1
+    Repeat Keyword    1 times    Execute Javascript    ${leveld_increase_js}.click()
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    ${shop}=    Get Matching Xpath Count    ${cart_shop}${cart_shopname}
+    ${sum_product_in_cart}=    Set Variable    0
+    ${sum_product_in_cart}=    Get All Product In Cart    ${shop}
+    Element Should Contain    ${total_cart}    ตะกร้าสินค้าของท่าน : ${sum_product_in_cart} ชิ้น จาก ${shop} ร้าน
+    ${sum_product_in_cart}=    Convert To String    ${sum_product_in_cart}
+    Verify Cart Noti    ${sum_product_in_cart}
+    Execute JavaScript    $('.ng-menu-arrow-ref').eq(0).mouseover()
+    Execute JavaScript    $('.w-dropdown-list > ul >li').eq(2).click()
+    Sleep    1
+    Verify Cart Noti    0
+    Element Should Contain    ${cart_emtry}    ไม่มีสินค้าในตะกร้าของท่าน
+

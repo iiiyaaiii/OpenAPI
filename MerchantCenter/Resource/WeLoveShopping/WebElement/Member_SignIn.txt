@@ -1,0 +1,22 @@
+*** variable ***
+### Locators ###
+${login}          //a[@title="เข้าสู่ระบบ"]
+${login_username}    $('input[name="username"]')
+${login_password}    $('input[name="password"]')
+${btn_login}      //button[@class="btn-default btn-login"]
+${fb_email}       //input[@name='email']
+${fb_pass}        //input[@name='pass']
+${fb_submit}      //input[@type='submit']
+${login_fb}       //button[@id='fblogin']
+
+
+#${fb_profile}     //*[@id="pagelet_welco//*[@id="fblogin"]me_box"]/ul/li[1]/div/div/a
+${fb_profile}    //*[@id='blueBarNAXAnchor']
+${fb_setting}     https://www.facebook.com/settings
+${fb_editemail}    //*[@id="SettingsPage_Content"]/ul/li[3]/a/span[1]
+${fb_change_email1}    //input[@value='supawan_nga@ascendinter.com']
+${fb_change_email2}    //input[@value='supawan_nga@truecorp.co.th']
+${fb_savechange}    //input[@type='submit']
+${fb_repass}      //input[@name='ajax_password']
+${submit}         //button[@class='btn-default btn-register']
+${no_fav_shop}    //img[@class='img-no-favshop']

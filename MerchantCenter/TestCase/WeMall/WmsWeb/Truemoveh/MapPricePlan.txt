@@ -1,0 +1,107 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${url_proposition}
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           Collections
+Library           String
+Library           DateTime
+Library           XML
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_06871
+    [Documentation]    Can be map single price plan to multi propositions
+    [Tags]    Ligo    Sprint2017MC18    Regression    High
+
+    ${mapping_url_1}=    Mapping Price Plan    ${init_proppo_code_1}    ${init_price_plan_name_1}
+    ${mapping_test_1}    ${number_1}    Get Mapping Url By Nas Code    ${init_proppo_code_1}
+    Should Be True    ${number_1} > 0
+
+    ${mapping_url_2}=    Mapping Price Plan    ${init_proppo_code_2}    ${init_price_plan_name_1}
+    ${mapping_test_2}    ${number_2}    Get Mapping Url By Nas Code    ${init_proppo_code_2}
+    Should Be True    ${number_2} > 0
+
+    Clear Mapping All Price Plan    ${mapping_url_1}
+    Clear Mapping All Price Plan    ${mapping_url_2}
+
+TC_MC_06872
+    [Documentation]    Can be map single price plan to propositions
+    [Tags]    Ligo    Sprint2017MC18    Regression    High
+
+    ${mapping_url}=    Mapping Price Plan    ${init_proppo_code_1}    ${init_price_plan_name_1}
+    ${mapping_test}    ${number}    Get Mapping Url By Nas Code    ${init_proppo_code_1}
+    Should Be True    ${number} > 0
+
+    Clear Mapping All Price Plan    ${mapping_url}
+
+TC_MC_06873
+    [Documentation]    Can be map multi price plan to propositions
+    [Tags]    Ligo    Sprint2017MC18    Regression    High
+
+    ${mapping_url_1}=    Mapping Price Plan    ${init_proppo_code_1}    ${init_price_plan_name_1}
+    ${mapping_url_2}=    Mapping Price Plan    ${init_proppo_code_1}    ${init_price_plan_name_2}
+
+    ${mapping_test}    ${number}    Get Mapping Url By Nas Code    ${init_proppo_code_1}
+    Should Be True    ${number} == 2
+
+    Clear Mapping All Price Plan    ${mapping_url_1}
+
+TC_MC_06874
+    [Documentation]    Can be map all price plan to propositions
+    [Tags]    Ligo    Sprint2017MC18    Regression    High
+
+    ${mapping_url}=    Mapping All Price Plan    ${init_proppo_code_1}
+    Clear Mapping All Price Plan    ${mapping_url}
+
+TC_MC_06875
+    [Documentation]    Can be remove single price plan from propositions
+    [Tags]    Ligo    Sprint2017MC18    Regression    High
+
+    Go To    ${url_proposition}
+    ${mapping_url_1}=    Mapping Price Plan    ${init_proppo_code_1}    ${init_price_plan_name_1}
+    ${mapping_url_2}=    Mapping Price Plan    ${init_proppo_code_1}    ${init_price_plan_name_2}
+
+    ${mapping_test_1}    ${number_1}    Get Mapping Url By Nas Code    ${init_proppo_code_1}
+
+    Clear Mapping Price Plan    ${mapping_url_1}    ${init_price_plan_name_2}
+
+    ${mapping_test_2}    ${number_2}    Get Mapping Url By Nas Code    ${init_proppo_code_1}
+
+    Should Be True    ${number_1} > ${number_2}
+    Clear Mapping All Price Plan    ${mapping_url_1}
+
+TC_MC_06876
+    [Documentation]    Can be remove multi price plan from propositions
+    [Tags]    Ligo    Sprint2017MC18    Regression    High
+
+    Go To    ${url_proposition}
+    ${mapping_url_1}=    Mapping Price Plan    ${init_proppo_code_1}    ${init_price_plan_name_1}
+    ${mapping_url_2}=    Mapping Price Plan    ${init_proppo_code_1}    ${init_price_plan_name_2}
+
+    ${mapping_test_1}    ${number_1}    Get Mapping Url By Nas Code    ${init_proppo_code_1}
+
+    ${price_plan_lists}=    Create List    ${init_price_plan_name_1}    ${init_price_plan_name_2}
+    Log    ${price_plan_lists}
+    Clear Mapping Price Plan Multi    ${mapping_url_1}    ${price_plan_lists}
+
+    ${mapping_test_2}    ${number_2}    Get Mapping Url By Nas Code    ${init_proppo_code_1}
+
+    Should Be True    ${number_2} == 0
+    Clear Mapping All Price Plan    ${mapping_url_1}
+
+TC_MC_06877
+    [Documentation]    Can be remove all price plan from propositions
+    [Tags]    Ligo    Sprint2017MC18    Regression    High
+
+    ${mapping_url}=    Mapping All Price Plan    ${init_proppo_code_1}
+    Clear Mapping All Price Plan    ${mapping_url}
+
+    ${mapping_test}    ${number}    Get Mapping Url By Nas Code    ${init_proppo_code_1}
+    Should Be True    ${number} == 0

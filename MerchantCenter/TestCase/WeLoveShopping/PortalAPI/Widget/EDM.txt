@@ -1,0 +1,124 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Portal.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Library           Collections
+Force Tags        Portal-API    mc-wls
+
+*** Test Cases ***
+TC_MC_11254
+    [Documentation]    Widget - EDM : Subscribe display on home pages when logout
+    [Tags]    Regression    High    Portal-API
+    Clear Active Login
+    Go to    ${URL_PORTAL}
+    Wait Until Element Is Visible    ${pop_subscription}
+    Element Should Contain    ${pop_subscription}    ${title_pop}
+
+TC_MC_11255
+    [Documentation]    Widget - EDM : Validate email sucess in subscribe home pages
+    [Tags]    SmokeTest    High    Portal-API
+    Go to    ${URL_PORTAL}
+    Click Element    ${pop_subscription}
+    Element Should Be Visible    ${pop_email}
+    ${gettime}=    Get Time    epoch
+    ${email}=    Catenate    SEPARATOR=    wlstest    ${gettime}    @mailinator.com
+    Input Text    ${pop_email}    ${email}
+    Click Element    ${subscription_female}
+    Wait Until Element Is Visible    ${pop_thank}
+    Element Should Contain    ${pop_thank_message}    ${thank_message_pop}
+    Element Should Contain    ${pop_thank_message}    WeLoveShopping
+    Element Should Contain    ${pop_thank_message}    ${thank_message_pop1}
+    Delete All Cookies
+
+TC_MC_11256
+    [Documentation]    Widget - EDM : Validate email sucess in subscribe on footer
+    [Tags]    High    Portal-API
+    Go to    ${URL_PORTAL}/dealzapp
+    Element Should Be Visible    ${footer_email}
+    ${gettime}=    Get Time    epoch
+    ${email}=    Catenate    SEPARATOR=    wlstest    ${gettime}    @mailinator.com
+    Input Text    ${footer_email}    ${email}
+    Click Element    ${footer_subscription_female}
+    Sleep    1s
+    Wait Until Element Is Visible    ${footer_thank}
+    Element Should Contain    ${footer_thank}    ${thank_message_pop}
+    Element Should Contain    ${footer_thank}    WeLoveShopping
+    Element Should Contain    ${footer_thank}    ${thank_message_pop1}
+    Element Should Not Be Visible    ${pop_subscription}
+    Delete All Cookies
+
+TC_MC_11257
+    [Documentation]    Widget - EDM : Dupicate email in subscribe
+    [Tags]    High    Portal-API
+    Go to    ${URL_PORTAL}/dealzapp
+    Click Element    ${pop_subscription}
+    Element Should Be Visible    ${pop_email}
+    Input Text    ${pop_email}    1@1.com
+    Click Element    ${subscription_male}
+    Element Should Be Visible    ${pop_thank_message}
+    Element Should Contain    ${pop_thank_message}    อีเมลนี้ได้สมัครรับจดหมายข่าวไว้เรียบร้อยแล้ว
+    Delete All Cookies
+
+TC_MC_11258
+    [Documentation]    Widget - EDM : Display subscribe when clear cookie
+    [Tags]    High    Portal-API
+    Go to    ${URL_PORTAL}
+    Click Element    ${pop_subscription}
+    Element Should Be Visible    ${pop_email}
+    ${gettime}=    Get Time    epoch
+    ${email}=    Catenate    SEPARATOR=    wlstest    ${gettime}    @mailinator.com
+    Input Text    ${pop_email}    ${email}
+    Click Element    ${subscription_female}
+    Sleep    1s
+    Element Should Be Visible    ${pop_thank}
+    Element Should Contain    ${pop_thank_message}    ${thank_message_pop}
+    Element Should Contain    ${pop_thank_message}    WeLoveShopping
+    Element Should Contain    ${pop_thank_message}    ${thank_message_pop1}
+    Element Should Not Be Visible    ${pop_subscription}
+    Delete All Cookies
+    Reload Page
+    Element Should Be Visible    ${pop_subscription}
+    Element Should Contain    ${pop_subscription}    ${title_pop}
+    Delete All Cookies
+
+TC_MC_11259
+    [Documentation]    Widget - EDM : Click ผู้หญิง at subscribe deal zab before input email
+    [Tags]    Medium    Portal-API
+    Go to    ${URL_PORTAL}/dealzapp
+    Click Element    ${pop_subscription}
+    Element Should Be Visible    ${pop_email}
+    Click Element    ${subscription_female}
+    Element Should Be Visible    ${pop_warning_message}
+    Element Should Contain    ${pop_warning_message}    กรุณากรอกอีเมลให้ถูกต้อง
+    Delete All Cookies
+
+TC_MC_11210
+    [Documentation]    Display subscribe in home page after 45 days when click close button
+    [Tags]    High    Portal-API
+    Go to    ${URL_PORTAL}
+    Element Should Be Visible    ${pop_subscription}
+    Click Element    ${pop_subscription}
+    Element Should Be Visible    //i[@class='icon-edm-close']
+    Click Element    //i[@class='icon-edm-close']
+    Element Should Not Be Visible    ${pop_subscription}
+    Reload page
+    Page Should Not Contain Element    ${pop_subscription}
+    Delete All Cookies
+
+TC_MC_11261
+    [Documentation]    Display subscribe in deal zap page after 45 days when click close button
+    [Tags]    High    Portal-API
+    Go to    ${URL_PORTAL}/dealzapp
+    Element Should Be Visible    ${pop_subscription}
+    Click Element    ${pop_subscription}
+    Element Should Be Visible    //i[@class='icon-edm-close']
+    Click Element    //i[@class='icon-edm-close']
+    Element Should Not Be Visible    ${pop_subscription}
+    Reload page
+    Element Should Not Be Visible    ${pop_subscription}
+    Delete All Cookies

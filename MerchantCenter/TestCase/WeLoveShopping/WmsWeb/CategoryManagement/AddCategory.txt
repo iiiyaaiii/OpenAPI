@@ -1,0 +1,52 @@
+*** Settings ***
+Suite Setup     Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Login    AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        WMS-Web    mock    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_CategoryManagement.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00347
+    [Documentation]    [Welove] Add main category(เพิ่มหมวดหมู่) and add content description
+    [Tags]    Regression    High
+    Go to    ${URL_WMS}/categorymanagement/tree
+    Execute Javascript    ${addcategory}
+    Select Window    title=เพิ่มหมวดหมู่
+    Execute Javascript    ${statusshow}
+    Execute Javascript    $("input[id='title1']").val("Test Category Automate")
+    Execute Javascript    $("input[id='commission']").val("2")
+    Execute Javascript    ${submit}
+    Capture Page Screenshot
+    Go to    ${URL_WMS}/categorymanagement/tree
+    Wait Until Element Is Visible    //tbody//tr[3]//td[2]
+    Execute Javascript    $("td[column='1'] input[type='text']").val("Test Category Automate")
+    Wait Until Element Is Visible    //tbody//tr[3]//td[2]
+    Press Key    //tbody//tr[3]//td[2]//input    \\13
+    Wait Until Element Contains    //div[@column="1"]    Test Category Automate
+    Execute Javascript    ${deletecategory}
+    Wait Until Element Is Visible    //div[@class=" webix_modal_box webix_confirm-error"]
+    Execute Javascript    ${confirmdelete}
+    Clear Element Text    //tbody//tr[3]//td[2]//input
+    Press Key    //tbody//tr[3]//td[2]//input    \\13
+    Page Should not Contain    Test Category Automate
+
+
+TC_MC_00349
+    [Documentation]    [Welove] Add main category(เพิ่มหมวดหมู่) and don't have content description
+    [Tags]    Regression    High
+    Go to    ${URL_WMS}/categorymanagement/tree
+    Execute Javascript    ${addcategory}
+    Select Window    title=เพิ่มหมวดหมู่
+    Execute Javascript    ${submit}
+    Element Should Be Visible    //div[@class="alert alert-danger "]
+    Element Should Contain    //div[@class="alert alert-danger "]    The commission field is required..
+    Capture Page Screenshot
+
+
+

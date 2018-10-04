@@ -1,0 +1,73 @@
+*** Setting ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Clear All Test
+Force Tags        Feedback-API    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Account_History.txt
+Resource          ../../../../Keyword/Common/Account_Detail.txt
+Resource          ../../../../Keyword/Common/Account_Refund.txt
+Resource          ../../../../Keyword/Common/Store_Detail.txt
+Resource          ../../../../Keyword/Common/Store_History.txt
+Resource          ../../../../Keyword/Common/Account_Feedback.txt
+Resource          ../../../../Keyword/Common/ManageOrder.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/WMS_Feedback.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/AccountHistory.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/AccountDetail.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_Feedback.txt
+
+*** Test Case ***
+TC_MC_05513
+    [Tags]    Regression    High    Feedback-API
+    [Documentation]    Hide feedback on wms page
+    Check and Reset Seller Login    ${storename_slug_feedback}    ${user_login_feedback}    ${pass_login_feedback}
+    Create order credit card channel    ${storename_slug_feedback}    ${product_inpage}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History    ${storename_slug_feedback}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    ${message}    Buyer receive the order
+    Run Keyword If    '${message}' == 'รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'    Fail    รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง
+    Give Comment And Feedback Fair Rate    ไม่ได้เรื่อง    ${order_id_sub}
+    Go to Admin Feedback Page    ${storename_slug_feedback}
+    Get Feedback date on Admin Feedback Page    ${order_id}
+    WMS Switch Project    wls
+    Search Order ID on WMS Feedback    ${order_id}    ${order_id_sub}
+    Set Hide Status Feedback And Comment Reason    เจ้าของข้อความแจ้งลบ
+    Go to Feedback Store    ${storename_slug_feedback}
+    Element Should Not Contain    ${store_box_comment}    ${date_give_feedback}
+
+TC_MC_05515
+    [Tags]    Regression    High    Feedback-API
+    [Documentation]    Show feedback
+    Go to Login and Check Seller Login    ${URL_PORTAL}    ${BROWSER}    ${storename_slug_feedback}    ${user_login_feedback}    ${pass_login_feedback}
+    #Check and Reset Seller Login    ${storename_slug_feedback}    ${user_login_feedback}    ${pass_login_feedback}
+    Create order credit card channel    ${storename_slug_feedback}    ${product_inpage}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History    ${storename_slug_feedback}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    ${message}    Buyer receive the order
+    Run Keyword If    '${message}' == 'รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'    Fail    รายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง
+    Give Comment And Feedback Fair Rate    ไม่ได้เรื่อง    ${order_id_sub}
+    Go to Admin Feedback Page    ${storename_slug_feedback}
+    Get Feedback date on Admin Feedback Page    ${order_id}
+    WMS Switch Project    wls
+    Search Order ID on WMS Feedback    ${order_id}    ${order_id_sub}
+    Set Hide Status Feedback And Comment Reason    เจ้าของข้อความแจ้งลบ
+    Clear Cache API Feedback
+    Clear Cache Store Font
+    Go to Feedback Store    ${storename_slug_feedback}
+    Element Should Not Contain    ${store_box_comment}    ${date_give_feedback}
+    Search Order ID on WMS Feedback    ${order_id}    ${order_id_sub}
+    Set Show Status Feedback
+    Clear Cache API Feedback
+    Clear Cache Store Font
+    Go to Feedback Store    ${storename_slug_feedback}
+    Element Should Contain    ${store_box_comment}    ${date_give_feedback}

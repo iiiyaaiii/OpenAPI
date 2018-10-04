@@ -1,0 +1,55 @@
+*** Settings ***
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Keywords ***
+Go to TruemoveH Commission Report on wms page
+    [Documentation]    Go to WMS and go to TruemoveH Commission Report page
+    Go to    ${URL_WMS}/tmvh-commissions
+
+Select commission type
+    [Documentation]    Select type in dropdown
+    [Arguments]    ${type}
+    Select From List    ${type_dropdown}    ${type}
+
+Select Dealer to be
+    [Documentation]    Select dealer in dropdown
+    [Arguments]    ${dealer}
+    Select From List    ${dealer_dropdown}    ${dealer}
+
+Click Search button
+    [Documentation]    Click Search button
+    Click Element    ${btn_commission_search}
+
+Search commission report by order id
+    [Documentation]    Enter order ID and click search button
+    [Arguments]    ${commission_order_id}
+    Input Text    ${txt_order_id}    ${commission_order_id}
+    Click Element    ${btn_commission_search}
+
+Search commission report by activate date
+    [Documentation]    Enter activate date and click search button
+    [Arguments]    ${activate_date}
+    Execute Javascript    $('[id="activated_date"]').val('${activate_date}');
+    Click Element    ${btn_commission_search}
+
+Check that the searched result displays order ID correctly
+    [Documentation]    Check the order id on result record
+    [Arguments]    ${orderId}
+    Element Should Contain    ${label_order_id}    ${orderId}
+
+Check the error message under order ID field
+    [Documentation]    Check error message under order id field
+    [Arguments]    ${error}
+    Element Should Contain    ${msg_order_id}    ${error}
+
+Chcek that the searched result displays type correctly
+    [Documentation]    Check the type on result record
+    [Arguments]    ${type}
+    Run Keyword if    '${type}'=='Sim Only'    Element Should Contain    ${label_sim_only}    ${type}
+    Run Keyword if    '${type}'=='MNP'    Element Should Contain    ${labal_mnp}    ${type}
+    Run Keyword if    '${type}'=='MNP Device'    Element Should Contain    ${labal_mnp_device}    ${type}
+    Run Keyword if    '${type}'=='Bundle'    Element Should Contain    ${labal_bundle}    ${type}
+

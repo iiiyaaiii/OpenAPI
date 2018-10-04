@@ -1,0 +1,95 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Timeout      3 minutes
+Force Tags        Portal-API    Ligo    Sprint2017MC8    mc-wls
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+
+*** Test Cases ***
+TC_MC_01770
+    [Documentation]    [Welove] [Join Campaign]: Product show 250 at campaign page
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id}
+    Element Should Be Visible    ${campaign_total_product}
+    Element Should Contain    ${campaign_total_product}    แสดงทั้งหมด
+    Element Should Be Visible     ${campaign_list_prodoct}
+    Element Should Be Visible     ${campaign_list_prodoct}//li
+    ${count_page}    Execute Javascript    return $('.portal-pagination > li').length
+    ${count_page}    Evaluate    ${count_page} - 2
+    Execute Javascript    $('.portal-pagination > li > a')[${count_page}].click()
+    Wait Until Element Is Visible    ${campaign_list_prodoct}//li
+    ${count_lastpage}    Get Matching Xpath Count    ${campaign_list_prodoct}//li
+    ${count_product}    Evaluate    ((${count_page} - 1) * 40) + ${count_lastpage}
+    ${count_product}    Convert To String    ${count_product}
+    Element Should Contain    ${campaign_total_product}    ${count_product}
+
+TC_MC_01788
+    [Documentation]    [Welove] Join Campaign : Campaign is active and have product in campaign
+    [Tags]    Regression    SmokeTest    High    mock
+    Go to    ${URL_PORTAL}/campaign
+    Element Should Be Visible    ${camapaign_list}//a//strong[contains(text(),'[QA-Automation] Join Campaign')]
+    Execute Javascript    $("a[href*='${join_campaign_id}']")[0].click()
+    Element Should Be Visible    ${breadcrumb_new}
+    Element Should Contain    ${breadcrumb_new}    หน้าหลัก>กิจกรรมส่งเสริมการขาย>[QA-Automation] Join Campaign
+    Element Should Contain    ${header_campaignname_product}    [QA-Automation] Join Campaign
+    Element Should Contain    ${campaign_total_product}    แสดงทั้งหมด
+    Element Should Be Visible    ${campaign_list_prodoct}
+    Element Should Be Visible    ${category_campaign}
+
+TC_MC_01794
+    [Documentation]    [Welove] Join Campaign : Filter product by price mininum
+    [Tags]    Regression    High    mock
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id}
+    Input Text    ${input_price_min}    100
+    Click Element    ${button_ok_fillterprice}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_asc}.click()
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    บาท
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} >= 100
+
+TC_MC_01795
+    [Documentation]    [Welove] Join Campaign : Filter product by price maximum
+    [Tags]    Regression    High    mock
+    #Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id}
+    Input Text    ${input_price_max}    1000
+    Click Element    ${button_ok_fillterprice}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_desc}.click()
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    บาท
+    ${price_now}    Remove String    ${price_now}    ,
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} <= 1000
+
+TC_MC_01796
+    [Documentation]    [Welove] Join Campaign : Filter product by price lenght
+    [Tags]    Regression    High    mock
+    #Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Go to    ${URL_PORTAL}/promotion/${join_campaign_id}
+    Input Text    ${input_price_min}    100
+    Input Text    ${input_price_max}    1000
+    Click Element    ${button_ok_fillterprice}
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_asc}.click()
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    บาท
+    ${price_now}    Remove String    ${price_now}    ,
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} >= 100
+    Execute Javascript    ${sorting}.click()
+    Execute Javascript    ${sorting_price_desc}.click()
+    ${price_now}    Get Text    //ul[@class='items-list-box']/li[1]//div[@class='item-detail']//div[@class='box-overflow']//div//span[@class='price']
+    ${price_now}    Remove String    ${price_now}    บาท
+    ${price_now}    Remove String    ${price_now}    ,
+    ${price_now}    Convert To Integer    ${price_now}
+    Should Be True    ${price_now} <= 1000

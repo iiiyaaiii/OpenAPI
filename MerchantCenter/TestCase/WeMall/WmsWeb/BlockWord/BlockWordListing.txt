@@ -1,0 +1,71 @@
+*** Settings ***
+Suite Setup     Run Keywords    WMS Login    AND    WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        WMS-Web    mock
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/WMS_BlockWordListing.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00614
+    [Documentation]    Add block word input text
+    [Tags]    Regression    High
+    Go To Blockword Page
+    Click Create Blockword    testblockword
+#delete_blockword
+    Go To Blockword Page
+    Input Text For Search    testblockword
+    Click Button Search
+    Verify List Blockword    testblockword
+    Delete Blockword
+    Input Text For Search    testblockword
+    Click Button Search
+    Verify Not List Blockword    ไม่พบข้อมูล
+
+TC_MC_00616
+    [Documentation]    Add block word input text click ล้าง
+    [Tags]    Medium
+    Go to    ${URL_WMS}/blockword
+    Click Element    ${add_blockword}
+    Execute Javascript    ${blockword}
+    Select From List By Label    ${ddl_block_type}    คำหยาบ
+    Execute Javascript    ${click_cate}
+    Execute Javascript    ${select_cate}
+    Execute Javascript    ${click_cate}
+    Select From List By Label    ${status_type}    Non-Online
+    Select From List By Label    ${block_level}    แสดงทั้งหมด
+    Execute Javascript    ${comment}
+    Execute Javascript    ${reset}
+
+TC_MC_11090
+    [Documentation]    Verify word type dropdown field on Block Word Monitoring page
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/blockword
+    Check Block Word Type List    ผิดกฏหมาย/ผิดกฏระเบียบเว็บไซต์
+    Check Block Word Type List    ราชวงศ์
+    Check Block Word Type List    ละเมิดลิขสิทธิ์
+    Check Block Word Type List    คำหยาบ
+    Check Block Word Type List    มิจฉาชีพ
+    Check Block Word Type List    คุ้มครองผู้บริโภค (อย./ฆษ.)
+    Check Block Word Type List    รายการต้องสงสัย
+    Check Block Word Type List    รอการตรวจสอบ (WeMall)
+
+TC_MC_11091
+    [Documentation]    Verify word type dropdown field on Add Block Word Monitoring page
+    [Tags]    Regression    Medium
+    Go to    ${URL_WMS}/blockword/create
+    Check Block Word Type List    ผิดกฏหมาย/ผิดกฏระเบียบเว็บไซต์
+    Check Block Word Type List    ราชวงศ์
+    Check Block Word Type List    ละเมิดลิขสิทธิ์
+    Check Block Word Type List    คำหยาบ
+    Check Block Word Type List    มิจฉาชีพ
+    Check Block Word Type List    คุ้มครองผู้บริโภค (อย./ฆษ.)
+    Check Block Word Type List    รายการต้องสงสัย
+    Check Block Word Type List    รอการตรวจสอบ (WeMall)
+

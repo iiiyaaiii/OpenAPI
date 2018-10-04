@@ -1,0 +1,32 @@
+*** Setting ***
+Suite Setup       Account Login    ${reg_user_001}    ${reg_pass_001}
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_STORE}/${shopname_user001}/admin/promotion
+Force Tags        Store-Web    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Case ***
+TC_MC_01654
+    [Documentation]    Verify display main menu "โปรโมชั่นร้านค้า"
+    ${length}    Execute Javascript    return $('#sidebar_29').length
+    ${length}    Convert To String    ${length}
+    Should Be Equal    ${length}    1
+
+TC_MC_01656
+    [Documentation]    Verify Submenu. When click "จัดการโปรโมชั่น" menu.
+    Execute Javascript    $('#sidebar_29').find('a').get(0).click();
+    ${breadcrumb}    Execute Javascript    return $('.breadcrumb li a').eq(1).text().trim();
+    Should Be Equal    ${breadcrumb}    จัดการโปรโมชั่น
+
+TC_MC_01658
+    [Documentation]    Verify Submenu. When click "เพิ่มโปรโมชั่น" menu.
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    ${breadcrumb_1}    Execute Javascript    return $('.breadcrumb li a').eq(1).text().trim();
+    ${breadcrumb_2}    Execute Javascript    return $('.breadcrumb li a').eq(2).text().trim();
+    Should Be Equal    ${breadcrumb_1}    จัดการโปรโมชั่น
+    Should Be Equal    ${breadcrumb_2}    เพิ่มโปรโมชั่น

@@ -1,0 +1,24 @@
+*** Variables ***
+${user_buyer_only}    wemallbuyeronly@gmail.com
+${password_buyer_only}    P@ssw0rd
+${user_shop_no_data_wemall}     trustzeor@gmail.com
+${password_shop_no_data_wemall}    Escrow@1234
+${slug_name_shop_no_data_wemall}    trustzero
+${error_text}    ขออภัยค่ะ ไม่สามารถเข้าใช้งาน url นี้ได้
+${text_login_user}    //*[@id="login_user"]/div[1]/label
+${text_login_password}    //*[@id="login_user"]/div[2]/label
+${locator_error_text}    //*[@id="error_text"]
+${chk_all_waitingshipping}    id=selectall
+${btn_print_label}    //button[contains(text(),'ตัวเลือกการพิมพ์')]
+${dlg_print}    id=print
+${rdo_address_label}    id=print-type-1
+${rdo_shipping}    id=print-type-2
+${btn_confirm_print}    //button[contains(text(),'ดำเนินการต่อ')]
+${lbl_print_total}    //div[@class="nav-inner"]
+${lbl_print_selected}    //div[@id="allorder"]//div[@class="span12"]//div[@class="span6"]
+${chk_check_item}    //form/table/tbody/tr[1]/td[1]/input
+${lbl_print_one_item}    //div[@class="nav-inner"]
+${lbl_title}    //div[@class="page-preview labe l buyer-only active"]//div[@class="info-address"]/h2
+${lbl_title_name}    //div[@class="page-preview labe l buyer-only active"]//div[@class="info-address"]/ul/li[1]
+${lbl_shipping}    //div[@class="page-preview labe l buyer-only active"]//div[@class="info-post"]//div[@class="info-post-l"]
+${lbl_order_id}    //div[@class="page-preview labe l buyer-only active"]//div[@class="info-post"]//div[@class="info-post-r"]

@@ -1,0 +1,94 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Force Tags        Wemall-Web    Ligo    Sprint2017MC8
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Category.txt
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeMall/WebElement/Search.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+
+
+*** Test Cases ***
+TC_MC_03238
+    [Documentation]    [Wemall] Level C - Category : Display Product have promocode
+    [Tags]    Regression     Ligo,Sprint2017MC10    High
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Go To    ${URL_PORTAL}/c/1942
+    Maximize Browser Window
+    Element Should Contain    ${breadcrumb_new}    กระโปรงสั้น
+    Element Should Contain    ${lvc_search_title}    กระโปรงสั้น
+    ${count_match_tag}    Get Matching Xpath Count    ${fre_tag_promocode}
+    ${count_match_tag}    Convert To Integer    ${count_match_tag}
+    Should Be True    ${count_match_tag} > 0
+
+TC_MC_03239
+    [Documentation]    [Wemall] Level C - Category : Display Product have discount
+    [Tags]    Regression     Ligo,Sprint2017MC10    High
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Maximize Browser Window
+    Go To    ${URL_PORTAL}/c/1935
+    Element Should Contain    ${breadcrumb_new}    แฟชั่น
+    Element Should Contain    ${lvc_search_title}    แฟชั่น
+    Element Should Be Visible    //div[contains(@class,'sale-off')]
+
+TC_MC_03242
+    [Documentation]    [Wemall] Level C - Category : Display Number of result on portrait mode
+    [Tags]    Ligo,Sprint2017MC10    High
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Maximize Browser Window
+    Go To    ${URL_PORTAL}/c/1935
+    Element Should Contain    ${breadcrumb_new}    แฟชั่น
+    Element Should Contain    ${lvc_search_title}    แฟชั่น
+    Element Should Be Visible    //div[contains(@class,'item-detail')]
+
+TC_MC_03285
+    [Documentation]    [Wemall] Verify sequence of sidebar
+    [Tags]    Regression     Ligo,Sprint2017MC10    High
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Maximize Browser Window
+    Go To    ${URL_PORTAL}/c/1945
+    Element Should Contain    ${breadcrumb_new}    กระเป๋า
+    Element Should Contain    ${lvc_search_title}    กระเป๋า
+    ${count_box_sidebar}    Get Matching Xpath Count    //div[@class='nav-left']/div
+    Should Be True    ${count_box_sidebar} >= 2
+    ## First Box - Category
+    ${result_category}=    Run Keyword And Ignore Error    Get Webelements    //div[@class='nav-left']/div[1]/*[1]
+    Run Keyword if    '${result_category[0]}' == 'PASS'    Element Should Contain    //div[@class='nav-left']/div[1]/*[1]    หมวดหมู่สินค้า
+    ## Second Box - Price Range
+    ${result_category}=    Run Keyword And Ignore Error    Get Webelements    //div[@class='nav-left']/div[2]/*[1]
+    Run Keyword if    '${result_category[0]}' == 'PASS'    Element Should Contain    //div[@class='nav-left']/div[2]/*[1]    ช่วงราคา
+
+TC_MC_03286
+    [Documentation]    [Wemall] Verify resulted levelc-category page
+    [Tags]    Regression     Ligo,Sprint2017MC10    High
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Maximize Browser Window
+    Go To    ${URL_PORTAL}/c/1935
+    Element Should Contain    ${breadcrumb_new}    แฟชั่น
+    Element Should Contain    ${lvc_search_title}    แฟชั่น
+    Element Should Be Visible    //div[@class='col-left']
+    Element Should Be Visible    ${lvc_search_title}
+    Element Should Be Visible    //div[@class='list-box']
+    Element Should Be Visible    //span[@class='highlight_num']
+    ${text_show}=    Get Text    //div[@class='list-box']
+    ${result_count}=    Get Text    //span[@class='highlight_num']
+    Element Should Contain    //div[@class='list-box']    ${text_show}
+    Should Be True    ${result_count} > 0
+
+TC_MC_03244
+    [Documentation]    [WM Promotion] Show badge Promotion on product discount by price of price length at levelC when search by category
+    [Tags]     Ligo,Sprint2017MC10    High
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Go To    ${URL_PORTAL}/c/1942
+    Maximize Browser Window
+    Element Should Contain    ${breadcrumb_new}    กระโปรงสั้น
+    Element Should Contain    ${lvc_search_title}    กระโปรงสั้น
+    ${count_match_tag}    Get Matching Xpath Count    //a[contains(@class,'product-promotion')]
+    ${count_match_tag}    Convert To Integer    ${count_match_tag}
+    Should Be True    ${count_match_tag} > 0
+

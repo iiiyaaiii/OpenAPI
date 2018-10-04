@@ -1,0 +1,171 @@
+*** Variables ***
+### Data ###
+${url_shipping_complete}    ${URL_STORE}/wlsautomate12/admin/shipping
+${url_shipping_incomplete}    ${URL_STORE}/wlsautomate11/admin/shipping
+###
+### locator ###
+${day_instock}    //*[@name="instock"]
+${day_preorder}    //*[@name="preorder"]
+${btn_save}       //button[@class="btn btn-primary btn-small shipping_submit"]
+${custom_data}    $('input[id="custom_status[0]"]')
+${row_custom_weight}    $('input[name="custom_data_type[0]"]').eq(1)
+${row_custom_price}    $('input[name="custom_data_type[0]"]').eq(2)
+${row_custom_amount}    $('input[name="custom_data_type[0]"]').eq(3)
+${rd_custom_order}    //input[@id="custom_data_type_flat[0]"]
+${rd_custom_flat_free}    //input[@id="custom_data[0]_free"]
+${rd_custom_flat_rate}    //input[@id="custom_data[0]_cost"]
+${custom_flat_price}    //input[@name="custom_data[0][flat_price]"]
+${rd_custom_weight}    //input[@id="custom_data_type_weight[0]"]
+${rd_custom_price}    //input[@id="custom_data_type_price[0]"]
+${rd_custom_amount}    //input[@id="custom_data_type_amount[0]"]
+${custom_weight_from_tr1}    //input[@name="custom_data[0][weight][start][0]"]
+${custom_weight_from_tr2}    //input[@name="custom_data[0][weight][start][1]"]
+${custom_weight_to_tr1}    //input[@name="custom_data[0][weight][end][0]"]
+${custom_weight_to_tr2}    //input[@name="custom_data[0][weight][end][1]"]
+${custom_rate_weight_tr1}    //input[@name="custom_data[0][weight][price][0]"]
+${custom_rate_weight_tr2}    //input[@name="custom_data[0][weight][price][1]"]
+${custom_range_weight_tr1}    $('input[name="custom_data_type[0]"]').eq(1).closest('.panel-group').find('select').eq(0)
+${custom_range_weight_tr2}    $('input[name="custom_data_type[0]"]').eq(1).closest('.panel-group').find('select').eq(1)
+${custom_minus_weight}    $('input[name="custom_data_type[0]"]').eq(1).closest('.panel-group').find('.row-ship .i-shipping span:last')
+${custom_price_from_tr1}    //input[@name="custom_data[0][price][start][0]"]
+${custom_price_from_tr2}    //input[@name="custom_data[0][price][start][1]"]
+${custom_price_to_tr1}    //input[@name="custom_data[0][price][end][0]"]
+${custom_price_to_tr2}    //input[@name="custom_data[0][price][end][1]"]
+${custom_range_price_tr1}    $('input[name="custom_data_type[0]"]').eq(2).closest('.panel-group').find('select').eq(0)
+${custom_range_price_tr2}    $('input[name="custom_data_type[0]"]').eq(2).closest('.panel-group').find('select').eq(1)
+${custom_rate_price_tr1}    //input[@name="custom_data[0][price][price][0]"]
+${custom_rate_price_tr2}    //input[@name="custom_data[0][price][price][1]"]
+${custom_minus_price}    $('input[name="custom_data_type[0]"]').eq(2).closest('.panel-group').find('.row-ship .i-shipping span:last')
+${custom_amount_from_tr1}    //input[@name="custom_data[0][amount][start][0]"]
+${custom_amount_from_tr2}    //input[@name="custom_data[0][amount][start][1]"]
+${custom_amount_to_tr1}    //input[@name="custom_data[0][amount][end][0]"]
+${custom_amount_to_tr2}    //input[@name="custom_data[0][amount][end][1]"]
+${custom_range_amount_tr1}    $('input[name="custom_data_type[0]"]').eq(3).closest('.panel-group').find('select').eq(0)
+${custom_range_amount_tr2}    $('input[name="custom_data_type[0]"]').eq(3).closest('.panel-group').find('select').eq(1)
+${custom_rate_amount_tr1}    //input[@name="custom_data[0][amount][price][0]"]
+${custom_rate_amount_tr2}    //input[@name="custom_data[0][amount][price][1]"]
+${custom_minus_amount}    $('input[name="custom_data_type[0]"]').eq(3).closest('.panel-group').find('.row-ship .i-shipping span:last')
+${row_kerry_weight}    $('#kerry_express_kerry_weight')
+${row_kerry_price}    $('#kerry_express_kerry_price')
+${row_kerry_amount}    $('#kerry_express_kerry_amount')
+${kerry_express}    $('input[id="kerry_express_kerry_main_type"]')
+${rd_kerry_order}    //input[@id="kerry_express_kerry_flat"]
+${rd_kerry_flat_free}    //input[@id="kerry_express_kerry_free"]
+${rd_kerry_flat_rate}    //input[@id="kerry_express_kerry_cost"]
+${kerry_flat_price}    //input[@name="kerry_express_kerry[flat_price]"]
+${rd_kerry_weight}    //input[@id="kerry_express_kerry_weight"]
+${rd_kerry_price}    //input[@id="kerry_express_kerry_price"]
+${rd_kerry_amount}    //input[@id="kerry_express_kerry_amount"]
+${kerry_weight_from_tr1}    //input[@name="kerry_express_kerry[weight][start][0]"]
+${kerry_weight_from_tr2}    //input[@name="kerry_express_kerry[weight][start][1]"]
+${kerry_weight_to_tr1}    //input[@name="kerry_express_kerry[weight][end][0]"]
+${kerry_weight_to_tr2}    //input[@name="kerry_express_kerry[weight][end][1]"]
+${kerry_rate_weight_tr1}    //input[@name="kerry_express_kerry[weight][price][0]"]
+${kerry_rate_weight_tr2}    //input[@name="kerry_express_kerry[weight][price][1]"]
+${kerry_range_weight_tr1}    $('input[id="kerry_express_kerry_weight"]').closest('.panel-group').find('select').eq(0)
+${kerry_range_weight_tr2}    $('input[id="kerry_express_kerry_weight"]').closest('.panel-group').find('select').eq(1)
+${kerry_minus_weight}    $('#kerry_express_kerry_weight').closest('.panel-group').find('.row-ship .i-shipping span:last')
+${kerry_price_from_tr1}    //input[@name="kerry_express_kerry[price][start][0]"]
+${kerry_price_from_tr2}    //input[@name="kerry_express_kerry[price][start][1]"]
+${kerry_price_to_tr1}    //input[@name="kerry_express_kerry[price][end][0]"]
+${kerry_price_to_tr2}    //input[@name="kerry_express_kerry[price][end][1]"]
+${kerry_range_price_tr1}    $('input[id="kerry_express_kerry_price"]').closest('.panel-group').find('select').eq(0)
+${kerry_range_price_tr2}    $('input[id="kerry_express_kerry_price"]').closest('.panel-group').find('select').eq(1)
+${kerry_rate_price_tr1}    //input[@name="kerry_express_kerry[price][price][0]"]
+${kerry_rate_price_tr2}    //input[@name="kerry_express_kerry[price][price][1]"]
+${kerry_minus_price}    $('#kerry_express_kerry_price').closest('.panel-group').find('.row-ship .i-shipping span:last')
+${kerry_amount_from_tr1}    //input[@name="kerry_express_kerry[amount][start][0]"]
+${kerry_amount_from_tr2}    //input[@name="kerry_express_kerry[amount][start][1]"]
+${kerry_amount_to_tr1}    //input[@name="kerry_express_kerry[amount][end][0]"]
+${kerry_amount_to_tr2}    //input[@name="kerry_express_kerry[amount][end][1]"]
+${kerry_range_amount_tr1}    $('input[id="kerry_express_kerry_amount"]').closest('.panel-group').find('select').eq(0)
+${kerry_range_amount_tr2}    $('input[id="kerry_express_kerry_amount"]').closest('.panel-group').find('select').eq(1)
+${kerry_rate_amount_tr1}    //input[@name="kerry_express_kerry[amount][price][0]"]
+${kerry_rate_amount_tr2}    //input[@name="kerry_express_kerry[amount][price][1]"]
+${kerry_minus_amount}    $('#kerry_express_kerry_amount').closest('.panel-group').find('.row-ship .i-shipping span:last')
+${thailand_post}    $('input[id="thai_land_post"]')
+${rd_post}        $('input[id="thai_land_post_standard_main_type"]')
+${rd_post_order}    //input[@id="thai_land_post_standard_type"]
+${rd_post_flat_free}    //input[@id="thai_land_post_standard_flat"]
+${rd_post_flat_rate}    //input[@id="thai_land_post_standard_cost"]
+${post_flat_price}    //input[@name="thai_land_post_standard[flat_price]"]
+${rd_post_weight}    //input[@id="thai_land_post_standard_type_weight"]
+${rd_post_price}    //input[@id="thai_land_post_standard_type_price"]
+${rd_post_amount}    //input[@id="thai_land_post_standard_type_amount"]
+${row_post_weight}    $('#thai_land_post_standard_type_weight')
+${row_post_price}    $('#thai_land_post_standard_type_price')
+${row_post_amount}    $('#thai_land_post_standard_type_amount')
+${row_ems_weight}    $('#thai_land_post_ems_type_weight')
+${row_ems_price}    $('#thai_land_post_ems_type_price')
+${row_ems_amount}    $('#thai_land_post_ems_type_amount')
+${post_weight_from_tr1}    //input[@name="thai_land_post_standard[weight][start][0]"]
+${post_weight_from_tr2}    //input[@name="thai_land_post_standard[weight][start][1]"]
+${post_weight_to_tr1}    //input[@name="thai_land_post_standard[weight][end][0]"]
+${post_weight_to_tr2}    //input[@name="thai_land_post_standard[weight][end][1]"]
+${post_rate_weight_tr1}    //input[@name="thai_land_post_standard[weight][price][0]"]
+${post_rate_weight_tr2}    //input[@name="thai_land_post_standard[weight][price][1]"]
+${post_range_weight_tr1}    $('input[id="thai_land_post_standard_type_weight"]').closest('.panel-group').find('select').eq(0)
+${post_range_weight_tr2}    $('input[id="thai_land_post_standard_type_weight"]').closest('.panel-group').find('select').eq(1)
+${post_minus_weight}    $('#thai_land_post_standard_type_weight').closest('.panel-group').find('.row-ship .i-shipping span:last')
+${post_price_from_tr1}    //input[@name="thai_land_post_standard[price][start][0]"]
+${post_price_from_tr2}    //input[@name="thai_land_post_standard[price][start][1]"]
+${post_price_to_tr1}    //input[@name="thai_land_post_standard[price][end][0]"]
+${post_price_to_tr2}    //input[@name="thai_land_post_standard[price][end][1]"]
+${post_range_price_tr1}    $('input[id="thai_land_post_standard_type_price"]').closest('.panel-group').find('select').eq(0)
+${post_range_price_tr2}    $('input[id="thai_land_post_standard_type_price"]').closest('.panel-group').find('select').eq(1)
+${post_rate_price_tr1}    //input[@name="thai_land_post_standard[price][price][0]"]
+${post_rate_price_tr2}    //input[@name="thai_land_post_standard[price][price][1]"]
+${post_minus_price}    $('#thai_land_post_standard_type_price').closest('.panel-group').find('.row-ship .i-shipping span:last')
+${post_amount_from_tr1}    //input[@name="thai_land_post_standard[amount][start][0]"]
+${post_amount_from_tr2}    //input[@name="thai_land_post_standard[amount][start][1]"]
+${post_amount_to_tr1}    //input[@name="thai_land_post_standard[amount][end][0]"]
+${post_amount_to_tr2}    //input[@name="thai_land_post_standard[amount][end][1]"]
+${post_range_amount_tr1}    $('input[id="thai_land_post_standard_type_amount"]').closest('.panel-group').find('select').eq(0)
+${post_range_amount_tr2}    $('input[id="thai_land_post_standard_type_amount"]').closest('.panel-group').find('select').eq(1)
+${post_rate_amount_tr1}    //input[@name="thai_land_post_standard[amount][price][0]"]
+${post_rate_amount_tr2}    //input[@name="thai_land_post_standard[amount][price][1]"]
+${post_minus_amount}    $('#thai_land_post_standard_type_amount').closest('.panel-group').find('.row-ship .i-shipping span:last')
+${rd_ems}         $('input[id="thai_land_post_ems_main_type"]')
+${rd_ems_order}    //input[@id="thai_land_post_ems_type_flat"]
+${rd_ems_flat_free}    //*[@id="thai_land_post_ems_free"]
+${rd_ems_flat_rate}    //*[@id="thai_land_post_ems_cost"]
+${ems_flat_price}    //*[@name="thai_land_post_ems[flat_price]"]
+${rd_ems_weight}    //input[@id="thai_land_post_ems_type_weight"]
+${rd_ems_price}    //input[@id="thai_land_post_ems_type_price"]
+${rd_ems_amount}    //input[@id="thai_land_post_ems_type_amount"]
+${ems_weight_from_tr1}    //input[@name="thai_land_post_ems[weight][start][0]"]
+${ems_weight_from_tr2}    //input[@name="thai_land_post_ems[weight][start][1]"]
+${ems_weight_from_tr3}    //input[@name="thai_land_post_ems[weight][start][2]"]
+${ems_weight_to_tr1}    //input[@name="thai_land_post_ems[weight][end][0]"]
+${ems_weight_to_tr2}    //input[@name="thai_land_post_ems[weight][end][1]"]
+${ems_rate_weight_tr1}    //input[@name="thai_land_post_ems[weight][price][0]"]
+${ems_rate_weight_tr2}    //input[@name="thai_land_post_ems[weight][price][1]"]
+${ems_rate_weight_tr3}    //input[@name="thai_land_post_ems[weight][price][2]"]
+${ems_range_weight_tr1}    $('input[id="thai_land_post_ems_type_weight"]').closest('.panel-group').find('select').eq(0)
+${ems_range_weight_tr2}    $('input[id="thai_land_post_ems_type_weight"]').closest('.panel-group').find('select').eq(1)
+${ems_range_weight_tr3}    $('input[id="thai_land_post_ems_type_weight"]').closest('.panel-group').find('select').eq(2)
+${ems_minus_weight}    $('#thai_land_post_ems_type_weight').closest('.panel-group').find('.row-ship .i-shipping span:last')
+${ems_price_from_tr1}    //input[@name="thai_land_post_ems[price][start][0]"]
+${ems_price_from_tr1}    $('input[name="thai_land_post_ems[price][start][0]"]')
+${ems_price_from_tr2}    //input[@name="thai_land_post_ems[price][start][1]"]
+${ems_price_to_tr1}    //input[@name="thai_land_post_ems[price][end][0]"]
+${ems_price_to_tr2}    $('input[name="thai_land_post_ems[price][end][1]"]')
+${ems_price_to_tr1}    //input[@name="thai_land_post_ems[price][end][0]"]
+${ems_price_to_tr2}    //input[@name="thai_land_post_ems[price][end][1]"]
+${ems_range_price_tr1}    $('input[id="thai_land_post_ems_type_price"]').closest('.panel-group').find('select').eq(0)
+${ems_range_price_tr2}    $('input[id="thai_land_post_ems_type_price"]').closest('.panel-group').find('select').eq(1)
+${press_ems_price_tr1}    //input[@name="thai_land_post_ems[price][price][0]"]
+${ems_rate_price_tr1}    $('input[name="thai_land_post_ems[price][price][0]"]')
+${ems_rate_price_tr2}    $('input[name="thai_land_post_ems[price][price][1]"]')
+${ems_rate_price_tr1}    //input[@name="thai_land_post_ems[price][price][0]"]
+${ems_rate_price_tr2}    //input[@name="thai_land_post_ems[price][price][1]"]
+${ems_minus_price}    $('#thai_land_post_ems_type_price').closest('.panel-group').find('.row-ship .i-shipping span:last')
+${ems_amount_from_tr1}    //input[@name="thai_land_post_ems[amount][start][0]"]
+${ems_amount_from_tr2}    //input[@name="thai_land_post_ems[amount][start][1]"]
+${ems_amount_to_tr1}    //input[@name="thai_land_post_ems[amount][end][0]"]
+${ems_amount_to_tr2}    //input[@name="thai_land_post_ems[amount][end][1]"]
+${ems_range_amount_tr1}    $('input[id="thai_land_post_ems_type_amount"]').closest('.panel-group').find('select').eq(0)
+${ems_range_amount_tr2}    $('input[id="thai_land_post_ems_type_amount"]').closest('.panel-group').find('select').eq(1)
+${ems_rate_amount_tr1}    //input[@name="thai_land_post_ems[amount][price][0]"]
+${ems_rate_amount_tr2}    //input[@name="thai_land_post_ems[amount][price][1]"]
+${ems_minus_amount}    $('#thai_land_post_ems_type_amount').closest('.panel-group').find('.row-ship .i-shipping span:last')

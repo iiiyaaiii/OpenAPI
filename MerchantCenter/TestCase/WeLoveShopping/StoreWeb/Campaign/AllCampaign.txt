@@ -1,0 +1,153 @@
+*** Setting ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Force Tags        Store-Web    Ligo    Sprint2017MC10    WLSPromotion    mc-wls
+Test Timeout      3 minutes
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+
+*** Test Cases ***
+TC_MC_03517
+    [Documentation]    [Welove] [ByItem] Store select product to join wls promotion by item discount % promotion
+    [Tags]    Regression    Medium    Mock
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_item_percent_id}
+    Click Element    ${btn_add_product_join}
+    ${check_product_joined}    Execute Javascript    return $('input[id="check_all2"]').prop('disabled')
+    Run Keyword IF    '${check_product_joined}' == 'False'    Cancel All Product To join Campaign
+    Select Product To join Campaign    ${robot_store1_join_promotion_item}
+    WMS Switch Project    wls
+    WLS Approve Product    promotion    ${promotion_item_percent_id}    ${robot_store1_join_promotion_item}
+    Go to    ${URL_PORTAL}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/status/${promotion_item_percent_id}
+    Click Element    ${btn_cancel_joined_campaign}
+    Click Element    ${btn_confirm_cancel_campaign}
+    Wait Until Page Contains    แคมเปญทั้งหมดที่เข้าร่วม    ${EXPECT_LOADTIME}
+
+TC_MC_03518
+    [Documentation]    [Welove] [ByCart] Store select product for discount by %-baht promotion
+    [Tags]    Regression    High    Mock
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_cart_percent_by_price_id}
+    Click Element    ${btn_add_product_join}
+    ${check_product_joined}    Execute Javascript    return $('input[id="check_all2"]').prop('disabled')
+    Run Keyword IF    '${check_product_joined}' == 'False'    Cancel All Product To join Campaign
+    Select Product To join Campaign    ${robot_store1_join_promotion_cart}
+    WMS Switch Project    wls
+    WLS Approve Product    promotion    ${promotion_cart_percent_by_price_id}    ${robot_store1_join_promotion_cart}
+    Go to    ${URL_PORTAL}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/status/${promotion_cart_percent_by_price_id}
+    Click Element    ${btn_cancel_joined_campaign}
+    Click Element    ${btn_confirm_cancel_campaign}
+    Wait Until Page Contains    แคมเปญทั้งหมดที่เข้าร่วม    ${EXPECT_LOADTIME}
+
+TC_MC_03519
+    [Documentation]    [Welove] [ByCart] Store select product for discount by % promotion (ซื้อครบกี่ชิ้นลดกี่%)
+    [Tags]    Regression    Medium    Mock
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_cart_percent_by_qty_id}
+    Click Element    ${btn_add_product_join}
+    Select Product To join Campaign    ${robot_store1_join_promotion_cart}
+    WMS Switch Project    wls
+    WLS Approve Product    promotion    ${promotion_cart_percent_by_qty_id}    ${robot_store1_join_promotion_cart}
+    Go to    ${URL_PORTAL}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/status/${promotion_cart_percent_by_qty_id}
+    Click Element    ${btn_cancel_joined_campaign}
+    Click Element    ${btn_confirm_cancel_campaign}
+    Wait Until Page Contains    แคมเปญทั้งหมดที่เข้าร่วม    ${EXPECT_LOADTIME}
+
+TC_MC_03520
+    [Documentation]    [Welove] [ByCart] Store select product for discount by price promotion (ซื้อครบบาทลดกี่บาท)
+    [Tags]    Regression    Medium    Mock
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_cart_price_by_price_id}
+    Click Element    ${btn_add_product_join}
+    Select Product To join Campaign    L91199855
+    WMS Switch Project    wls
+    WLS Approve Product    promotion    ${promotion_cart_price_by_price_id}    L91199855
+    Go to    ${URL_PORTAL}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/status/${promotion_cart_price_by_price_id}
+    Click Element    ${btn_cancel_joined_campaign}
+    Click Element    ${btn_confirm_cancel_campaign}
+    Wait Until Page Contains    แคมเปญทั้งหมดที่เข้าร่วม    ${EXPECT_LOADTIME}
+
+TC_MC_03521
+    [Documentation]    [Welove] [ByCart] Store select product for discount by price promotion (ซื้อครบกี่ชิ้นลดกี่บาท)
+    [Tags]    Regression    Medium    Mock
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_cart_price_by_qty_id}
+    Click Element    ${btn_add_product_join}
+    Select Product To join Campaign    ${robot_store1_join_promotion_cart}
+    WMS Switch Project    wls
+    WLS Approve Product    promotion    ${promotion_cart_price_by_qty_id}    ${robot_store1_join_promotion_cart}
+    Go to    ${URL_PORTAL}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/status/${promotion_cart_price_by_qty_id}
+    Click Element    ${btn_cancel_joined_campaign}
+    Click Element    ${btn_confirm_cancel_campaign}
+
+TC_MC_03493
+    [Documentation]    [Welove] กดปุ่ม"ดูรายละเอียด"แคมเปญที่ยังไม่หมดอายุ
+    [Tags]    Medium    Mock
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_cart_price_by_qty_id}
+    Wait Until Element Is Visible    ${btn_add_product_join}    ${EXPECT_LOADTIME}
+    Element Should Not Be Visible    ${msg_campaign_expire}
+    Element Should Be Visible    ${btn_add_product_join}
+
+TC_MC_03494
+    [Documentation]    [Welove] กดปุ่ม"ดูรายละเอียด"คลิกเพื่อดูรายละเอียดแคมเปญของแคมเปญที่หมดอายุ
+    [Tags]    Medium    Mock
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${expired_join_campaign_id}
+    Wait Until Element Is Visible    ${msg_campaign_expire}    ${EXPECT_LOADTIME}
+    Element Should Be Visible    ${msg_campaign_expire}
+    Element Should Not Be Visible    ${btn_add_product_join}
+
+TC_MC_03495
+    [Documentation]    [Welove] หน้ารายละเอียดแคมเปญกรณี กดปุ่ม "ยกเลิก"
+    [Tags]    Medium    Mock
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_item_percent_id}
+    Wait Until Element Is Visible    ${btn_add_product_join}    ${EXPECT_LOADTIME}
+    Click Element    ${btn_cancel_joined_campaign}
+    Wait Until Page Contains    แคมเปญทั้งหมด    ${EXPECT_LOADTIME}
+    Location Should Be    ${URL_STORE}/${store_name1}/admin/campaign
+
+TC_MC_03496
+    [Documentation]    [Welove] หน้ารายละเอียดแคมเปญกรณียังไม่เคยเลือกสินค้าเข้าร่วมแคมเปญ
+    [Tags]    Medium    Mock
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_cart_price_by_qty_id}
+    Wait Until Element Is Visible    ${btn_add_product_join}    ${EXPECT_LOADTIME}
+    Element Should Be Enabled    ${btn_add_product_join}
+    Element Should Be Visible    //button[contains(text(),'เลือกสินค้าเข้าร่วมแคมเปญ')]
+    Click Element    ${btn_add_product_join}
+    Wait Until Element Is Visible   selectplaza    ${EXPECT_LOADTIME}
+    #Select From List By Label    selectplaza    สุขภาพและความงาม
+    Element Should Be Disabled    //button[@id="add-product"]
+    Select Checkbox    //*[@id="table-left"]/tbody/tr[1]/td[1]/label/input
+    Element Should Be Enabled    //button[@id="add-product"]
+
+TC_MC_03497
+    [Documentation]    [Welove] หน้ารายละเอียดแคมเปญกรณีเคยเลือกสินค้าเข้าร่วมแคมเปญแล้ว
+    [Tags]    Medium    Mock
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_item_percent_id}
+    Wait Until Element Is Visible    ${btn_add_product_join}    ${EXPECT_LOADTIME}
+    Element Should Be Enabled    ${btn_add_product_join}
+    Element Should Be Visible    //button[contains(text(),'เลือกสินค้าเพิ่มเติม')]
+    Click Element    ${btn_add_product_join}
+    Element Should Be Visible    //div[@class="campaign-manage-box"]
+    Element Should Be Visible    //*[@id="table-left"]/tbody/tr[1]
+    ${product_disable}=    Get Matching Xpath Count    //tr[@class="disable"]
+    Should Be True    ${product_disable} == 1

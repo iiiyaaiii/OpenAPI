@@ -1,0 +1,169 @@
+*** Settings ***
+#Suite Teardown    Close All Browsers
+Suite Setup       Account Login    ${seller_user_1000}    ${seller_pwd_1000}
+#Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_STORE}/${seller_name1000}/admin/promotion/create
+Force Tags        Store-Web
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Backend_Sellerpromotion.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Store_Theme.txt
+Resource          ../../../../Keyword/Common/Backend_Promotion.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+
+
+*** Test Cases ***
+TC_MC_01602
+    [Documentation]    [Landing Promotion] - Store have promotion period at Today. have product to join > 8 item.  seller select product highlight 8 item. All product highlight status is non online.
+    [Tags]    Ligo    High    Sprint2037MC12
+    Create seller promotion by name by minute     ProA    20
+    Execute Javascript    $('.promotion-tab-box input[type="radio"').click()
+    Add Product To List Search by name    L90585179,L90585178,L90585177,L90585176,L90585175,L90585174,L90585173,L90585172,L90585171
+    Sleep     2s
+    Execute Javascript    $('.form-actions-footer .btn-save').click()
+    Sleep     2s
+    Execute Javascript    $('.button-submit.btn.btn-primary.btn-save').click()
+    Sleep     2s
+    Run Keywords    WMS Login    AND    WMS Switch Project    wm
+    Monitoring Product    L90585179    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585178    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585177    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585176    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585175    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585174    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585173    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585172    ไม่ผ่านการตรวจสอบ
+    Open Browser    ${URL_PORTAL}/${seller_name1000}    ${BROWSER}
+    Sleep     3s
+    ${URL_PROMOTION}    Execute Javascript    return ($('.promotion-highlight-div div.view-more a').attr('href'))
+    Go To    ${URL_PROMOTION}
+    Sleep     1s
+    ${HAS_H_PRODUCT}    Execute Javascript    return ($('.product-wrapper ul li').length==1)
+    Should Be True    ${HAS_H_PRODUCT}
+    Run Keywords    WMS Login    AND    WMS Switch Project    wm
+    Monitoring Product    L90585179    ผ่าน
+    Monitoring Product    L90585178    ผ่าน
+    Monitoring Product    L90585177    ผ่าน
+    Monitoring Product    L90585176    ผ่าน
+    Monitoring Product    L90585175    ผ่าน
+    Monitoring Product    L90585174    ผ่าน
+    Monitoring Product    L90585173    ผ่าน
+    Monitoring Product    L90585172    ผ่าน
+    Account Login    ${seller_user_1000}    ${seller_pwd_1000}
+    Go To    ${URL_STORE}/${seller_name1000}/admin/promotion
+    Delete Promotion All
+    Maximize Browser Window
+
+TC_MC_01603
+    [Documentation]    This Promotion dose not display on Storefront.
+    [Tags]    Ligo    High    Sprint2037MC12
+    Create seller promotion by name by minute     ProA    20
+    Execute Javascript    $('.promotion-tab-box input[type="radio"').click()
+    Add Product To List Search by name    L90585179,L90585178,L90585177,L90585176,L90585175,L90585174,L90585173,L90585172
+    Sleep     2s
+    Execute Javascript    $('.form-actions-footer .btn-save').click()
+    Sleep     2s
+    Execute Javascript    $('.button-submit.btn.btn-primary.btn-save').click()
+    Sleep     2s
+    Run Keywords    WMS Login    AND    WMS Switch Project    wm
+    Monitoring Product    L90585179    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585178    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585177    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585176    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585175    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585174    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585173    ไม่ผ่านการตรวจสอบ
+    Monitoring Product    L90585172    ไม่ผ่านการตรวจสอบ
+    Open Browser    ${URL_PORTAL}/${seller_name1000}    ${BROWSER}
+    Sleep     3s
+    ${HAS_H_PRODUCT}    Execute Javascript    return ($('.promotion-highlight-div').length==0)
+    Should Be True    ${HAS_H_PRODUCT}
+    Run Keywords    WMS Login    AND    WMS Switch Project    wm
+    Monitoring Product    L90585179    ผ่าน
+    Monitoring Product    L90585178    ผ่าน
+    Monitoring Product    L90585177    ผ่าน
+    Monitoring Product    L90585176    ผ่าน
+    Monitoring Product    L90585175    ผ่าน
+    Monitoring Product    L90585174    ผ่าน
+    Monitoring Product    L90585173    ผ่าน
+    Monitoring Product    L90585172    ผ่าน
+    Account Login    ${seller_user_1000}    ${seller_pwd_1000}
+    Go To    ${URL_STORE}/${seller_name1000}/admin/promotion
+    Delete Promotion All
+    Maximize Browser Window
+
+
+TC_MC_01643
+    [Documentation]    [Landing Promotion] -Store have promotion active various promotion
+    [Tags]    Ligo    High    Sprint2037MC12
+    Create seller promotion by name by minute     ProA    20
+    Execute Javascript    $('.promotion-tab-box input[type="radio"').click()
+    Add Product To List Search by name    L90585179
+    Sleep     2s
+    Execute Javascript    $('.form-actions-footer .btn-save').click()
+    Sleep     2s
+    Execute Javascript    $('.button-submit.btn.btn-primary.btn-save').click()
+    Sleep     2s
+
+    Go To    ${URL_STORE}/${seller_name1000}/admin/promotion/create
+    Create seller promotion by name by minute     ProB    20
+    Execute Javascript    $('.promotion-tab-box input[type="radio"').click()
+    Add Product To List Search by name    L90585178
+    Sleep     2s
+    Execute Javascript    $('.form-actions-footer .btn-save').click()
+    Sleep     2s
+    Execute Javascript    $('.button-submit.btn.btn-primary.btn-save').click()
+    Sleep     2s
+
+    Go To    ${URL_STORE}/${seller_name1000}/admin/promotion/create
+    Create seller promotion by name by minute     ProC    20
+    Execute Javascript    $('.promotion-tab-box input[type="radio"').click()
+    Add Product To List Search by name    L90585177
+    Sleep     2s
+    Execute Javascript    $('.form-actions-footer .btn-save').click()
+    Sleep     2s
+    Execute Javascript    $('.button-submit.btn.btn-primary.btn-save').click()
+    Sleep     2s
+
+    Go To    ${URL_PORTAL}/${seller_name1000}
+    Sleep     3s
+
+    ${HAS_PROMOTION}    Execute Javascript    return ($('.promotion-highlight-div h2').text() =="ProCProB")
+    Should Be True    ${HAS_PROMOTION}
+
+    Go To    ${URL_STORE}/${seller_name1000}/admin/promotion
+    Sleep     2s
+    Delete Promotion All
+    Maximize Browser Window
+
+TC_MC_01637
+    [Documentation]    [Product List] - Verify store home pages (have all promotion and highlight product)
+    Create seller promotion by name by minute     ProA    20
+    Execute Javascript    $('.promotion-tab-box input[type="radio"').click()
+    Add Product To List Search by name    L90585177
+    Sleep     2s
+    Execute Javascript    $('.form-actions-footer .btn-save').click()
+    Sleep     2s
+    Execute Javascript    $('.button-submit.btn.btn-primary.btn-save').click()
+    Sleep     2s
+    Go To    ${URL_PORTAL}/${seller_name1000}
+    Sleep     3s
+    ${HAS_PROMOTION}    Execute Javascript    return ($('.promotion-highlight-div h2').text() =="ProA")
+    Should Be True    ${HAS_PROMOTION}
+
+    ${HAS_H_BANNER}    Execute Javascript    return ($('body').find('div.h-banner').length==1)
+    Should Be True    ${HAS_H_BANNER}
+
+    ${HAS_MAIN_BANNER}    Execute Javascript    return ($('body').find('div.wrap-banner-home a').length>=1)
+    Should Be True    ${HAS_MAIN_BANNER}
+
+    ${HAS_SP_BANNER}    Execute Javascript    return ($('div.sp-banner-box iframe').attr('src') =="https://www.youtube.com/embed/I7y2x0tVYpY")
+    Should Be True    ${HAS_SP_BANNER}
+
+    Go To    ${URL_STORE}/${seller_name1000}/admin/promotion
+    Sleep     2s
+    Delete Promotion All

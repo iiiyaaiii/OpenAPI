@@ -1,0 +1,45 @@
+*** Setting ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_STORE}/${user_s001}/admin/shipping
+Force Tags        Store-Web    Shipping    mock    Ligo    Sprint2017MC10
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Shipping.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Shipping.txt
+
+*** Test Case ***
+TC_MC_03695
+    [Documentation]    [Wemall] Input product instock with blank
+    Clear Element Text    instock
+    Click Element    ${btn_save}
+    Wait Until Element Is Visible    ${btn_OK}
+    Page Should Contain    กรุณากรอกข้อมูลระยะเวลาเตรียมของ หรือ ระยะเวลาสั่งของ ให้ครบถ้วน
+
+TC_MC_03696
+    [Documentation]    [Wemall] Input product instock without number 1 - 7
+    Input Text    instock    9
+    Wait Until Element Is Visible    ${Alert}
+    Page Should Contain    สินค้าพร้อมส่ง กำหนดวันได้ 1 - 7 วัน
+
+TC_MC_03697
+    [Documentation]    [Wemall] Input product instock and Not apply all product
+    Input Text    instock    3
+    Click Element    ${btn_save}
+    Sleep    3 s
+    Go To    ${URL_STORE}/${user_s001}/admin/product/create
+    Wait Until Element Is Visible    prepare_shipping
+    Page Should Contain Element    //input[@id="prepare_shipping" and @value="3"]
+
+TC_MC_03699
+    [Documentation]    [Wemall] Verify shipping chanel content not display
+    Page Should Contain    ระยะเวลาเตรียมสินค้าและแจ้งจัดส่ง จะเริ่มนับตั้งแต่ระบบแจ้งยืนยันการชำระเงิน ไปจนถึงร้านค้าจัดส่งสินค้าและ "แจ้งจัดส่ง" ในระบบ
+    Page Should Contain    - หากไม่สามารถแจ้งจัดส่งภายในเวลาที่กำหนด ผู้ซื้อมีสิทธิ์ขอเงินคืนได้ และร้านค้าอาจถูกลงโทษตามกฎของ WeMall
+    Page Should Contain    - การกำหนดระยะเวลาเตรียมสินค้าและแจ้งจัดส่งนี้ จะมีผลต่อสินค้าทุกรายการที่ถูกเพิ่มลงในร้านหลังทำการบันทึกการตั้งค่า
+    Page Should Contain    - สำหรับสินค้าบางรายการที่มีระยะเวลาเตรียมสินค้าและแจ้งจัดส่งแตกต่างกัน ท่านสามารถกำหนดระยะเวลาได้ที่หน้า "เพิ่มสินค้า" ของรายการสินค้านั้น
+    Element Should Not Be Visible    preorder
+    Element Should Not Be Visible    ${Payment_Chanel}

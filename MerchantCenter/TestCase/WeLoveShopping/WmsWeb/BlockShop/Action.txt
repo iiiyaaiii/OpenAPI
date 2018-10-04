@@ -1,0 +1,253 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Force Tags        Wms-Web    mock    Action    Ligo    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/BlockShop.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00907
+    [Documentation]    [Welove] Start Status is normal (shop open) >> Beware >> normal
+    Search shop on WMS block shop    ${shop_open}    Normal    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Warning
+    Select shop status    Beware    ไม่สามารถติดต่อได้ติดต่อกันเกิน 3 วัน
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Normal
+    Select shop status    Normal    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00908
+    [Documentation]    [Welove] Start Status is normal (shop open) >> Warning >> normal
+    Search shop on WMS block shop    ${shop_open}    Normal    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Warning
+    Select shop status    Warning    ไม่สามารถติดต่อได้ติดต่อกันเกิน 3 วัน
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Normal
+    Select shop status    Normal    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00909
+    [Documentation]    [Welove] Start Status is normal (shop open) >> Blocked >> normal
+    [Tags]    Regression    High    SmokeTest
+    Search shop on WMS block shop    ${seller_user_block}    Normal    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Blocked
+    Select shop status    Blocked    ไม่จัดส่งสินค้าตามระยะเวลาที่แจ้ง
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Normal
+    Select shop status    Normal    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00910
+    [Documentation]    [Welove] Start Status is normal (shop closed) >> Beware >> normal
+    Search shop on WMS block shop    ${shop_close}    Normal    จัดส่งสินค้าล่าช้า
+    ## Select action block status = beware
+    Select shop status    Beware    จัดส่งสินค้าล่าช้า
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Normal
+    Select shop status    Normal    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00911
+    [Documentation]    [Welove] Start Status is normal (shop closed) >> Warning >> normal
+    Search shop on WMS block shop    ${shop_close}    Normal    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Warning
+    Select shop status    Warning    ลงประกาศสินค้าผิดกฏหมาย
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Normal
+    Select shop status    Normal    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00912
+    [Documentation]    [Welove] Start Status is normal (shop closed) >> Blocked >> normal
+    Search shop on WMS block shop    ${shop_close}    Normal    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Blocked
+    Select shop status    Blocked    กระทำผิดกฏระเบียบเว็บไซต์
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Normal
+    Select shop status    Normal    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00913
+    [Documentation]    [Welove] Start Status is Beware (shop open) >> Warning >> Beware
+    Search shop on WMS block shop    ${shop_open}    Beware    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Warning
+    Select shop status    Warning    คะแนน Feedback ต่ำกว่าที่กำหนด
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Beware
+    Select shop status    Beware    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00914
+    [Documentation]    [Welove] Start Status is Beware (shop open) >> Blocked >> Beware
+    Search shop on WMS block shop    ${shop_open}    Beware    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Blocked
+    Select shop status    Blocked    คะแนน Feedback ติดลบ
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Beware
+    Select shop status    Beware    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00915
+    [Documentation]    [Welove] Start Status is Beware (shop Closed) >> Warning >> Beware
+    Search shop on WMS block shop    ${shop_close}    Beware    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Warning
+    Select shop status    Warning    คะแนน Feedback ติดลบ
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Beware
+    Select shop status    Beware    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00916
+    [Documentation]    [Welove] Start Status is Beware (shop Closed) >> Blocked >> Beware
+    Search shop on WMS block shop    ${shop_close}    Beware    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Blocked
+    Select shop status    Blocked    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Beware
+    Select shop status    Beware    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00917
+    [Documentation]    [Welove] Start Status is Beware (shop open) >> Warning >> Blocked >> Beware
+    Search shop on WMS block shop    ${shop_open}    Beware    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Warning
+    Select shop status    Warning    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    ## Verify expect result
+    Verify shop status
+    ## Select action block status = Blocked
+    Select shop status    Blocked    ไม่จัดส่งสินค้าตามระยะเวลาที่แจ้ง
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Beware
+    Select shop status    Beware    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00918
+    [Documentation]    [Welove] Start Status is Beware (shop closed) >> Warning >> Blocked >> Beware
+    Search shop on WMS block shop    ${shop_close}    Beware    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Warning
+    Select shop status    Warning    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    ## Verify expect result
+    Verify shop status
+    ## Select action block status = Blocked
+    Select shop status    Blocked    ไม่จัดส่งสินค้าตามระยะเวลาที่แจ้ง
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Beware
+    Select shop status    Beware    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00919
+    [Documentation]    [Welove] Start Status is Normal (shop open) >> Warning >> Blocked >> Beware
+    [Tags]    Regression    High
+    Search shop on WMS block shop    ${shop_open}    Normal    จัดส่งสินค้าล่าช้า
+    ## Select action block status = Warning
+    Select shop status    Warning    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    ## Verify expect result
+    Verify shop status
+    ## Select action block status = Blocked
+    Select shop status    Blocked    ไม่จัดส่งสินค้าตามระยะเวลาที่แจ้ง
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Beware
+    Select shop status    Beware    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+    ## Change action block status = Normal
+    Select shop status    Normal    อื่นๆ
+    ## Verify expect result
+    Verify shop status
+
+TC_MC_00921
+    [Documentation]    [Welove] verify Action : case change status normal (shop open) >> Warning
+    [Tags]    Regression    Low
+    Go To    ${url_block_seller}
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    Sleep    2s
+    ## Select action block status = Warning
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    warning
+    Select From List By Label    ${select_action_reason}    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    ## Verify expect result
+    Element Should Be Visible    ${top_record_status}    ${icon_warning}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'ปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+    Sleep    2s
+    ## Select action block status = normal
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    normal
+    Select From List By Label    ${select_action_reason}    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Element Should Be Visible    ${top_record_status}    ${icon_normal}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'เปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+
+TC_MC_00922
+    [Documentation]    [Welove] verify Action :status normal (shop open) >> Blocked
+    [Tags]    Regression    Medium
+    Go To    ${url_block_seller}
+    Input Text    ${input_email}    ${seller_user_block}
+    Click Button    ${btn_block_search}
+    Sleep    2s
+    ## Select action block status = blocked
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Sleep    2s
+    Select From List By Label    ${select_action_status}    blocked
+    Select From List By Label    ${select_action_reason}    กระทำผิดกฏระเบียบเว็บไซต์
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    ## Verify expect result
+    Element Should Be Visible    ${top_record_status}    ${icon_blocked}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'ปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}
+    Sleep    2s
+    ## Select action block status = normal
+    Execute Javascript    $('input[type="checkbox"]').eq(1).click()
+    Wait Until Element Is Visible    action-pannel
+    Select From List By Label    ${select_action_status}    normal
+    Select From List By Label    ${select_action_reason}    ให้ข้อมูลติดต่อไม่ถูกต้อง เช่น ชื่อ-นามสกุล, เบอร์ติดต่อ, อีเมล์ เป็นต้น
+    Click Button    ${btn_save_action}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Wait Until Element Is Visible    ${noti_save_sucess}
+    Element Should Be Visible    ${top_record_status}    ${icon_normal}
+    ${current_shop_status}=    Get Text    ${top_record_shop_status}
+    Should Be True    '${current_shop_status}' == 'เปิดร้าน'
+    ${date_change}=    Get Time    ${top_record_date_lasted}

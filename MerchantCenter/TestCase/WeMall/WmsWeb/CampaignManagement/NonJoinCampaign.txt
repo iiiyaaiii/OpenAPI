@@ -1,0 +1,253 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Ligo    Sprint2017MC8    NonJoinCampaign
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+
+*** Variables ***
+${product_id_no_stock}    L91556494
+${nonejoin_campaign_id}    4016
+
+*** Test Cases ***
+TC_MC_02337
+    [Documentation]    [Wemall] Create Non JoinCampaign without charge fee
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Click Button Add Campaign    ${btn_add_nonjoin_campaign}    ${URL_WMS}/campaign/collection-non-join/create
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] NonJoinCampaign
+    Choose Campaign Banner    none_join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Input Date Show Campaign    ${cur_date}
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    List Campaign - Get Last Campaign Name
+    List Campaign - Click Icon Edit Last Campaign
+    ${campaignID}    Get NonJoinCampaign ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${campaignID}
+    Verify Campaign Name TH
+    Verify Date Show Compaign
+    Verify Handle URL TH
+    ## Delete Campaign
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_nonjoin_campaign}
+    List Campaign - Click Icon Delete Campaign    //*[@id="row-${campaignID}"]/td[7]/a[3]
+
+TC_MC_02343
+    [Documentation]    [Wemall] Nonjoin Close Campaign (OFF)
+    [Tags]    Regression    High    Queue    mock
+    Go to    ${URL_WMS}/campaign/collection-non-join/edit/${none_join_campaign_onoff_id}
+    Get CampaignID    ${URL_WMS}/campaign/collection-non-join/edit/
+    Get Campaign Name
+    Checked Campaign Status    ${radio_campaign_close}
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/promotion/${compaign_name_th}-${campaignID}?refresh=changeme
+    Verify Campaign Portal    Element Should Be Visible    ${text_not_found_campaign}
+    WMS Switch Project    wm
+    Go to    ${URL_WMS}/campaign/collection-non-join/edit/${none_join_campaign_onoff_id}
+    Get CampaignID    ${URL_WMS}/campaign/collection-non-join/edit/
+    Get Campaign Name
+    Checked Campaign Status    ${radio_campaign_open}
+    Click Button Submit Campaign
+
+TC_MC_02345
+    [Documentation]    [Wemall] Nonjoin Open Campaign (ON)
+    [Tags]    Regression    High    Queue    mock
+    Go to    ${URL_WMS}/campaign/collection-non-join/edit/${none_join_campaign_onoff_id}
+    Get CampaignID    ${URL_WMS}/campaign/collection-non-join/edit/
+    Get Campaign Name
+    Checked Campaign Status    ${radio_campaign_open}
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/promotion/${compaign_name_th}-${campaignID}?refresh=changeme
+    Verify Campaign Portal    Element Should Be Visible    ${img_banner_campaign}
+
+TC_MC_02335
+    [Documentation]    [Wemall] Delete non join campaign
+    [Tags]    Medium
+    Go to    ${URL_WMS}/campaign
+    Click Button Add Campaign    ${btn_add_nonjoin_campaign}    ${URL_WMS}/campaign/collection-non-join/create
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee     ${radio_campaign_charge_fee}
+    Input Text    ${input_price_fee}    0
+    Input Campaign Name TH    [QA-Robot] NonJoinCampaign
+    Choose Campaign Banner    none_join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Execute Javascript    $("input[name='date_show_campaign']").val('31/03/2016 00:00:00  - 31/03/2016 23:59:00')
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Delete Campaign
+    ${campaignID}    Get NonJoinCampaign ID    ${campaign_name_th}
+    Element Should Contain    //*[@id="status-${campaignID}"]    EXPIRED
+    Click Element    ${tab_list_nonjoin_campaign}
+    List Campaign - Click Icon Delete Campaign    //*[@id="row-${campaignID}"]/td[7]/a[3]
+
+TC_MC_02327
+    [Documentation]    [Wemall] Search non join campaign from campaign name
+    [Tags]    High    mock
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_nonjoin_campaign}
+    Execute Javascript    $("input[name='campaign_name']").val('[QA-Automate] NonJoin Campaign Empty Product')
+    Execute Javascript    $("button.btn-purple").click()
+    Wait Until Element Is Visible    //*[@id="sample-table-2"]/tbody/tr
+    ## Verify expected result
+    ${count_all}=    Get Matching Xpath Count    //*[@id="sample-table-2"]/tbody/tr
+    : FOR    ${i}    IN RANGE    1    ${count_all}
+    \    Element Should Contain    //*[@id="sample-table-2"]/tbody/tr[${i}]/td[3]    [QA-Automate] NonJoin Campaign Empty Product
+
+TC_MC_02329
+    [Documentation]    [Wemall] Search from วันที่แสดงแคมเปญ
+    [Tags]    Regression   High    mock
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_nonjoin_campaign}
+    Execute Javascript    $("input[name='date_show_campaign']").val('05/04/2017 00:00:00 - 05/04/2017 23:59:00')
+    Execute Javascript    $("button.btn-purple").click()
+    Wait Until Element Is Visible    //*[@id="sample-table-2"]/tbody/tr
+    ## Verify expected result
+    ${count_result}    Get Matching Xpath Count    //*[@id="sample-table-2"]/tbody/tr
+    Should Be True    ${count_result} == 5
+
+TC_MC_02331
+    [Documentation]    [Wemall] Search from status
+    [Tags]    Medium    mock
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_nonjoin_campaign}
+    Select From List By Label    //*[@id="status"]    On
+    Click Button    //*[@id="formsearch"]/div[2]/button[1]
+    Wait Until Element Is Visible    //*[@id="sample-table-2"]/tbody/tr
+    ${count_all}=    Get Matching Xpath Count    //*[@id="sample-table-2"]/tbody/tr
+    : FOR    ${i}    IN RANGE    1    ${count_all}
+    \    Element Should Contain    //*[@id="sample-table-2"]/tbody/tr[${i}]/td[5]/span   ON
+
+TC_MC_02339
+    [Documentation]    [Wemall] Create Non JoinCampaign with charge fee 0%
+    [Tags]    Medium
+    Go to    ${URL_WMS}/campaign
+    Click Button Add Campaign    ${btn_add_nonjoin_campaign}    ${URL_WMS}/campaign/collection-non-join/create
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee     ${radio_campaign_charge_fee}
+    Input Text    ${input_price_fee}    0
+    Input Campaign Name TH    [QA-Robot] NonJoinCampaign
+    Choose Campaign Banner    none_join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Input Date Show Campaign    ${cur_date}
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    List Campaign - Get Last Campaign Name
+    List Campaign - Click Icon Edit Last Campaign
+    ${campaignID}    Get NonJoinCampaign ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${campaignID}
+    Verify Campaign Name TH
+    Verify Date Show Compaign
+    Verify Handle URL TH
+    Verify Price Fee    0
+    ## Delete Campaign
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_nonjoin_campaign}
+    List Campaign - Click Icon Delete Campaign    //*[@id="row-${campaignID}"]/td[7]/a[3]
+
+TC_MC_02341
+    [Documentation]    [Wemall] Create Non JoinCampaign with charge fee > 0%
+    [Tags]    Medium
+    Go to    ${URL_WMS}/campaign
+    Click Button Add Campaign    ${btn_add_nonjoin_campaign}    ${URL_WMS}/campaign/collection-non-join/create
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee     ${radio_campaign_charge_fee}
+    Input Text    ${input_price_fee}    3
+    Input Campaign Name TH    [QA-Robot] NonJoinCampaign
+    Choose Campaign Banner    none_join_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Input Date Show Campaign    ${cur_date}
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    List Campaign - Get Last Campaign Name
+    List Campaign - Click Icon Edit Last Campaign
+    ${campaignID}    Get NonJoinCampaign ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${campaignID}
+    Verify Campaign Name TH
+    Verify Date Show Compaign
+    Verify Handle URL TH
+    Verify Price Fee    3
+    ## Delete Campaign
+    Go to    ${URL_WMS}/campaign
+    Click Element    ${tab_list_nonjoin_campaign}
+    List Campaign - Click Icon Delete Campaign    //*[@id="row-${campaignID}"]/td[7]/a[3]
+
+TC_MC_02367
+    [Documentation]    [Wemall] [NonJoin Campaign manage show]: Default limit product in campaign equal 0
+    [Tags]    Medium
+    Go to    ${URL_WMS}/campaign/collection-non-join/manage-show/${empty_none_join_campaign_id}
+    Execute Javascript    $("input[name='txt_search_product']").val('L90578834')
+    Press Key    //input[@name='txt_search_product']    \\13
+    Wait Until Element Is Visible    //a[contains(@href,'L90578834')]
+    ${Get_PName}    Get Text    //a[contains(@href,'L90578834')]
+    ${product_load}    Run Keyword and Return Status    Element Should Be Visible    //span[@ng-if='productMsg']
+    Run Keyword If    '${product_load}'=='True'    Wait Until Element Is Not Visible    //span[@ng-if='productMsg']
+    Execute Javascript    $('.all_check.ng-pristine.ng-untouched.ng-valid')[0].click()
+    Click Element    //button[@class='btn btn-sm btn-primary pull-right']
+    Execute JavaScript    $('.btn-warning').click()
+    Wait Until Element Is Visible    //*[@id="list_product_promotion"]/tr/td[10]/input
+    ${text_limit}=    Get Value    //*[@id="list_product_promotion"]/tr/td[10]/input
+    Should Be True    ${text_limit} == 0
+    ## Move Back product
+    Wait Until Element Is Visible    xpath=/html/body/div[5]/div[3]/div[2]/div[2]/div/table/thead/tr/th[1]/input
+    Click Element    xpath=/html/body/div[5]/div[3]/div[2]/div[2]/div/table/thead/tr/th[1]/input
+    Execute JavaScript    $('.btn-danger').click()
+    Execute JavaScript    $('.btn-warning').click()
+    Wait Until Element Is Not Visible    //*[@id="list_product_promotion"]/tr/td[9]/input    60s
+
+TC_MC_02369
+    [Documentation]    [Wemall] [NonJoin Campaign manage show]: Edit limit product in campaign not equal 0
+    [Tags]    Medium
+    Go to    ${URL_WMS}/campaign/collection-non-join/manage-show/${empty_none_join_campaign_id}
+    Execute Javascript    $("input[name='txt_search_product']").val('L90578834')
+    Press Key    //input[@name='txt_search_product']    \\13
+    Wait Until Element Is Visible    //a[contains(@href,'L90578834')]
+    ${Get_PName}    Get Text    //a[contains(@href,'L90578834')]
+    ${product_load}    Run Keyword and Return Status    Element Should Be Visible    //span[@ng-if='productMsg']
+    Run Keyword If    '${product_load}'=='True'    Wait Until Element Is Not Visible    //span[@ng-if='productMsg']
+    Execute Javascript    $('.all_check.ng-pristine.ng-untouched.ng-valid')[0].click()
+    Click Element    //button[@class='btn btn-sm btn-primary pull-right']
+    Wait Until Element Is Visible    //*[@id="list_product_promotion"]/tr/td[10]/input
+    ${text_limit_default}=    Get Value    //*[@id="list_product_promotion"]/tr/td[10]/input
+    Should Be True    ${text_limit_default} == 0
+    Input Text    //*[@id="list_product_promotion"]/tr/td[10]/input    2
+    Execute JavaScript    $('.btn-warning').click()
+    ## Verify expected result
+    ${text_limit_after_edit}=    Get Value    //*[@id="list_product_promotion"]/tr/td[10]/input
+    Should Be True    ${text_limit_after_edit} == 2
+    ## Move Back product
+    Wait Until Element Is Visible    xpath=/html/body/div[5]/div[3]/div[2]/div[2]/div/table/thead/tr/th[1]/input
+    Click Element    xpath=/html/body/div[5]/div[3]/div[2]/div[2]/div/table/thead/tr/th[1]/input
+    Execute JavaScript    $('.btn-danger').click()
+    Execute JavaScript    $('.btn-warning').click()
+    Wait Until Element Is Not Visible    //*[@id="list_product_promotion"]/tr/td[10]/input    60s
+
+TC_MC_11893
+    [Documentation]    [Wemall][Nonejoin campaign] Verify can search product in Nonejoin campaign  incase product stock = 0
+    [Tags]    Regression Medium
+    Go To Manage Product NoneJoinCampaign    ${nonejoin_campaign_id}
+    Search Product ID    ${product_id_no_stock}
+    Verify Search Product ID
+

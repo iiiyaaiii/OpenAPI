@@ -1,0 +1,107 @@
+*** Settings ***
+Test Teardown     Close Browser
+Force Tags        WMS-Web    mock    EditNewsDashboard    mc-wls
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Category.txt
+
+*** Test Cases ***
+TC_MC_00854
+    [Documentation]    [Welove] Verify Incase Edit News topic
+    [Tags]    Regression    Low
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/sellernewsdashboard
+    ${news_topic_bf}    Get Text    //*[@id="result-table"]/tbody/tr[1]/td[4]
+    ${str1}    Convert To String    ${news_topic_bf}
+    Click Element    //*[@id="result-table"]/tbody/tr[1]/td[9]/a
+    ${time}    Get Time    epoch
+    ${news_title}    Catenate    news_${time}
+    Set Suite Variable    ${news_title}
+    Execute javascript    $("textarea[name='title']").val('${news_title}')
+    Execute javascript    $('button[type=submit]').click()
+    Sleep    2s
+    ${news_topic_af}    Get Text    //*[@id="result-table"]/tbody/tr[1]/td[4]
+    ${str2}    Convert To String    ${news_topic_af}
+    Should Be Equal    ${str2}    ${news_title}
+
+TC_MC_00856
+    [Documentation]    [Welove] Verify Incase Edit News URL
+    [Tags]    Regression    Low
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/sellernewsdashboard
+    ${url_topic_bf}    Execute Javascript    return $('table#result-table tbody tr').eq(0).find('a').eq(0).attr('href')
+    ${str1}    Convert To String    ${url_topic_bf}
+    Click Element    //*[@id="result-table"]/tbody/tr[1]/td[9]/a
+    Execute javascript    $("input[name='link']").val('https://www.google.co.th')
+    ${url_news_edit}    Execute javascript    return $("input[name='link']").val()
+    ${str2}    Convert To String    ${url_news_edit}
+    Execute javascript    $('button[type=submit]').click()
+    Sleep    2s
+    ${url_topic_af}    Execute Javascript    return $('table#result-table tbody tr').eq(0).find('a').eq(0).attr('href')
+    ${str1}    Convert To String    ${url_topic_af}
+    Should Be Equal    ${str2}    ${str1}
+
+TC_MC_00858
+    [Documentation]    [Welove] Verify Incase Edit News Type
+    [Tags]    Regression    High    SmokeTest
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/sellernewsdashboard
+    ${news_type_bf}    Get Text    //*[@id="result-table"]/tbody/tr[1]/td[2]
+    ${str1}    Convert To String    ${news_type_bf}
+    Click Element    //*[@id="result-table"]/tbody/tr[1]/td[9]/a
+    Execute javascript    $("select[name='type_id']").val('3')
+    Execute javascript    $('button[type=submit]').click()
+    Sleep    2s
+    ${news_type_af}    Get Text    //*[@id="result-table"]/tbody/tr[1]/td[2]
+    ${str2}    Convert To String    ${news_type_af}
+    Should Be Equal    ${str2}    แจ้งเตือน
+    ## Re-Type ##
+    Click Element    //*[@id="result-table"]/tbody/tr[1]/td[9]/a
+    Execute javascript    $("select[name='type_id']").val('1')
+    Execute javascript    $('button[type=submit]').click()
+    Sleep    2s
+
+TC_MC_00860
+    [Documentation]    [Welove] Verify Incase Edit News publish
+    [Tags]    Regression    Low
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/sellernewsdashboard
+    Click Element    //*[@id="result-table"]/tbody/tr[1]/td[9]/a
+    ${hour}    Get Time    hour
+    ${min}    Get Time    min
+    ${secs}    Get Time    sec
+    ${year}    Get Time    return year
+    ${month}    Get Time    return month
+    ${day}    Get Time    day    NOW
+    ${hour}    Get Time    hour
+    ${published}    Catenate    ${year}-${month}-${day} ${hour}:${min}:${secs}
+    Input Text    name=published_at    ${published}
+    Execute javascript    $('button[type=submit]').click()
+
+TC_MC_00862
+    [Documentation]    [Welove] Verify Incase Edit Change from Show to Hide
+    [Tags]    Regression    Medium
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/sellernewsdashboard
+    Click Element    //*[@id="result-table"]/tbody/tr[1]/td[9]/a
+    Sleep    1s
+    Execute javascript    $("select[name='status']").val('false')
+    Execute javascript    $('button[type=submit]').click()
+    Sleep    2s
+    ${status_af}    Execute javascript    return $('table#result-table tbody tr:eq(0) td:eq(7)').text().trim();
+    ${str1}    Convert To String    ${status_af}
+    Should Contain    ${str1}    ซ่อน
+    ## Re-Status ##
+    Click Element    //*[@id="result-table"]/tbody/tr[1]/td[9]/a
+    Execute javascript    $("select[name='status']").val('true')
+    Sleep    1s
+    Execute javascript    $('button[type=submit]').click()
+    Sleep    2s
+    ${status_af1}    Execute javascript    return $('table#result-table tbody tr:eq(0) td:eq(7)').text().trim();
+    ${str2}    Convert To String    ${status_af1}
+    Should Contain    ${str2}    แสดง

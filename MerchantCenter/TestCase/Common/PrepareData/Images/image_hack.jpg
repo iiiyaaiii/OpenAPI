@@ -1,0 +1,1168 @@
+<?php
+include "head_backend_start.php";
+    // temporary stop free shop by bigchern 19/4/53
+    /*
+	if ($row['free'] == "y") {
+	echo "<script>document.location='http://www.weloveshopping.com/maintenance/index.php';</script>";
+	exit();
+	}
+*/
+include $_SERVER["DOCUMENT_ROOT"]."/shopadmin/fnc/global_function.php";
+
+$sql = "select termandconition_accept from members where id='$id' and termandconition_accept='y' ";
+$resultterm = Query_read($sql);
+if (mysql_num_rows($resultterm)==0) {    header("location:shop_accept.php");    }
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/editshop.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=TIS-620">
+<!-- InstanceBeginEditable name="doctitle" -->
+<title><?=$webname?> > <?php if ($backend_lang=="e") { echo "Shop Management System"; } else { echo "ระบบบริหารจัดการร้านค้า"; } $menu = "m1"; ?></title>
+<?php
+if (isset($btTA)) {
+    $sql = "update shop set transfer_actiontype='$transfer_actiontype' where shopid='$shopid' ";
+    $result = Query_write($sql);
+    ?><script>window.location = '<?=$PHP_SELF?>';</script><?php
+    exit;
+}
+?>
+
+<!-- re-marketing 29/3/2013 --->
+<!-- Google Code for Remarketing tag -->
+<!-- Remarketing tags may not be associated with personally identifiable information or placed on pages related to sensitive categories. For instructions on adding this tag and more information on the above requirements, read the setup guide: google.com/ads/remarketingsetup -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 993633988;
+var google_conversion_label = "_ZHZCLT9xAQQxM3m2QM";
+var google_custom_params = window.google_tag_params;
+var google_remarketing_only = true;
+/* ]]> */
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/993633988/?value=0&amp;label=_ZHZCLT9xAQQxM3m2QM&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
+
+
+<script language="JavaScript" type="text/javascript">
+function MM_showHideLayers(obj)
+{
+	var ID = document.getElementById(obj);
+	ID.style.visibility="visible";
+	ID.style.display="inline";
+}
+function MM_hideall()
+{
+	document.getElementById("information_menu").style.visibility="hidden";
+	document.getElementById("groupproduct_menu").style.visibility="hidden";
+	document.getElementById("product_menu").style.visibility="hidden";
+	document.getElementById("member_menu").style.visibility="hidden";
+	document.getElementById("report_menu").style.visibility="hidden";
+	document.getElementById("wetrust_menu").style.visibility="hidden";
+}
+function bgMode(obj,active)
+{
+	if (active=="over") {
+		obj.bgColor='#F5F5F5';
+	} else {
+		obj.bgColor="#E8E8E8";
+	}
+}
+</script>
+<?php
+$sqlcc="select gmaps_lat, gmaps_lng ,  gmaps_zoom from shop_option where (shopid='$shopid')";
+$resultcc = Query_read($sqlcc) or die("Query failed : " . mysql_error());
+$map=mysql_fetch_array($resultcc);
+
+if ($map["gmaps_lat"] =="") {
+?>
+<script type="text/javascript" src="jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<link rel="stylesheet" href="fancybox/jquery.fancybox-1.3.4.css" />
+<script type="text/javascript">
+$(document).ready(function () {
+	html = $('#loc_popup').html();
+	$.fancybox(
+		html,
+		{
+			'autoDimensions'	: false,
+			'width'         		: 550,
+			'height'        		: 'auto',
+			'transitionIn'		: 'fadeIn',
+			'transitionOut'		: 'fadeOut'
+		}
+	);
+});
+</script>
+<style type="text/css">
+.loc_popup{margin:0 auto; width:500px; height:auto; color:#385AA8;}
+.loc_popup a, .loc_popup a:visted, .loc_popup a:link{color:#385AA8; text-decoration:none;}
+.loc_popup a:hover{color:#666; text-decoration:underline;}
+.loc_popup_in{border:1px solid #ccc; -webkit-border-radius: 7px;-moz-border-radius: 7px; width:500px; margin:10px auto; }
+.loc_popup_in .header_location{font-weight:bold; background:#f5f5f5; color:#385AA8; padding:5px 10px; -webkit-border-radius: 7px 7px 0 0;-moz-border-radius: 7px 7px 0 0;}
+.loc_popup_in .main_location{font-size:12px; color:#385AA8; padding:5px 10px;}
+
+.bttn_block{margin:10px 0 0 30px; width:250px; float:left;}
+.bttn_ok{border:1px solid #ccc; -webkit-border-radius: 7px;-moz-border-radius: 7px; background:#ccc; margin:10px; padding:10px; float:left; font-size:12px; font-weight:bold; color:#333;}
+.bttn_ok a{color:#333; text-decoration:none;}
+.bttn_ok a:hover{color:#fff; text-decoration:none;}
+.clear{clear:both;}
+.text {
+	margin-left:5px;
+	margin-top:5px;
+	float:left;
+	width:250px;
+	font-size:1.2em;
+	display:block;
+	color:#333;
+}
+.float-left{float:left;}
+
+.wls_pmap{margin:10px auto; width:500px;}
+.wls_pmap .pm_txt{width:350px; margin:10px 5px; float:left; text-align:right; font-size:14px; color:#000;}
+</style>
+<?php
+}
+?>
+<link href=\"http://static.weloveshopping.com/portal/static/center/css/toolbar_controller.css\" rel=\"stylesheet\" type=\"text/css\" />
+<link href=\"http://static.weloveshopping.com/portal/static/center/css/wls_main.css\" rel="\stylesheet\" type=\"text/css\" />
+<link href=\"http://static.weloveshopping.com/portal/static/center/css/wls_header.css\" rel="\stylesheet\" type=\"text/css\" />
+
+<!-- InstanceEndEditable -->
+<link href="backend.css" rel="stylesheet" type="text/css">
+<style>
+.boxtopic {
+font-family: "MS Sans Serif";
+font-size: 12px;
+font-weight: bold;
+background-image: url(http://www.marketathome.com/template/e1/c<?=$colort?>/bg_menu_top_<?=$colort?>.gif);
+color: #FFFFFF;
+border-top-width: 3px;
+border-bottom-width: 3px;
+border-top-style: double;
+border-bottom-style: double;
+border-top-color: <?=$colormedium?>;
+border-bottom-color: <?=$colormedium?>;
+height:20px;
+}
+.boxtopic2{
+font-family: "MS Sans Serif";
+font-size: 12px;
+font-weight: bold;
+background-image: url(http://www.marketathome.com/template/e1/c<?=$colort?>/bg_menu_left_<?=$colort?>.gif);
+color: #FFFFFF;
+border-top-width: 3px;
+border-bottom-width: 3px;
+border-top-style: double;
+border-bottom-style: double;
+border-top-color: <?=$colormedium?>;
+border-bottom-color: <?=$colormedium?>;
+height:20px;
+}
+</style>
+<!-- InstanceBeginEditable name="head" --><!-- InstanceEndEditable -->
+</head>
+<?php if (eregi("addproduct.php","http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']) || eregi("editproduct.php","http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'])) { ?><body onload="categoryCtrl = new CategoryController('tform');categoryCtrl.loadPage(false, metaNode, '', '1', '4', 'JavaScript');"><?php } else { echo "<body>"; } ?>
+<div id="container">
+<?include("head_backend.php");?>
+<div id="content">
+<div id="hd_content"></div>
+<div id="left_menu"><?include("layermenu.php");?></div>
+<div id="right_content"><!-- InstanceBeginEditable name="shop" -->
+<?php /*
+<script type="text/javascript" src="http://static.weloveshopping.com/portal/static/js/modules/center_login.js"></script> */ ?>
+
+<?php /* if ($map["gmaps_lat"] =="") {
+<div class="loc_popup" id="loc_popup" style="display:none;">
+	<div class="loc_popup_in">
+    	<div class="header_location">เรียนท่านเจ้าของร้านค้า</div>
+        <div class="main_location"><br>
+        <div class="float-left"><img src="images/iphone_location.jpg" width="200" height="150" /></div>
+        <span class="text">วันนี้ท่านสามารถโปรโมทร้านค้าของคุณฟรี กับผู้ใช้สมาร์ทโฟน เพียงแสดงที่ตั้งร้านค้าของคุณบน Google Map
+</span>
+        <div class="bttn_block">
+        <div class="bttn_ok"><a href="maps_admin.php">แสดงที่ตั้งร้านค้า</a></div>
+        <div class="bttn_ok"><a style="cursor:pointer" onclick="$.fancybox.close();">ยกเลิก</a></div>
+        <div class="clear"></div>
+    </div>
+        <div class="clear"></div><br>
+<br>
+ </div>
+
+    </div>
+
+    <!--promote app-->
+    <div class="wls_pmap">
+    	<div class="pm_txt"><strong>Weloveshopping App</strong> เปิดให้ดาวน์โหลดฟรีแล้ว <br />
+   	  ที่ App Store และ Google Play </div>
+		<div class="float-left"><img src="images/shopping.png" width="60" height="60" /></div>
+        <div class="clear"></div>
+    </div>
+    <!--promote app-->
+</div>
+      */ ?>
+<?php   include "../banner/bannerstore/bannerstorefont.php";   ?> <br>
+<table width="750" border="0" cellpadding="0" cellspacing="0" align="left" class="f12b">
+  <tr><td valign="top">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+  <td height="27" class="boxtopic">&nbsp;&nbsp;<img src="images/bullettopic.gif" width="20" height="20" align="absmiddle">&nbsp;<?php if ($backend_lang=="e") { echo "Shop Management System"; } else { echo "ระบบบริหารจัดการร้านค้า"; } ?></td>
+  </tr>
+<?php
+$i=0;
+$shopname=$row["shopname"];
+
+$datetime_d=date("j"); if ($datetime_d<=9) { $datetime_d="0".$datetime_d; }
+$datetime_m=date("m");
+$datetime_y=date("Y");
+$time=date("H:i:s");
+$datetime=$datetime_y."-".$datetime_m."-".$datetime_d." ".$time;
+
+function saveFile($shopid,$file_1,$type)
+{
+        //global $salecode;
+        $salecode = "ownshop";
+        $shopRunning = shop_getFolderName($shopid);
+
+        if (($file_1['name']!='')&&($file_1['size']<100000)) {
+
+                    if ($type==1) { $foldertype = "fileid"; $frontFile = "id"; } elseif ($type==2) { $foldertype = "filehome"; $frontFile = "home"; } elseif ($type==3) { $foldertype = "fileshop"; $frontFile = "shop"; } elseif ($type==4) { $foldertype = "filebank"; $frontFile = "bank"; }
+
+                    $filename = $frontFile."_".$shopid."_".date("YmdHis").".".substr($file_1['name'],-3,3);
+                    @mkdir("../salepackage/upload/".$foldertype."/".$shopRunning,0777);
+                    copy($file_1['tmp_name'],"../salepackage/upload/".$foldertype."/".$shopRunning."/".$filename);
+
+                    $sql_insertFile="INSERT INTO `fileupload` ( `id` , `shopid` , `filename` , `type` , `status` , `salecode` ,  `timestamp` ) VALUES ('', '$shopid', '$filename', '$type', '2', '$salecode' , NOW( ));";
+                    $result_insertFile=Query_write($sql_insertFile);
+
+                    $package="";
+                    $actions="Upload File Type : ".$type;
+                    $price="";
+                    $remark="";
+                    $type="";
+                    $emotion="";
+                    include "../salepackage/trans_sale.php";
+        } else {
+                echo "<script type=\"text/javascript\">alert('ขนาดไฟล์เกิน 100k');</script>";
+        }
+}
+
+if (isset($save)) {
+$userip=$REMOTE_ADDR;
+
+    $sql="SELECT shopid , checkpass FROM `s_shopregister` WHERE `shopid` = '$shopid'";
+    $result=Query_read($sql);
+    if (isset($result)) {
+    $row=mysql_num_rows($result);
+    if ($row>=1) {
+        $row_select = mysql_fetch_array($result);
+        $chkPassOld = $row_select['checkpass'];
+        $arrChkPassOld = explode(",",$chkPassOld);
+
+        $sql = "UPDATE `s_shopregister` SET `datetime_update` = '$datetime', `name` = '$name',`surname` = '$surname',`shopname` = '$shopname',`add` = '$add' ,`ip` = '$userip'	WHERE `shopid` = $shopid ; ";
+        $result = Query_write($sql);
+        if ($result) {    echo "<br /><span class='f12bbold'><center>Complete</center></span><br />";
+        } else {    echo "<br /><span class='f12rbold'><center>Error</center></span><br />"; }
+
+    } else {
+
+    $savedefault=",,,";
+    $sql = "INSERT INTO `s_shopregister` ( `name` , `surname` , `shopid` , `shopname` , `add` , `ip` , `datetime`, `datetime_update` , `checkpass`) VALUES ('$name','$surname','$shopid','$shopname','$add','$userip','$datetime','','$savedefault')";
+    $result = Query_write($sql);
+                if ($result) {echo "<br /><span class='f12bbold'><center>Complete</center></span><br />";
+                    } else {echo "<br /><span class='f12rbold'><center>Error</center></span><br />"; }
+    }
+
+switch ($choose_copy) {
+        case "personal";
+
+$file=$HTTP_POST_FILES['filenum']['name'];
+$size=$HTTP_POST_FILES["filenum"]["size"];
+$type=$HTTP_POST_FILES["filenum"]["type"];
+$tmpname = $HTTP_POST_FILES['filenum']['tmp_name'];
+$error = $HTTP_POST_FILES['filenum']['error'];
+$ext=strtolower(substr($file,strlen($file)-4,4));
+
+$dir="pic_personalid";
+foreach (glob("$dir/shopid$shopid.jpg") as $filename0) {  }
+foreach (glob("$dir/shopid$shopid"."_1.jpg") as $filename1) {  }
+foreach (glob("$dir/shopid$shopid"."_2.jpg") as $filename2) {  }
+foreach (glob("$dir/shopid$shopid"."_3.jpg") as $filename3) {  }
+if (isset($filename3)) {
+} elseif (isset($filename2)) {
+        if (($ext ==".jpg")) { $save_source = "$dir/shopid".$shopid."_3.jpg";copy($tmpname,$save_source);}
+} elseif (isset($filename1)) {
+        if (($ext ==".jpg")) { $save_source = "$dir/shopid".$shopid."_2.jpg";copy($tmpname,$save_source);}
+} elseif (isset($filename0)) {
+        if (($ext ==".jpg")) { $save_source = "$dir/shopid".$shopid."_1.jpg";copy($tmpname,$save_source);}
+} else {
+        if (($ext ==".jpg")) { $save_source = "$dir/shopid".$shopid.".jpg";copy($tmpname,$save_source);}
+}
+
+$arrChkPassOld[0] = 'y';
+
+$choose_copy=0;
+
+        $file_1=$_FILES['filenum'];
+        saveFile($shopid,$file_1,"1");
+        break;
+
+        case "home";
+$file=$HTTP_POST_FILES['filenum']['name'];
+$size=$HTTP_POST_FILES["filenum"]["size"];
+$type=$HTTP_POST_FILES["filenum"]["type"];
+$tmpname = $HTTP_POST_FILES['filenum']['tmp_name'];
+$error = $HTTP_POST_FILES['filenum']['error'];
+$ext=strtolower(substr($file,strlen($file)-4,4));
+
+        $dir="pic_homeid";
+        foreach (glob("$dir/homeid$shopid.jpg") as $filename0) {  }
+        foreach (glob("$dir/homeid$shopid"."_1.jpg") as $filename1) {  }
+        foreach (glob("$dir/homeid$shopid"."_2.jpg") as $filename2) {  }
+        foreach (glob("$dir/homeid$shopid"."_3.jpg") as $filename3) {  }
+        if (isset($filename3)) {
+        } elseif (isset($filename2)) {
+                if (($ext ==".jpg")) {    $save_source = "$dir/homeid".$shopid."_3.jpg";copy($tmpname,$save_source);}
+        } elseif (isset($filename1)) {
+                if (($ext ==".jpg")) {    $save_source = "$dir/homeid".$shopid."_2.jpg";copy($tmpname,$save_source);}
+        } elseif (isset($filename0)) {
+                if (($ext ==".jpg")) {    $save_source = "$dir/homeid".$shopid."_1.jpg";copy($tmpname,$save_source);}
+        } else {
+                if (($ext ==".jpg")) {    $save_source = "$dir/homeid".$shopid.".jpg";copy($tmpname,$save_source);}
+        }
+
+$arrChkPassOld[1] = 'y';
+
+$choose_copy=0;
+
+        $file_1=$_FILES['filenum'];
+        saveFile($shopid,$file_1,"2");
+
+                break;
+        case "bank";
+$file=$HTTP_POST_FILES['filenum']['name'];
+$size=$HTTP_POST_FILES["filenum"]["size"];
+$type=$HTTP_POST_FILES["filenum"]["type"];
+$tmpname = $HTTP_POST_FILES['filenum']['tmp_name'];
+$error = $HTTP_POST_FILES['filenum']['error'];
+$ext=strtolower(substr($file,strlen($file)-4,4));
+
+        $dir="pic_bankid";
+        foreach (glob("$dir/bankid$shopid.jpg") as $filename0) {  }
+        foreach (glob("$dir/bankid$shopid"."_1.jpg") as $filename1) {  }
+        foreach (glob("$dir/bankid$shopid"."_2.jpg") as $filename2) {  }
+        foreach (glob("$dir/bankid$shopid"."_3.jpg") as $filename3) {  }
+        if (isset($filename3)) {
+        } elseif (isset($filename2)) {
+                if (($ext ==".jpg")) {    $save_source = "$dir/bankid".$shopid."_3.jpg";copy($tmpname,$save_source);}
+        } elseif (isset($filename1)) {
+                if (($ext ==".jpg")) {    $save_source = "$dir/bankid".$shopid."_2.jpg";copy($tmpname,$save_source);}
+        } elseif (isset($filename0)) {
+                if (($ext ==".jpg")) {    $save_source = "$dir/bankid".$shopid."_1.jpg";copy($tmpname,$save_source);}
+        } else {
+                if (($ext ==".jpg")) {    $save_source = "$dir/bankid".$shopid.".jpg";copy($tmpname,$save_source);}
+        }
+
+$arrChkPassOld[2] = 'y';
+
+$choose_copy=0;
+
+        $file_1=$_FILES['filenum'];
+        saveFile($shopid,$file_1,"4");
+
+                break;
+
+case "electronic";
+$file=$HTTP_POST_FILES['filenum']['name'];
+$size=$HTTP_POST_FILES["filenum"]["size"];
+$type=$HTTP_POST_FILES["filenum"]["type"];
+$tmpname = $HTTP_POST_FILES['filenum']['tmp_name'];
+$error = $HTTP_POST_FILES['filenum']['error'];
+$ext=strtolower(substr($file,strlen($file)-4,4));
+
+        $dir="pic_electronicid";
+        foreach (glob("$dir/electronicid$shopid.jpg") as $filename0) {  }
+        foreach (glob("$dir/electronicid$shopid"."_1.jpg") as $filename1) {  }
+        foreach (glob("$dir/electronicid$shopid"."_2.jpg") as $filename2) {  }
+        foreach (glob("$dir/electronicid$shopid"."_3.jpg") as $filename3) {  }
+        if (isset($filename3)) {
+        } elseif (isset($filename2)) {
+                if (($ext ==".jpg")) {    $save_source = "$dir/electronicid".$shopid."_3.jpg";copy($tmpname,$save_source);}
+        } elseif (isset($filename1)) {
+                if (($ext ==".jpg")) {    $save_source = "$dir/electronicid".$shopid."_2.jpg";copy($tmpname,$save_source);}
+        } elseif (isset($filename0)) {
+                if (($ext ==".jpg")) {    $save_source = "$dir/electronicid".$shopid."_1.jpg";copy($tmpname,$save_source);}
+        } else {
+                if (($ext ==".jpg")) {    $save_source = "$dir/electronicid".$shopid.".jpg";copy($tmpname,$save_source);}
+        }
+
+$arrChkPassOld[3] = 'y';
+
+$choose_copy=0;
+
+        $file_1=$_FILES['filenum'];
+        saveFile($shopid,$file_1,"3");
+
+        break;
+        default;
+}
+}
+}
+
+    $chkPassNew = @implode(",",$arrChkPassOld);
+
+$i=0;
+$sql="SELECT checkpass FROM `s_shopregister` WHERE `shopid` = '$shopid' ";
+$result=Query_read($sql);
+if (isset($result)) {  $ro=mysql_num_rows($result);
+    if ($ro>0) {
+    $checkpass=mysql_result($result, $i, "checkpass");
+    if ($chkPassNew=='') { $chkPassNew=$checkpass; }
+    $ex = explode(",", $chkPassNew);
+    $sql = "UPDATE s_shopregister SET datetime_update = '$datetime'  , checkpass = '$chkPassNew' WHERE shopid = '$shopid'";
+    $result = Query_write($sql);
+    if ($result) {
+    } else { echo "<br /><center><span class='f12rbold'>Error</span></center><br />"; }
+    }
+}
+
+if ($row["free"]!="y") {
+$sql="select qid,topic,date_time from s_notifyrisk where (shopid='$shopid' OR shopid='0') order by date_time DESC limit 0,5";
+$result=Query_read($sql);
+?>
+<?php if ($row["partner"]=='quick' and $row["shopopen"]=='c') { ?>
+	  <tr>
+		<td>&nbsp;</td>
+	  </tr>
+        <tr>
+          <td height="50" align="center">
+					<fieldset style="margin:0 auto;width:80%;margin:0pt 10px;padding:2pt 10px 10px;background:#F3F3F3 repeat scroll 0% 0%;-moz-background-clip:-moz-initial;-moz-background-origin:-moz-initial;-moz-background-inline-policy:-moz-initial;position:relative;">
+
+          <table width="90%" border="0">
+			<tr>
+				<td width="10%"><img src="images/quick_warning.gif" border="0" /></td>
+				<td width="90%" class="f12rbold" align="left"><br />
+ขณะนี้ร้านค้าของท่านอยู่ในสถานะ "ปิดให้บริการ" <br />
+ท่านสามารถเปิดให้บริการได้โดยส่งสำเนาบัตรประชาชน เซ็นรับรองสำเนาถูกต้อง  <br />
+ระบุรหัสร้านค้า พร้อมชื่อร้านค้า เพื่อทำการลงทะเบียนร้านค้า <br />
+ได้ที่  fax : 02-8410157-8 หรือ e-mail : info@weloveshopping.com  <br />
+ติดต่อสอบถามเพิ่มเติม 02-9009999 กด 3<br />
+				</td>
+			</tr>
+			</table><br />
+			</fieldset>
+                 </td>
+        </tr>
+<?php } ?>
+  <tr>
+    <td>
+	  <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="f12b">
+      <tr>
+        <td><br /><br /><table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td width="50%" valign="top"><table width="97%" border="0" align="center" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td width="79"><img src="images/head_shortcuts.gif" width="79" height="31"></td>
+                        <td background="images/head_center.gif">&nbsp;</td>
+                        <td width="42"><img src="images/head_right.gif" width="42" height="31"></td>
+                      </tr>
+                  </table></td>
+                </tr>
+                <tr>
+                  <td>
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td width="6" background="images/box_left.gif"></td>
+                        <td background="images/box_new_bg.gif" height="80"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+	  <td align="center"><a href="#" onmouseover="MM_showHideLayers('information_menu')" onmouseout="MM_hideall()" style="cursor:hand" align="center"><img src="images/m_information.gif" border="0"></a><div id="information_menu" style="position:absolute; padding-top:2px; width:175px; height:20px; z-index:100; visibility: hidden; display:none" onMouseOver="MM_showHideLayers('information_menu')" onMouseOut="MM_hideall()">
+	  <table width="100%" border="1" cellspacing="0" cellpadding="0" bgcolor="#E8E8E8" bordercolor="#cccccc">
+		<tr>
+		  <td bordercolor="#FFFFFF">
+		 <table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="editshopdetail.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Shop Configuration"; } else { echo "แก้ไขข้อมูลทั่วไปของร้าน"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="add_shopdetail.php?shopdetail=news"><span class="f12b"><?php if ($backend_lang=="e") { echo "Announcement"; } else { echo "ข่าวสารของร้านค้า"; } ?></span></a></td></tr>
+		<?php if (($rowregis["package"]=="e")or($rowregis["package"]=="p")) {?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="calendar_admin.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Scheduled News & Events"; } else { echo "ข่าวสารกิจกรรมประจำวัน"; } ?></span></a></td></tr>
+		<?php } ?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="savemap.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Store Location"; } else { echo "แผนที่ร้านค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="saveid.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "E-Commerce Registration"; } else { echo "ทะเบียนพาณิชย์อิเล็กทรอนิกส์"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="add_shopdetail.php?shopdetail=howbuy"><span class="f12b"><?php if ($backend_lang=="e") { echo "Order Instructions"; } else { echo "วิธีการสั่งซื้อ"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="add_shopdetail.php?shopdetail=howpay"><span class="f12b"><?php if ($backend_lang=="e") { echo "Payment Instructions"; } else { echo "วิธีการชำระเงิน"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="add_shopdetail.php?shopdetail=howreceive"><span class="f12b"><?php if ($backend_lang=="e") { echo "Items Delivery"; } else { echo "วิธีการรับสินค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="openshop.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Open/Close Shop"; } else { echo "เปิดร้าน/ปิดร้านชั่วคราว"; } ?></span></a></td></tr>
+		<?php if (($shopid<1222)||($row["free"]!="y")) {?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="ultrafast.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Ultra Fast Feature"; } else { echo "ระบบ Ultra Fast"; } ?></span></a></td></tr>
+		<?php } ?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="add_scrolltext.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Edit Scrolling Text"; } else { echo "ข้อความวิ่งหน้าร้านค้า"; } ?></span></a></td></tr>
+		<?php if ($row["free"]!="y") {?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="language.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Language/Currency"; } else { echo "ระบบภาษา/สกุลเงิน"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="add_keyword.php#url"><span class="f12b"><?php if ($backend_lang=="e") { echo "Edit URL & Keywords"; } else { echo "แก้ URL หัวร้านค้า"; } ?></span></a></td></tr>
+		<?php } ?>
+		<?php if ($rowregis["package"]=="e") {?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="menuservice_admin.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Customize Service Menu"; } else { echo "ระบบเมนูบริการของร้านค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="openmenuservice_admin.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Open/Close Customize Service Menu System"; } else { echo "ระบบเปิด/ปิดเมนูบริการของร้านค้า"; } ?></span></a></td></tr>
+	  <?php } ?>
+	  </table>	  </td></tr>
+	  </table>
+	  </div></td>
+	  <td align="center"><a href="#" onmouseover="MM_showHideLayers('groupproduct_menu')" onmouseout="MM_hideall()" style="cursor:hand" align="center"><img src="images/m_groupproduct.gif" border="0"></a><div id="groupproduct_menu" style="position:absolute; padding-top:2px; width:140px; height:20px; z-index:100; visibility: hidden; display:none" onMouseOver="MM_showHideLayers('groupproduct_menu')" onMouseOut="MM_hideall()">
+	  <table width="100%" border="1" cellspacing="0" cellpadding="0" bgcolor="#E8E8E8" bordercolor="#cccccc">
+		<tr>
+		  <td bordercolor="#FFFFFF">
+		 <table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="addgroupproduct_eng.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Manage Item Category"; } else { echo "หมวดหมู่สินค้าของร้าน"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="addgroupproduct.php?level=0"><span class="f12b"><?php if ($backend_lang=="e") { echo "Add New Category"; } else { echo "เพิ่มหมวดหมู่สินค้าใหม่"; } ?></span></a></td></tr>
+		<?php if ($row["free"]!="y") {?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="groupmove_main.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Move Item Category"; } else { echo "ย้ายหมวดหมู่ของสินค้า"; } ?></span></a></td></tr>
+		<?php } ?>
+		<?php if ($rowregis["package"]=="e") {?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="categoryimage_admin.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Category Promotions"; } else { echo "โปรโมชั่นหมวดหมู่สินค้า"; } ?></span></a></td></tr>
+		<?php } ?>
+	  </table>	  </td></tr>
+	  </table>
+	  </div></td>
+	  <td align="center"><a href="#" onmouseover="MM_showHideLayers('product_menu')" onmouseout="MM_hideall()" style="cursor:hand" align="center"><img src="images/m_product.gif" border="0"></a><div id="product_menu" style="position:absolute; padding-top:2px; width:140px; height:20px; z-index:100; visibility: hidden; display:none" onMouseOver="MM_showHideLayers('product_menu')" onMouseOut="MM_hideall()">
+	  <table width="100%" border="1" cellspacing="0" cellpadding="0" bgcolor="#E8E8E8" bordercolor="#cccccc">
+		<tr>
+		  <td bordercolor="#FFFFFF">
+		 <table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="addproduct.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Add New Item"; } else { echo "เพิ่มข้อมูลสินค้าใหม่"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="addsuggest.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Hot Items (First Page)"; } else { echo "รายการสินค้าเด่นหน้าร้าน"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="editproduct_main.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Edit Item Details"; } else { echo "แก้ไขข้อมูลสินค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="fastedit_main.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Edit Item Price"; } else { echo "แก้ไขราคาสินค้า"; } ?></span></a></td></tr>
+		<?php if ($rowregis["package"]=="e") { ?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="productspec_admin.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Item Specification System"; } else { echo "ระบบคุณสมบัติของสินค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="discount_promotion.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Promotion Pricing System"; } else { echo "ระบบโปรโมชั่นราคาสินค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="animation_main.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Item Effects"; } else { echo "ระบบ Effect ลูกเล่นสินค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="addpicture_main.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Manage Item Pictures"; } else { echo "ระบบบริหารรูปภาพสินค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="#"onclick="window.open('http://www.marketathome.com/modpic/index.php','new1','location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=410,height=500');"><span class="f12b"><?php if ($backend_lang=="e") { echo "Reduce/Enlarge Pictures"; } else { echo "ระบบย่อ/ขยายรูปภาพ"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="productrotate_admin.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Rotate Items System"; } else { echo "ระบบแสดงสินค้าหมุนเวียน"; } ?></span></a></td></tr>
+		<?php } ?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="transport_main.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Delivery Costs"; } else { echo "ระบบราคาค่าขนส่ง"; } ?></span></a></td></tr>
+		<?php if ($rowregis["package"]=="e") { ?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="fileproduct_admin.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Item Attached File/Manual"; } else { echo "คู่มือ/ไฟล์ประกอบสินค้า"; } ?></span></a></td></tr>
+	  <?php } ?>
+	  </table>	  </td></tr>
+	  </table>
+	  </div></td>
+	  <td align="center"><a href="#" onmouseover="MM_showHideLayers('member_menu')" onmouseout="MM_hideall()" style="cursor:hand" align="center"><img src="images/m_member.gif" border="0"></a><div id="member_menu" style="position:absolute; padding-top:2px; width:140px; height:20px; z-index:100; visibility: hidden; display:none" onMouseOver="MM_showHideLayers('member_menu')" onMouseOut="MM_hideall()">
+	  <table width="100%" border="1" cellspacing="0" cellpadding="0" bgcolor="#E8E8E8" bordercolor="#cccccc">
+		<tr>
+		  <td bordercolor="#FFFFFF">
+		 <table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<?php if (($row["free"]=="n")or($row["free"]=="p")) { ?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="member_main.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Shop Member System"; } else { echo "ระบบสมาชิกลูกค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="add_promotion.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Add New Promotion"; } else { echo "เพิ่มโปรโมชั่นร้านค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="promotion_main.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Shop Member Promotion System"; } else { echo "ระบบ Promotion สมาชิก"; } ?></span></a></td></tr>
+		<?php if ($rowregis["package"]=="e") {?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="memform_admin.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Design Member Form"; } else { echo "กำหนดแบบฟอร์มใบสมัคร"; } ?></span></a></td></tr>
+		<?php } ?>
+		<?php if ($row["free"]!="y") {?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="shopmember_admin.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Shop Member Report System"; } else { echo "ระบบรายงานข้อมูลสมาชิก"; } ?></span></a></td></tr>
+		<?php }
+        }
+        ?>
+	  </table>	  </td></tr>
+	  </table>
+	  </div></td>
+	  <td align="center"><a href="#" onmouseover="MM_showHideLayers('report_menu')" onmouseout="MM_hideall()" style="cursor:hand" align="center"><img src="images/m_report.gif" border="0"></a><div id="report_menu" style="position:absolute; padding-top:2px; width:140px; height:20px; z-index:100; visibility: hidden; display:none" onMouseOver="MM_showHideLayers('report_menu')" onMouseOut="MM_hideall()">
+	  <table width="100%" border="1" cellspacing="0" cellpadding="0" bgcolor="#E8E8E8" bordercolor="#cccccc">
+		<tr>
+		  <td bordercolor="#FFFFFF">
+		 <table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="cartorder.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Customer Order Report"; } else { echo "รายการสั่งซื้อของลูกค้า"; } ?></span></a></td></tr>
+		<?php if ($rowregis["package"]=="e") {?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="notifypay_admin.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Payment Summary"; } else { echo "ระบบรายงานการชำระเงิน"; } ?></span></a></td></tr>
+		<?php } ?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="maillist.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Customer Email System"; } else { echo "ระบบรายชื่ออีเมล์ลูกค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="showstat.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Viewing Statistics"; } else { echo "สถิติการเข้าชมสินค้า"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="sms_main.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "SMS Notification"; } else { echo "ระบบ SMS เตือนการสั่งซื้อ"; } ?></span></a></td></tr>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="webboard.php"><span class="f12b"><?php if ($backend_lang=="e") { echo "Edit/Delete Forum"; } else { echo "แก้ไขและลบเว็บบอร์ด"; } ?></span></a></td></tr>
+		<?php if ($shopid<28196) { ?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left"><td height="21">&nbsp;<a href="#" onclick="window.open('http://www.marketathome.com/option/blacklist/show_blist.php','new1','location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=600,height=600');"><span class="f12b"><?php if ($backend_lang=="e") { echo "Blacklist System"; } else { echo "ระบบ Blacklist"; } ?></span></a></td></tr>
+	  	<?php } ?>
+	  </table>	  </td></tr>
+	  </table>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td colspan="7">&nbsp;</td>
+	</tr>
+	<tr align="center">
+	  <td><a href="webboard.php"><img src="images/m_webboard.gif" border="0"></a></td>
+	  <td><a href="guestbook_admin.php" style="cursor:hand"><img src="images/m_guestbook.gif" border="0"></a></td>
+	  <td><a href="calendar_admin.php" style="cursor:hand"><img src="images/m_diary.gif" border="0"></a></td>
+	  <td><a href="poll_admin.php" style="cursor:hand"><img src="images/m_poll.gif" border="0"></a></td>
+	  <td><a href="http://www.marketathome.com/option/toytools" style="cursor:hand" target="_blank"><img src="images/m_toy.gif" border="0"></a></td>
+	</tr>
+	<tr>
+	  <td colspan="7">&nbsp;</td>
+	</tr>
+	<tr align="center">
+	  <td><a href="link_main.php" style="cursor:hand" target="_blank"><img src="images/m_link.gif" border="0"></a></td>
+	  <td><a href="adver_main.php" style="cursor:hand" target="_blank"><img src="images/m_ads.gif" border="0"></a></td>
+	  <td>
+
+<?php if ($row["truemoney_status"]=="y") { ?>
+<a href="#" onmouseover="MM_showHideLayers('wetrust_menu')" style="cursor:hand" align="center"><img src="images/m_wetrust.gif" border="0"></a>
+
+<div id="wetrust_menu" style="position:absolute; padding-top:2px; width:200px; height:20px; z-index:100; visibility: hidden; display:none" onMouseOver="MM_showHideLayers('wetrust_menu')" onMouseOut="MM_hideall()">
+	  <table width="100%" border="1" cellspacing="0" cellpadding="0" bgcolor="#E8E8E8" bordercolor="#cccccc">
+		<tr>
+		  <td bordercolor="#FFFFFF">
+		 <table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<?php if ($row["free"]!="y") {?>
+		<tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left">
+        	<td height="21">&nbsp;<a href="/truetrust_ordering/checkstatus.php"><span class="f12b">ตรวจสอบสถานะ / ยืนยัน การรับสินค้า</span></a></td>
+        </tr>
+        <tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left">
+        	<td height="21">&nbsp;<a href="/truetrust_ordering/merchant_wetrust_info.php"><span class="f12b">ข้อมูลส่วนตัวผู้ใช้</span></a></td>
+        </tr>
+        <tr onmouseover="bgMode(this,'over');" onmouseout="bgMode(this,'out');" align="left">
+        	<td height="21">&nbsp;<a href="/truetrust_ordering/statement_report.php"><span class="f12b">Statement Report</span></a></td>
+        </tr>
+		<?php }    ?>
+	  </table>	  </td></tr>
+	  </table>
+	  </div>
+<?php } ?>      </td>
+	 	  <td><a href="ads_plaza.php" style="cursor:hand" target="_blank"><img src="images/m_item_top_up.jpg" border="0"></a></td>
+	  <td>&nbsp;</td>
+	</tr>
+</table></td>
+<td width="6" background="images/box_right.gif"></td>
+</tr>
+<tr>
+<td width="6"><img src="images/box_b_left.gif" width="6" height="6"></td>
+<td background="images/box_b_center.gif"></td>
+<td width="6"><img src="images/box_b_right.gif" width="6" height="6"></td>
+</tr>
+</table></td>
+</tr>
+</table></td>
+<td width="50%" valign="top"><table width="97%" border="0" align="center" cellpadding="0" cellspacing="0">
+<tr>
+<td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="69"><img src="images/head_announce.gif" width="69" height="31"></td>
+<td background="images/head_center.gif">&nbsp;</td>
+<td width="42"><img src="images/head_right.gif" width="42" height="31"></td>
+</tr>
+</table></td>
+</tr>
+<tr>
+  <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	  <tr>
+		<td width="6" background="images/box_left.gif"></td>
+		<td background="images/box_new_bg.gif"><div style="padding-top:1px">
+        <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="f12b">
+        <?php
+            $sql_select="SELECT id , title , datetime FROM message2shop WHERE active = 'A' AND (( shopid = '0' AND package = '' ) OR ( shopid = '".$shopid."' ) OR (package = '".$rowregis["package"]."' )) ORDER BY orders ASC ,  id DESC  ";
+            $result_select=Query_read($sql_select);
+            while ($row_select=mysql_fetch_object($result_select)) {
+                    if ($rowcolor=="FFFFFF") { $rowcolor=$colorlight; } else { $rowcolor="FFFFFF"; }
+           ?>
+			<tr height="27" bgcolor="<?=$rowcolor?>">
+		  <td width="317"><div style="padding-left:5px"><a href="#" onclick="window.open('detailnews2.php?qid=<?=$row_select->id?>','new','location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=0,width=750,height=500');"><span class="f12b"><?=$row_select->title?></span></a></div></td>
+		  <td width="65" align="center">
+		  <?php
+          $day = substr($row_select->datetime,8,2);
+          $month = substr($row_select->datetime,5,2);
+          $year = substr($row_select->datetime,0,4);
+          $time = substr($row_select->datetime,-8);
+          echo $day."/".$month."/".$year;
+          ?></td>
+		  </tr>
+		  <?php } ?>
+		</table></div></td>
+        <td width="6" background="images/box_right.gif"></td>
+      </tr>
+      <tr>
+        <td width="6"><img src="images/box_b_left.gif" width="6" height="6"></td>
+        <td background="images/box_b_center.gif"></td>
+        <td width="6"><img src="images/box_b_right.gif" width="6" height="6"></td>
+      </tr>
+  </table>  </td>
+                </tr>
+              </table></td>
+            </tr>
+          </table><br />
+          <br /></td>
+      </tr>
+      <tr>
+        <td align="center">&nbsp;</td>
+      </tr>
+      <tr>
+        <td align="center">&nbsp;</td>
+      </tr>
+	  <?php
+      $result_t = Query_read("select maintain from webmaster");
+      $row_t = mysql_fetch_array($result_t);
+      if ($row_t["maintain"]!="n") {
+      ?>
+        <tr>
+          <td class="boxtopic2" height="27">&nbsp;
+            บริการ WeTrust (ระบบรับชำระเงินผ่านบัตรเครดิต)            </td>
+        </tr>
+
+          <script>
+          function openEWRegis()
+          {
+		  	win = window.open("https://<?=$_SERVER['HTTP_HOST']?>/truetrust_ordering/sc_merchantlogin.php");
+		  }
+          </script>
+        <tr>
+          <td height="47">&nbsp;
+          <table width="100%" border="0">
+          <tr><td width="90%"><img src="http://www.weloveshopping.com/service/image/tt_payment_logo.gif" align="absmiddle"/><br />
+            <br />
+		<?php
+            if ($row["free"]!="y") {
+                if ($row["truemoney_status"]=="y") {
+
+                if ($row["fraudstatus"]=="y") {
+?>
+คุณได้สมัครเปิดใช้บริการ WeTrust แล้ว ต้องการตรวจสอบสถานะการสมัคร หรือดูรายละเอียดเพิ่มเติม <a href='/truetrust_ordering/merchant_wetrust_info.php' target="_blank" class="redlink">คลิกที่นี่</a><br />
+<?php
+                } else {
+?>
+การสมัครเปิดใช้บริการ WeTrust ยังไม่สมบูรณ์ ดูรายละเอียดการสมัคร <a href='/truetrust_ordering/merchant_wetrust_info.php' target="_blank" class="redlink">คลิกที่นี่</a> <br />
+<?php
+                }
+
+                } else {
+                    ?><!--
+ คุณยังไม่ได้เปิดใช้ระบบ WeTrust สมัครเปิดใช้บริการ
+ <button onclick="openEWRegis();">คลิกที่นี่</button>--><?php
+                }
+            } else {
+                ?> คุณไม่สามารถใช้บริการ WeTrust ได้ ดูรายละเอียดวิธีการสมัคร <a href='/service/merchant_services.php#s2'>คลิกที่นี่</a><?php
+            }
+
+        ?></td><td><a href="http://www.weloveshopping.com/portal/shopping/WeTrust-276-th.html" target="_blank"><img src="/templates_true/images/whatis_truetrust.gif" border="0" align="right"></a></td></tr></table>
+        <br />                 </td>
+        </tr>
+    <?php
+            $sql_banproduct="SELECT pid FROM s_product WHERE shopid = '$shopid' AND showproduct = 'd' ";
+            $result_banproduct=Query_read($sql_banproduct);
+            $count_banproduct=mysql_num_rows($result_banproduct);
+    ?>
+       <tr>
+          <td class="boxtopic2" height="27">&nbsp;&nbsp;<img src="images/alert_banproduct.png" width="20" height="20" align="absmiddle">&nbsp;ระบบเตือนสินค้าคาดว่าผิดกฎหมาย  <?php if ($count_banproduct>0) { ?> [ค้นพบ : <?=$count_banproduct?> รายการ] <?php } ?></td>
+       </tr>
+	<?php
+            if ($count_banproduct>0) {
+    ?>
+		<tr>
+          <td>
+		  <?php
+                $sql_banproduct="SELECT pid , topic  , productid , productupdate , description FROM s_product WHERE shopid = '$shopid' AND showproduct = 'd' ORDER BY pid ASC  LIMIT 0,5 ";
+                $result_banproduct=Query_read($sql_banproduct);
+                while ($row_banproduct=mysql_fetch_object($result_banproduct)) {
+                    $pid=$row_banproduct->pid;
+                    $topic=$row_banproduct->topic;
+                    $productid=$row_banproduct->productid;
+                    $productupdate=$row_banproduct->productupdate;
+                    $description=$row_banproduct->description;
+
+                        $sql_banshop="SELECT shopurl FROM shop WHERE shopid = '$shopid' ";
+                        $result_banshop = Query_read($sql_banshop);
+                        $row_banshop=mysql_fetch_object($result_banshop);
+                        $shopurl=$row_banshop->shopurl;
+
+                        if ($tbColor=="#FAFAFA") { $tbColor="#F0F0F0"; } else { $tbColor="#FAFAFA"; }
+
+          ?>
+		  <table width="100%" border="0" cellspacing="1" cellpadding="1" bgcolor="<?=$tbColor?>">
+            <tr>
+              <td width="14%" align="center"><img src="<?=$shopurl?>/<?=$productid?>_sma.jpg" width="90" height="90" border="0" /></td>
+              <td width="60%"><table width="100%" border="0" cellspacing="1" cellpadding="5">
+                <tr>
+                  <td width="25%" align="right"><b>รหัสสินค้า : </b></td>
+                  <td><?=$productid?></td>
+                </tr>
+                <tr>
+                  <td align="right"><b>ชื่อสินค้า : </b></td>
+                  <td><?=$topic?></td>
+                </tr>
+                <tr>
+                  <td align="right"><b>รายละเอียด : </b></td>
+                  <td><?=substr(strip_tags($description),0,200)?></td>
+                </tr>
+              </table></td>
+              <td align="center">
+             <a href="#" onclick="javascript:window.open('adddetailbanproduct.php?shopid=<?=$shopid?>&pid=<?=$pid?>','','width=400,height=350')">
+              <?php
+                    $sql_checkban="SELECT id FROM detailbanproduct WHERE shopid = '$shopid' AND pid = '$pid' ";
+                    $result_checkban=Query_read($sql_checkban);
+                    $count_checkban=mysql_num_rows($result_checkban);
+                    if ($count_checkban>0) { echo 'คลิกที่นี่ เพื่อชี้แจงรายการสินค้าเพิ่มเติม';
+                    } else {  echo '<font color="#FF0000">คลิกที่นี่ เพื่อชี้แจงรายการสินค้านี้</font>';  } ?>
+              </a>              </td>
+            </tr>
+          </table>
+		  <?php } ?>		  </td>
+        </tr>
+        <?php if ($count_banproduct>5) {        ?>
+        <tr><td align="right">&nbsp;</td></tr>
+        <tr><td align="right"><a href="banproduct.php">-> ไปหน้าระบบเตือนสินค้าคาดว่าผิดกฎหมาย</a></td></tr>
+        <tr><td align="right">&nbsp;</td></tr>
+        <?php } ?>
+  <?php } else { ?>
+  		<tr>
+          <td>
+<table width="70%" border="0" align="center" cellpadding="5" cellspacing="1">
+  <tr>
+    <td><b>Weloveshopping.com</b> ได้พัฒนาระบบการแจ้งเตือนท่านเจ้าของร้านค้าที่มีการจัดจำหน่ายสินค้า<br />
+ประกาศ/ บทความ  เช่น  ที่เกี่ยวกับการเมือง, ผิดศีลธรรม ละเมิดลิขสิทธิ์และทรัพย์สินทางปัญญา ฯลฯ<br /><br />
+
+โดยมีขอบเขตสินค้าที่ต้องสงสัยดังนี้<br />
+- ยาทุกชนิด เช่น  ยาทำแท้ง, ยาเสพย์ติด  <br />
+- อาวุธสงคราม  เช่น ปืน, ระเบิด<br />
+- หนังโป๊ ภาพลามกอนาจาร <br />
+- สินค้าประเภทลักลอบ ดัดแปลง อุปกรณ์ในการรับชม True Visions<br /><br /></td>
+  </tr>
+  <tr><td align="right"><a href="banproduct.php">อ่านต่อ</a></td></tr>
+</table>           </td>
+          </tr>
+
+  <?php }?>
+      <form action="editshop.php" method="post" enctype="multipart/form-data" name="frmshopregister" id="frmshopregister" onsubmit="return shopregister()">
+        <tr>
+          <td class="boxtopic2" height="27">&nbsp;&nbsp;<?php if ($backend_lang=="e") { echo "You can provide us with verifiable documents to optimize your shop’s integrity today!"; } else { echo "แนบเอกสารในการลงทะเบียน เพื่อสร้างความน่าเชื่อถือแก่ร้านค้าของท่านได้แล้ววันนี้!"; } ?></td>
+        </tr>
+        <tr>
+          <td valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0" class="f12b">
+                    <tr>
+                      <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span  class="f12bbold"><?php if ($backend_lang=="e") { echo "Document(s) Verified"; } else { echo "สถานะเอกสารของท่าน"; } ?> : </span><?php
+    $showdoc = "";
+    if ($ex[0]=="") {
+        $showdoc .= "<img src=picture/c1_off.gif border=0 alt='สำเนาบัตรประชาชนยังไม่ผ่านการตรวจสอบ' align=absmiddle>";
+    } else {
+        $showdoc .= "<img src=picture/c1.gif border=0 alt='สำเนาบัตรประชาชนผ่านการตรวจสอบเรียบร้อยแล้ว' align=absmiddle>";
+    }
+    $showdoc .= "&nbsp;";
+    if ($ex[1]=="") {
+        $showdoc .= "<img src=picture/c2_off.gif border=0 alt='สำเนาทะเบียนบ้านยังไม่ผ่านการตรวจสอบ' align=absmiddle>";
+    } else {
+        $showdoc .= "<img src=picture/c2.gif border=0 alt='สำเนาทะเบียนบ้านผ่านการตรวจสอบเรียบร้อยแล้ว' align=absmiddle>";
+    }
+    $showdoc .= "&nbsp;";
+    if ($ex[2]=="") {
+        $showdoc .= "<img src=picture/c3_off.gif border=0 alt='หน้าปกสมุดบัญชียังไม่ผ่านการตรวจสอบ' align=absmiddle>";
+    } else {
+        $showdoc .= "<img src=picture/c3.gif border=0 alt='หน้าปกสมุดบัญชีผ่านการตรวจสอบเรียบร้อยแล้ว' align=absmiddle>";
+    }
+    $showdoc .= "&nbsp;";
+    if ($ex[3]=="") {
+        $showdoc .= "<img src=picture/c4_off.gif border=0 alt='ใบทะเบียนพาณิชย์อิเล็คทรอนิกส์ยังไม่ผ่านการตรวจสอบ' align=absmiddle>";
+    } else {
+        $showdoc .= "<img src=picture/c4.gif border=0 alt='ใบทะเบียนพาณิชย์อิเล็คทรอนิกส์ผ่านการตรวจสอบเรียบร้อยแล้ว' align=absmiddle>";
+    }
+    echo $showdoc;
+    ?></td>
+			</tr>
+			<tr>
+			  <td colspan="2">&nbsp;</td>
+			</tr>
+			<tr>
+			  <td width="137" align="right" class="f12bbold"><?php if ($backend_lang=="e") { echo "Name"; } else { echo "ชื่อ"; } ?>&nbsp;:&nbsp;</td>
+			  <td width="675"><input name="name" type="text" maxlength="255" size="30"> <span class="f12rbold">*</span></td>
+			  </tr>
+			<tr>
+			  <td align="right" class="f12bbold"><?php if ($backend_lang=="e") { echo "Surname"; } else { echo "นามสกุล"; } ?>&nbsp;:&nbsp;</td>
+			  <td><input name="surname" type="text" maxlength="255" size="30"> <span class="f12rbold">*</span></td>
+			  </tr>
+			<tr>
+			  <td align="right" class="f12bbold"><?php if ($backend_lang=="e") { echo "Address"; } else { echo "ที่อยู่"; } ?>&nbsp;:&nbsp;</td>
+			  <td><input name="add" type="text" maxlength="255" size="65"> <span class="f12rbold">*</span></td>
+			</tr>
+			<tr>
+			  <td align="right" class="f12bbold"><?php if ($backend_lang=="e") { echo "Document Type"; } else { echo "ประเภทข้อมูล"; } ?>&nbsp;:&nbsp;</td>
+			  <td><select name="choose_copy">
+				<option value="personal"><?php if ($backend_lang=="e") { echo "Verified Copy of Citizen ID"; } else { echo "สำเนาบัตรประชาชน"; } ?></option>
+				<option value="home"><?php if ($backend_lang=="e") { echo "Verified Copy of House Registration"; } else { echo "สำเนาทะเบียนบ้าน"; } ?></option>
+				<option value="bank"><?php if ($backend_lang=="e") { echo "Commercial Bank Passbook"; } else { echo "หน้าปกสมุดบัญชี"; } ?></option>
+				<option value="electronic"><?php if ($backend_lang=="e") { echo "Commercial ID"; } else { echo "ใบทะเบียนพาณิชย์อิเล็คทรอนิกส์"; } ?></option>
+			  </select> <span class="f12rbold">*</span></td>
+			</tr>
+			<tr>
+			  <td align="right" class="f12bbold"><?php if ($backend_lang=="e") { echo "Citizen ID"; } else { echo "บัตรประชาชน"; } ?>&nbsp;:&nbsp;</td>
+			  <td><input type="file" name="filenum" size="38"> <span class="f12rbold">*</span> ขนาดไม่เกิน 100 k </td>
+			</tr>
+			<tr>
+			  <td>&nbsp;</td>
+			  <td><input type="submit" name="save" value="Save">&nbsp;<input type="reset" name="cancel" value="Cancel"></td>
+			</tr>
+		</table></td>
+        </tr>
+        <tr>
+          <td><div style="padding-top:10px">&nbsp;<span class="f12rbold"><?php if ($backend_lang=="e") { echo "Note"; } else { echo "หมายเหตุ"; } ?> :</span> <?php if ($backend_lang=="e") { echo "Shop owners who have previously provided documents may do so again to ensure your benefits in promoting your shop in the plaza."; } else { echo "สำหรับร้านค้าที่เคยส่งเอกสารมาแล้ว สามารถส่งมาได้อีกครั้ง เพื่อสิทธิประโยชน์ในการโปรโมทร้านค้าใน Plaza"; } ?></div></td>
+        </tr>
+<script>
+function shopregister()
+{
+if (document.frmshopregister.name.value=="") {alert('กรุณากรอกชื่อก่อน'); document.frmshopregister.name.focus();	return false;}
+if (document.frmshopregister.surname.value=="") {alert('กรุณากรอกนามสกุลก่อน'); document.frmshopregister.surname.focus();	return false;}
+if (document.frmshopregister.add.value=="") {alert('กรุณากรอกที่อยู่ก่อน'); document.frmshopregister.add.focus();	return false;}
+if (document.frmshopregister.filenum.value=="") {alert('กรุณาเติมข้อมูลบัตรประชาชนก่อน'); document.frmshopregister.filenum.focus();return false;}
+if (document.frmshopregister.filehome.value=="") {alert('กรุณาเติมข้อมูลสำเนาทะเบียนบ้านก่อน'); document.frmshopregister.filehome.focus();return false;}
+if (document.frmshopregister.filebank.value=="") {alert('กรุณาเติมข้อมูลหน้าปกบัญชีก่อน'); document.frmshopregister.filebank.focus();return false;}
+}
+</script>
+</form>
+<?php
+}
+?>
+    </table></td>
+  </tr>
+  <tr>
+  <td>&nbsp;</td>
+  </tr>
+  <tr>
+  <td height="27" class="boxtopic2">&nbsp;&nbsp;<?php if ($backend_lang=="e") { echo "Recent Orders"; } else { echo "รายการสั่งซื้อล่าสุดจากลูกค้า"; } ?></td>
+  </tr>
+  <tr>
+  <td height="111" valign="top">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr align="center">
+  <td width="120" height="22" class="boxtopic"><?php if ($backend_lang=="e") { echo "Purchase Order Number"; } else { echo "เลขที่ใบสั่งซื้อ"; } ?></td>
+  <td width="548" class="boxtopic"><?php if ($backend_lang=="e") { echo "Customer Name"; } else { echo "ชื่อลูกค้า"; } ?></td>
+  <td width="144" class="boxtopic"><?php if ($backend_lang=="e") { echo "Date & Time"; } else { echo "วัน/เดือน/ปี เวลา"; } ?></td>
+  </tr>
+  <tr><td colspan="3" valign="top">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" class="f12b">
+<?php
+$sql="select orderid,name,date,pay,timebuy from s_cartorder where (shopid='$shopid') and deleteflag!='y' order by orderid desc limit 0,5";
+$result=Query_read($sql);
+$color="#FFFFFF";
+while ($roworder=mysql_fetch_array($result)) {
+?>
+	<tr bgcolor="<?=$color?>">
+    <td width="119" height="21" align="center"><?=$roworder["orderid"]?></td>
+    <td width="534"><a href="showorder.php?orderid=<?=$roworder["orderid"]?>" target="_blank"><?=$roworder["name"]?></a>&nbsp;<a href="order_print.php?orderid=<?=$roworder["orderid"]?>" target="_blank"><img src="images/printer.gif" alt="หน้าสำหรับพิมพ์" width="22" height="20" border="0" align="absmiddle"></a>&nbsp;<?php if (($rowregis["package"]=="e") or ($rowregis["package"]=="p")) { ?><a href="order_receipt_form.php?orderid=<?=$roworder["orderid"]?>" target="_blank"><img src="images/bill_icon.gif" alt="หน้าสำหรับพิมพ์ใบเสร็จ" width="32" height="20" border="0" align="absmiddle"></a><?php } ?></td>
+  <td width="159" align="center"><?=$roworder["date"]?> <?=$roworder["timebuy"]?></td>
+  </tr>
+<?php
+if ($color=="#FFFFFF") {$color=$colorlight;} else {$color="#FFFFFF";}
+} // while
+?>
+      <tr>
+        <td height="25" colspan="3"><div style="padding-top:10px">&nbsp;<a href="cartorder.php"><?php if ($backend_lang=="e") { echo "Manage Purchase Orders"; } else { echo "เข้าดูระบบรายการสั่งซื้อ"; } ?></a><?php if ($shopid<28196) { ?>&nbsp;|&nbsp;<a href="#" onclick="window.open('http://www.marketathome.com/option/blacklist/show_blist.php','new1','location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=600,height=600');"><?php if ($backend_lang=="e") { echo "View Blacklist"; } else { echo "เข้าดูระบบ Blacklist"; } ?></a><?php } ?></div></td>
+        </tr>
+    </table>
+    </td>
+  </tr>
+  <tr>
+  <td colspan="3" valign="top">
+	<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="f12b">
+	<?php
+    if ($rowregis["package"]=="e") {
+    ?>
+	<tr>
+	  <td colspan="2"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="f12b">
+	<tr><td colspan="5">&nbsp;</td></tr>
+	<tr><td colspan="5" class="boxtopic2" height="25">&nbsp;&nbsp;<b><?php if ($backend_lang=="e") { echo "Payment Notification"; } else { echo "รายงานการชำระเงินจากลูกค้า"; } ?></b></td></tr>
+  <tr align="center" height="22">
+  <td width="120" class="boxtopic"><?php if ($backend_lang=="e") { echo "Purchase Order Number"; } else { echo "เลขที่ใบสั่งซื้อ"; } ?></td>
+  <td width="273" class="boxtopic"><?php if ($backend_lang=="e") { echo "Customer Name"; } else { echo "ชื่อลูกค้า"; } ?></td>
+  <td width="152" class="boxtopic"><?php if ($backend_lang=="e") { echo "Transfering Bank/Branch"; } else { echo "ชำระผ่านธนาคาร สาขา"; } ?></td>
+  <td width="130" class="boxtopic"><?php if ($backend_lang=="e") { echo "Amount"; } else { echo "จำนวนเงิน"; } ?></td>
+  <td width="137" class="boxtopic"><?php if ($backend_lang=="e") { echo "Date & Time"; } else { echo "วัน/เดือน/ปี เวลา"; } ?></td>
+  </tr>
+<?php
+$sql="select qid, orderid, name, email, payday, paytime, bank, price, branch from s_notifypay where shopid='$shopid' order by qid DESC limit 0,5";
+$result=Query_read($sql);
+$rows=mysql_num_rows($result);
+if ($rows!=0) {
+$rowcolor="FFFFFF";
+while ($line=mysql_fetch_array($result)) {
+?>
+	<tr bgcolor="<?=$rowcolor?>" height="21">
+	  <td width="120" align="center"><?=$line["orderid"]?></td>
+	  <td width="273"><a href="showpay.php?qid=<?=$line['qid']?>" target="_blank"><?=$line["name"]?></a></td>
+	  <td><table width="100%" border="0" cellpadding="0" cellspacing="0" class="f12b">
+		<tr>
+		  <td width="28%"><div style="padding-left:17px"><?php
+  if ($line["bank"]=='bkb')
+      echo "<img src=http://www.marketathome.com/template/images/bkb.gif border=0 alt=ธนาคารกรุงเทพ>";
+  elseif ($line["bank"]=='ktb')
+      echo "<img src=http://www.marketathome.com/template/images/ktb.gif border=0 alt=ธนาคารกรุงไทย>";
+  elseif ($line["bank"]=='bay')
+      echo "<img src=http://www.marketathome.com/template/images/bay.gif border=0 alt=ธนาคารกรุงศรีอยุธยา>";
+  elseif ($line["bank"]=='tfb')
+      echo "<img src=http://www.marketathome.com/template/images/tfb.gif border=0 alt=ธนาคารกสิกรไทย>";
+  elseif ($line["bank"]=='tmb')
+      echo "<img src=http://www.marketathome.com/template/images/tmb.gif border=0 alt=ธนาคารทหารไทย>";
+  elseif ($line["bank"]=='bt')
+      echo "<img src=http://www.marketathome.com/template/images/bt.gif border=0 alt=ธนาคารไทยธนาคาร>";
+  elseif ($line["bank"]=='scb')
+      echo "<img src=http://www.marketathome.com/template/images/scb.gif border=0 alt=ธนาคารไทยพาณิชย์>";
+  elseif ($line["bank"]=='sci')
+      echo "<img src=http://www.marketathome.com/template/images/sci.gif border=0 alt=ธนาคารนครหลวงไทย>";
+  elseif ($line["bank"]=='uob')
+      echo "<img src=http://www.marketathome.com/template/images/uob.gif border=0 alt=ธนาคารยูโอบี รัตนสิน>";
+  elseif ($line["bank"]=='bmb')
+      echo "<img src=http://www.marketathome.com/template/images/bmb.gif border=0 alt=ธนาคารศรีนคร>";
+  elseif ($line["bank"]=='ntb')
+      echo "<img src=http://www.marketathome.com/template/images/ntb.gif border=0 alt=ธนาคารสแตนดาร์ดชาร์เตอร์ดนครธน>";
+  elseif ($line["bank"]=='asi')
+      echo "<img src=http://www.marketathome.com/template/images/asi.gif border=0 alt=ธนาคารเอเชีย>";
+    ?></div></td>
+		  <td width="72%"><?=$line["branch"]?></td>
+		</tr>
+	  </table></td>
+	  <td width="130" align="center"><?=$line["price"]?></td>
+	  <td width="137" align="center"><?=$line["payday"]?>&nbsp;<?=$line["paytime"]?></td>
+	</tr>
+<?php
+if($rowcolor=="FFFFFF")
+$rowcolor=$colorlight;
+else
+$rowcolor="FFFFFF";
+    }//while
+}//$rows
+mysql_free_result($result);
+?>
+</table></td>
+	  </tr>
+	  <tr>
+	    <td height="25" colspan="2"><div style="padding-top:10px">&nbsp;<a href="notifypay_admin.php"><?php if ($backend_lang=="e") { echo "Payment Summary"; } else { echo "เข้าดูระบบรายงานการชำระเงิน"; } ?></a></div></td>
+	    </tr>
+	<?php } // if($rowregis["package"]=="e") ?>
+	<tr><td colspan="2">&nbsp;</td></tr>
+	<?php if ($row_mode["partner"]=="") { ?>
+	<tr><td colspan="2" class="boxtopic2" height="25">&nbsp;&nbsp;ข่าวความคืบหน้าการพัฒนาระบบ</td></tr>
+	<tr><td colspan="2">&nbsp;</td></tr>
+	<?php
+        $sql="select qid, topic, detail, datetime from updatenews where Bshow='y' order by news_order,datetime limit 0,5";
+        $result=Query_read($sql);
+        $rows=mysql_num_rows($result);
+        if ($rows!=0) {
+        while ($line=mysql_fetch_array($result)) {
+        list($year,$month,$day)=split("-",$line["datetime"]);
+        $imgpath="../updatenews/newsimages/".$line["qid"].".jpg";
+        if (file_exists($imgpath)) {$imgpath="<img src='$imgpath' width='60' hspace='2' vspace='2'>";} else {$imgpath="<img src='http://www.marketathome.com/updatenews/update.png' width='60' hspace='2' vspace='2'>";}
+    ?>
+		<tr>
+		  <td width="15%" align="center" valign="top"><?=$imgpath;?></td>
+		  <td width="85%" valign="top"><div style="padding-right:5px"><b><span class="f12r"><?php echo $day.'-'.$month.'-'.$year; ?></span> : <?=$line["topic"];?></b><br /><?=nl2br($line["detail"]);?></div></td>
+		</tr>
+	<?php
+        }//while
+        }//$rows
+    ?>
+		<tr>
+		  <td height="20" colspan="2" align="right"><a href="develop.php"><span class="f12b">ดูรายละเอียดทั้งหมด >>></span></a></td>
+		  </tr>
+		  <?php } ?>
+	</table>
+<br />
+  </td>
+  </tr>
+  </table></td>
+  </tr>
+  <?php }//if ($row["free"]!="y") {?>
+  <tr>
+    <td height="20"><div style="padding-left:5px;padding-right:5px"><form action="editshop.php" method="post" name="mail" id="mail" onsubmit="return checkmail()">
+	<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tr><td>&nbsp;</td></tr>
+        <tr>
+          <td valign="top" class="f12bbold">
+         ท่านคิดว่าร้านค้าของท่านควรมีระบบอะไรเพิ่มเติม ท่านสามารถเสนอแนะ/ติชม ได้ที่แบบฟอร์มด้านล่าง
+<?php
+ include "../mailconfig.php";
+    $result_mail = Query_read("SELECT email FROM shop WHERE shopid='$shopid'");
+    $row_mail = mysql_fetch_array($result_mail);
+    if ($row_mail["email"]=="") {
+        $row_mail["email"] = $shopid;
+    }
+    if (isset($send)) {
+    $msg = "&nbsp;<b>ข้อความ</b> : $message<br />";
+    $from = $row_mail["email"];
+    $to = "webmaster@weloveshopping.com";
+    $subject ="ข้อเสนอแนะ/ติชม ระบบของร้านค้า[$shopid]";
+    $html = $msg;
+
+    if (SendMail_Market_OPT($from,$to,$subject,$html)) {
+        echo "<br /><br /><span class=f12bbold>Send E-mail Complete</span></center>";
+    } else {
+        echo "<br /><br /><span class=f12rbold>Send E-mail Error!<br /><br />Please Return to Check Your Information</b><br /><br /><input type=button Onclick=javascript:history.back() value=\"  Back  \"></span></center>";
+    }
+}
+?><br />
+<textarea name="message" cols="80" rows="5"></textarea>&nbsp;<span class="f12rbold">*</span><br />
+          <input type="submit" name="send" value="   Send   ">
+          <input type="reset" value="Cancel"></td></tr>
+      </table>
+    </form></div></td>
+    </tr>
+  </table></td>
+  </tr>
+<?php if ($row_mode["partner"]=="") { ?>
+<tr>
+<td height="25" colspan="5" class="boxtopic">&nbsp;&nbsp;การลงทะเบียนร้านค้า</td>
+</tr>
+<tr><td><div style="padding-left:5px;padding-right:5px"><br /><span class="f12rbold">สร้างความน่าเชื่อถือให้ร้านค้า</span><br /><br />
+ร้านค้าที่มีเครื่องหมาย&nbsp;<img src="images/registered.gif" align="absmiddle">, <img src="images/vipshop.gif" align="absmiddle">, <img src="images/exclusive.gif" align="absmiddle"> ลูกค้าสามารถมั่นใจว่าร้านค้านั้นผ่านการตรวจสอบและลงทะเบียนแล้ว<br />
+<br />
+<span class="f12rbold">ขั้นตอนการลงทะเบียน</span><br />
+<br /><input type="button" value="ดูรายละเอียด" onclick="window.open('http://www.marketathome.com/plaza/howtoregister.php')">
+<br />
+<br />
+ <span class="f12rbold">ทำไมต้องมีการลงทะเบียน</span><br /><br />
+1. มีการฉ้อโกง หลอกลวง ในการซื้อขายกับร้านค้าที่ไม่ลงทะเบียน ทำให้ทางเว็บต้องหามาตรการในการควบคุมร้านค้าฟรี ไม่ให้สร้างความเสียหายกับทางเว็บ และร้านค้าอื่นๆ<br /><br />
+2. ป้องกันร้านค้าที่มีวัตถุประสงค์เพื่อ เข้ามาดูระบบ, ทดลอง, เปิดเล่นๆ, กลั่นแกล้ง, เจาะระบบ<br /><br />
+3. เมื่อร้านค้าไม่ผ่านการกรองจากทางเรา จะส่งผลให้การช่วยการทำตลาดใน Plaza ขาดความน่าเชื่อถือจากผู้ชม เพราะหลายร้านเป็นร้านค้าว่างๆ<br /><br />
+4. สำหรับร้านค้าฟรี ต้องเข้าใช้งานระบบหลังร้าน ภายใน 60 วัน และร้านค้าก็ต้องมีการขายสินค้าจริงโดยการตรวจเช็คจากทางเว็บ มิฉะนั้นระบบจะทำการลบร้านค้า หรือลงทะเบียนร้านค้า เพื่อให้ร้านค้าถูกล๊อคโดยระบบป้องกันการลบเพื่อเป็นการจองร้าน ชื่อร้านถาวรเป็นเวลา 1 ปีพร้อมรับ Option ต่างๆมากมาย<br /><br />
+5. ใน Plaza ถ้าสินค้าที่คนเข้ามาดูส่วนใหญ่คลิกไปแล้วเป็นร้านค้าที่ไม่มีการ Update ส่งผลกระทบต่อระบบ E-commerce เพราะทำให้ขาดความน่าเชื่อถือ<br /><br />
+</div>
+</td>
+</tr>
+<?php } ?>
+<tr>
+<td height="25" class="boxtopic">&nbsp;&nbsp;รหัสที่ใช้ในการอ้างอิงในการรับบริการ</td>
+</tr>
+<tr>
+<td valign="top"><div style="padding-left:5px;padding-right:5px"><br /><span class="f12bbold">ชื่อสมาชิก :&nbsp;</span><?=$row["username"]?><br />
+<br /><span class="f12bbold">รหัสร้านค้า :&nbsp;</span><?=$row["shopid"]?><br />
+<br />
+<!--
+<span class="f12bbold">URL ของร้าน :&nbsp;</span><?php if ($row_mode["partner"]=="") { ?>http://www.weloveshopping.com/shop/<?php } else { ?>http://shop.jjmartonline.com/<?php } echo $row["shopurl"]; ?><br />
+-->
+<span class="f12bbold">URL ของร้าน :&nbsp;</span>
+<?php
+    if ($row["newurl"]=="") {
+        $shopPath=$row["shopurl"];
+        $tmpShop = explode('/', $shopPath, 3);
+        $numTmp = count($tmpShop)-1;
+        $shopurl = $tmpShop[$numTmp];
+?>http://www.weloveshopping.com/shop/<?php echo $shopPath; } else { echo $row["newurl"];}?><br />
+<br />
+<?php if ($row_mode["partner"]=="") { ?>
+<span class="f12rbold">หมายเหตุ : </span>พบปัญหาการใช้งานติดต่อสอบถามได้ที่ info@weloveshopping.com หรือโทร 02-9009999 ต่อ 3 <br />
+<br />
+<?php } ?>
+</div>
+</td>
+</tr>
+</table><!-- InstanceEndEditable --></div>
+<div class="clear"></div>
+</div>
+<?include("bottom_backend.php");?>
+</div>
+</body>
+<!-- InstanceEnd --></html>

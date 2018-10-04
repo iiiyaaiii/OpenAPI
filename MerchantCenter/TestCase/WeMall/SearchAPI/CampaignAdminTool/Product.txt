@@ -1,0 +1,70 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        Search-API    mock
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           DateTime
+Test Timeout      5 minutes
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+
+*** Test Case ***
+TC_MC_01091
+    [Documentation]    CampaignAdminTool - Product : Search product by Store name
+    [Tags]    Regression    High
+    Go to    ${URL_WMS}/campaignadmin_product
+    Sleep    2
+    Input Text    //input[@name='store_name']    ${seller_name001}
+    Click Element    //input[@type='submit']
+    Sleep    2
+    ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    //table[@id='sample-table-2']/tbody//tr[${i}]//td[7]    ${seller_name001}
+
+TC_MC_01093
+    [Documentation]    CampaignAdminTool - Product : Search product by Store ids
+    [Tags]    Regression    High
+    Go to    ${URL_WMS}/campaignadmin_product
+    Input Text    ${txt_search_store_id}    ${seller_name004_id}
+    Click Element    ${btn_search_camp}
+    Check Store Id Record Display Product    ${lbl_camp_store_id}    ${seller_name004}
+
+
+TC_MC_01095
+    [Documentation]    CampaignAdminTool - Product : Search product by Store id
+    [Tags]    High
+    Go to    ${URL_WMS}/campaignadmin_product
+    Sleep    2
+    Input Text    //input[@name='store_ids']    ${seller_shop_001_id}
+    Click Element    //input[@type='submit']
+    Sleep    2
+    ${CountRow}    Execute Javascript    return $('tr').length;
+    ${CountRow}    Evaluate    ${CountRow} - 1
+    : FOR    ${i}    IN RANGE    1    ${CountRow}
+    \    Element Should Contain    //table[@id='sample-table-2']/tbody//tr[${i}]//td[7]    ${seller_name001}
+
+TC_MC_01097
+    [Documentation]    CampaignAdminTool - Product : Search product by Store id
+    [Tags]    High
+    Go to    ${URL_WMS}/campaignadmin_product
+    Sleep    2
+    Input Text    //input[@name='store_ids']    L
+    Click Element    //input[@type='submit']
+    Element Should Contain    //tbody/tr/td    --- No data ---
+
+TC_MC_01099
+    [Documentation]    CampaignAdminTool - Product : Check amount sold items in product performance table
+    [Tags]    High
+    Go to    ${URL_WMS}/campaignadmin_product
+    Sleep    2
+    : FOR    ${i}    IN RANGE    1    10
+    \    Element Should Be Visible    //table[@id='sample-table-2']/tbody//tr[${i}]//td[8]
+    \    ${text}    Get Text    //table[@id='sample-table-2']/tbody//tr[${i}]//td[8]
+    \    Should be True    ${text} >= 0

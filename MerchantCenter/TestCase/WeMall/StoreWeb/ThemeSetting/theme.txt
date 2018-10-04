@@ -1,0 +1,75 @@
+*** Settings ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_STORE}/${shopname_user001}/admin/theme/setting
+Force Tags        Store-Web
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Store_Theme.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/SellerTheme.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Test Cases ***
+TC_MC_05256
+    [Documentation]    Verify theme color. Default theme.
+    [Tags]    Regression    High
+    Run Keyword If    '${select_theme}' == 'default'    Select default theme
+    ${Color_Old}    Get Element Attribute    //select[@id="sel_theme"]//option[@selected=""]@value
+    Select From List By Value    ${select_theme}    default
+    Element Should Be Visible    ${ex_defualt_theme}
+    Click Element    ${save_theme}
+
+TC_MC_05265
+    [Documentation]    Verify header shop. Incase choose image from gallery
+    [Tags]    Regression    Medium
+    Execute Javascript    ${btn_choose}.eq(0).click()
+    Choose Image From Gallery Correct2
+
+TC_MC_05267
+    [Documentation]    Verify Banner shop. Incase upload image correct (No Checked to used header checkbox).
+    [Tags]    Regression    Medium
+    Execute Javascript    $('#toggle-add-banner').click()
+    Upload Image To Banner    ${upload_banner}    banner.jpg    ${upload_file_banner}
+    Execute Javascript    $('#toggle-add-banner').click()
+    Upload Image To Banner    ${upload_banner}    banner.jpg    ${upload_file_banner}
+    Execute Javascript    $('#toggle-add-banner').click()
+    Upload Image To Banner    ${upload_banner}    banner.jpg    ${upload_file_banner}
+    Click Element    ${save_theme}
+    Go To    ${URL_PORTAL}/${seller_name001}
+    Go To    ${URL_STORE}/${shopname_user001}/admin/theme/setting
+    Execute Javascript    $('#use_banner_highlight').click()
+    Click Element    ${save_theme}
+    Go To    ${URL_PORTAL}/${seller_name001}
+    Go To    ${URL_STORE}/${shopname_user001}/admin/theme/setting
+    Execute Javascript    $('#toggle-add-banner').click()
+    Upload Image To Banner    ${upload_banner}    banner.jpg    ${upload_file_banner}
+    Execute Javascript    $('#toggle-add-banner').click()
+    Upload Image To Banner    ${upload_banner}    banner.jpg    ${upload_file_banner}
+    Execute Javascript    $('#toggle-add-banner').click()
+    Upload Image To Banner    ${upload_banner}    banner.jpg    ${upload_file_banner}
+    Click Element    ${save_theme}
+    Go To    ${URL_PORTAL}/${seller_name001}
+
+TC_WLS_00278
+    [Documentation]    Verify Banner shop. Incase upload image incorrect.
+    [Tags]    Medium
+    Execute Javascript    $('#toggle-add-banner').click()
+    Execute Javascript    $('.delete-banner a').click()
+    Upload Image To Banner    ${upload_banner}    TextUpload.txt     ${upload_file_banner}
+    Get Alert Text    อนุญาตให้ใช้ไฟล์ประเภท .jpg .png และ .gif เท่านั้นค่ะ
+
+TC_WLS_05259
+    [Documentation]    Ensure that, system display message alert
+    [Tags]    Medium
+    Execute Javascript    $('#use_banner_highlight').click()
+    Click Element    ${save_theme}
+    Element Should Contain    //*[@id="frmsetting"]/div/div[1]/div[2]/div/div/div[2]/div[2]/div[4]/div[1]/div/div[2]    กรุณาเพิ่มแบนเนอร์ปกติ
+    Execute javascript    $("input[name='use_banner_html']").click()
+    Click Element    ${save_theme}
+    Element Should Contain    //*[@id="frmsetting"]/div/div[1]/div[2]/div/div/div[2]/div[2]/div[5]/div[1]/div[3]    กรุณาเพิ่มเนื้อหาในร้านค้า
+
+

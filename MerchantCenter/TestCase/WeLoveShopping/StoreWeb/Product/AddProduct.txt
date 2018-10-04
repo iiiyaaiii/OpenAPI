@@ -1,0 +1,1122 @@
+*** Setting ***
+Test Setup        Run Keywords    Account Login    ${seller_user_001}    ${seller_pwd_001}    AND    Go To    ${URL_STORE}/${user_s001}/admin/product/create
+Test Teardown     Close All Browsers
+Suite Teardown    Delete Product test
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Force Tags        Store-Web    mc-wls
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Product.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_MonitoringListing.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Test Case ***
+TC_MC_01917
+    [Documentation]    [Welove] Add product - Verify require information on add product
+    [Tags]    Regression    High
+    Wait Until Element Is Visible    ${input_product_name}
+    # Execute Javascript    $('.btn-save').eq(0).click()
+    Click Button Save Product
+    ${error_p_category}    Execute Javascript    return $('#show_plaza_category .help-inline').text()
+    ${error_p_name}    Execute Javascript    return $('.pd-name-counter .help-inline').text()
+    ${error_p_desc}    Execute Javascript    return $('.product-description .help-inline').text()
+    ${error_p_image}    Execute Javascript    return $('.add-img-thumb .help-inline').text()
+
+TC_MC_01918
+    [Documentation]    Verify fill number only.
+    [Tags]    Medium
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Genarate Product Name And SKU    TestAddproduct
+    Input Text    ${input_product_name}    ${p_name}
+    Execute Javascript    $("div[class='redactor-editor']").text('สินค้าเทส').change()
+    Execute Javascript    ${product_type_new}
+    Execute Javascript    ${status_instock}.click()
+    Input Text    ${input_product_sku}    ${p_sku}
+    Input Text    ${input_product_tag}    กระโปรง
+    Upload Product Image    logo_mi6_seller_1.jpg
+    #Execute Javascript    $('.btn-save').eq(0).click()
+    Click Button Save Product
+    Focus    ${unit_instock}
+    Focus    ${prepare_shipping}
+    Focus    ${input_selling_price}
+
+TC_MC_01919
+    [Documentation]    Verify product category.
+    [Tags]    Medium
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Genarate Product Name And SKU    TestAddproduct
+    Input Text    ${input_product_name}    ${p_name}
+    Input Description
+    Execute Javascript    ${product_type_used}
+#    Execute Javascript    ${status_instock}.click()
+#    Input Text    ${prepare_shipping}    3
+#    Input Text    ${unit_instock}    10
+#    Input Text    ${input_product_sku}    ${p_sku}
+#    Input Text    ${input_selling_price}    199
+#    Input Text    ${input_normal_price}    200
+#    Capture Page Screenshot
+    Input Product Stock    3    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+#    Execute Javascript    $('.btn-save').eq(0).click()
+#    Sleep    3s
+    Click Button Save Product
+#    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    # Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    ${last_pname}    Get Text    ${top_record_p_name}
+    Should Be Equal    ${last_pname}    ${p_name}
+
+TC_MC_01920
+    [Documentation]    [Welove] Add product - Verify shop category Incase Input new shop category
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    ${input_product_name}
+    # Select Category    ${create_category}
+    Select From List By Value    ${shop_category}    add_cat
+    Genarate Product Name And SKU    TestAddproduct
+    Input Text    ${input_product_name}    ${p_name}
+    Input Description
+    Execute Javascript    ${product_type_used}
+#    Execute Javascript    ${status_instock}.click()
+#    Input Text    ${prepare_shipping}    3
+#    Input Text    ${unit_instock}    10
+#    Input Text    ${input_product_sku}    ${p_sku}
+#    Input Text    ${input_selling_price}    199
+#    Input Text    ${input_normal_price}    200
+    Input Product Stock    3    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+#    Execute Javascript    $('.btn-save').eq(0).click()
+#    Sleep    5s
+    Click Button Save Product
+    ${msg_error}    Execute Javascript    return $('#show_add_cat .help-inline').text()
+    ${msg_error_str}    Convert To String    ${msg_error}
+    Should Be True    '${msg_error}' == 'กรุณาใส่ชื่อหมวดหมู่'
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product/create
+
+TC_MC_01921
+    [Documentation]    Verify product name more than 80 character.
+    [Tags]    Low
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    ${time}    Get Time    epoch
+    ${p_sku}    Catenate    SKU ${time}
+    Set Test Variable    ${p_sku}
+    Input Text    ${input_product_name}    ${p_name_over_80}
+    Input Description
+    Execute Javascript    ${product_type_used}
+#    Execute Javascript    ${status_instock}.click()
+    Input Product Stock    3    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+#    Execute Javascript    $('.btn-save').eq(0).click()
+#    Wait Until Page Does Not Contain    ${input_product_tag}
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${last_pname}    Get Text    ${top_record_p_name}
+    Should Be Equal    ${last_pname}    ${p_name_equl_80}
+
+TC_MC_01922
+    [Documentation]    Verify product description (Success)
+    [Tags]    High
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Genarate Product Name And SKU    TestAddproduct
+    Input Text    ${input_product_name}    ${p_name}
+    Input Text    ${input_product_desc}    ${invalid_p_desc1}
+    ${p_desc}    Get Text    ${input_product_desc}
+    Execute Javascript    ${product_type_used}
+#    Execute Javascript    ${status_instock}.click()
+#    Input Text    ${prepare_shipping}    3
+#    Input Text    ${unit_instock}    10
+#    Input Text    ${input_product_sku}    ${p_sku}
+#    Input Text    ${input_selling_price}    199
+#    Input Text    ${input_normal_price}    200
+    Input Product Stock    3    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+#    Sleep    4s
+#    Execute Javascript    $('.btn-save').eq(0).click()
+#    Wait Until Page Does Not Contain    ${input_product_tag}
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${last_pname}    Get Text    ${top_record_p_name}
+    Should Be Equal    ${last_pname}    ${p_name}
+
+TC_MC_01923
+    [Documentation]    Verify product description. Incase user enter contain is invalid format.
+    [Tags]    High
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Genarate Product Name And SKU    TestAddproduct
+    Input Text    ${input_product_name}    ${p_name}
+    Execute Javascript    $("div[class='redactor-editor']").text('${invalid_p_desc2}').keydown();
+    ${p_desc}    Get Text    ${input_product_desc}
+    Execute Javascript    ${product_type_used}
+#    Execute Javascript    ${status_instock}.click()
+#    Input Text    ${prepare_shipping}    3
+#    Input Text    ${unit_instock}    10
+#    Input Text    ${input_product_sku}    ${p_sku}
+#    Input Text    ${input_selling_price}    199
+#    Input Text    ${input_normal_price}    200
+    Input Product Stock    3    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+#    Execute Javascript    $('.btn-save').eq(0).click()
+#    Wait Until Page Does Not Contain    ${input_product_tag}
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${pid}    Get Text    ${top_record_pid}
+    ${str5}    Remove String    ${pid}    L
+    Go To    ${URL_STORE}/${user_s001}/admin/product/edit/${str5}
+    ${product_desc}    Get Text    ${input_product_desc}
+    ${str2}    Convert To String    ${product_desc}
+    Should Contain    ${str2}    ${p_desc}
+
+TC_MC_01924
+    [Documentation]    Verify product description (Fail).
+    [Tags]    High
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Genarate Product Name And SKU    TestAddproduct
+    Input Text    ${input_product_name}    ${p_name}
+    Execute Javascript    $("div[class='redactor-editor']").text('สินค้าเทส<a href = http://www.google.com>Click</a>').keydown();
+    Execute Javascript    ${product_type_new}
+#    Execute Javascript    ${status_instock}.click()
+#    Input Text    ${prepare_shipping}    3
+#    Input Text    ${unit_instock}    10
+#    Input Text    ${input_product_sku}    ${p_sku}
+#    Input Text    ${input_selling_price}    199
+#    Input Text    ${input_normal_price}    200
+    Input Product Stock    3    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+#    Sleep    4s
+#    Execute Javascript    $('.btn-save').eq(0).click()
+#    Wait Until Page Does Not Contain    ${input_product_tag}
+#    Sleep    5s
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${pid}    Get Text    ${top_record_pid}
+    Go To    url=${URL_LEVEL_D}/${pid}
+    ${lvd_p_name}    Execute Javascript    return ${lvd_product_name}.text()
+    ${str1}    Convert To String    ${lvd_p_name}
+    Should Be Equal    ${p_name}    ${str1}
+    ${product_desc}    Execute Javascript    return ${lvd_product_desc}.text()
+    ${str2}    Convert To String    ${product_desc}
+    Should Contain    ${str2}    สินค้าเทสClick
+
+TC_MC_01925
+    [Documentation]    Verify product status "Instock" (Fail).
+    [Tags]    Medium
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Genarate Product Name And SKU    TestAddproduct
+    Input Text    ${input_product_name}    ${p_name}
+    Input Description
+    Execute Javascript    ${product_type_used}
+#    Execute Javascript    ${status_instock}.click()
+#    Input Text    ${prepare_shipping}    ก
+#    Input Text    ${unit_instock}    10
+#    Input Text    ${input_product_sku}    ${p_sku}
+#    Input Text    ${input_selling_price}    199
+#    Input Text    ${input_normal_price}    200
+    Input Product Stock    n    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+    Execute Javascript    $('.btn-save').eq(0).click()
+    Focus    ${prepare_shipping}
+    Click Element    //*[@id="knowledge-step1"]/a
+    Execute Javascript    $('.btn-save').eq(0).click()
+    Sleep    4s
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product/create
+
+TC_MC_02242
+    [Documentation]    Verify product status "Instock" with attibute select picture some attibute (Click save).
+    [tags]    Regression    High
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Skirt
+    Run Keyword If    '${ENV}' == 'Alpha'    Select Category each first dropdown list
+    Sleep    2s
+    Select Property
+    Genarate Product Name And SKU    addtest_
+    Execute Javascript    $('#title_th').val('${p_name}')
+    Input Description
+    Execute Javascript    ${product_type_used}.click()
+    Input Product Stock    2    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Execute Javascript    $('#tag_tag').val('กระโปรง')
+    Execute Javascript    $('#switch-option').click()
+    Wait Until Element Is Visible    ${box_attribute}    ${EXPECT_LOADTIME}
+    Select Attribute Color
+    Input price and stock into product attribute2
+    Execute Javascript    $('.img-btn').eq(0).click()
+    Sleep    2s
+    Execute Javascript    $('a#btn_select_photo_att').last().click();
+    Sleep    2s
+    Execute Javascript    $('.widget-main-container').last().find('li img').eq(0).click();
+    Sleep    2s
+    Execute Javascript    $('.save_photo').last()[0].click();
+    Sleep    2s
+    Execute Javascript    $('#btn_select_photo').click()
+    Choose Image From Gallery Correct3
+    Sleep    1s
+    Page Should Contain    กรุณาใส่รูปลงในคุณสมบัติย่อยให้ครบ
+    Sleep    1s
+
+TC_MC_02243
+    [Documentation]    Verify product status "Instock" with attibute select picture all attribute (incase not dupicate image product and image attribute).
+    [tags]    Regression    High
+    #Set Selenium Speed    .3
+    #Account Login    ${seller_user_001}    ${seller_pwd_001}
+    #Sleep    1s
+    Go to    ${URL_STORE}/${user_s001}/admin/gallery
+    Execute Javascript    $('div.album-img li').first().click()
+    ${size}=    Check Image In Gallery
+    Run Keyword If    ${size} < 4    Add Image In Gallery
+    Go To    ${URL_STORE}/${user_s001}/admin/product/create
+    Wait Until Element Is Visible    ${input_product_name}
+    Run Keyword If    '${ENV}' != 'Alpha'    Select Category Fashion Skirt
+    Run Keyword If    '${ENV}' == 'Alpha'    Select Category each first dropdown list
+    Sleep    2s
+    Select Property
+    Genarate Product Name And SKU    addtest_
+    Execute Javascript    $('#title_th').val('${p_name}')
+#    Execute Javascript    $('div.redactor-editor').focus()
+#    Execute Javascript    $('div.redactor-editor').html('Producttest').keydown()
+    #    Execute Javascript    $('div.redactor-editor').keydown()
+    #    Input Text    ${input_product_desc}    Producttest
+    Input Description
+    Execute Javascript    ${product_type_new}.click()
+#    Execute Javascript    ${status_instock}.click()
+#    Execute Javascript    $('#prepare_shipping').val(2)
+#    Execute Javascript    $('#instockunit').val(10)
+#    Execute Javascript    $('#sku').val('${p_sku}')
+    Input Product Stock    2    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Execute Javascript    $('#tag_tag').val('กระโปรง')
+    Execute Javascript    $('#switch-option').click()
+    Wait Until Element Is Visible    ${box_attribute}    ${EXPECT_LOADTIME}
+    Select Attribute Size
+    Input price and stock into product attribute2
+    Add Image Inv Not Duplicate    3
+    Sleep    6s
+    Execute Javascript    $('#tag_tagsinput').val('กระโปรง')
+    Execute Javascript    $('#btn_select_photo').click()
+    Sleep    3
+    Execute Javascript    $('.widget-main-container').last().find('li img').eq(4).click();
+    Sleep    2
+    Execute Javascript    $('.save_photo').last()[0].click();
+    Sleep    2
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${pid}    Get Text    ${top_record_pid}
+    Input Text    ${input_keyword}    ${pid}
+    Click Button    //*[@id="table_report_filter"]/button
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    ${Status1}    Get Text    ${top_record_p_name}
+    ${Status2}    Convert To String    ${status1}
+    Should Contain    ${Status2}    ${p_name}
+    ${Status3}    Get Text    ${top_record_p_status}
+    ${Status4}    Convert To String    ${status3}
+    Should Contain    ${Status4}    ผ่านการตรวจสอบ
+    ${Status5}    Get Text    ${top_record_p_type}
+    ${Status6}    Convert To String    ${status5}
+    Should Contain    ${Status6}    พร้อมส่ง
+    ${stock1}    Get Text    ${top_record_amount}
+    ${stock2}    Convert To String    ${stock1}
+    Should Contain    ${stock2}    30
+    ${selling_price}    Get Text    ${top_record_selling_price}
+    ${selling_price1}    Convert To String    ${selling_price}
+    Should Contain    ${selling_price1}    199
+    ${Normal_price}    Get Text    ${top_record_normal_price}
+    ${Normal_price1}    Convert To String    199
+    Should Contain    ${Normal_price1}    199
+#    Sleep    1s
+    WMS Switch Project    wls
+    Go To    url=${URL_WMS}/monitoringlisting
+    Execute Javascript    $("input[name='product_id']").val('${pid}')
+    Click Button    //button[@class="btn btn-info"]
+    ${monitor_st1}    Get Text    ${top_record_adminstatus}
+    Should Contain    ${monitor_st1}    รอตรวจสอบ
+    ${monitor_st2}    Get Text    ${top_record_sellerstatus}
+    Should Contain    ${monitor_st2}    ผ่านการตรวจสอบ
+#    Sleep    3s
+    Go To    url=${URL_LEVEL_D}/${pid}
+    Wait Until Element Is Visible    //*[@*="product-name"]
+    ${lvd_p_name}    Execute Javascript    return ${lvd_product_name}.text()
+    ${str1}    Convert To String    ${lvd_p_name}
+    Should Be Equal    ${p_name}    ${str1}
+    ${selling_price}    Execute Javascript    return ${lvd_product_price}.text()
+    ${str2}    Convert To String    ${selling_price}
+    Should Be Equal    ${selling_price}    ${str2}
+    ${product_type}    Execute Javascript    return ${lvd_product_type}.text()
+    ${str3}    Convert To String    ${product_type}
+    ${str3}    Remove String    ${str3}    สินค้า
+    Should Be Equal    ${str3}    พร้อมส่ง
+    ${product_desc}    Execute Javascript    return ${lvd_product_desc}.text()
+    ${str4}    Convert To String    ${product_desc}
+    Should Contain    ${str4}    Producttest
+    ${p_size}    Execute Javascript    return $('.box-option-size').text()
+    Sleep    10s
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${URL_STORE}/${user_s001}/admin/product
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Input Text    ${input_keyword}    ${p_name}
+    Click Button    //*[@id="table_report_filter"]/button
+    Execute Javascript    $('input[id="check_all"]').click()
+    Sleep    2s
+    Execute Javascript    $('button[id="btn_delete"]').click()
+    Click OK Alert Box
+    Sleep    2s
+    Wait Until Element Is Visible    //*[@id="errortext"]    ${EXPECT_LOADTIME}
+
+TC_MC_02244
+    [Documentation]    Add product - Verify product status "Pre-order" with attibute select picture all attribute (incase dupicate image product and image attribute)
+    [tags]    Regression    High
+    #Set Selenium Speed    1
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Skirt
+    Select Property
+    Genarate Product Name And SKU    addtest_
+    Execute Javascript    $('#title_th').val('${p_name}')
+    Input Description
+    Execute Javascript    ${product_type_used}.click()
+    Execute Javascript    ${status_preorder}.click()
+    Execute Javascript    $('#new-product-inventory-management').val(1).change()
+    Input Product Preorder Usestock    2    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Input Text    id=tag_tag    กระโปรง
+    Click Element    id=switch-option
+    Wait Until Element Is Visible    ${box_attribute}    ${EXPECT_LOADTIME}
+    Select Attribute Size
+    Input price and stock into product attribute2
+    Add Image Inv Not Duplicate    3
+    Click Element    id=btn_select_photo
+    Execute Javascript    $('.widget-main-container').last().find('li img').eq(2).click();
+    Sleep    2
+    Execute Javascript    $('.save_photo').last()[0].click();
+    Sleep    2
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${pid}    Get Text    ${top_record_pid}
+    Input Text    ${input_keyword}    ${pid}
+    Click Button    //*[@id="table_report_filter"]/button
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    ${Status1}    Get Text    ${top_record_p_name}
+    ${Status2}    Convert To String    ${status1}
+    Should Contain    ${Status2}    ${p_name}
+    ${Status3}    Get Text    ${top_record_p_status}
+    ${Status4}    Convert To String    ${status3}
+    Should Contain    ${Status4}    ผ่านการตรวจสอบ
+    ${Status5}    Get Text    ${top_record_p_type}
+    ${Status6}    Convert To String    ${status5}
+    Should Contain    ${Status6}    พรีออเดอร์
+    ${selling_price}    Get Text    ${top_record_selling_price}
+    ${selling_price1}    Convert To String    ${selling_price}
+    Should Contain    ${selling_price1}    199
+    ${Normal_price}    Get Text    ${top_record_normal_price}
+    ${Normal_price1}    Convert To String    199
+    Should Contain    ${Normal_price1}    199
+    WMS Switch Project    wls
+    Go To    url=${URL_WMS}/monitoringlisting
+    Input Text    //input[@name="product_id"]    ${pid}
+    Click Button    //button[@class="btn btn-info"]
+    ${monitor_st1}    Get Text    ${top_record_adminstatus}
+    Should Contain    ${monitor_st1}    รอตรวจสอบ
+    ${monitor_st2}    Get Text    ${top_record_sellerstatus}
+    Should Contain    ${monitor_st2}    ผ่านการตรวจสอบ
+    Click Element    //td[contains(text(),'${pid}')]
+    Select Window    NEW
+    ${Check_img}=    Get Matching Xpath Count    //td/a
+    Should Be True    ${Check_img} >= 3
+    Go To    url=${URL_LEVEL_D}/${pid}
+    Wait Until Element Is Visible    //*[@*="product-name"]
+    ${lvd_p_name}    Execute Javascript    return ${lvd_product_name}.text()
+    ${str1}    Convert To String    ${lvd_p_name}
+    Should Be Equal    ${p_name}    ${str1}
+    ${selling_price}    Execute Javascript    return ${lvd_product_price}.text()
+    ${str2}    Convert To String    ${selling_price}
+    Should Be Equal    ${selling_price}    ${str2}
+    ${product_type}    Execute Javascript    return ${lvd_product_type}.text()
+    ${str3}    Convert To String    ${product_type}
+    Should Contain    ${str3}    พรีออเดอร์
+    ${product_desc}    Execute Javascript    return ${lvd_product_desc}.text()
+    ${str4}    Convert To String    ${product_desc}
+    Should Contain    ${str4}    Producttest
+    ${p_size}    Execute Javascript    return $('.box-option-size').text()
+
+TC_MC_02245
+    [Documentation]    Verify product status "Pre-order" with attibute select picture all attribute (incase not dupicate image product and image attribute).
+    [tags]    High
+    #Set Selenium Speed    1
+    #Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Sleep    1s
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Skirt
+    Sleep    3s
+    Select Property
+    Genarate Product Name And SKU    addtest_
+    Execute Javascript    $('#title_th').val('${p_name}')
+#    Execute Javascript    $('div.redactor-editor').focus()
+#    Execute Javascript    $('div.redactor-editor').html('Producttest').keydown()
+    Input Description
+    Execute Javascript    ${product_type_used}.click()
+    Execute Javascript    ${status_preorder}.click()
+    Execute Javascript    $('#new-product-inventory-management').val(1).change()
+    Input Product Preorder Usestock    2    10
+    Input SKU and Product Price    ${p_sku}    199    200
+#    Execute Javascript    $('#prepare_shipping').val(2)
+#    Execute Javascript    $('#instockunit').val(10)
+#    Execute Javascript    $('#sku').val('${p_sku}')
+    Execute Javascript    $('#tag_tag').val('กระโปรง')
+    Execute Javascript    $('#switch-option').click()
+    Wait Until Element Is Visible    ${box_attribute}    ${EXPECT_LOADTIME}
+    Select Attribute Size
+    Input price and stock into product attribute2
+    Add Image Inv Not Duplicate    3
+    Sleep    6s
+    Execute Javascript    $('#tag_tagsinput').val('กระโปรง')
+    Execute Javascript    $('#btn_select_photo').click()
+    Sleep    3
+    Execute Javascript    $('.widget-main-container').last().find('li img').eq(4).click();
+    Sleep    2
+    Execute Javascript    $('.save_photo').last()[0].click();
+    Sleep    2
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${pid}    Get Text    ${top_record_pid}
+    Input Text    ${input_keyword}    ${pid}
+    Click Button    //*[@id="table_report_filter"]/button
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    ${Status1}    Get Text    ${top_record_p_name}
+    ${Status2}    Convert To String    ${status1}
+    Should Contain    ${Status2}    ${p_name}
+    ${Status3}    Get Text    ${top_record_p_status}
+    ${Status4}    Convert To String    ${status3}
+    Should Contain    ${Status4}    ผ่านการตรวจสอบ
+    ${Status5}    Get Text    ${top_record_p_type}
+    ${Status6}    Convert To String    ${status5}
+    Should Contain    ${Status6}    พรีออเดอร์
+    ${selling_price}    Get Text    ${top_record_selling_price}
+    ${selling_price1}    Convert To String    ${selling_price}
+    Should Contain    ${selling_price1}    199
+    ${Normal_price}    Get Text    ${top_record_normal_price}
+    ${Normal_price1}    Convert To String    199
+    Should Contain    ${Normal_price1}    199
+    #Sleep    1s
+    WMS Switch Project    wls
+    Go To    url=${URL_WMS}/monitoringlisting
+    Execute Javascript    $("input[name='product_id']").val('${pid}')
+    Click Button    //button[@class="btn btn-info"]
+    ${monitor_st1}    Get Text    ${top_record_adminstatus}
+    Should Contain    ${monitor_st1}    รอตรวจสอบ
+    ${monitor_st2}    Get Text    ${top_record_sellerstatus}
+    Should Contain    ${monitor_st2}    ผ่านการตรวจสอบ
+    Execute Javascript    $('table.tbl-product tbody tr')
+    Sleep    3s
+    ${Check_img}=    Get Matching Xpath Count    //td/a
+    Should Be True    ${Check_img} >= 3
+    Sleep    3s
+    Go To    url=${URL_LEVEL_D}/${pid}
+    Wait Until Element Is Visible    //*[@*="product-name"]
+    ${lvd_p_name}    Execute Javascript    return ${lvd_product_name}.text()
+    ${str1}    Convert To String    ${lvd_p_name}
+    Should Be Equal    ${p_name}    ${str1}
+    ${selling_price}    Execute Javascript    return ${lvd_product_price}.text()
+    ${str2}    Convert To String    ${selling_price}
+    Should Be Equal    ${selling_price}    ${str2}
+    ${product_type}    Execute Javascript    return ${lvd_product_type}.text()
+    ${str3}    Convert To String    ${product_type}
+    Should Contain    ${str3}    พรีออเดอร์
+    ${product_desc}    Execute Javascript    return ${lvd_product_desc}.text()
+    ${str4}    Convert To String    ${product_desc}
+    Should Contain    ${str4}    Producttest
+    ${p_size}    Execute Javascript    return $('.box-option-size').text()
+    Sleep    10s
+
+TC_MC_01926
+    [Documentation]    Verify product status "Instock" (Success).
+    [Tags]    High
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Clothes
+    Sleep    3s
+    Select Property
+    Genarate Product Name And SKU    addtest_
+    Execute Javascript    $('#title_th').val('${p_name}')
+#    Execute Javascript    $('div.redactor-editor').focus()
+#    Execute Javascript    $('div.redactor-editor').html('Producttest').keydown()
+    Input Description
+    Execute Javascript    ${product_type_used}
+    #Execute Javascript    ${status_instock}.click()
+    # Execute Javascript    $('#prepare_shipping').val(2)
+    # Execute Javascript    $('#instockunit').val(10)
+    # Execute Javascript    $('#sku').val('${p_sku}')
+    # Execute Javascript    $('#price').val(199)
+    # Execute Javascript    $('#compare_at_price').val(200)
+    Input Product Stock    2    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Execute Javascript    $('#tag_tag').val('กระโปรง')
+    Execute Javascript    $('#btn_select_photo').click()
+    Choose Image From Gallery Correct
+#    Execute Javascript    $('.btn-save').eq(0).click()
+#    Sleep    7s
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${pid}    Get Text    ${top_record_pid}
+    Input Text    ${input_keyword}    ${pid}
+    Click Button    //*[@id="table_report_filter"]/button
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    ${Status1}    Get Text    ${top_record_p_name}
+    ${Status2}    Convert To String    ${status1}
+    Should Contain    ${Status2}    ${p_name}
+    ${Status3}    Get Text    ${top_record_p_status}
+    ${Status4}    Convert To String    ${status3}
+    Should Contain    ${Status4}    ผ่านการตรวจสอบ
+    ${Status5}    Get Text    ${top_record_p_type}
+    ${Status6}    Convert To String    ${status5}
+    Should Contain    ${Status6}    พร้อมส่ง
+    ${stock1}    Get Text    ${top_record_amount}
+    ${stock2}    Convert To String    ${stock1}
+    Should Contain    ${stock2}    10
+    ${stock1}    Get Text    ${top_record_amount}
+    ${stock2}    Convert To String    ${stock1}
+    Should Contain    ${stock2}    10
+    #Sleep    3s
+    WMS Switch Project    wls
+    Go To    url=${URL_WMS}/monitoringlisting
+    Execute Javascript    $("input[name='product_id']").val('${pid}')
+    Click Button    //button[@class="btn btn-info"]
+    ${monitor_st1}    Get Text    ${top_record_adminstatus}
+    Should Contain    ${monitor_st1}    รอตรวจสอบ
+    ${monitor_st2}    Get Text    ${top_record_sellerstatus}
+    Should Contain    ${monitor_st2}    ผ่านการตรวจสอบ
+    #Sleep    3s
+    Go To    url=${URL_LEVEL_D}/${pid}
+    ${lvd_p_name}    Execute Javascript    return ${lvd_product_name}.text()
+    ${str1}    Convert To String    ${lvd_p_name}
+    Should Be Equal    ${p_name}    ${str1}
+    ${selling_price}    Execute Javascript    return ${lvd_product_price}.text()
+    ${str2}    Convert To String    ${selling_price}
+    Should Be Equal    ${selling_price}    ${str2}
+    ${product_type}    Execute Javascript    return ${lvd_product_type}.text()
+    ${str3}    Convert To String    ${product_type}
+    ${str3}    Remove String    ${str3}    สินค้า
+    Should Be Equal    ${str3}    พร้อมส่ง
+    ${product_desc}    Execute Javascript    return ${lvd_product_desc}.text()
+    ${str4}    Convert To String    ${product_desc}
+    Should Contain    ${str4}    Producttest
+
+TC_MC_01928
+    [Documentation]    Verify product status "Pre-order" (Fail).
+    [tags]    Low
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Genarate Product Name And SKU    TestAddproduct
+    Execute Javascript    $('#title_th').val('${p_name}')
+    Input Description
+    Execute Javascript    ${product_type_used}
+    Execute Javascript    ${status_preorder}.click()
+    Execute Javascript    $('#new-product-inventory-management').val(1).change()
+    # Input Text    ${shipping_in}    ก
+    # Input Text    ${unit_preorder}    10
+    # Input Text    ${input_product_sku}    ${p_sku}
+    # Input Text    ${input_selling_price}    199
+    # Input Text    ${input_normal_price}    200
+    Input Product Preorder Usestock    n    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+    # Execute Javascript    $('.btn-save').eq(0).click()
+    Click Button Save Product
+    #Focus    ${shipping_in}
+    Click Element    //*[@id="knowledge-step1"]/a
+    Execute Javascript    $('.btn-save').eq(0).click()
+    Wait Until Element Is Visible    ${input_product_name}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product/create
+
+TC_MC_01930
+    [Documentation]    Verify product status "Pre-order" (Success). Incase use stock.
+    [Tags]    Regression    Medium
+    # Set Selenium Speed    .3
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Cosmetics
+    Sleep    3s
+    Select Property
+    Genarate Product Name And SKU    addtest_
+    Execute Javascript    $('#title_th').val('${p_name}')
+    Execute Javascript    $('div.redactor-editor').focus()
+    Execute Javascript    $('div.redactor-editor').html('Producttest').keydown()
+    #    Execute Javascript    $('div.redactor-editor').keydown()
+    #    Input Text    ${input_product_desc}    Producttest
+    Execute Javascript    ${product_type_used}
+    Execute Javascript    ${status_preorder}.click()
+    Execute Javascript    $('#new-product-inventory-management').val(1).change()
+    # Execute Javascript    $('#shipping_in').val(2)
+    # Execute Javascript    $('#sku').val('${p_sku}')
+    # Input Text    ${unit_preorder}    10
+    # Execute Javascript    $('#price').val(199)
+    # Execute Javascript    $('#compare_at_price').val(200)
+    Input Product Preorder Usestock    2    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Execute Javascript    $('#tag_tag').val('กระโปรง')
+    Execute Javascript    $('#btn_select_photo').click()
+    Choose Image From Gallery Correct
+    # Execute Javascript    $('.btn-save').eq(0).click()
+    # Sleep    8s
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${pid}    Get Text    ${top_record_pid}
+    Input Text    ${input_keyword}    ${pid}
+    Click Button    //*[@id="table_report_filter"]/button
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    ${Status1}    Get Text    ${top_record_p_name}
+    ${Status2}    Convert To String    ${status1}
+    Should Contain    ${Status2}    ${p_name}
+    ${Status3}    Get Text    ${top_record_p_status}
+    ${Status4}    Convert To String    ${status3}
+    Should Contain    ${Status4}    ผ่านการตรวจสอบ
+    ${Status5}    Get Text    ${top_record_p_type}
+    ${Status6}    Convert To String    ${status5}
+    Should Contain    ${Status6}    พรีออเดอร์
+    ${stock1}    Get Text    ${top_record_amount}
+    ${stock2}    Convert To String    ${stock1}
+    Should Contain    ${stock2}    10
+
+TC_MC_01931
+    [Documentation]    Verify product status "Pre-order" (Success). Incase use stock, Customer can buy items even if the stock is empty.
+    [Tags]    Regression    Medium
+    #Set Selenium Speed    .3
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Perfume
+    Sleep    3s
+    Select Property
+    Genarate Product Name And SKU    addtest_
+    Execute Javascript    $('#title_th').val('${p_name}')
+#    Execute Javascript    $('div.redactor-editor').focus()
+#    Execute Javascript    $('div.redactor-editor').html('Producttest').keydown()
+    #    Execute Javascript    $('div.redactor-editor').keydown()
+    #    Input Text    ${input_product_desc}    Producttest
+    Input Description
+    Execute Javascript    ${product_type_used}
+    Execute Javascript    ${status_preorder}.click()
+    Execute Javascript    $('#new-product-inventory-management').val(1).change()
+    Execute Javascript    $('input[id="emptycanbuy"]').click()
+    Input Product Preorder Usestock    2    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    # Input Text    ${shipping_in}    2
+    # Input Text    ${unit_preorder}    10
+    # Input Text    ${input_product_sku}    ${p_sku}
+    # Input Text    ${input_selling_price}    199
+    # Input Text    ${input_normal_price}    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Sleep    3s
+    Choose Image From Gallery Correct
+    Sleep    2s
+    # Execute Javascript    $('.btn-save').eq(0).click()
+    # Sleep    3s
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    #${Check_Success}    Get Matching Xpath Count    //*[@id="product_create"]
+    #Run Keyword If    ${Check_Success} > 0    Add product preorder
+    ${pid}    Get Text    ${top_record_pid}
+    Input Text    ${input_keyword}    ${pid}
+    Click Button    //*[@id="table_report_filter"]/button
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    ${Status1}    Get Text    ${top_record_p_name}
+    ${Status2}    Convert To String    ${status1}
+    Should Contain    ${Status2}    ${p_name}
+    ${Status3}    Get Text    ${top_record_p_status}
+    ${Status4}    Convert To String    ${status3}
+    Should Contain    ${Status4}    ผ่านการตรวจสอบ
+    ${Status5}    Get Text    ${top_record_p_type}
+    ${Status6}    Convert To String    ${status5}
+    Should Contain    ${Status6}    พรีออเดอร์
+    ${stock1}    Get Text    ${top_record_amount}
+    ${stock2}    Convert To String    ${stock1}
+    Should Contain    ${stock2}    10
+
+TC_MC_01932
+    [Documentation]    Verify product SKU incorrect.
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    ${time}    Get Time    epoch
+    ${p_name}    Catenate    TestAddproduct ${time}
+    Set Test Variable    ${p_sku}    รหัสสินค้า^!@^
+    Input Text    ${input_product_name}    ${p_name}
+    Input Description
+    Execute Javascript    ${product_type_used}
+    #Execute Javascript    ${status_instock}.click()
+    Input Product Stock    3    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    # Input Text    ${prepare_shipping}    3
+    # Input Text    ${unit_instock}    10
+    # Input Text    ${input_product_sku}    รหัสสินค้า^!@^
+    # Input Text    ${input_selling_price}    199
+    # Input Text    ${input_normal_price}    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+    Execute Javascript    $('.btn-save').eq(0).click()
+    #Focus    ${input_product_sku}
+    Click Element    //*[@id="knowledge-step1"]/a
+    Execute Javascript    $('.btn-save').eq(0).click()
+    Wait Until Element Is Visible    ${input_product_name}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product/create
+
+TC_MC_01933
+    [Documentation]    Verify product SKU correct.
+    [tags]    High
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    ${time}    Get Time    epoch
+    ${p_name}    Catenate    TestAddproduct ${time}
+    #${p_sku}    Set Variable    SKU0001
+    #Input Text    ${input_product_name}    ${p_name}
+    Input Product Name    ${p_name}
+    Input Description
+    Execute Javascript    ${product_type_used}
+    #Execute Javascript    ${status_instock}.click()
+    # Input Text    ${prepare_shipping}    3
+    # Input Text    ${unit_instock}    10
+    # Input Text    ${input_product_sku}    SKU0001
+    # Input Text    ${input_selling_price}    199
+    # Input Text    ${input_normal_price}    200
+    Input Product Stock    3    10
+    Input SKU and Product Price    ${p_sku}    SKU0001    199    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    #Sleep    3s
+    Choose Image From Gallery Correct
+    # Execute Javascript    $('.btn-save').eq(0).click()
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${pid}    Get Text    ${top_record_pid}
+    Input Text    ${input_keyword}    ${pid}
+    Click Button    //*[@id="table_report_filter"]/button
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    ${Status1}    Get Text    ${top_record_p_name}
+    ${Status2}    Convert To String    ${status1}
+    Should Contain    ${Status2}    ${p_name}
+    ${Status3}    Get Text    ${top_record_p_status}
+    ${Status4}    Convert To String    ${status3}
+    Should Contain    ${Status4}    ผ่านการตรวจสอบ
+
+TC_MC_01934
+    [Documentation]    Verify save button.
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Genarate Product Name And SKU    TestAddproduct
+    Input Text    ${input_product_name}    ${p_name}
+    Input Description
+    Execute Javascript    ${product_type_used}
+    #Execute Javascript    ${status_instock}.click()
+    # Input Text    ${prepare_shipping}    2
+    # Input Text    ${unit_instock}    10
+    # Input Text    ${input_product_sku}    ${p_sku}
+    # Input Text    ${input_selling_price}    199
+    # Input Text    ${input_normal_price}    200
+    Input Product Stock    2    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Execute Javascript    $('#switch-option').click()
+    Wait Until Element Is Visible    ${box_attribute}    ${EXPECT_LOADTIME}
+    Execute Javascript    $('ul.chzn-choices').eq(2).click()
+    Click Element    //div[@class='chzn-drop']/ul/li[@id='attr_sel_1_chzn_o_2']
+    Execute Javascript    $('ul.chzn-choices').eq(2).click()
+    Click Element    //div[@class='chzn-drop']/ul/li[@id='attr_sel_1_chzn_o_3']
+    Execute Javascript    $('ul.chzn-choices').eq(2).click()
+    Click Element    //div[@class='chzn-drop']/ul/li[@id='attr_sel_1_chzn_o_4']
+    ${count_attr}    Get Matching Xpath Count    ${table_cross_attr}
+    ${attr_r1}    Get Text    ${attr_r1}
+    ${attr_r2}    Get Text    ${attr_r2}
+    ${attr_r3}    Get Text    ${attr_r3}
+    Input Text    //*[@id="cross-sub-attr"]/tbody/tr[1]/td[4]/span/input    1
+    Input Text    //*[@id="cross-sub-attr"]/tbody/tr[2]/td[4]/span/input    2
+    Input Text    //*[@id="cross-sub-attr"]/tbody/tr[3]/td[4]/span/input    3
+    Input Text    //*[@id="cross-sub-attr"]/tbody/tr[1]/td[5]/span/input    6
+    Input Text    //*[@id="cross-sub-attr"]/tbody/tr[2]/td[5]/span/input    7
+    Input Text    //*[@id="cross-sub-attr"]/tbody/tr[3]/td[5]/span/input    8
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    #Sleep    3s
+    Choose Image From Gallery Correct
+    #Sleep    3s
+    #Execute Javascript    $('.btn-save').eq(0).click()
+    Click Button Save Product
+    Wait Until Page Does Not Contain    ${input_product_tag}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    #Sleep    3s
+    ${pid}    Get Text    ${top_record_pid}
+    Input Text    ${input_keyword}    ${pid}
+    Click Button    //*[@id="table_report_filter"]/button
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    ${Status1}    Get Text    ${top_record_p_name}
+    ${Status2}    Convert To String    ${status1}
+    Should Contain    ${Status2}    ${p_name}
+    ${Status3}    Get Text    ${top_record_p_status}
+    ${Status4}    Convert To String    ${status3}
+    Should Contain    ${Status4}    ผ่านการตรวจสอบ
+
+TC_MC_01935
+    [Documentation]    Verify Add Product and Delete.
+    [Tags]    Regression    High    SmokeTest
+    #Set Selenium Speed    .3
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Sleep    3s
+    Select Property
+    Genarate Product Name And SKU    addtest_
+    Execute Javascript    $('#title_th').val('${p_name}')
+    Input Text    ${input_product_desc}    Producttest
+    Execute Javascript    ${product_type_used}
+    #Execute Javascript    ${status_instock}.click()
+    Execute Javascript    $('#prepare_shipping').val(2)
+    Execute Javascript    $('#instockunit').val(10)
+    Execute Javascript    $('#sku').val('${p_sku}')
+    Execute Javascript    $('#tag_tag').val('กระเป๋าเอกสาร')
+    Execute Javascript    $('#switch-option').click()
+    Wait Until Element Is Visible    ${box_attribute}    ${EXPECT_LOADTIME}
+    Select Attribute
+    Input price and stock into product attribute
+    Execute Javascript    $('#btn_select_photo').click()
+    Choose Image From Gallery Correct
+    Execute Javascript    $('.btn-save-add').eq(0).click()
+    # Sleep    10s
+    # Display Alert Footer
+    # Sleep    5s
+    Wait Until Element Is Visible    ${input_product_name}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product/create
+    Go To    ${URL_STORE}/${user_s001}/admin/product
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Input Text    ${input_keyword}    addtest
+    Click Button    //*[@id="table_report_filter"]/button
+    Execute Javascript    $('input[id="check_all"]').click()
+    Sleep    2s
+    Execute Javascript    $('button[id="btn_delete"]').click()
+    Click OK Alert Box
+    Sleep    2s
+    Wait Until Element Is Visible    //*[@id="errortext"]    ${EXPECT_LOADTIME}
+
+TC_MC_01978
+    [Documentation]    Open Add product page (don't enter) and click product list at sidebar menu
+    Execute Javascript    $('#sidebar_21').find('a').get(0).click();
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+
+TC_MC_01979
+    [Documentation]    Open Add product page (Select plaza category) and click category list at sidebar menu
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Execute Javascript    $('#sidebar_22').find('a').get(0).click();
+    #Sleep    4s
+    #Element Should Be Visible    //*[@id="alertbefore-close"]
+    Wait Until Element Is Visible    //*[@id="alertbefore-close"]
+    ${msg}    Get Text    //*[@id="alertbefore-close"]/div[2]
+    Should Contain    ${msg}    คุณยังทำรายการไม่เสร็จสิ้น คุณต้องการออกจากหน้านี้โดยที่ยังไม่ได้บันทึกหรือไม่?
+
+TC_MC_01980
+    [Documentation]    Open Add product page (enter product title) and click add category at sidebar menu
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Input Text    ${input_product_name}    test add
+    Execute Javascript    $('#sidebar_22').find('a').get(1).click();
+    #Sleep    4s
+    #Element Should Be Visible    //*[@id="alertbefore-close"]
+    Wait Until Element Is Visible    //*[@id="alertbefore-close"]
+    #Sleep    2s
+    Click Element    //*[@class="close-cancel btn btn-small"]
+    #Sleep    3s
+    Wait Until Element Is Visible    ${input_product_name}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product/create
+
+TC_MC_01981
+    [Documentation]    Open Add product page (enter product description) and click gallery at sidebar menu
+    Wait Until Element Is Visible    ${input_product_name}
+    #Select Category Fashion Bag
+    #Input Text    ${input_product_name}    test add
+    Input Description    เสื้อผ้า
+    Execute Javascript    $('#sidebar_23').find('a').get(1).click();
+    #Sleep    2s
+    #Element Should Be Visible    //*[@id="alertbefore-close"]
+    Wait Until Element Is Visible    //*[@id="alertbefore-close"]
+    ${msg}    Get Text    //*[@id="alertbefore-close"]/div[2]
+    Should Contain    ${msg}    คุณยังทำรายการไม่เสร็จสิ้น คุณต้องการออกจากหน้านี้โดยที่ยังไม่ได้บันทึกหรือไม่?
+    #Sleep    2s
+    Click Element    //*[@id="alertbefore-close"]/div[2]/p[2]/button[2]
+    #Sleep    6s
+    Wait Until Element Is Visible    ${input_product_name}
+    #Location Should Be    ${URL_STORE}/${user_s001}/admin/category/create
+    Log Location
+
+TC_MC_02177
+    [Documentation]    Add product - Verify shop category Incase select existing shop category (main category)
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    #main is    เสื้อยืด
+    Select Shop Category Main
+    Genarate Product Name And SKU    TestAddproduct
+    # Input Text    ${input_product_name}    ${p_name}
+    # Execute Javascript    $("div[class='redactor-editor']").text('Producttest')
+    #Press Key    ${input_product_name}    ${p_name}
+    #Press Key    //div[@class='redactor-editor']    Producttest
+    Input Product Name    ${p_name}
+    Input Description
+    Execute Javascript    ${product_type_used}
+    # Execute Javascript    ${status_instock}.click()
+    Input Product Stock    3    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    # Input Text    ${prepare_shipping}    3
+    # Input Text    ${unit_instock}    10
+    # Input Text    ${input_product_sku}    ${p_sku}
+    # Input Text    ${input_selling_price}    199
+    # Input Text    ${input_normal_price}    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+    Execute Javascript    $('.btn-save').eq(0).click()
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${last_pname}    Get Text    ${top_record_p_name}
+    Should Be Equal    ${last_pname}    ${p_name}
+    Element Should Contain    //*[@id="table_report"]/tbody/tr[1]/td[3]/div[@class='pd-list-cat']/a    เสื้อยืด
+
+TC_MC_02178
+    [Documentation]    Add product - Verify shop category Incase select existing shop category (Sub category)
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    #main is    กระเป๋าเอกสาร sub is กระเป๋าโน๊ตบุค
+    Select Shop Category Sub
+    Genarate Product Name And SKU    TestAddproduct
+    # Press Key    ${input_product_name}    ${p_name}
+    # Press Key    //div[@class='redactor-editor']    Producttest
+    Execute Javascript    ${product_type_used}
+    # Execute Javascript    ${status_instock}.click()
+    # Input Text    ${prepare_shipping}    3
+    # Input Text    ${unit_instock}    10
+    # Input Text    ${input_product_sku}    ${p_sku}
+    # Input Text    ${input_selling_price}    199
+    # Input Text    ${input_normal_price}    200
+    Input Product Name    ${p_name}
+    Input Description
+    Input Product Stock    3    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+    Execute Javascript    $('.btn-save').eq(0).click()
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${last_pname}    Get Text    ${top_record_p_name}
+    Should Be Equal    ${last_pname}    ${p_name}
+    Element Should Contain    //*[@id="table_report"]/tbody/tr[1]/td[3]/div[@class='pd-list-cat']/a[1]    กระเป๋าเอกสาร
+    Element Should Contain    //*[@id="table_report"]/tbody/tr[1]/td[3]/div[@class='pd-list-cat']/a[2]    กระเป๋าโน๊ตบุ๊ค
+
+TC_MC_02250
+    [Documentation]    Update/edit product and verify time and date on database
+    [tags]    Regression    Medium
+    ## can add ##
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Fashion Bag
+    Select Shop Category Sub
+    Genarate Product Name And SKU    TestAddproductUpdated_at
+    # Press Key    ${input_product_name}    ${p_name}
+    # Press Key    //div[@class='redactor-editor']    TestAddproductUpdated_at
+    Execute Javascript    ${product_type_used}
+    # Execute Javascript    ${status_instock}.click()
+    # Input Text    ${prepare_shipping}    3
+    # Input Text    ${unit_instock}    10
+    # Input Text    ${input_product_sku}    ${p_sku}
+    # Input Text    ${input_selling_price}    199
+    # Input Text    ${input_normal_price}    200
+    Input Product Name    ${p_name}
+    Input Description    TestAddproductUpdated_at
+    Input Product Stock    3    10
+    Input SKU and Product Price    ${p_sku}    199    200
+    Input Text    ${input_product_tag}    กระโปรง
+    Click Element    ${btn_choose_image}
+    Choose Image From Gallery Correct
+    Execute Javascript    $('.btn-save').eq(0).click()
+    ${date_now}=    Get Current Date    UTC    07:00:00    datetime    True
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    Location Should Be    ${URL_STORE}/${user_s001}/admin/product
+    ${last_pname}    Get Text    ${top_record_p_name}
+    Should Be Equal    ${last_pname}    ${p_name}
+    Element Should Contain    //*[@id="table_report"]/tbody/tr[1]/td[3]/div[@class='pd-list-cat']/a[1]    กระเป๋าเอกสาร
+    Element Should Contain    //*[@id="table_report"]/tbody/tr[1]/td[3]/div[@class='pd-list-cat']/a[2]    กระเป๋าโน๊ตบุ๊ค
+    ## can edit ##
+    Click Element    //*[@id="table_report"]/tbody/tr[1]/td[3]/div[1]/a
+    Sleep    2
+    Press Key    ${input_product_name}    can_edit_this_product_by_robotz
+    Execute Javascript    $('.btn-save').eq(0).click()
+    Sleep    2
+    Click Element    //button[@class="btn btn-small btn-cancel"]
+    Wait Until Element Is Visible    ${top_record_pid}    ${EXPECT_LOADTIME}
+    Element Should Contain    //*[@id="table_report"]/tbody/tr[1]/td[3]/div[1]/a[1]    can_edit_this_product_by_robotz
+    ## check updated_at ##
+    WMS Switch Project    wls
+    Go To    url=${URL_WMS}/members
+    Press Key    //input[@id='store_id_search']    ${store_id}
+    Press Key    //input[@id='store_id_search']    \\13
+    Sleep    2
+    Execute Javascript    $('a.btn-xs')[0].click()
+    Wait Until Element Is Visible    //strong[contains(text(),'ปรับปรุงร้านค้าล่าสุด')]/following::div[@class=''][1]    ${EXPECT_LOADTIME}
+    ${updated_at}=    Get Text    //strong[contains(text(),'ปรับปรุงร้านค้าล่าสุด')]/following::div[@class=''][1]
+    ${epoch_date_updated_at}=    Convert Date    ${updated_at}    epoch
+    ${epoch_date_now}=    Convert Date    ${date_now}    epoch
+    Should Be True    ${epoch_date_updated_at} >= ${epoch_date_now}
+
+*** Keywords ***
+Delete Product test
+    Account Login    ${seller_user_001}    ${seller_pwd_001}
+    Go To    ${URL_STORE}/${user_s001}/admin/product
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Input Text    ${input_keyword}    addtest
+    Click Button    //*[@id="table_report_filter"]/button
+    Execute Javascript    $('input[id="check_all"]').click()
+    Sleep    2s
+    Execute Javascript    $('button[id="btn_delete"]').click()
+    Click OK Alert Box
+    Sleep    2s
+    Input Text    ${input_keyword}    TestAddproductUpdated_at
+    Click Button    //*[@id="table_report_filter"]/button
+    Execute Javascript    $('input[id="check_all"]').click()
+    Sleep    2s
+    Execute Javascript    $('button[id="btn_delete"]').click()
+    Click OK Alert Box
+
+    Wait Until Element Is Visible    //*[@id="errortext"]    ${EXPECT_LOADTIME}
+

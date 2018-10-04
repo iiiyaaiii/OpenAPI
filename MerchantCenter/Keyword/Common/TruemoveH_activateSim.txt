@@ -1,0 +1,65 @@
+*** Settings ***
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Keywords ***
+Go to TruemoveH Activate Sim Report on wms page
+    [Documentation]    Go to WMS and go to TruemoveH Activate Sim Report page
+    Go to    ${URL_WMS}/tmvh-sim
+
+Search activate sim report by order id
+    [Documentation]    Enter order ID and click search button
+    [Arguments]    ${activate_orderId}
+    Input Text    ${txt_order_id}    ${activate_orderId}
+    Select From List    ${dropdown_payment}    Please select status
+    Select From List    ${dropdown_verify_status}    Please select status
+    Click Element    ${btn_search_sim}
+
+Check that the searched result displays order ID correctly
+    [Documentation]    Check the order id on result record
+    [Arguments]    ${orderId}
+    Element Should Contain    ${label_activate_orderId}    ${orderId}
+
+Check the search fields on Activate Sim Report page
+    [Documentation]    Verify the activate sim report page
+    Page Should Contain Element    ${txt_order_id}
+    Page Should Contain Element    ${txt_thai_id}
+    Page Should Contain Element    ${txt_msisdn}
+    Page Should Contain Element    ${txt_name}
+    Page Should Contain Element    ${dropdown_payment}
+    Page Should Contain Element    ${dropdown_verify_status}
+    Page Should Contain Element    ${dropdown_activate_status}
+    Page Should Contain Element    ${dealer_dropdown}
+    Page Should Contain Element    ${order_date}
+    Page Should Contain Element    ${payment_date}
+    Page Should Contain Element    ${txt_item_status}
+    Page Should Contain Element    ${btn_search_sim}
+    Page Should Contain Element    ${btn_reset_sim}
+
+Check that the Activate status dropdown displays list value correctly
+    [Documentation]    Verify the value of activate status dropdown
+    @{activate_status}    Get List Items    ${item_activate_status}
+#    Should Be Equal    ${activate_status}    [u'Waiting', u'Reviewing', u'Success', u'Fail']
+    Should Be Equal    @{activate_status}[0]    Waiting
+    Should Be Equal    @{activate_status}[1]    Reviewing
+    Should Be Equal    @{activate_status}[2]    Success
+    Should Be Equal    @{activate_status}[3]    Fail
+
+Check the verify status is displayed as
+    [Documentation]    Check the verify status
+    [Arguments]    ${verify_status}
+    Run Keyword if    '${verify_status}'=='Waiting'    Element Should Contain    ${label_verify_waiting}    ${verify_status}
+    Run Keyword if    '${verify_status}'=='Approved'    Element Should Contain    ${label_verify_approved}    ${verify_status}
+
+Check that there is no activate status dropdown and status correctly
+    [Documentation]    Check activate status dropdown and status
+    [Arguments]    ${activate_status}
+    Page Should Not Contain Element    ${item_activate_status}
+    Element Should Contain    ${activate_status_waiting}    ${activate_status}
+
+Check that there is no activate status dropdown without activate status correctly
+    [Documentation]    Check activate status dropdown without status
+    Page Should Not Contain Element    ${item_activate_status}
+    Element Should Contain    ${no_activate_status}    -

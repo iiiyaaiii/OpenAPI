@@ -1,0 +1,52 @@
+*** Settings ***
+Test Teardown     Close Browser
+Force Tags        WMS-Web    ManageNewsDashboard    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Category.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+
+*** Test Cases ***
+TC_MC_00830
+    [Documentation]    [Wemall] Verify display value on listing
+    [Tags]    Regression    High
+    WMS Switch Project    wm
+    Go To    ${URL_WMS}/sellernewsdashboard
+    Execute Javascript    $('.sorting').eq(0).click()
+    ${top_id}    Execute Javascript    return $("#result-table tbody tr:eq(0) td:eq(0)").text().trim()
+    ${r1}    Convert To String    ${top_id}
+    ${second_id}    Execute Javascript    return $("#result-table tbody tr:eq(1) td:eq(0)").text().trim()
+    ${r2}    Convert To String    ${second_id}
+    Should Be True    ${r1} > ${r2}
+
+TC_MC_00840
+    [Documentation]    [Wemall] Verify Click "get the link" button
+    WMS Login
+    Go To    ${URL_WMS}/sellernewsdashboard
+    ${link_topic}    Execute Javascript    return $('table#result-table tbody tr').eq(0).find('a').eq(0).attr('href')
+    Click Link    //*[@id="result-table"]/tbody/tr[2]/td[5]/a
+    Sleep    2s
+
+TC_MC_00842
+    [Documentation]    [Wemall] Verify Click "Add" button
+    [Tags]    Regression    High
+    WMS Switch Project    wm
+    Go To    ${URL_WMS}/sellernewsdashboard
+    Execute Javascript    $('.btn-primary').eq(0)[0].click();
+    Sleep    2s
+    Get Location
+    Location Should Contain    ${URL_WMS}/sellernewsdashboard/create
+
+TC_MC_00844
+    [Documentation]    [Wemall] Verify Click "edit news" button
+    [Tags]    Regression    High
+    WMS Switch Project    wm
+    Go To    ${URL_WMS}/sellernewsdashboard
+    ${str1}    Get Text    //*[@id="result-table"]/tbody/tr[1]/td[1]
+    ${str2}    Convert To String    ${str1}
+    Click Element    //*[@id="result-table"]/tbody/tr[1]/td[9]/a
+    Location Should Contain    ${URL_WMS}/sellernewsdashboard/edit/${str2}

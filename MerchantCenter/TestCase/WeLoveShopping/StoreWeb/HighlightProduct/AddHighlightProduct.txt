@@ -1,0 +1,116 @@
+*** Setting ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${url_product_collection}
+Force Tags        Store-Web    ProductCollection    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Product.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Product_Collection.txt
+
+*** Test Case ***
+TC_MC_01426
+    [Documentation]    Add highlight product - Verify require information incase not key information
+    [Tags]    Regression    Low
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Validate Add Collection
+
+TC_MC_01428
+    [Documentation]    Add highlight product - Check validate field. input information incase not choose product
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection Without Product
+
+TC_MC_01430
+    [Documentation]    Add highlight product - Check validate field. input information and add product to highlight
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection With Product    5
+
+TC_MC_01432
+    [Documentation]    Add highlight product - Add product more than 8 product
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection With Product    50
+    ## Restore
+    #Delete Collection
+
+TC_MC_01434
+    [Documentation]    Add highlight product - Check cancel create highlight product
+    [Tags]    Regression    Low
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection And Cancel
+
+TC_MC_01436
+    [Documentation]    Add highlight product - Create highlight product dupiclate
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection With Product    5
+    ${check_btn_add}    Check Have Collection
+    Should Be True    '${check_btn_add}' == 'True'
+
+TC_MC_01438
+    [Documentation]    Select highlight product - Verify search by main category
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Search Product By Main Category    เสื้อยืดผู้ชาย
+
+TC_MC_01440
+    [Documentation]    Select highlight product - Verify search by sub category
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Search Product By Sub Category    กระเป๋าโน๊ตบุ๊ค
+
+TC_MC_01442
+    [Documentation]    Select highlight product - Verify search by keyword "Product name"
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Search By Keyword    qawlsautomate
+
+TC_MC_01444
+    [Documentation]    Select highlight product - Verify search by product id
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Search By PID    L91199985,L91199986,L91199987,L91199988,L91199989
+
+TC_MC_01446
+    [Documentation]    Select highlight product - Verify select hide
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Should Be True    '${check_btn_add}' == 'False'
+    Execute Javascript    $('div.top-table-tool-box > div.col-right > button').click()
+    Press Key    //input[@id="collection_name"]    testaddwithoutproduct and status false
+    Execute Javascript    $("input[ng-model='status']").click()
+    Sleep    2
+    Execute Javascript    $("button[ng-click='validate()']")[0].click()
+    Sleep    2
+    Element Should Contain    //div[@id="alertbefore-submit"]/div[@class='modal-body']    ยืนยันการเพิ่มกลุ่มสินค้าแนะนำของร้าน
+    Sleep    2
+    Execute Javascript    $("button[ng-click='submitConfirm()']")[0].click()
+    Sleep    2
+    Page Should Contain    testaddwithoutproduct and status false
+    Element Should Be Visible    //i[@class='icon-eye-hide tooltip-grey']

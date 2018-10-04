@@ -1,0 +1,382 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Force Tags        Account-Web    Member    CorporateRegister    Ligo
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignUp.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+
+*** Keywords ***
+Write Variable In File
+    ${FILE_DIR}=    Replace String    ${CURDIR}    /TestCase/WeMall/AccountWeb/Member    /Resource/${BU}/Image
+    ${file}=    Catenate    SEPARATOR=/    ${FILE_DIR}    file_with_variable.txt
+    ${new_email}=    Get File    ${file}
+    Set Suite Variable    ${file}
+    Set Suite Variable    ${new_email}
+
+
+*** Test Cases ***
+TC_MC_00203
+    [Documentation]    [Welove] Register member - Click Link "เข้าสู่ระบบ"
+    Open Browser    ${URL_ACCOUNT}/corporate/user    ${BROWSER}
+    Maximize Browser Window
+    Click Element    ${corp_login}
+    Location Should Be    ${URL_ACCOUNT}/login
+
+TC_MC_00205
+    [Documentation]    [Wemall] Register member by login user not have shop
+    [Tags]    Regression    Sprint2017MC6    Medium
+    Open Browser    ${URL_ACCOUNT}/merchant/user    ${BROWSER}
+    Maximize Browser Window
+    Click Element    ${corp_login}
+    Sleep    1s
+    Execute Javascript    ${login_username}.val('${buyer_account}')
+    Execute Javascript    ${login_password}.val('${buyer_account_pass}')
+    Wait Until Element Is Enabled    ${btn_login}    ${EXPECT_LOADTIME}
+    Click Button    ${btn_login}
+    Location Should Be    ${URL_ACCOUNT}/merchant/store
+
+TC_MC_00207
+    [Documentation]    [Wemall] Register member by login user have shop already
+    [Tags]    Regression    SmokeTest    Sprint2017MC6    High
+    Open Browser    ${URL_ACCOUNT}/merchant/user    ${BROWSER}
+    Maximize Browser Window
+    Click Element    ${corp_login}
+    Sleep    1s
+    Execute Javascript    ${login_username}.val('${seller_user_001}')
+    Execute Javascript    ${login_password}.val('${seller_pwd_001}')
+    Wait Until Element Is Enabled    ${btn_login}    ${EXPECT_LOADTIME}
+    Click Button    ${btn_login}
+    Location Should Be    ${URL_ACCOUNT}/profile
+
+TC_MC_00209
+    [Documentation]    Verify when click link submit button. should be go to confirm
+    ${time}    Get Time    epochregister page.
+    ${new_email}    Catenate    wlscpr${time}@mailinator.com
+    Write Variable In File    ${new_email}
+    ${user_str}    Remove String    ${new_email}    @mailinator.com
+    Set Suite Variable    ${user_str}
+    Open Browser    ${URL_ACCOUNT}/corporate/user    ${BROWSER}
+    Maximize Browser Window
+    Input Text    ${input_email}    ${new_email}
+    Input Password    ${input_password}    ${pwd_qa_corp}
+    Input Password    ${input_cf_password}    ${pwd_qa_corp}
+    Input Text    ${input_phone}    0909048154
+    Select Checkbox    ${accept_term_signup}
+    Click Button    ${btn_signup_corporate}
+    Sleep    5s
+    Location Should Be    ${URL_ACCOUNT}/corporate/confirm
+    Sleep    3s
+    ${thankyou_display}    Execute javascript    return $("div[class='header-box'] h1 ").text().trim()
+    Should Contain    ${thankyou_display}    กรุณายืนยันการสมัครสมาชิก
+    Sleep    3s
+
+TC_MC_00211
+    [Documentation]    Verify when click link activate. should be go to confirm activate user page. redirect to login page.
+    Set Selenium Speed    .2
+    Open Browser    https://www.mailinator.com/inbox2.jsp?public_to=${user_str}#/#public_maildirdiv    ${BROWSER}
+    #Go to mailinator inbox
+    #${r1}    Execute Javascript    return $("#mailcontainer li").filter(function(){ return $(this).find("div.subject").text().trim() == 'ยืนยันการสมัครสมาชิกกับ Weloveshopping.com'; }).first().length;
+    ${r1}    Get Matching Xpath Count    ${email_confirm}
+    Set Suite Variable    ${r1}
+    Run Keyword If    '${r1}' == '0'    Re-Send Mail Corp
+    #Execute Javascript    return $("#mailcontainer li").filter(function(){ return $(this).find("div.subject").text().trim() == 'ยืนยันการสมัครสมาชิกกับ Weloveshopping.com'; }).first().find("a").click();
+    Click Element    ${email_confirm}
+    ${loc}    Get Location
+    ${loc_str}    Convert To String    ${loc}
+    Set Suite Variable    ${loc_str}
+    ${status}    ${value} =    Run Keyword And Ignore Error    Check Current URL
+    Run Keyword If    '${status}' == 'PASS'    Activate Mail Corp
+    Sleep    2s
+    ${msg_activate_success}    Execute javascript    return $("div[class='header-box'] h1").text().trim()
+    Should Contain    ${msg_activate_success}    คุณได้ยืนยันการสมัครสมาชิกเรียบร้อยแล้ว
+
+TC_MC_00213
+    [Documentation]    Verify when click login button. should be go to confirm activate user page. redirect to login page.
+    Account Login    ${new_email}    ${pwd_qa_corp}
+    Wait Until Element Is Visible    ${myacc}    ${EXPECT_LOADTIME}
+
+TC_MC_00215
+    [Documentation]    Verify when login success . should be redirect to Register corporate shop page.
+    Go To    ${URL_STORE}/${user_str}/admin
+    Location Should Be    ${URL_STORE}/${user_str}/admin
+
+TC_MC_00217
+    [Documentation]    [Wemall] Login page (portal) - Login success
+    [Tags]    Regression    Sprint2017MC6    Medium
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Maximize Browser Window
+    Click Element    //a[@ng-click="accountRefTo()"]
+    Sleep    2s
+    Execute Javascript    ${login_username}.val('${buyer_account}')
+    Execute Javascript    ${login_password}.val('${buyer_account_pass}')
+    Wait Until Element Is Enabled    ${btn_login}    ${EXPECT_LOADTIME}
+    Click Button    ${btn_login}
+    Wait Until Element Is Visible    //div[@ng-if="isLogin"]    ${EXPECT_LOADTIME}
+    Location Should Be    ${URL_PORTAL}/
+
+TC_MC_00219
+    [Documentation]    [Wemall] Register corporate shop - Incase doesn't enter required field.
+    [Tags]    Regression    Sprint2017MC6    High
+    Account Login    ${buyer_account}    ${buyer_account_pass}
+    Go To    ${URL_ACCOUNT}/merchant/store
+    Click Button    ${btn_register_shop}
+    Element Should Contain    ${corp_company_name_error}    กรุณากรอก ชื่อบริษัท / นิติบุคคล
+    Element Should Contain    ${corp_branch_error}    กรุณาระบุ สำนักงานใหญ่/สาขา
+    Element Should Contain    ${corp_b_address_error}    กรุณากรอกที่อยู่ในการ ออกใบกำกับภาษี
+    Element Should Contain    ${corp_b_postcode_error}    กรุณากรอกรหัสไปรษณีย์
+    Element Should Contain    ${corp_company_phone_error}    กรุณากรอกเบอร์โทรศัพท์บริษัท
+    Element Should Contain    ${corp_tax_id_error}    กรุณากรอกเลขประจำตัวผู้เสียภาษี
+    Element Should Contain    ${corp_committee_firstname_error}    กรุณากรอกชื่อตัวแทนกรรมการ
+    Element Should Contain    ${corp_committee_lastname_error}    กรุณากรอกนามสกุลตัวแทนกรรมการ
+    Element Should Contain    ${corp_committee_idtype_error}    กรุณาระบุเอกสารยืนยันตัวตน
+    Element Should Contain    ${corp_committee_idcard_error}    กรุณากรอกเอกสารยืนยันตัวตน
+    Element Should Contain    ${corp_s_category_error}    กรุณาระบุหมวดหมู่ร้านค้า
+    Element Should Contain    ${corp_s_name_error}    กรุณากรอกชื่อร้านค้า
+    Element Should Contain    ${corp_slug_error}    กรุณากรอกชื่อ URL
+    Element Should Contain    ${corp_use_address_error}    กรุณาระบุที่อยู่ในการติดต่อ
+    Element Should Contain    ${corp_s_address_error}    กรุณากรอกที่อยู่
+    Element Should Contain    ${corp_s_province_error}    กรุณาเลือกจังหวัด
+    Element Should Contain    ${corp_s_postcode_error}    กรุณากรอกรหัสไปรษณีย์
+
+TC_MC_00223
+    [Documentation]    [Wemall] Register corporate shop - Select head office
+    [Tags]    Regression    Sprint2017MC6    Low
+    Account Login    ${buyer_account}    ${buyer_account_pass}
+    Go To    ${URL_ACCOUNT}/merchant/store
+    Sleep    2s
+    Click Element    ${radio_head}
+    Element Should Not Be Visible    ${input_branch}
+
+TC_MC_00225
+    [Documentation]    [Wemall] Register corporate shop - Select branch office
+    [Tags]    Regression    Sprint2017MC6    Low
+    Account Login    ${buyer_account}    ${buyer_account_pass}
+    Go To    ${URL_ACCOUNT}/merchant/store
+    Sleep    2s
+    Click Element    ${radio_branch}
+    Element Should Be Visible    ${input_branch}
+
+TC_MC_00227
+    [Documentation]    [Wemall] Register corporate shop - Input billing address more than 35 character.
+    [Tags]    Regression    Sprint2017MC6    Low
+    Account Login    ${buyer_account}    ${buyer_account_pass}
+    Go To    ${URL_ACCOUNT}/merchant/store
+    Input Text    ${input_company_phone}    aaavvdfdfd
+    Click Button    ${btn_register_shop}
+    Sleep    2s
+    Element Should Contain    ${corp_company_phone_error}    เบอร์โทรศัพท์ไม่ถูกต้อง
+    Input Text    ${input_company_phone}    111322
+    Click Button    ${btn_register_shop}
+    Sleep    2s
+    Element Should Contain    ${corp_company_phone_error}    เบอร์โทรศัพท์อย่างน้อย 9 ตัว
+
+TC_MC_00231
+    [Documentation]    [Wemall] Register corporate shop - Input Tax ID is invalid format
+    [Tags]    Regression    Sprint2017MC6    Low
+    Account Login    ${buyer_account}    ${buyer_account_pass}
+    Go To    ${URL_ACCOUNT}/merchant/store
+    Input Text    ${input_company_name}    testcorp
+    Sleep    2s
+    Execute javascript    $('input[id=rdohead]').click()
+    Sleep    2s
+    Input Text    ${input_b_address}    123 ซ.รัชดาภิเษก5 ห้วยขวาง ห้วยขวาง
+    Select From List By Label    ${select_province}    กรุงเทพมหานคร
+    Sleep    2s
+    Select From List By Label    ${select_city}    จตุจักร
+    Sleep    2s
+    Select From List By Label    ${select_district}    จอมพล
+    Input Text    ${input_b_postcode}    10900
+    Input Text    ${input_company_phone}    0901111111
+    Input Text    ${input_tax_id}    aaa
+    Input Text    ${comittee_firstname}    wls
+    Input Text    ${comittee_lastname}    automate
+    Execute javascript    $('input[name=committee_idtype][value=1]').prop('checked', 'checked')
+    Input Text    ${input_committee_idcard}    1212121212121
+    Select From List By Label    ${shop_category}    แฟชั่น
+    Select From List By Label    ${shop_type}    Marketplace Fulfillment (MF)
+    Execute javascript    $('input[name=sell_healthfood][value=n]').click()
+    Input Text    ${shop_name}    testcorp
+    Input Text    ${shop_url}    testcorp
+    Execute javascript    $('input[id="rdosame"]').click()
+    Input Text    ${shop_mobile}    0901111111
+    Input Text    ${shop_phone}    028888888
+    Click Button    ${btn_register_shop}
+    Sleep    2s
+    Element Should Contain    ${error_owner_taxid}    ข้อมูลไม่ถูกต้อง
+    Input Text    ${input_tax_id}    123445433333
+    Click Button    ${btn_register_shop}
+    Sleep    2s
+    Element Should Contain    ${error_owner_taxid}    ข้อมูลไม่ถูกต้อง
+
+TC_MC_00233
+    [Documentation]    [Wemall] Register corporate shop - Input Personal ID is invalid format
+    [Tags]    Regression    Sprint2017MC6    Low
+    Account Login    ${buyer_account}    ${buyer_account_pass}
+    Go To    ${URL_ACCOUNT}/merchant/store
+    Input Text    ${input_company_name}    testcorp
+    Sleep    2s
+    Execute javascript    $('input[id=rdohead]').click()
+    Sleep    2s
+    Input Text    ${input_b_address}    123 ซ.รัชดาภิเษก5 ห้วยขวาง ห้วยขวาง
+    Select From List By Label    ${select_province}    กรุงเทพมหานคร
+    #Sleep    2s
+    Select From List By Label    ${select_city}    จตุจักร
+    #Sleep    2s
+    Select From List By Label    ${select_district}    จอมพล
+    Input Text    ${input_b_postcode}    10900
+    Input Text    ${input_company_phone}    0901111111
+    Input Text    ${input_tax_id}    aaa
+    Input Text    ${comittee_firstname}    wls
+    Input Text    ${comittee_lastname}    automate
+    Execute javascript    $('input[name=committee_idtype][value=1]').prop('checked', 'checked')
+    Input Text    ${input_committee_idcard}    aaa
+    Select From List By Label    ${shop_category}    แฟชั่น
+    Select From List By Label    ${shop_type}    Marketplace Fulfillment (MF)
+    Execute javascript    $('input[name=sell_healthfood][value=n]').click()
+    Input Text    ${shop_name}    testcorp
+    Input Text    ${shop_url}    testcorp
+    Execute javascript    $('input[id="rdosame"]').click()
+    Input Text    ${shop_mobile}    0901111111
+    Input Text    ${shop_phone}    028888888
+    Click Button    ${btn_register_shop}
+    Sleep    2s
+    Element Should Contain    ${error_owner_taxid}    ข้อมูลไม่ถูกต้อง
+    Input Text    ${input_tax_id}    123445433333
+    Click Button    ${btn_register_shop}
+    Sleep    2s
+    Element Should Contain    ${error_committee_idcard}    ข้อมูลไม่ถูกต้อง
+    Input Text    ${input_committee_idcard}    123445433333
+    Click Button    ${btn_register_shop}
+    Sleep    2s
+    Element Should Contain    ${error_committee_idcard}    ข้อมูลไม่ถูกต้อง
+
+TC_MC_00239
+    [Documentation]    [Wemall] Register corporate shop - Input shop URL is duplicate.
+    [Tags]    Regression    Sprint2017MC6    High
+    Account Login    ${buyer_account}    ${buyer_account_pass}
+    Go To    ${URL_ACCOUNT}/merchant/store
+    Input Text    ${input_company_name}    testcorp
+    Sleep    2s
+    Execute javascript    $('input[id=rdohead]').click()
+    Sleep    2s
+    Input Text    ${input_b_address}    123 ซ.รัชดาภิเษก5 ห้วยขวาง ห้วยขวาง
+    Select From List By Label    ${select_province}    กรุงเทพมหานคร
+    #Sleep    2s
+    Select From List By Label    ${select_city}    จตุจักร
+    #Sleep    2s
+    Select From List By Label    ${select_district}    จอมพล
+    Input Text    ${input_b_postcode}    10900
+    Input Text    ${input_company_phone}    0901111111
+    Input Text    ${input_tax_id}    1212121212121
+    Input Text    ${comittee_firstname}    wls
+    Input Text    ${comittee_lastname}    automate
+    Execute javascript    $('input[name=committee_idtype][value=1]').prop('checked', 'checked')
+    Input Text    ${input_committee_idcard}    1212121212121
+    Select From List By Label    ${shop_category}    แฟชั่น
+    Select From List By Label    ${shop_type}    Marketplace Fulfillment (MF)
+    Execute javascript    $('input[name=sell_healthfood][value=n]').click()
+    Input Text    ${shop_name}    TakkyShop
+    Input Text    ${shop_url}    wmcorporate1
+    Execute javascript    $("#btn-approve").click();
+    Execute javascript    $('input[id="rdosame"]').click()
+    Input Text    ${shop_mobile}    0909048154
+    Input Text    ${shop_phone}    028888888
+    Click Button    ${btn_register_shop}
+    Sleep    2s
+    Element Should Contain    //span[@class="help-inline" and @data-val="slug"]    ขออภัยค่ะ ข้อมูลชื่อ URL นี้ซ้ำ
+
+TC_MC_00241
+    [Documentation]    [Wemall] Register corporate shop - Select use same as Billing Address
+    [Tags]    Regression    Sprint2017MC6    Low
+    Textfield Value Should Be    ${comittee_shop_address}    123 ซ.รัชดาภิเษก5 ห้วยขวาง ห้วยขวาง
+    List Selection Should Be    ${comittee_shop_province}    กรุงเทพมหานคร
+    List Selection Should Be    ${comittee_shop_city}    จตุจักร
+    List Selection Should Be    ${comittee_shop_district}    จอมพล
+    Textfield Value Should Be    ${comittee_shop_postcode}    10900
+
+TC_MC_00243
+    [Documentation]    [Wemall] Register corporate shop - Select use another Address
+    [Tags]    Regression    Sprint2017MC6    Low
+    Execute javascript    $('input[id="rdoother"]').click()
+    Textfield Value Should Be    ${comittee_shop_address}    ${EMPTY}
+    List Selection Should Be    ${comittee_shop_province}    ${EMPTY}
+    List Selection Should Be    ${comittee_shop_city}    ${EMPTY}
+    List Selection Should Be    ${comittee_shop_district}    ${EMPTY}
+    Textfield Value Should Be    ${comittee_shop_postcode}    ${EMPTY}
+
+TC_MC_00245
+    [Documentation]    [Wemall] Register corporate shop - Input mobile no. is invalid format
+    [Tags]    Regression    Sprint2017MC6    Medium
+    Account Login    ${buyer_account}    ${buyer_account_pass}
+    Go To    ${URL_ACCOUNT}/merchant/store
+    Input Text    ${input_company_name}    testcorp
+    Sleep    2s
+    Execute javascript    $('input[id=rdohead]').click()
+    Sleep    2s
+    Input Text    ${input_b_address}    123 ซ.รัชดาภิเษก5 ห้วยขวาง ห้วยขวาง
+    Select From List By Label    ${select_province}    กรุงเทพมหานคร
+    #Sleep    2s
+    Select From List By Label    ${select_city}    จตุจักร
+    #Sleep    2s
+    Select From List By Label    ${select_district}    จอมพล
+    Input Text    ${input_b_postcode}    10900
+    Input Text    ${input_company_phone}    0901111111
+    Input Text    ${input_tax_id}    1212121212121
+    Input Text    ${comittee_firstname}    wls
+    Input Text    ${comittee_lastname}    automate
+    Execute javascript    $('input[name=committee_idtype][value=1]').prop('checked', 'checked')
+    Input Text    ${input_committee_idcard}    1212121212121
+    Select From List By Label    ${shop_category}    แฟชั่น
+    Execute javascript    $('input[name=sell_healthfood][value=n]').click()
+    Input Text    ${shop_name}    testcorp
+    Input Text    ${shop_url}    testcorp
+    Execute javascript    $('input[id="rdosame"]').click()
+    Input Text    ${shop_mobile}    01293
+    Input Text    ${shop_phone}    01293
+    Click Button    ${btn_register_shop}
+    Sleep    2s
+    Element Should Contain    ${error_shop_phone}    เบอร์โทรศัพท์อย่างน้อย 9 ตัว
+    Element Should Contain    ${error_shop_mobile}    กรุณากรอกเบอร์โทรศัพท์มือถือ 10 หลัก
+
+TC_MC_00249
+    [Documentation]    Verify when click submit. should be go to Welcome shop page.
+    Go To    ${URL_ACCOUNT}/corporate/store
+    Input Text    ${input_company_name}    ${user_str}
+    Execute javascript    $('input[id=rdohead]').click()
+    Input Text    ${input_b_address}    123 ซ.รัชดาภิเษก5 ห้วยขวาง ห้วยขวาง
+    Select From List By Label    ${select_province}    กรุงเทพมหานคร
+    Sleep    2s
+    Select From List By Label    ${select_city}    จตุจักร
+    Sleep    2s
+    Select From List By Label    ${select_district}    จอมพล
+    Input Text    ${input_b_postcode}    10900
+    Input Text    ${input_company_phone}    0901111111
+    Input Text    ${input_tax_id}    1212121212121
+    Input Text    ${comittee_firstname}    wls
+    Input Text    ${comittee_lastname}    automate
+    Execute javascript    $('input[name=committee_idtype][value=1]').prop('checked', 'checked')
+    Input Text    ${input_committee_idcard}    1212121212121
+    Select From List By Label    ${shop_category}    แฟชั่น
+    Input Text    ${shop_name}    ${user_str}
+    Input Text    ${shop_url}    ${user_str}
+    Execute javascript    $('input[id="rdosame"]').click()
+    Input Text    ${shop_phone}    028888888
+    Click Button    ${btn_register_shop}
+    Sleep    5s
+    ${msg_register_success}    Execute javascript    return $("div[class='header-box'] h1").text().trim()
+    Should Contain    ${msg_register_success}    ยินดีต้อนรับร้านค้าใหม่
+
+TC_MC_00251
+    [Documentation]    Verify content at welcome corporate shop page
+    Go To    ${URL_ACCOUNT}/corporate/complete
+    Sleep    3s
+    ${msg_shopname_success}    Execute javascript    return $("div[class='welcome-box'] span:eq(0)").text().trim()
+    ${msg_URLshop_success}    Execute javascript    return $("div[class='welcome-box'] span:eq(2)").text().trim()
+    Should Contain    ${msg_shopname_success}    ${user_str}
+    Should Contain    ${msg_URLshop_success}    ${user_str}

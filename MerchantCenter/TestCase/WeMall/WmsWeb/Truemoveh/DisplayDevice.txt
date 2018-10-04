@@ -1,0 +1,28 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_06984
+    [Documentation]    Display default value of Device page when system have data in ""devices"" and ""device_sim"" table
+    [Tags]    Ligo      Sprint2017MC19      Regression     High
+    Go To Menu Device
+    Element Should Be Visible         //*[contains(text(),'Truemove H Device & Sim')]
+    Element Should Contain   	      //table[contains(@class, 'DeviceTable')]/thead/tr/th[1]  		No.  
+    Element Should Contain   	      //table[contains(@class, 'DeviceTable')]/thead/tr/th[2]  		Device  
+    Element Should Contain   	      //table[contains(@class, 'DeviceTable')]/thead/tr/th[3]  		Sim Type  
+    Element Should Contain   	      //table[contains(@class, 'DeviceTable')]/thead/tr/th[4]  		Updated Date  
+    Element Should Contain   	      //table[contains(@class, 'DeviceTable')]/thead/tr/th[5]  		Action
+    Wait Until Element Is Visible     //*[@id='table_report_info']
+    Wait Until Element Is Visible     //*[@id='create_device']
+    

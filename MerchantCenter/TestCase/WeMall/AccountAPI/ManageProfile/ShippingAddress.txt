@@ -1,0 +1,117 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Force Tags        Account-API    ManageProfile    Ligo
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/ManageProfile.txt
+
+*** Test Cases ***
+TC_MC_00077
+    [Documentation]    [Wemall]Add new shipping address
+    [Tags]    Regression    SmokeTest    Sprint2017MC5    Medium
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Execute JavaScript    ${myacc}.mouseover()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Click Element    ${profile_address}
+    Clear Unused Account Address
+    Click Element    ${address_add}
+    Input Text    ${edit_name}    ADR02
+    Input Text    ${edit_surname}    ADR02
+    Execute Javascript    $('#address').val('02/02 Address')
+    Select From List By Label    province    กรุงเทพมหานคร
+    Select From List By Label    city    ลาดพร้าว
+    Select From List By Label    district    ลาดพร้าว
+    Input Text    ${address_zipcode}    12300
+    Input Text    ${edit_phone}    0810000007
+    Input Text    ${address_shippingemail}    buyer_test07@mailinator.com
+    Execute Javascript    $("button:contains(บันทึก)").click()
+    Sleep    1
+    Element Should Contain    ${address_info}    ADR02 ADR02
+    Element Should Contain    ${address_info}    02/02 Address ลาดพร้าว ลาดพร้าว กรุงเทพมหานคร 12300 ประเทศไทย
+    Element Should Contain    ${address_info}    เบอร์โทรศัพท์ : 0810000007
+    Element Should Contain    ${address_info}    อีเมล: buyer_test07@mailinator.com
+    Sleep    1
+    Execute Javascript    ${address_remove}.click()
+    Confirm Action
+    Sleep    2
+    Page Should Not Contain    ADR02 ADR02
+    Clear Active Login
+
+TC_MC_00079
+    [Documentation]    [Wemall]Edit shipping address
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Execute JavaScript    ${myacc}.mouseover()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Click Element    ${profile_address}
+    Clear Unused Account Address
+    Click Element    ${address_add}
+    Sleep    1
+    Input Text    ${edit_name}    ADR02
+    Input Text    ${edit_surname}    ADR02
+    Execute Javascript    $('#address').val('02/02 Address')
+    Select From List By Label    province    กรุงเทพมหานคร
+    Select From List By Label    city    ลาดพร้าว
+    Select From List By Label    district    ลาดพร้าว
+    Input Text    ${address_zipcode}    12300
+    Input Text    ${edit_phone}    0810000007
+    Input Text    ${address_shippingemail}    buyer_test07@mailinator.com
+    Execute Javascript    $("button:contains(บันทึก)").click()
+    Execute Javascript    $('.btn_edit').eq(0).click()
+    Textfield Value Should Be    ${edit_name}    ADR02
+    Textfield Value Should Be    ${edit_phone}    0810000007
+    Input Text    ${edit_name}    ADR03
+    Input Text    ${edit_surname}    ADR03
+    Execute Javascript    $('#address').val('03/03 Address')
+    Select From List By Label    province    กรุงเทพมหานคร
+    Select From List By Label    city    คลองสามวา
+    Select From List By Label    district    ทรายกองดิน
+    Input Text    ${address_zipcode}    10510
+    Input Text    ${edit_phone}    0810000017
+    Input Text    ${address_shippingemail}    buyer_test17@mailinator.com
+    Execute Javascript    $("button:contains(บันทึก)").click()
+    Sleep    1
+    Element Should Contain    ${address_info}    ADR03 ADR03
+    Element Should Contain    ${address_info}    03/03 Address ทรายกองดิน คลองสามวา กรุงเทพมหานคร 10510 ประเทศไทย
+    Element Should Contain    ${address_info}    เบอร์โทรศัพท์ : 0810000017
+    Element Should Contain    ${address_info}    อีเมล: buyer_test17@mailinator.com
+    Execute Javascript    ${address_remove}.click()
+    Confirm Action
+    Sleep    2
+    Page Should Not Contain    ADR03 ADR03
+    Clear Active Login
+
+TC_MC_00081
+    [Documentation]    [Wemall]Delete shipping address
+    [Tags]    Regression    SmokeTest    Sprint2017MC5    Medium
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Execute JavaScript    ${myacc}.mouseover()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Click Element    ${profile_address}
+    Clear Unused Account Address
+    Click Element    ${address_add}
+    Input Text    ${edit_name}    ADR04
+    Input Text    ${edit_surname}    ADR04
+    Input Text    ${address_addr}    04/04 Address
+    Select From List By Label    province    กรุงเทพมหานคร
+    Select From List By Label    city    ลาดพร้าว
+    Select From List By Label    district    ลาดพร้าว
+    Input Text    ${address_zipcode}    12300
+    Input Text    ${edit_phone}    0851234567
+    Input Text    ${address_shippingemail}    buyer_test07@mailinator.com
+    Execute Javascript    $("button:contains(บันทึก)").click()
+    Sleep    1
+    Execute Javascript    ${address_remove}.click()
+    Confirm Action
+    Sleep    2
+    Page Should Not Contain    ADR04 ADR04
+    Clear Active Login

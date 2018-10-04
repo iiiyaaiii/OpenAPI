@@ -1,0 +1,29 @@
+*** Settings ***
+Suite Setup       WMS Login
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        WMS-Web    mock    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_OrderRequestRefund.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/WMS_OrderRequestRefund.txt
+
+*** Test Cases ***
+#TC_MC_04021
+    [Documentation]    WLSWMSRefundSuccess : View refund success page
+    [Tags]    RECON2017MC12    Low    WMS-Web
+    Go to Seller Accept Refund page
+    Check search fields and buttons on Refund Success page
+    Check column name on Seller Accept Refund
+
+
+
+
+
+
+
+

@@ -1,0 +1,180 @@
+*** Settings ***
+#Suite Setup       Run Keywords    WMS Login    AND    WMS Switch Project    wls
+Suite Setup       WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    SellerDocumentRegister    mock    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_SellerDocumentRegister.txt
+Resource          ../../../../Keyword/Common/WMS_SellerDocumentRegister.txt
+
+*** Test Case ***
+TC_MC_00495
+    [Documentation]    [Welove] Search : by Search Found
+    [Tags]    Regression    Medium    mock
+    Go To    ${URL_WMS}/sellerregister
+    Execute Javascript    $("input[name*='id']").val('L${category_shopid2}')
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[1]    L${category_shopid2}
+    Execute Javascript    $("input[name*='id']").val('')
+    Execute Javascript    $("input[name*='slug']").val('${category_shopname2}')
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[3]    ${category_shopname2}
+    Execute Javascript    $("input[name*='slug']").val('')
+    Execute Javascript    $("input[name*='email']").val('${category_user_002}')
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[9]    ${category_user_002}
+
+TC_MC_00499
+    [Documentation]   [Welove] Search 2 Condition : by Search Found
+    [Tags]    Regression    Medium    mock
+    Go To    ${URL_WMS}/sellerregister
+    Execute Javascript    $("input[name*='email']").val('wls')
+    Select From List    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[5]/select    บุคคลธรรมดา
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    ${Result}    Execute Javascript    return $('td:contains("Data not found")').length
+    ${Result}        Convert To String    ${Result}
+    Should Be Equal    ${Result}    0
+
+TC_MC_00514
+    [Documentation]   [Welove] Individual : Verify Status CCW on Listing page. Incase this shop dose not connect ewallet account
+    [Tags]    Regression    High    mock
+    Go To    ${URL_WMS}/sellerregister
+    Execute Javascript    $("input[name*='email']").val('${seller_user_4step}')
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    เปิดร้านค้า
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    การชำระเงิน
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    ปิด
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[15]    รอเปิดบัตร
+
+TC_MC_00515
+    [Documentation]   [Welove] Individual : Verify Status CCW on Listing page. Incase this shop connect ewallet account already.
+    [Tags]    Regression    High    mock
+    Go To    ${URL_WMS}/sellerregister
+    Execute Javascript    $("input[name*='email']").val('${seller_user_001}')
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    เปิด
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[15]    เปิดบัตรแล้ว
+
+TC_MC_00523
+    [Documentation]    [Welove] Corporate : Verify Doc register status on Listing page. Incase Register shop and never upload document register
+    [Tags]    Regression    High    mock
+    Go To    ${URL_WMS}/sellerregister
+    Select From List    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[5]/select    นิติบุคคล
+    Select From List    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[13]/select    รอเอกสาร
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    เปิดร้านค้า
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    ข้อมูลร้านค้า
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    ปิด
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[13]    รอเอกสาร
+
+TC_MC_00531
+    [Documentation]    [Welove] Corporate : Verify Doc register status on Listing page. Incase Register shop and seller upload Id Card document (2nd).
+    [Tags]    Regression    High    mock
+    Go To    ${URL_WMS}/sellerregister
+    Select From List    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[5]/select    นิติบุคคล
+    Select From List    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[13]/select    รอตรวจสอบ
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    เปิดร้านค้า
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    ข้อมูลร้านค้า
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    ปิด
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[13]    รอตรวจสอบ
+
+TC_MC_00535
+    [Documentation]   [Welove] Corporate : Verify Status CCW on Listing page. Incase this shop dose not Activate CCW
+    [Tags]    Regression    High    mock
+    Go To    ${URL_WMS}/sellerregister
+    Select From List    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[5]/select    นิติบุคคล
+    Select From List    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[15]/select    รอเปิดบัตร
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    เปิดร้านค้า
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    การชำระเงิน
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[10]    ปิด
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[15]    รอเปิดบัตร
+
+TC_MC_00559
+    [Documentation]    [Welove] Corporate : Verify Admin upload document . Incase status document  "รอเอกสาร"
+    Select Window    Seller document register
+    Sleep    3s
+    ${IMG_DIR}=    Replace String Using Regexp    ${CURDIR}    Seller$    Images
+    ${CUR_IMG_DIR}    Remove String    ${IMG_DIR}    /Images
+    ${file}=    Catenate    SEPARATOR=/    ${CUR_IMG_DIR}/Images    logo_mi6_seller_1.jpg
+    Choose File    name=corp_id1    ${file}
+    ${file}=    Catenate    SEPARATOR=/    ${CUR_IMG_DIR}/Images    logo_mi6_seller_2.jpg
+    Choose File    name=house_register1    ${file}
+    ${file}=    Catenate    SEPARATOR=/    ${CUR_IMG_DIR}/Images    logo_mi6_seller_3.jpg
+    Choose File    name=corp_pp20    ${file}
+    ${file}=    Catenate    SEPARATOR=/    ${CUR_IMG_DIR}/Images    logo_mi6_seller_4.jpg
+    Choose File    name=corp_info1    ${file}
+    ${file}=    Catenate    SEPARATOR=/    ${CUR_IMG_DIR}/Images    logo_mi6_seller_5.jpg
+    Choose File    name=corp_info2    ${file}
+    ${file}=    Catenate    SEPARATOR=/    ${CUR_IMG_DIR}/Images    logo_mi6_seller_6.jpg
+    Choose File    name=corp_bank    ${file}
+    Sleep    1s
+    Click Button    ${btn_upload_docs}
+    Sleep    5s
+    Execute Javascript    $("input[id='bank_accountname']").val('นายทดสอบ เลขที่บัญชี')
+    Execute Javascript    $("#bank_name").val('2')
+    Execute Javascript    $("input[id='bank_accountnumber']").val('1234567890')
+    Click Button    ${btn_save_bookbank}
+    sleep    2s
+
+TC_MC_00583
+    [Documentation]    [Welove] Search corperate name : key corperate name for search
+    [Tags]    Regression    Medium
+    Go To    ${URL_WMS}/sellerregister
+    ${company_name_column}    Execute Javascript    $('#table-sort').find('[data-order^=company_name]').text()
+    Should Be True    '${company_name_column}'    == 'ชื่อบริษัท'
+    Execute Javascript    $("input[name*='company_name']").val('wlscpr1464062638')
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[6]    wlscpr1464062638
+
+TC_MC_00593
+    [Documentation]    [Welove] Filter ประเภทร้านค้า : "นิติบุคคล" and key corperate name for search
+    [Tags]    Regression    Medium    mock
+    Go To    ${URL_WMS}/sellerregister
+    ${company_name_column}    Execute Javascript    $('#table-sort').find('[data-order^=company_name]').text()
+    Should Be True    '${company_name_column}'    == 'ชื่อบริษัท'
+    Select From List    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[5]/select    นิติบุคคล
+    Execute Javascript    $("input[name*='company_name']").val('wlscpr1464062638')
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[6]    wlscpr1464062638
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[5]    นิติบุคคล
+
+TC_MC_00597
+    [Documentation]    [Welove] Select หมวดหมู่ and Filter : "นิติบุคคล" and key corperate name for search
+    [Tags]    Regression    Medium    mock
+    Go To    ${URL_WMS}/sellerregister
+    ${company_name_column}    Execute Javascript    $('#table-sort').find('[data-order^=company_name]').text()
+    Should Be True    '${company_name_column}'    == 'ชื่อบริษัท'
+    Select From List    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[5]/select    นิติบุคคล
+    Select From List    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[4]/select    แฟชั่น
+    Execute Javascript    $("input[name*='company_name']").val('wlscpr1464062638')
+    Click Element    //*[@id="frm_seller_register"]/table/tbody/tr[1]/td[16]/button
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[6]    wlscpr1464062638
+    Element Should Contain    //*[@id="frm_seller_register"]/table/tbody/tr[2]/td[4]    แฟชั่น
+
+TC_MC_08816
+    [Documentation]    [Welove] SellerDocumentRegister - Redirect store ID link
+    [Tags]    Regression    Medium
+    Go To    ${URL_WMS}/sellerregister
+    Click link on first record in seller register page    store id
+    Check that link is redirect to store page successfully    welove
+
+TC_MC_08817
+    [Documentation]    [Welove] SellerDocumentRegister - Redirect store name link
+    [Tags]    Regression    Medium
+    Go To    ${URL_WMS}/sellerregister
+    Click link on first record in seller register page    store name
+    Check that link is redirect to store page successfully    welove
+
+TC_MC_08818
+    [Documentation]    [Welove] SellerDocumentRegister - Redirect URL name link
+    [Tags]    Regression    Medium
+    Go To    ${URL_WMS}/sellerregister
+    Click link on first record in seller register page    url name
+    Check that link is redirect to store page successfully    welove

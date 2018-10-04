@@ -1,0 +1,140 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    mock    Ligo    Sprint2017MC9    dealzapp2    mc-wls
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Library           Collections
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+
+*** Test Cases ***
+TC_MC_08133
+    [Documentation]    [Welove] Create DealZapp 2 day
+    [Tags]    High    Regression    SmokeTest
+    Go To DealZapp
+    Get Start-End Date
+    Go To Create DealZapp
+    Input Campaign Fee
+    Execute Javascript    $('#campaign_name_th').val('Test Automate');
+    Upload Photo
+    Execute Javascript    $('#date_show_campaign').val('${next_date_start} 9:00 - ${next_date_end} 9:00');
+    Execute Javascript    tinyMCE.get('description_th').setContent('test');
+    Execute Javascript    $('form').submit();
+    Verify DealZapp After Update    Test Automate
+    Clear Pending
+    Delete Robot Dealzapp    Test Automate
+
+TC_MC_08135
+    [Documentation]    [Welove] Create DealZapp more than 2 day
+    [Tags]    High    Regression    SmokeTest
+    Go To DealZapp
+    Get Start-End Date    3
+    Go To Create DealZapp
+    Input Campaign Fee
+    Execute Javascript    $('#campaign_name_th').val('Test Automate');
+    Upload Photo
+    Execute Javascript    $('#date_show_campaign').val('${next_date_start} 9:00 - ${next_date_end} 9:00');
+    Execute Javascript    tinyMCE.get('description_th').setContent('test');
+    Execute Javascript    $('form').submit();
+    Verify After Save Unsuccess
+
+TC_MC_08121
+    [Documentation]    [Welove] Create Dealzapp and select set order product by self
+    [Tags]    Regression    SmokeTest
+    Go To DealZapp
+    Get Start-End Date
+    Go To Create DealZapp
+    Input Campaign Fee
+    Execute Javascript    $('#campaign_name_th').val('[Automate] set order product by self');
+    Upload Photo
+    Execute Javascript    $('#date_show_campaign').val('${next_date_start} 9:00 - ${next_date_end} 9:00');
+    Execute Javascript    tinyMCE.get('description_th').setContent('test');
+    Execute Javascript    $('input[name=order_product]').attr('checked', 'checked');
+    Execute Javascript    $('form').submit();
+    Verify DealZapp After Update    [Automate] set order product by self
+    Clear Pending
+    Delete Robot Dealzapp    [Automate] set order product by self
+
+TC_MC_08165
+    [Documentation]    [Welove] Manage Show Set order product by self
+    [Tags]    SmokeTest    Ready
+    Go To    ${URL_WMS}/campaign
+    Execute Javascript    $('.btn-group button').eq(2).click();
+    Execute Javascript    $("#sample-table-2 .btn:first").click();
+    Execute Javascript    $(".table:first button:first").click();
+    Sleep    2
+    Execute Javascript    $(".table:first button:first").click();
+    Execute Javascript    $(".table:first button:first").click();
+    Sleep    2
+    Execute Javascript    $('div.alert-warning button').click();
+
+TC_MC_08123
+    [Documentation]    [Welove] Create Dealzapp with overlap time
+    [Tags]    Medium
+    Go To Create DealZapp
+    Execute Javascript    $('.btn-info').eq(2).click();
+    Execute Javascript    $('input[name=price_fee]').val(3).click();
+    Execute Javascript    $('#campaign_name_th').val('Test Automate');
+    ${FilePath}    Replace String    ${CURDIR}    /TestCase/WeLoveShopping/WmsWeb/DealZapp    /Resource/${BU}
+    Choose File    id=file_banner    ${FilePath}/Image/join_top_banner.jpg
+    Choose File    id=file_topbanner    ${FilePath}/Image/join_top_banner.jpg
+    Choose File    id=file_bannermobile    ${FilePath}/Image/join_top_banner.jpg
+    Execute Javascript    tinyMCE.get('description_th').setContent('test');
+    Execute Javascript    $('form').submit();
+    Sleep    3    #Cannot wait alert message
+    Verify After Save Unsuccess
+
+TC_MC_08125
+    [Documentation]    [Welove] Create Dealzapp not enough data
+    [Tags]    Low
+    Go To Create DealZapp
+    Execute Javascript    $('button:contains("บันทึก")').click();
+    Sleep    3    #Cannot wait alert message
+    Verify After Save Unsuccess
+
+TC_MC_08137
+    [Documentation]    [Welove] To Verify seo box and create description seo in dealzapp (deal zapp current date)
+    [Tags]    Regression    High    mock    Ready
+    Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wls
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/dealzapp
+    Verify Seo Description Dealzapp    portal
+
+TC_MC_08139
+    [Documentation]    [Welove] To Verify seo box and create description seo in dealzapp (Next deal)
+    [Tags]    Regression    High    mock    Ready
+    Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wls
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/dealzapp?nextdeal=1
+    Verify Seo Description Dealzapp    portal
+
+TC_MC_08131
+    [Documentation]    [Welove] Create DealZapp 1 day
+    [Tags]    Regression    Ready
+    Go to    ${URL_WMS}/campaign
+    Click Button Add Campaign    ${btn_add_deal_zapp}    ${URL_WMS}/campaign/dealzapp/create
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] WLSPromotion ปรับระยะเวลา 48 ชั่วโมง
+    Choose Campaign Banner    promotion_itemprice_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    ${current_date}    Get Current Date    UTC    +7 hours    result_format=datetime    exclude_millis=True
+    ${next_date}    Add Time To Date    ${current_date}    1 days
+    ${current_date}    Convert Date    ${current_date}    result_format=%d/%m/%Y
+    ${current_date_str}    Convert To String    ${current_date}
+    ${current_date_str}    Get Substring    ${current_date_str}    \    10
+    ${next_date}    Convert Date    ${next_date}    result_format=%d/%m/%Y
+    ${next_date_str}    Convert To String    ${next_date}
+    ${next_date_str}    Get Substring    ${next_date_str}    \    10
+    Execute Javascript    $('#date_show_campaign').val('${current_date_str} 10:00 - ${next_date_str} 09:59');
+    Click Button Submit Campaign
+    ${alert_msg}    Execute Javascript    return $('#notify-top').text().trim()
+    Should Be Equal    ${alert_msg}    กรุณากำหนดช่วงเวลา Show Campaign ให้เป็น 48 ชั่วโมง
+
+

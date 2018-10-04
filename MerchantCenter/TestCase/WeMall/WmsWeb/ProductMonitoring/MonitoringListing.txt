@@ -1,0 +1,74 @@
+*** Setting ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wm
+Suite Teardown     Close All Browsers
+Force Tags        WMS-Web    mock
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/WMS_MonitoringListing.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/WMS_MonitoringListing.robot
+
+*** variable ***
+### Data ###
+${seller_user_tesco}    wls_tesco@mailinator.com
+${seller_pwd_tesco}    Welcome1
+${tesco_store_id}    926431
+${tesco_store_name}    wlstesco
+${tesco_product_id_1000}    90567485
+${tesco_product_id_10}    90567622
+
+*** Test Case ***
+TC_MC_02890
+    [Documentation]    Decrease price 2 times by second time current price match with different condition from first time and over % rate
+    [Tags]    Regression    High
+    Reset All    ${tesco_product_id_1000}    1001
+    Update Product price    ${tesco_product_id_1000}    100
+    Check Product Status    ${tesco_product_id_1000}    รอตรวจสอบ
+    Reset Monitoring on product    ${tesco_product_id_1000}
+    Update Product price    ${tesco_product_id_1000}    1
+    Check Product Status    ${tesco_product_id_1000}    รอตรวจสอบ
+    Reset All    ${tesco_product_id_1000}    1001
+
+TC_MC_02892
+    [Documentation]    Decrease price 2 times by second time current price match with different condition from first time and not over % rate
+    [Tags]    Medium
+    Reset All    ${tesco_product_id_1000}    1001
+    Update Product price    ${tesco_product_id_1000}    100
+    Check Product Status    ${tesco_product_id_1000}    รอตรวจสอบ
+    Reset Monitoring on product    ${tesco_product_id_1000}
+    Update Product price    ${tesco_product_id_1000}    21
+    Check Product Status    ${tesco_product_id_1000}    ตรวจสอบแล้ว
+    Reset All    ${tesco_product_id_1000}    1001
+
+TC_MC_02898
+    [Documentation]    Increase price 2 times by second time current price match with different condition from first time and over % rate
+    [Tags]    Medium
+    Reset All    ${tesco_product_id_10}    10
+    Update Product price    ${tesco_product_id_10}    200
+    Check Product Status    ${tesco_product_id_10}    รอตรวจสอบ
+    Reset Monitoring on product    ${tesco_product_id_10}
+    Update Product price    ${tesco_product_id_10}    341
+    Check Product Status    ${tesco_product_id_10}    รอตรวจสอบ
+    Reset All    ${tesco_product_id_10}    10
+
+TC_MC_02900
+    [Documentation]    Increase price 2 times by second time current price match with different condition from first time and not over % rate
+    [Tags]    Regression    Medium
+    Reset All    ${tesco_product_id_10}    10
+    Update Product price    ${tesco_product_id_10}    500
+    Check Product Status    ${tesco_product_id_10}    รอตรวจสอบ
+    Reset Monitoring on product    ${tesco_product_id_10}
+    Update Product price    ${tesco_product_id_10}    340
+    Check Product Status    ${tesco_product_id_10}    ตรวจสอบแล้ว
+    Reset All    ${tesco_product_id_10}    10
+
+TC_MC_11101
+    [Documentation]    Verify Monitoring Listing page after creating the new product for merchant type "MD"
+    [Tags]    Regression    Medium
+    Go To Monitoring Page
+    Filter Waiting For Checking Block Type
+    Check Waiting For Admin Status
+

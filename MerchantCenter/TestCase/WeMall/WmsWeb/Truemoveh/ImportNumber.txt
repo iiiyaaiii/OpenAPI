@@ -1,0 +1,35 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Test Setup        Check Mobile Import Data
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_05522
+    [Documentation]    TMH Import Mobile Number page is displayed when user choose menu import mobile number
+    
+    Element Should Contain    ${breadcrumbs_truemoveh_import}    Import Mobile Number
+
+TC_MC_05526
+    [Documentation]    Import mobile number and insert data to DB success when user import mobile number with lot is existing in the system
+
+    Import Mobile Number    tmvh_mobile_import_1k_dup.xlsx    example    No
+    Wait Until Element Is Visible    ${error_import_panel}
+    Element Should Be Visible    ${success_import_panel}
+
+TC_MC_05527
+    [Documentation]    Import mobile number and insert data to DB success when user import mobile number with lot is not existing in the system
+    
+    ${gen_new_lot}=    Generate Random String    10    [NUMBERS]
+    Import Mobile Number    tmvh_mobile_import_1k_dup.xlsx    ${gen_new_lot}    No
+    Wait Until Element Is Visible    ${error_import_panel}
+    Element Should Be Visible    ${success_import_panel}

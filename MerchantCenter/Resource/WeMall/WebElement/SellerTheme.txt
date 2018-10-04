@@ -1,0 +1,26 @@
+*** Variables ***
+### Data ###
+${url_theme_wls11}    ${URL_STORE}/wlsautomate11/admin/theme/setting
+${url_theme_wls12}    ${URL_STORE}/wlsautomate12/admin/theme/setting
+###
+### locator ###
+${select_theme}    //select[@name="sel_theme"]
+${violet_theme}    //select[@hame="sel_theme" and @value="violet"]
+${ex_red_theme}    //img[@src="${URL_STORE}/themes/aceadmin/assets/v2/images/theme-wls/ex-red.png"]
+${ex_defualt_theme}    //img[@src="${URL_STORE}/themes/aceadmin/assets/v2/images/theme-mc/ex-default-theme.png"]
+${ex_grey_theme}    //img[@src="${URL_STORE}/themes/aceadmin/assets/v2/images/theme-wls/ex-grey.png"]
+${ex_pink_theme}    //img[@src="${URL_STORE}/themes/aceadmin/assets/v2/images/theme-wls/ex-pink.png"]
+${ex_blue_theme}    //img[@src="${URL_STORE}/themes/aceadmin/assets/v2/images/theme-wls/ex-blue.png"]
+${ex_brown_theme}    //img[@src="${URL_STORE}/themes/aceadmin/assets/v2/images/theme-wls/ex-brown.png"]
+${ex_green_theme}    //img[@src="${URL_STORE}/themes/aceadmin/assets/v2/images/theme-wls/ex-green.png"]
+${ex_orange_theme}    //img[@src="${URL_STORE}/themes/aceadmin/assets/v2/images/theme-wls/ex-orange.png"]
+${ex_violet_theme}    //img[@src="${URL_STORE}/themes/aceadmin/assets/v2/images/theme-wls/ex-violet.png"]
+${btn_choose}     $('.btn-choose')
+${file_banner}    //input[@id="file_banner"]
+${upload_banner}    $('input[id=file_banner]')
+${file_header}    //input[@id="file_header"]
+${upload_header}    $('input[id=file_header]')
+${save_theme}     //*[@id="frmsetting"]/p/button
+${before_browse_header}    //span[@data-title="เพิ่มเฮดเดอร์ร้านค้า"]
+${before_browse_banner}    //span[@data-title="เพิ่มแบนเนอร์ร้านค้า"]
+${upload_file_banner}    //input[@id="file_banner"]

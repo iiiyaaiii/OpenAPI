@@ -1,0 +1,36 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Force Tags        Account-Web
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00109
+    [Documentation]    Display manage store icon on widget incase Login
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}
+    Go to Login    ${seller_user_001}    ${seller_pwd_001}
+    ${myshop}    Execute Javascript    return $("a[title='ร้านค้าของฉัน']").length
+    ${myshop1}    Convert To String    ${myshop}
+    Should Be Equal    ${myshop1}    1
+    Clear Active Login
+
+TC_MC_00111
+    [Documentation]    No display manage store icon on widget incase no Login
+    [Tags]    Regression    Medium
+    Go to    ${URL_PORTAL}
+    ${myshop}    Execute Javascript    return $("a[title='ร้านค้าของฉัน']").length
+    ${myshop1}    Convert To String    ${myshop}
+    Should Be Equal    ${myshop1}    0
+    ${register}    Execute Javascript    return $("a[title='สมัครสมาชิก']").length
+    ${register1}    Convert To String    ${register}
+    Should Be Equal    ${register1}    1
+
+

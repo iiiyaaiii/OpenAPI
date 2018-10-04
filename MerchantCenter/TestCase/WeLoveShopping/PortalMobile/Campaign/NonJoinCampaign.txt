@@ -1,0 +1,185 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Open Custom Browser    ${URL_PORTAL}    Mobile    AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Clear Mobile Login
+Force Tags        Portal-Mobile    Ligo    Sprint2017MC8    NonJoinCampaign    mc-wls
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+
+*** Test Cases ***
+TC_MC_02261
+    [Documentation]    [Welove] [Mobile] [NonJoin Campaign]: Product show 250 at campaign page
+    [Tags]    Medium
+    Switch Browser    2
+    Go to    ${URL_PORTAL}/campaign/${none_join_campaign_id}
+    Wait Until Element Is Visible    //html/body/div[1]/div[4]/div[1]/div/div[3]/ul/li    30s
+    ${position}    Set Variable    0
+    : FOR    ${i}    IN RANGE    1    5
+    \    ${position}    Evaluate    ${position} + 10000
+    \    Execute Javascript    window.scroll(0,${position})
+    \    Sleep    3
+    Element Should Be Visible    ${m_campaign_seemore}
+    ${product_before_viewmore}    Get Matching Xpath Count    ${m_campaign_product}
+    Execute Javascript    $('.btn-more').click()
+    Wait Until Element Is Visible    ${m_campaign_product}    30s
+    ${product_after_viewmore}    Get Matching Xpath Count    ${m_campaign_product}
+    Should Be True    ${product_before_viewmore} <= ${product_after_viewmore}
+
+TC_MC_02263
+    [Documentation]    [Welove] [Mobile] [NonJoin Campaign]: Campaign product 250 show 40 product pre page
+    [Tags]    Medium
+    Switch Browser    2
+    Go to    ${URL_PORTAL}/campaign/${none_join_campaign_id}
+    Wait Until Element Is Visible    //html/body/div[1]/div[4]/div[1]/div/div[3]/ul/li    30s
+    ${count_show_product}    Get Matching Xpath Count    //html/body/div[1]/div[4]/div[1]/div/div[3]/ul/li
+    Should Be True    ${count_show_product} == 30
+    ${position}    Set Variable    0
+    : FOR    ${i}    IN RANGE    1    5
+    \    ${position}    Evaluate    ${position} + 10000
+    \    Execute Javascript    window.scroll(0,${position})
+    \    Sleep    3
+    Element Should Be Visible    ${m_campaign_seemore}
+
+TC_MC_02375
+    [Documentation]    [Welove] To Verify new text box handle url and create non-join campaign
+    [Tags]    High
+    Switch Browser    3
+    ${my_campaign_id}    Create Non Join Campaign    qa-nonjoincampaign-testhandleurl////5/6    1
+    ${groupcampignid}    Get Group Campaign ID     ${my_campaign_id}
+    Verify Handle URL After Save    qa-nonjoincampaign-testhandleurl56    ${my_campaign_id}
+    ${handleurl}    Set Variable    qa-nonjoincampaign-testhandleurl56
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/campaign/${groupcampignid}-${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}-${handleurl}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Switch Browser    2
+    Go to    ${URL_PORTAL}/campaign/${groupcampignid}-${my_campaign_id}
+    Verify Redirect URL    mobile    ${my_campaign_id}    campaign-mobile
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}-${handleurl}
+    Verify Redirect URL    mobile    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}
+    Verify Redirect URL    mobile    ${my_campaign_id}    campaign-mobile
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify Redirect URL    mobile    ${my_campaign_id}    ${handleurl}
+    Switch Browser    3
+    Delete My Campaign    non-join    ${my_campaign_id}
+
+TC_MC_02376
+    [Documentation]    [Welove] To edit handle url in non-join campaign
+    [Tags]    High    mock
+    Switch Browser    3
+    Edit Handle Url    non-join    ${none_join_campaign_id}    qa-nonjoin-999-baht
+    ${groupcampignid}    Get Group Campaign ID     ${none_join_campaign_id}
+    ${handleurl}    Set Variable    qa-nonjoin-999-baht
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/campaign/${groupcampignid}-${none_join_campaign_id}
+    Verify Redirect URL    portal    ${none_join_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${none_join_campaign_id}-${handleurl}
+    Verify Redirect URL    portal    ${none_join_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${none_join_campaign_id}
+    Verify Redirect URL    portal    ${none_join_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${none_join_campaign_id}
+    Verify Redirect URL    portal    ${none_join_campaign_id}    ${handleurl}
+    Switch Browser    2
+    Go to    ${URL_PORTAL}/campaign/${groupcampignid}-${none_join_campaign_id}
+    Verify Redirect URL    mobile    ${none_join_campaign_id}    campaign-mobile
+    Go to    ${URL_PORTAL}/promotion/${none_join_campaign_id}-${handleurl}
+    Verify Redirect URL    mobile    ${none_join_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${none_join_campaign_id}
+    Verify Redirect URL    mobile    ${none_join_campaign_id}    campaign-mobile
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${none_join_campaign_id}
+    Verify Redirect URL    mobile    ${none_join_campaign_id}    ${handleurl}
+    Switch Browser    3
+    Edit Handle Url    non-join    ${none_join_campaign_id}    qa-robot-non-join
+
+TC_MC_02378
+    [Documentation]    [[Welove] To edit seo description in non-join campaign
+    [Tags]    High    mock
+    Switch Browser    3
+    Edit Seo Description    non-join    ${empty_none_join_campaign_id}    Editseo.txt
+    ${handleurl}    Set Variable    qa-robot-non-join-empty
+    Switch Browser    1
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${empty_none_join_campaign_id}
+    Verify Edit Seo Description    portal    ${handleurl}    ${empty_none_join_campaign_id}
+    Switch Browser    3
+    Edit Seo Description    non-join    ${empty_none_join_campaign_id}    html_data.txt
+
+TC_MC_02374
+    [Documentation]    [Welove] Validate new Handle url field in Non Join campaing create page
+    [Tags]    Regression    High    Portal-Mobile    mock
+    Switch Browser    3
+    ${my_campaign_id}    Create Non Join Campaign    qa-nonjoincampaign-testhandle--test//1234
+    ${groupcampignid}    Get Group Campaign ID     ${my_campaign_id}
+    Verify Handle URL After Save    qa-nonjoincampaign-testhandle-test1234    ${my_campaign_id}
+    ${handleurl}    Set Variable    qa-nonjoincampaign-testhandle-test1234
+    Switch Browser    1
+    # Go to    ${URL_PORTAL}/campaign/${groupcampignid}-${my_campaign_id}
+    # Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}-${handleurl}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Switch Browser    2
+    # Go to    ${URL_PORTAL}/campaign/${groupcampignid}-${my_campaign_id}
+    # Verify Redirect URL    mobile    ${my_campaign_id}    campaign-mobile
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}-${handleurl}
+    Verify Redirect URL    mobile    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}
+    Verify Redirect URL    mobile    ${my_campaign_id}    campaign-mobile
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify Redirect URL    mobile    ${my_campaign_id}    ${handleurl}
+    Switch Browser    3
+    Delete My Campaign    non-join    ${my_campaign_id}
+
+TC_MC_02377
+    [Documentation]    [Welove] To Verify seo box and create description seo in non-join campaign
+    [Tags]    Regression    SmokeTest    High    mock
+    Switch Browser    3
+    ${my_campaign_id}    Create Non Join Campaign    none    none    yes
+    ${groupcampignid}    Get Group Campaign ID     ${my_campaign_id}
+    ${handleurl}    Set Variable    qa-automate-nonjoin-campaign-for-seo
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify Seo Description    portal    ${handleurl}    ${my_campaign_id}
+    Switch Browser    3
+    Delete My Campaign    non-join    ${my_campaign_id}
+
+TC_MC_02379
+    [Documentation]    [Welove] Create Non Join campaign with insert meta title, meta keyword and meta description
+    [Tags]    Regression    Medium    Mock
+    Switch Browser    3
+    ${my_campaign_id}    Create Non Join Campaign    none    meta
+    Verify metatags After Save    ${my_campaign_id}
+    ${handleurl}    Set Variable    qa-automate-nonjoin-campaign-for-seo
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify metatags Portal Web Mobile    portal
+    Switch Browser    2
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify metatags Portal Web Mobile    mobile
+    Switch Browser    3
+    Delete My Campaign    non-join    ${my_campaign_id}
+
+TC_MC_02380
+    [Documentation]    [Welove] Edit Non Join campaign with insert meta title, meta keyword and meta description
+    [Tags]    Regression    Medium    Mock
+    Switch Browser    3
+    Edit Meta Tags    non-join    ${none_join_campaign_id}    Edit meta tags robot SEO
+    ${handleurl}    Set Variable    qa-robot-non-join
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${none_join_campaign_id}
+    Verify Edit Metatags Portal Web Mobile    portal
+    Switch Browser    2
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${none_join_campaign_id}
+    Verify Edit Metatags Portal Web Mobile    mobile
+    Switch Browser    3
+    Edit Meta Tags    non-join    ${none_join_campaign_id}    Metags NON JOIN Campaign Robot SEO

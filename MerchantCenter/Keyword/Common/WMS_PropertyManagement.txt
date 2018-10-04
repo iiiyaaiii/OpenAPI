@@ -1,0 +1,119 @@
+*** Settings ***
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           Collections
+Library           OperatingSystem
+Library           DateTime
+Library           ../PythonLibrary/_customkeyword.py
+
+*** Keywords ***
+Write Variable In File
+    [Documentation]    Write variable in file
+    [Arguments]    ${variable}
+    ${CUR_FILE_DIR}=    Remove String    ${CURDIR}    /TestCase
+    ${file}=    Catenate    SEPARATOR=/    ${CUR_FILE_DIR}/Resource/${BU}/image    file_with_variable.txt
+    Create File    ${file}    ${variable}
+
+Get File Property By Ids
+    [Documentation]    Get File Property By Ids
+    ${CUR_FILE_DIR}=    Remove String    ${CURDIR}    /TestCase
+    ${file}=    Catenate    SEPARATOR=/    ${CUR_FILE_DIR}/Resource/${BU}/image    file_with_variable.txt
+    ${ids}=    Get File    ${file}
+    [Return]    ${ids}
+
+Delete Property By Ids
+    [Documentation]    Add Property type Fill form : with select "Require field"
+    ${ids}=    Get File Property By Ids
+    ${count_line}=    Get Line Count    ${ids}
+    Log    ${count_line}
+    : FOR    ${Index}    IN RANGE    0    ${count_line}
+    \    ${property_id}    Get Line    ${ids}    ${Index}
+    \    Execute Javascript    $('input[value="${property_id}"]').prop('checked', true)
+    Execute Javascript    $('button#btn_delete').click()
+    Execute Javascript    $('button[data-bb-handler="confirm"]').click()
+
+Check Have Property
+    [Documentation]    Check Have Property
+    [Arguments]    ${variable}
+    ${count}=    Get Matching Xpath Count    //ul[@class='pagination']/li
+    Run Keyword IF    ${count} == 0    One Page Check Property    ${variable}
+    : FOR    ${Index}    IN RANGE    3    ${count}
+    \    ${length}=    Execute Javascript    return $('a:contains("${variable}")').length
+    \    sleep    3s
+    \    Run Keyword IF    '${length}' == '0'    Click Element    //ul[@class='pagination']/li[${index}]/a
+    \    ${length}=    Execute Javascript    return $('a:contains("${variable}")').length
+    \    sleep    3s
+    \    Run Keyword IF    '${length}' == '1'    Pass Execution    This Property Name is already create ja
+    \    Exit For Loop If    '${length}' == '1'
+
+Sub Loop Check Have Property Fill Form
+    [Documentation]    Sub Loop Check Have Property Fill Form
+    [Arguments]    ${variable}    ${count}
+    ${check} =    Evaluate    0
+    : FOR    ${index}    IN RANGE    3    ${count}
+    \    ${length} =    Execute Javascript    return $('a:contains("${variable}")').length;
+    \    Sleep    2s
+    \    Run Keyword IF    '${length}' == '0'    Click Element    //ul[@class='pagination']/li[${index}]/a
+    \    ${check} =    Run Keyword IF    '${length}' == '1'    Evaluate    1
+    \    Exit For Loop If    '${length}' == '1'
+    [Return]    ${check}
+
+Check Have Property Fill Form
+    [Documentation]    Check Have Property Fill Form
+    [Arguments]    ${variable}    ${format}    ${condition}    ${amount}    ${category}    ${catid}
+    ${length} =    Execute Javascript    return $('a:contains("${variable}")').length;
+    Run Keyword IF    '${length}' == '0'    Add Property Fill Form    ${variable}    ${format}    ${condition}    ${amount}
+    ...    ${category}    ${catid}
+
+Add Property Fill Form
+    [Documentation]    Add Property Fill Form
+    [Arguments]    ${variable}    ${format}    ${condition}    ${amount}    ${category}    ${catid}
+    CLick Element    //a[@data-target="#create-type"]
+    Sleep    1s
+    CLick Element    //a[@href='seller_product_property/create-fill-form']
+    Sleep    1s
+    Input Text    //input[@name="title_th"]    ${variable}
+    Sleep    1s
+    Execute Javascript    $('input[name="required"]').prop('checked', true);
+    Sleep    1s
+    Select From List By Value    //select[@ng-model="format"]    ${format}
+    Sleep    1s
+    Run Keyword IF    '${format}' != 'date'    Select From List By Value    //select[@ng-model="condition"]    ${condition}
+    Run Keyword IF    '${format}' != 'date'    Press Key    //input[@name="amount_input"]    ${amount}
+    Execute Javascript    $('button#btn_create_property').click()
+    Sleep    2s
+    Execute Javascript    $('a:contains("${variable}")')[0].click()
+    Sleep    2s
+    ${location}=    Get Location
+    ${id}=    Remove String    ${location}    ${URL_WMS}/seller_product_property/edit-fill-form/
+    Write Variable In File    ${id}
+    Go To    ${URL_WMS}/seller_product_property
+    Sleep    2s
+    Click Element    //a[@class="btn btn-app btn-primary btn-xs"][1]
+    Sleep    4s
+    Execute Javascript    $("div.tree-folder-name:contains('${category}') > span > span.btn-xs").click()
+    Sleep    4s
+    Click Element    //span[@onclick="getOptionGroup('${id}','${catid}')"]
+    Sleep    3s
+    Execute Javascript    $('div.checkbox > label').first().click()
+    Sleep    2s
+    Execute Javascript    $('a[data-action="close"]').click()
+    Sleep    2s
+    Click Element    //button[@onclick="postOptionGroupMappingApply('${catid}')"]
+    Sleep    10s
+    Go To    ${URL_WMS}/seller_product_property?perpage=1000
+
+Generate Property Fill Form
+    [Documentation]    Generate Property Fill Form
+    [Arguments]    ${project}
+    WMS Switch Project    ${project}
+    Go To    ${URL_WMS}/seller_product_property?perpage=1000
+    Sleep    2s
+    Check Have Property Fill Form    RobotTestFillFormNumber20Digit    number    equal    20    งานอดิเรก    1830
+    Check Have Property Fill Form    RobotTestFillFormText20Char    text    equal    20    งานอดิเรก    1830
+    Check Have Property Fill Form    RobotTestFillFormDate    date    equal    20    งานอดิเรก    1830
+
+One Page Check Property
+    [Documentation]    One Page Check Property
+    [Arguments]    ${variable}
+    ${length}=    Execute Javascript    return $('a:contains("${variable}")').length
+    Run Keyword IF    '${length}' == '1'    Pass Execution    This Property Name is already create ja

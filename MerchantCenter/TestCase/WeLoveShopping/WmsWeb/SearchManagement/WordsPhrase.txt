@@ -1,0 +1,214 @@
+*** Settings ***
+#Suite Setup       Run Keywords    WMS Login    ${PermissionUser}    AND    WMS Switch Project    wls
+Suite Setup     Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Login    AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_WMS}/wordsphrase
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/ManageSynonyms.txt
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/ManageSynonyms.txt
+
+*** Test Case ***
+TC_MC_01510
+    [Documentation]    [Welove] Verify WordsPhrase menu
+    [Tags]    Low
+    Verify Navigation bar    ระบบจัดการ การเจาะจงคำค้นหา
+    Verify Input Field    เพิ่ม / ค้นหา Phrase
+    Verify Label on WordsPhrase Screen
+    Verify Button on WordsPhrase Screen
+
+TC_MC_01512
+    [Documentation]    [Welove] Verify search WordsPhrase
+    [Tags]    Medium
+    ${DataPhrase} =    Get Data From Table
+    Input Search    ${DataPhrase}
+    Click Search Phrase
+    Verify Search Result
+
+TC_MC_01514
+    [Documentation]    [Welove] Verify add WordsPhrase
+    [Tags]    Medium
+    Input Search    Test
+    Click Search Phrase
+    Click Add Phrase
+    Input Add Phrase    Add Phrase
+    Click Save Add Phrase
+    Verify Phrase On List    Add Phrase
+
+TC_MC_01516
+    [Documentation]    [Welove] Verify edit WordsPhrase
+    [Tags]    Medium
+    Input Search    Add Phrase
+    Click Search Phrase
+    Click Edit Phrase    Add Phrase
+    Input Edit Phrase    Edit Phrase
+    Click Save Edit Phrase
+    Verify Phrase On List    Edit Phrase
+
+TC_MC_01518
+    [Documentation]    [Welove] Verify delete WordsPhrase
+    [Tags]    Medium
+    Input Search    Edit Phrase
+    Click Search Phrase
+    Click Delete Phrase
+    Verify Phrase On List    None
+
+TC_MC_01514
+    [Documentation]    Search Keyword : never add wordsphrase
+    Go To    ${url_search_wordsphrase}
+    Input Text    ${input_keywords}    แปรงแต่งหน้า
+    Click Element    ${btn_phrase_search}
+    ${count_match}    Execute Javascript    return $('.table.table-striped tr td a:contains("แปรงแต่งหน้า")').length
+    Run Keyword If    ${count_match}==1    Delete WordPhrase    แปรงแต่งหน้า
+    Go To    ${url_search_analysis}
+    Wait Until Element Is Visible    ${input_keywords}
+    Input Text    ${input_keywords}    แปรงแต่งหน้า
+    Click Button    ${btn_analyse_value}
+    Element Should Be Visible    ${word_analysis_result}
+    ${wordsphrase_result}    Execute Javascript    return $('.table.table-striped tr:eq(1)').text().trim()
+    Should Be Equal    ${wordsphrase_result}    ไม่พบข้อมูล
+
+TC_MC_01518
+    [Documentation]    Add Phrase : search Phrase not found
+    Go To    ${url_search_wordsphrase}
+    Input Text    ${input_keywords}    แปรงแต่งหน้า
+    Click Element    ${btn_phrase_search}
+    ${count_match}    Execute Javascript    return $('.table.table-striped tr td a:contains("แปรงแต่งหน้า")').length
+    Run Keyword If    ${count_match}==0    Add WordPhrase    แปรงแต่งหน้า
+    Sleep    2s
+
+TC_MC_01516
+    [Documentation]    Search Keyword : add wordsphrase already.
+    Go To    ${url_search_wordsphrase}
+    Input Text    ${input_keywords}    แปรงแต่งหน้า
+    Click Element    ${btn_phrase_search}
+    ${count_match}    Execute Javascript    return $('.table.table-striped tr td a:contains("แปรงแต่งหน้า")').length
+    Run Keyword If    ${count_match}==0    Add WordPhrase    แปรงแต่งหน้า
+    Go To    ${url_search_analysis}
+    Wait Until Element Is Visible    ${input_keywords}
+    Input Text    ${input_keywords}    แปรงแต่งหน้า
+    Click Button    ${btn_analyse_value}
+    Element Should Be Visible    ${word_analysis_result}
+    ${wordsphrase_result}    Execute Javascript    return $('.table.table-striped tr:eq(1)').text().trim()
+    Should Be Equal    ${wordsphrase_result}    แปรงแต่งหน้า
+
+TC_MC_01520
+    [Documentation]    Add Phrase : Input Phrase duplicate data
+    Go To    ${url_search_wordsphrase}
+    Input Text    ${input_keywords}    แปรงแต่งหน้า
+    Click Element    ${btn_phrase_search}
+    ${count_match}    Execute Javascript    return $('.table.table-striped tr td a:contains("แปรงแต่งหน้า")').length
+    Run Keyword If    ${count_match}==0    Add WordPhrase    แปรงแต่งหน้า
+    Input Text    ${input_keywords}    แปรงแต่งหน้า
+    Click Element    ${btn_phrase_search}
+    Run Keyword If    ${count_match}==1    Add WordPhrase Unsuccess    แปรงแต่งหน้า
+    Sleep    2s
+
+TC_MC_01522
+    [Documentation]    Add Phrase : search Phrase found
+    Go To    ${url_search_wordsphrase}
+    Input Text    ${input_keywords}    แปรงแต่งหน้า
+    Click Element    ${btn_phrase_search}
+    ${result}    Execute Javascript    return $('.btn.btn-sm.btn-primary').eq(1).length
+    Sleep    6s
+    Should Be True    ${result}==0
+
+TC_MC_01524
+    [Documentation]    Add Phrase : Input Phrase is null
+    Go To    ${url_search_wordsphrase}
+    Input Text    ${input_keywords}    ทดสอบเดรส
+    Click Element    ${btn_phrase_search}
+    ${result}    Execute Javascript    return $('.btn.btn-sm.btn-primary').eq(1).length
+    Should Be True    ${result}==1
+    Click Element    ${a_create_phrase}
+    Input Text    ${input_keywords_last}    ${SPACE}
+    Click Element    ${btn_save_phrase}
+    ${empty_data}    Execute Javascript    return $("#notify-top").text().trim();
+    Should Be Equal    ${empty_data}    ข้อมูลเป็นค่าว่าง กรุณาลองใหม่อีกครั้ง
+
+TC_MC_01534
+    [Documentation]    Add Phrase : add phrase and click reset
+    Go To    ${url_search_wordsphrase}
+    Input Text    ${input_keywords}    ทดสอบเดรส
+    Click Element    ${btn_phrase_search}
+    ${result}    Execute Javascript    return $('.btn.btn-sm.btn-primary').eq(1).length
+    Should Be True    ${result}==1
+    Click Element    ${a_create_phrase}
+    Input Text    ${input_keywords_last}    ทดสอบเดรส
+    Click Element    ${btn_phrase_reset}
+    ${input_keyword}    Execute Javascript    return $("#keyword").val().length;
+    Should Be True    ${input_keyword}==0
+
+TC_MC_01526
+    [Documentation]    Edit WordsPhrase
+    Go To    ${url_search_wordsphrase}
+    Click Element    ${icon_edit}
+    Click Element    ${btn_edit}
+    ${edit_success}    Execute Javascript    return $("#notify-top").text().trim();
+    Should Be Equal    ${edit_success}    บันทึกข้อมูลสำเร็จ
+
+TC_MC_01528
+    [Documentation]    Edit WordsPhrase : Input Phrase is null
+    Go To    ${url_search_wordsphrase}
+    Click Element    ${icon_edit}
+    Input Text    ${input_keywords_edit}    ${SPACE}
+    Click Element    ${btn_edit}
+    ${empty_data}    Execute Javascript    return $("#notify-top").text().trim();
+    Should Be Equal    ${empty_data}    ข้อมูลเป็นค่าว่าง กรุณาลองใหม่อีกครั้ง
+
+TC_MC_01530
+    [Documentation]    Delete WordsPhrase by click delete icon
+    Go To    ${url_search_wordsphrase}
+    ${count_match}    Execute Javascript    return $('.table.table-striped tr td a:contains("aaa")').length
+    Run Keyword If    ${count_match}==0    Add WordPhrase    aaa
+    Input Text    ${input_keywords}    aaa
+    Click Element    ${btn_phrase_search}
+    Click Element    ${icon_delete}
+    Confirm Action
+    Go To    ${url_search_analysis}
+    Wait Until Element Is Visible    ${input_keywords}
+    Input Text    ${input_keywords}    aaa
+    Click Button    ${btn_analyse_value}
+    ${count_match}    Execute Javascript    return $('.table.table-striped tr:eq(1)').text().trim();
+    Should Be Equal    ${count_match}    ไม่พบข้อมูล
+    Sleep    4s
+
+TC_MC_01532
+    [Documentation]    Delete WordsPhrase by click delete button
+    [Tags]    Regression    Medium
+    #Go To    ${url_search_wordsphrase}
+    ${count_match}    Execute Javascript    return $('.table.table-striped tr td a:contains("aaa")').length
+    Run Keyword If    ${count_match}==0    Add WordPhrase    aaa
+    Input Text    ${input_keywords}    aaa
+    Execute Javascript    ${btn_phrase_search}
+    Execute Javascript    $("[type=checkbox]:eq(1)").click()
+    Click Element    ${btn_delete}
+    Confirm Action
+    Sleep    4s
+    Go To    ${url_search_analysis}
+    Wait Until Element Is Visible    ${input_keywords}
+    Input Text    ${input_keywords}    aaa
+    Click Button    ${btn_analyse_value}
+    ${count_match}    Execute Javascript    return $('.table.table-striped tr:eq(1)').text().trim();
+    Should Be Equal    ${count_match}    ไม่พบข้อมูล
+    Sleep    4s
+
+*** Variable ***
+${btn_phrase_search}    $('a[class="btn btn-sm btn-primary"]').click()
+${btn_create_phrase}    //*[@class="btn btn-sm btn-primary"]
+${input_wordsphrase}    //*[@id="keyword"]
+
+*** Keywords ***
+Add WordPhrase
+    [Documentation]    Add WordPhrase
+    [Arguments]    ${phrase_name}
+    Wait Until Element Is Visible    ${input_keywords}
+    Input Text    ${input_keywords}    ${phrase_name}
+    Execute Javascript    ${btn_phrase_search}
+    Element Should Be Visible    ${btn_create_phrase}
+    Execute Javascript    $('.btn.btn-sm.btn-primary')[1].click()
+    Sleep    1s
+    Input Text    ${input_wordsphrase}    ${phrase_name}
+    Execute Javascript    $('.btn.btn-info').click()
+    Sleep    5s

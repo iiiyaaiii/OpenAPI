@@ -1,0 +1,22 @@
+*** variable ***
+### Locators ###
+${add_blockword}    //a[@id="add_new_blockword"]
+${blockword}    id=inputError
+${ddl_block_type}    //select[@name="block_type_id"]
+${click_cate}    $('button[class="multiselect dropdown-toggle btn btn-default btn-sm"]').click();
+${select_cate}    $("label:contains('งานอดิเรก') > input").click()
+${lbl_status}    //select[@class="form-control input-sm online"]
+${lbl_status_type}    //select[@name="online"]/option[@value="1"]
+${lbl_block}    //select[@class="form-control input-sm block_level"]
+${block_level}    //select[@name="block_level"]/option[@value='1']
+${comment}    $("textarea[id='inputError']").eq(1).val("Testblockword")
+${reset}    $("button[type='reset']").click()
+${btn_search_blockword}    //tbody/tr[1]/td[9]/button
+${delete_blockword}    //i[@class="ace-icon fa fa-trash-o bigger-130"]
+${comfirm_delete}    id=btn_confrirm_delete_by_one
+${lbl_text_blockword}    //input[@type="text"]
+${btn_submit}    //button[@type="submit"]
+${lbl_blockword}    //tbody//tr[1]//td[3]
+${lbl_enter_blockword}    //tbody//tr[1]//td[3]//input
+${lbl_list_blockword}    //tbody//tr[2]//td[3]
+${lbl_list_all}    //tbody//tr[2]

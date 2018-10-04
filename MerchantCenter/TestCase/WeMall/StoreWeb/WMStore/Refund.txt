@@ -1,0 +1,287 @@
+*** Setting ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Library           SeleniumLibrary
+Library           OperatingSystem
+Library           String
+Resource          ../../../../Resource/Wemall/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Store_History.txt
+Resource          ../../../../Keyword/Common/Account_History.txt
+Resource          ../../../../Keyword/Common/Account_Detail.txt
+Resource          ../../../../Keyword/Common/Account_Refund.txt
+Resource          ../../../../Keyword/Common/Store_Refund.txt
+Resource          ../../../../Keyword/Common/Store_Detail.txt
+Resource          ../../../../Keyword/Common/ManageOrder.txt
+Resource          ../../../../Resource/Wemall/WebElement/Store_Detail.txt
+Resource          ../../../../Resource/Wemall/WebElement/Store_History.txt
+Resource          ../../../../Resource/Wemall/WebElement/Account_History.txt
+Resource          ../../../../Resource/Wemall/WebElement/Account_Detail.txt
+Resource          ../../../../Resource/Wemall/WebElement/Store_Refund.txt
+
+*** Test Case ***
+TC_MC_05417
+    [Documentation]    Check refund status after buyer request refund on refund account page
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Check Element Visible    ${refund_link_account_history}    ${expect_load_time}
+    Click refund link on account order history
+    Select checkbox all product for refund
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Go to store order detail page    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${lnk_view_refund_detail}
+    Page Should Contain    ผู้ซื้อได้ทำการขอเงินคืนจากคุณ ตามรายการสินค้าที่แสดงพร้อมเหตุผลในการขอเงินคืน
+
+TC_MC_05418
+    [Documentation]    Check refund status after seller accept refund on refund account page
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox all product for refund
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Check Text    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบ
+    Go to store order detail    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Click accept refund button
+    Check Element Visible    ${accept_refund_modal}    ${expect_load_time}
+    Input password accept request refund    ${pass_login_trust_wemall}
+    Click confirm accept refund button
+    Click ok button on confirm accept modal
+    Check Element Visible    ${go_to_detail_button}    ${expect_load_time}
+    Page Should Contain    คุณได้ยอมรับการขอเงินคืนเรียบร้อยแล้ว
+    Go to account order detail page    ${order_id}
+    Click view refund detail button on account detail page
+    ${text_accept_refund}    Get text accept refund on account refund page
+    Compare string    ${text_accept_refund}    ร้านค้าได้ยอมรับการขอเงินคืนของคุณเรียบร้อยแล้ว
+
+TC_MC_05419
+    [Documentation]    Check refund status after seller decline refund on refund account page
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Check Element Visible    ${refund_link_account_history}    ${expect_load_time}
+    Click refund link on account order history
+    Select checkbox all product for refund
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Check Text    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go to store order detail    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Click decline refund button
+    Check Element Visible    ${decline_refund_modal}    ${expect_load_time}
+    Input description decline to buyer    ขออภัยสินค้าสินค้าหมดจะทำการจัดส่งภายใน 3-7 วัน
+    Choose file for decline refund
+    Click confirm decline refund button
+    Click ok button on confirm decline modal
+    Page Should Contain    - คุณได้ปฏิเสธการขอเงินคืนจากผู้ซื้อ กรุณารอผู้ซื้อตรวจสอบและดำเนินการ
+
+TC_MC_05420
+    [Documentation]    Check refund status after buyer cancel refund on refund account page
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Check Element Visible    ${refund_link_account_history}    ${expect_load_time}
+    Click refund link on account order history
+    Select checkbox all product for refund
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Check Text    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go to store order detail    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Click decline refund button
+    Check Element Visible    ${decline_refund_modal}    ${expect_load_time}
+    Input description decline to buyer    ขออภัยสินค้าสินค้าหมดจะทำการจัดส่งภายใน 3-7 วัน
+    Choose file for decline refund
+    Click confirm decline refund button
+    Click ok button on confirm decline modal
+    Page Should Contain    - คุณได้ปฏิเสธการขอเงินคืนจากผู้ซื้อ กรุณารอผู้ซื้อตรวจสอบและดำเนินการ
+    Go to account order detail page    ${order_id}
+    Click view refund detail button on account detail page
+    Check Element Visible    ${cancel_refund_button_account_refund}    ${expect_load_time}
+    Click cancel refund on account refund page
+    Click confirm action
+    Go to store order detail page    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${lnk_view_refund_detail}
+    Page Should Contain    ผู้ซื้อได้ยกเลิกการขอเงินคืน
+    Go to account order detail page    ${order_id}
+    Click Element    ${lnk_view_detail}
+    Check Text    ${lbl_refund_status}    คุณได้ยกเลิกการขอเงินคืน
+
+TC_MC_05424
+    [Documentation]    Check accept refund status on refund history table
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox all product for refund
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go to store order detail    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Click accept refund button
+    Check Element Visible    ${accept_refund_modal}    ${expect_load_time}
+    Input password accept request refund    ${pass_login_trust_wemall}
+    Click confirm accept refund button
+    Click ok button on confirm accept modal
+    Check Element Visible    ${go_to_detail_button}    ${expect_load_time}
+    Go to store order detail page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${store_text_status_decline_on_refund_table}    ร้านค้ายอมรับการขอเงินคืน
+
+TC_MC_05425
+    [Documentation]    Check decline refund status on refund history table
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Check Element Visible    ${refund_link_account_history}    ${expect_load_time}
+    Click refund link on account order history
+    Select checkbox all product for refund
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Check Text    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go to store order detail    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Click decline refund button
+    Check Element Visible    ${decline_refund_modal}    ${expect_load_time}
+    Input description decline to buyer    ขออภัยสินค้าสินค้าหมดจะทำการจัดส่งภายใน 3-7 วัน
+    Choose file for decline refund
+    Click confirm decline refund button
+    Click ok button on confirm decline modal
+    Element Should Contain    //div[@class="span9 refund-right"]/p    - คุณได้ปฏิเสธการขอเงินคืน โดยสถานะของรายการสั่งซื้อจะกลับไปเป็น "รอการแจ้งจัดส่งสินค้า
+    Go to store order detail page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail_product}    รอการแจ้งจัดส่งสินค้า
+
+TC_MC_05426
+    [Documentation]    Check cancel refund status on refund history table
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Check Element Visible    ${refund_link_account_history}    ${expect_load_time}
+    Click refund link on account order history
+    Select checkbox all product for refund
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Check Text    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go to store order detail    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Click decline refund button
+    Check Element Visible    ${decline_refund_modal}    ${expect_load_time}
+    Input description decline to buyer    ขออภัยสินค้าสินค้าหมดจะทำการจัดส่งภายใน 3-7 วัน
+    Choose file for decline refund
+    Click confirm decline refund button
+    Click ok button on confirm decline modal
+    Page Should Contain    - คุณได้ปฏิเสธการขอเงินคืนจากผู้ซื้อ กรุณารอผู้ซื้อตรวจสอบและดำเนินการ
+    Go to account order detail page    ${order_id}
+    Click view refund detail button on account detail page
+    Check Element Visible    ${cancel_refund_button_account_refund}    ${expect_load_time}
+    Click cancel refund on account refund page
+    Click confirm action
+    Check Element Visible    ${element_accept_refund_text}    ${expect_load_time}
+    Go to store order detail page    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Check Text    ${txt_buyer_cancel_refund}    ผู้ซื้อได้ยกเลิกการขอเงินคืน

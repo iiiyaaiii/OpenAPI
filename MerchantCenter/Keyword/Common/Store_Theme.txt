@@ -1,0 +1,44 @@
+*** Settings ***
+Library           SeleniumLibrary
+Library           String
+Library           OperatingSystem
+Library           Collections
+
+*** Keywords ***
+click checkbox by element action
+    [Arguments]    ${element}    ${action}
+    Execute Javascript    if(${action} == 'checked'){$(${element}).is(':checked')==false?$(${element}).click():'';}else{$(${element}).is(':checked')==true?$(${element}).click():'';}
+
+choose image by element by sequence image
+    [Arguments]    ${element}    ${sequence}
+    Execute Javascript    $(${element}).click();setTimeout(function(){$('.popup-album a').eq(${sequence}).click();setTimeout(function(){$('.save_photo').click();}, 1000);}, 1500);
+
+Select red theme
+    Select From List By Value    ${select_theme}    red
+    Confirm Action
+    Element Should Be Visible    ${ex_red_theme}
+    Click Element    ${save_theme}
+
+Select red theme2
+    [Documentation]    Action select color of theme shop
+    Select From List By Value    ${select_theme}    red
+    Element Should Be Visible    ${ex_red_theme}
+
+Verify theme color
+    [Documentation]    Action verify theme color
+    [Arguments]    ${theme_color}
+    Get shop name
+    Click Element    ${save_theme}
+    Sleep    3s
+    Go To    ${URL_STORE}/${shop_name}
+    Wait Until Element Is Visible    //div[@class="row-header menu-shop"]
+    ${elem}    Execute Javascript    return $('.menu-shop').css('background-color');
+    ${rgb}    Set Variable If    "${theme_color}" == "red"    rgb(226, 20, 76)
+    ${rgb}    Set Variable If    "${theme_color}" == "grey"    rgb(109, 110, 113)    ${rgb}
+    ${rgb}    Set Variable If    "${theme_color}" == "pink"    rgb(241, 195, 208)    ${rgb}
+    ${rgb}    Set Variable If    "${theme_color}" == "blue"    rgb(113, 206, 247)    ${rgb}
+    ${rgb}    Set Variable If    "${theme_color}" == "brown"    rgb(195, 132, 97)    ${rgb}
+    ${rgb}    Set Variable If    "${theme_color}" == "green"    rgb(0, 162, 122)    ${rgb}
+    ${rgb}    Set Variable If    "${theme_color}" == "orange"    rgb(242, 101, 49)    ${rgb}
+    ${rgb}    Set Variable If    "${theme_color}" == "violet"    rgb(97, 67, 154)    ${rgb}
+    Should Be Equal    ${elem}    ${rgb}

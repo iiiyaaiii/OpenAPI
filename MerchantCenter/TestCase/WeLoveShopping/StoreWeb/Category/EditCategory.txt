@@ -1,0 +1,247 @@
+*** Settings ***
+Suite Setup       Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Check and Reset Seller Login    ${category_shopname2}    ${category_user_002}    ${category_pwd_002}    AND    Check And Set Category    [Test]FixCategory1    [Test]FixCategory2    test123
+Suite Teardown    Close Browser
+Force Tags        feature-StoreAdmin    Store-Web    EditCategory    mc-wls
+Library           OperatingSystem
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Category.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Backend_Category.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Keywords ***
+Check And Set Category
+    [Arguments]    ${categoryname}    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบข้อมูล
+    Run Keyword If    ${Result} == True    Create Category    ${categoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    ${category_id}    Get Element Attribute    //*[@class="table-catlist-body"]//ul[1]//li[1]@id
+    ${category_id}    Remove String    ${category_id}    category_id_
+    Set Suite Variable    ${category_id}
+#    [return]    ${category_id}
+    Input Text    search    ${categoryname2}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบข้อมูล
+    Run Keyword If    ${Result} == True    Create category have subcate    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category
+    Input Text    search    ${categoryname2}
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    ${category_id2}    Get Element Attribute    //*[@class="table-catlist-body"]//ul[1]//li[1]@id
+    ${category_id2}    Remove String    ${category_id2}    category_id_
+    Set Suite Variable    ${category_id2}
+#    [return]    ${category_id2}
+
+Create Category
+    [Arguments]    ${categoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/create
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('.row-fluid .btn-primary').click()
+    Display Alert Footer
+
+Create category have subcate
+    [Arguments]    ${categoryname2}    ${subcategoryname}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/create
+    Input Text    ${input_category_name}    ${categoryname2}
+    Execute Javascript    $('a#subcategory_alter_add').click()
+    Execute Javascript    $('#input-name').val('${subcategoryname}')
+    #Execute Javascript    $('#btn_select_photo').click()
+    #Choose Image From Gallery Correct2
+    #Sleep    2s
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Verify Category Has Successfully Created    ${categoryname2}
+    Execute Javascript    $('i.icon-plus-sign-alt').click()
+
+
+*** Test Cases ***
+TC_MC_01218
+    [Documentation]    [Welove] Edit Category Success (no have category image) (main category)
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('#title_th').val('')
+    Execute Javascript    $('#title_th').val('เทสtest123@&%')
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${current_cat_name}    Execute Javascript    return $('#title_th').val()
+    Should Be Equal    ${current_cat_name}    เทสtest123@&%
+    ## Re-Category Name ##
+    Execute Javascript    $('#title_th').val('[Test]FixCategory1')
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+
+TC_MC_01222
+    [Documentation]    [Welove] Edit Category Success - Change image by Choose image Gallery.
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('#btn_select_photo').click()
+    Choose Image From Gallery Correct2
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${current_cat_name}    Execute Javascript    return $('#title_th').val()
+    Should Be Equal    ${current_cat_name}    ${category_name}
+
+TC_MC_01224
+    [Documentation]    [Welove] Edit Category Fail - Duplicated main category name
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Wait Until Element Is Visible    ${input_category_name}    ${EXPECT_LOADTIME}
+    ${Before_name}    Execute Javascript    return $('#title_th').val()
+    Set Test Variable    ${category_name}    กระโปรงแฟชั่น
+    Input Text    ${input_category_name}    ${category_name}
+    Execute Javascript    $('.row-fluid .btn-primary').click()
+    Sleep    4s
+    ${current_cat_name}    Execute Javascript    return $('#title_th').val()
+    Should Be Equal    ${current_cat_name}    ${Before_name}
+
+TC_MC_01226
+    [Documentation]    [Welove] Edit Category Fail - Doesn't enter required field
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('#title_th').val('')
+    Click Button Save
+    ${alert_error}    Execute Javascript    return $('.help-inline').text()
+    Should Be Equal    ${alert_error}    กรุณากรอกชื่อหมวดหมู่ให้ถูกต้อง
+
+TC_MC_01228
+    [Documentation]    [Welove] Edit Category Fail - Category name is invalid data
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${before_cat_name}    Get Value    ${input_category_name}
+    Execute Javascript    $('#btn_create_cat').click()
+    Sleep    1s
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${current_cat_name}    Execute Javascript    return $('#title_th').val()
+    Should Be Equal    ${current_cat_name}    ${before_cat_name}
+
+TC_MC_01234
+    [Documentation]    [Welove] Edit Category Fail - category image with choose image from album over limit
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('#btn_select_photo').click()
+    Choose Image From Gallery Incorrect
+
+TC_MC_01236
+    [Documentation]    [Welove] Edit Category Success - enter SEO Title valid format.
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('#edit_seo').parents('p').find("a").click()
+    Input Text    ${input_seo_title}    ${char_less_80}
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${show_title}    Execute Javascript    return $('.wls-snippet').find("a").text()
+    Should Be Equal    ${show_title}    ${char_less_80}
+
+TC_MC_01238
+    [Documentation]    [Welove] Edit Category Success - enter SEO Title invalid format.
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('#edit_seo').parents('p').find("a").click()
+    Clear Element Text    ${input_seo_title}
+    Input Text    ${input_seo_title}    ${char_over_80}
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${show_title}    Execute Javascript    return $('.wls-snippet').find("a").text()
+    Should Be Equal    ${show_title}    ${char_equal_80}
+
+TC_MC_01240
+    [Documentation]    [Welove] Edit Category Success - enter SEO Description valid format.
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('#edit_seo').parents('p').find("a").click()
+    Clear Element Text    ${input_seo_desc}
+    Input Text    ${input_seo_desc}    ${char_less_170}
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${show_desc}    Execute Javascript    return $('.snippet-desc').text()
+    Should Be Equal    ${show_desc}    ${char_less_170}
+
+TC_MC_01242
+    [Documentation]    [Welove] Edit Category Success - enter SEO Description invalid format.
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Execute Javascript    $('#edit_seo').parents('p').find("a").click()
+    Clear Element Text    ${input_seo_desc}
+    Input Text    ${input_seo_desc}    ${char_over_170}
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${show_desc}    Execute Javascript    return $('.snippet-desc').text()
+    Should Be Equal    ${show_desc}    ${char_equal_170}
+
+TC_MC_01244
+    [Documentation]    [Welove] Verify Save Edit Category
+    [Tags]    High
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Clear Element Text    ${input_category_name}
+    Input Text    ${input_category_name}    TestEdit
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    ## Re-Category Name ##
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Clear Element Text    ${input_category_name}
+    Input Text    ${input_category_name}    [Test] Fix Category 1
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+
+TC_MC_01320
+    [Documentation]    [Welove] Edit Category Success (no have category image) (sub category)
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id2}
+    ${time}    Get Time    epoch
+    Execute Javascript    $('a#subcategory_alter_add').click()
+    Execute Javascript    $('.sub_category').eq(2).val('กางเกงขาสั้น${time}')
+    Execute Javascript    $('a#subcategory_alter_add').click()
+    Execute Javascript    $('.sub_category').eq(3).val('test123${time}')
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id2}
+    Execute Javascript    $('.subcategory_remove').eq(3).click()
+    Click OK Alert Box V2
+    Execute Javascript    $('.subcategory_remove').eq(2).click()
+    Click OK Alert Box V2
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+
+TC_MC_01322
+    [Documentation]    [Welove] Edit Category Fail - Duplicated sub category name
+    [Tags]    Regression    Low
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id2}
+    Execute Javascript    $('#subcategory_alter_add').click()
+    Execute Javascript    $('.sub_category').eq(1).val('test123')
+    Execute Javascript    $('#subcategory_alter_add').click()
+    ${message_error}    Execute Javascript    return $('#modal-error .modal-body .modal-desc-box .text-center').text()
+    #Execute Javascript    $('.box-album, .photo-click li').eq(1).find("a").click()
+    Should Be Equal    ${message_error}    ชื่อหมวดหมู่ย่อยไม่สามารถตั้งชื่อเหมือนกันได้
+
+TC_MC_01232
+    [Documentation]    [Welove] Edit Category Fail - category image upload file size over limit
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${before_cat_name}    Get Value    ${input_category_name}
+    #Clear Element Text    ${input_category_name}
+    Execute Javascript    $('#title_th').val('')
+    Genarate Category Name    EditByRobot
+    Execute Javascript    $('#title_th').val('${category_name}')
+    Upload Image To Gallery    ${upload_image}    image_oversize.jpg    ${upload_file}
+    Click Button Save And Display Alert    บันทึกข้อมูลหมวดหมู่สำเร็จ
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${current_cat_name}    Execute Javascript    return $('#title_th').val()
+    Should Be Equal    ${current_cat_name}    ${before_cat_name}
+
+TC_MC_01230
+    [Documentation]    [Welove] Edit Category Fail - category image upload file type is not supported
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    Genarate Category Name    EditByRobot
+    Input Text    ${input_category_name}    ${category_name}
+    Upload Image To Gallery    ${upload_image}    image_hack.jpg    ${upload_file}
+    # Run Keyword If    '${BROWSER}'=='ff'    Get Alert Text    ชนิดของไฟล์ไม่ถูกต้อง: image/jpeg    Confirm Action
+    Get Alert Text    ชนิดของไฟล์ไม่ถูกต้อง: image/jpeg
+
+TC_MC_01246
+    [Documentation]    [Welove] Verify Cancel Edit Category
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${before_cat_name}=    Get Value    ${input_category_name}
+    Clear Element Text    ${input_category_name}
+    Input Text    ${input_category_name}    TestEdit
+    Click Element    ${btn_reset}
+    Confirm Action
+    Sleep    1s
+    Go To    ${URL_STORE}/${category_shopname2}/admin/category/edit/${category_id}
+    ${current_cat_name}    Execute Javascript    return $('#title_th').val()
+    Should Be Equal    ${current_cat_name}    ${before_cat_name}

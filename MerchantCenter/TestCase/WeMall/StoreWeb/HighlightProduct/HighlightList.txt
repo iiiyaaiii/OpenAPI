@@ -1,0 +1,80 @@
+*** Setting ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${url_product_collection}
+Force Tags        feature-StoreAdmin    Store-Web    ProductCollection
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Product.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Product_Collection.txt
+
+*** Test Case ***
+TC_MC_01415
+    [Documentation]    Verify menu. When click "เพิ่มกลุ่มสินค้าแนะนำ" butto
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Click Element    //*[@id="page-content"]/div[2]/div[1]/div/button
+    Check Breadcrumb
+
+TC_MC_01417
+    [Documentation]    Verify menu. When click "เพิ่มกลุ่มสินค้าแนะนำ คลิก" link
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Click Element    //*[@id="table_report"]/tbody/tr/td/div/span[2]/a
+    Check Breadcrumb
+
+TC_MC_01419
+    [Documentation]    Verify status hide highlight list
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection Without Product
+    Execute Javascript    $('input#check_all').click()
+    Execute Javascript    $('input#btn_hide').click()
+    Page Should Contain    คุณต้องการซ่อนหรือไม่
+    Execute Javascript    $('div.modal-footer > a.btn-primary').click()
+    Product_Collection.Check Top Record Status Is Hide
+    Click Element    //*[@id="sidebar-shortcuts-large"]/div[3]/div[2]/div/a
+    Element Should Not Be Visible    //div[@class='seller-highlight-wrapper']
+
+TC_MC_01421
+    [Documentation]    Verify status show highlight list
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection Without Product
+    Execute Javascript    $('input#check_all').click()
+    Execute Javascript    $('input#btn_visible').click()
+    Page Should Contain    คุณต้องการแสดงหรือไม่
+    Execute Javascript    $('div.modal-footer > a.btn-primary').click()
+    Check Top Record Status Is Show
+    Click Element    //*[@id="sidebar-shortcuts-large"]/div[3]/div[2]/div/a
+    Element Should Not Be Visible    //div[@class='seller-highlight-wrapper']
+
+TC_MC_01423
+    [Documentation]    Verify deleted highlight list (no product)
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection Without Product
+    Delete Collection
+    Element Should Not Be Visible    //div[@class='highlight-name-list']
+
+TC_MC_01425
+    [Documentation]    Verify deleted highlight list (have product)
+    [Tags]    Regression    Medium
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'True'    Delete Collection
+    ${check_btn_add}    Check Have Collection
+    Run Keyword IF    '${check_btn_add}' == 'False'    Test Add Collection With Product    5
+    Delete Collection
+    Element Should Not Be Visible    //div[@class='highlight-name-list']

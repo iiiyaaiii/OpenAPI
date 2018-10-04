@@ -1,0 +1,451 @@
+*** Settings ***
+Suite Setup       Open and Prepare Data
+Suite Teardown    Clear All Test
+Force Tags        Sanity-Test    Buyer    Sanity
+Test Setup        Run Keywords    Go to    ${URL_PORTAL}    AND    Execute Javascript    $('#home_modal').css("display", "none")    AND    Execute Javascript    $('.modal-backdrop.fade.in').hide()
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Library           Collections
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Home.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Portal.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Search.txt
+
+*** Test Cases ***
+TC_MC_08225
+    [Documentation]    Home have FlashSale on time
+    # Go to    ${URL_PORTAL}
+    ${result}    Run Keyword And Return Status    Page Should Contain Element    ${home_flashsale}
+    Pass Execution If    '${result}' == 'False'    Message : ไม่มี DealZapp ในช่วงเวลานี้
+    Sleep    5s
+    # Page Should Contain Element    ${h_flashsale_title}
+    # Element Should Contain    ${h_flashsale_title}    เหลือเวลาอีก
+    : FOR    ${i}    IN RANGE    0    4
+    # \    ${index}=    Evaluate    ${i} + 1
+    \    # \    Element Should Be Visible    //ul[@class='items-list-box dz-list']//li[${index}]//a//div[@class='sale-off']
+    # \    Element Should Be Visible    //ul[@class='items-list-box dz-list']//li[${index}]//div[@class='item-detail']//div//div[@class='col-price']//span[@class='price']
+    # \    Element Should Be Visible    //ul[@class='items-list-box dz-list']//li[${index}]//div[@class='item-detail']//div//div[@class='col-price']//span[@class='compare']
+    \    ${price_visible}    Execute Javascript    return $('.items-list-box.dz-list > li').eq(${i}).find('div > .col-price > .price').is(':visible')
+    \    ${compare_price_visible}    Execute Javascript    return $('.items-list-box.dz-list > li').eq(${i}).find('div > .col-price > .compare').is(':visible')
+    \    Should Be True    ${price_visible}
+    \    Should Be True    ${compare_price_visible}
+
+TC_WLS_03084
+    [Documentation]    Level C-Search : Search product by keyword
+    # Go to    ${URL_PORTAL}
+    Input Text    ${input_search}    กางเกง
+    Execute Javascript    ${button_search}.click()
+    Element Should Contain    ${breadcrumb_new}    กางเกง
+    Element Should Contain    ${lvc_search_title}    กางเกง
+    ${count_match}    Get Matching Xpath Count    //a[contains(@class,'item-name') and contains(text(),'กางเกง')]
+    ${count_match}    Convert To Integer    ${count_match}
+    Should Be True    ${count_match} > 0
+    Element Should Be Visible    ${side_bar}    ${EXPECT_LOADTIME}
+    Element Should Be Visible    ${page_pagination}    ${EXPECT_LOADTIME}
+    #    Click Element    ${clickpage_two}
+    Execute Javascript    $('.portal-pagination > li > a')[2].click()
+    ${count_category}    Get Matching Xpath Count    ${side_bar}
+    ${count_category}    Convert To Integer    ${count_category}
+    Should Be True    ${count_category} > 0
+    ${count_match}    Get Matching Xpath Count    //a[contains(@class,'item-name') and contains(text(),'กางเกง')]
+    ${count_match}    Convert To Integer    ${count_match}
+    Should Be True    ${count_match} > 0
+    Input Text    ${input_search}    Fashion
+    Execute Javascript    ${button_search}.click()
+    Element Should Contain    ${breadcrumb_new}    Fashion
+    Element Should Contain    ${lvc_search_title}    Fashion
+    ${count_match}    Get Matching Xpath Count    //a[contains(@class,'item-name') and contains(text(),'Fashion')]
+    ${count_match}    Convert To Integer    ${count_match}
+    Should Be True    ${count_match} > 0
+    Element Should Be Visible    ${side_bar}
+    Element Should Be Visible    ${page_pagination}
+    #    Click Element    ${clickpage_three}
+    Execute Javascript    $('.portal-pagination > li > a')[3].click()
+    ${count_category}    Get Matching Xpath Count    ${side_bar}
+    ${count_category}    Convert To Integer    ${count_category}
+    Should Be True    ${count_category} > 0
+    ${count_match_page3}    Get Matching Xpath Count    //a[contains(@class,'item-name') and contains(text(),'Fashion')]
+    ${count_match_page3}    Convert To Integer    ${count_match_page3}
+    Should Be True    ${count_match_page3} > 0
+
+TC_WLS_03088
+    [Documentation]    Level C-Search : Filtering and sorting product
+    # Go to    ${URL_PORTAL}
+    Input Text    ${input_search}    กางเกงยีนส์
+    Execute Javascript    ${button_search}.click()
+    Element Should Be Visible    ${filter_min_price}
+    Element Should Be Visible    ${filter_max_price}
+    Input Text    ${filter_min_price}    500
+    Input Text    ${filter_max_price}    1500
+    Click Element    ${submit_price}
+    Element Should Be Visible    //*[@class='sort-active'][1]/span
+    ${badge_price}    Get Text    //*[@class='sort-active'][1]/span
+    Should Be Equal    ${badge_price}    ราคา : 500 - 1,500 บาท
+    ${list_category}=    Home.Select Category    main    0
+    ${main_category}=    Get From List    ${list_category}    0
+    ${list_category}=    Home.Select Category    sublv1    0
+    ${sub_category1}=    Get From List    ${list_category}    1
+    Element Should Be Visible    ${category_sub_active}
+    Execute Javascript    ${selected_sort_js}.click()
+    Click Element    ${sort_price_desc}
+    : FOR    ${i}    IN RANGE    1    5
+    \    ${price_now}=    Get Text    //ul[@class='items-list-box']/li[${i}]/div/div[2]/div/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //ul[@class='items-list-box']/li[${i_next}]/div/div[2]/div/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_now}    Remove String    ${price_now}    ,
+    \    ${price_now}    Convert To Number    ${price_now}
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    ${price_next}    Remove String    ${price_next}    ,
+    \    ${price_next}    Convert To Number    ${price_next}
+    \    Should Be True    ${price_now} >= ${price_next}
+    Element Should Be Visible    ${page_pagination}    ${EXPECT_LOADTIME}
+    Click Element    ${clickpage_two}
+    Element Should Be Visible    //*[@class='sort-active'][1]/span
+    ${badge_price2}    Get Text    //*[@class='sort-active'][1]/span
+    Should Be Equal    ${badge_price2}    ราคา : 500 - 1,500 บาท
+    Element Should Be Visible    ${category_sub_active}
+    : FOR    ${i2}    IN RANGE    1    5
+    \    ${price_now2}=    Get Text    //ul[@class='items-list-box']/li[${i2}]/div/div[2]/div/span[1]
+    \    ${i_next2}    Add Operation    ${i2}    1
+    \    ${price_next2}=    Get Text    //ul[@class='items-list-box']/li[${i_next2}]/div/div[2]/div/span[1]
+    \    ${price_now2}    Remove String    ${price_now2}    บาท
+    \    ${price_now2}    Remove String    ${price_now2}    ,
+    \    ${price_now2}    Convert To Number    ${price_now2}
+    \    ${price_next2}    Remove String    ${price_next2}    บาท
+    \    ${price_next2}    Remove String    ${price_next2}    ,
+    \    ${price_next2}    Convert To Number    ${price_next2}
+    \    Should Be True    ${price_now2} >= ${price_next2}
+    ${product_name}    Get Text    ${product_lvc_item_name}
+    Click Element    ${product_lvc_item}
+    ${product_name_lvd}    Get Text    ${leveld_itemname}
+    Should Be Equal    ${product_name}    ${product_name_lvd}
+    ${expect_breadcrubm}    Set Variable    หน้าหลัก>${main_category}>${sub_category1}
+    Element Should Contain    ${breadcrumb_new}    ${expect_breadcrubm}
+
+TC_WLS_03085
+    [Documentation]    Level C-Category : Search product by Main - Categories
+    # Go to    ${URL_PORTAL}
+    Execute Javascript    ${megamenu_all_cate}.click()
+    ${main_category}=    Execute Javascript    return $("a[href=1818]").text().trim()
+    Execute Javascript    $("a[href=1818]")[0].click()    # Skin care
+    Element Should Be Visible    ${breadcrumb_new}
+    Element Should Contain    ${breadcrumb_new}    หน้าหลัก>${main_category}
+    Element Should Be Visible    ${total_product}
+    Click Element    ${product_lvc_item}
+    Element Should Be Visible    ${breadcrumb_new}
+    Element Should Contain    ${breadcrumb_new}    หน้าหลัก>${main_category}
+
+TC_WLS_03086
+    [Documentation]    Level C-Category : Search product by Sub - Categories
+    # Go to    ${URL_PORTAL}
+    Execute Javascript    ${megamenu_all_cate}.click()
+    ${sub_category}=    Execute Javascript    return $("a[href=1351]").text().trim()
+    Execute Javascript    $("a[href=1351]")[0].click()
+    ${main_category}=    Execute Javascript    return $('.nl-main-cat ').text().trim()
+    Element Should Contain    ${breadcrumb_new}    หน้าหลัก>${main_category}>${sub_category}
+    Element Should Be Visible    ${total_product}
+    # Click Element    ${product_lvc_item}
+    Execute Javascript    ${product_lvc_item_js}[5].click()
+    Element Should Be Visible    ${breadcrumb_new}
+    Element Should Contain    ${breadcrumb_new}    หน้าหลัก>${main_category}>${sub_category}
+
+TC_WLS_03093
+    [Documentation]    Level C Category : Filter product by multi color
+    # Go to    ${URL_PORTAL}
+    Execute Javascript    ${megamenu_all_cate}.click()
+    Execute Javascript    $("a[href=10]")[0].click()    #Clothes
+    Execute Javascript    ${filter_color_red}.click()
+    ${count}    Get Matching Xpath Count    //ul[@class='items-list-box']/li
+    Should Be True    ${count} > 0
+    Element Should Be Visible    ${filter_bar_color_red}
+    Execute Javascript    ${filter_color_black}.click()
+    Element Should Be Visible    ${filter_bar_color_black}
+    ${count}    Get Matching Xpath Count    //ul[@class='items-list-box']/li
+    Should Be True    ${count} > 0
+    Execute Javascript    $('.item-name')[10].click()
+    ${check_first}    Check Element    //div[@option-title='ดำ']
+    Run Keyword If    '${check_first}'=='FAIL'    Element Should Be Visible    //div[@option-title='แดง']
+    Run Keyword If    '${check_first}'=='PASS'    Element Should Be Visible    //div[@option-title='ดำ']
+
+TC_WLS_03094
+    [Documentation]    Level C Category : Filter product by multi size
+    # Go to    ${URL_PORTAL}
+    Execute Javascript    ${megamenu_all_cate}.click()
+    Execute Javascript    $("a[href=10]")[0].click()    #Clothes
+    Click Element    //span[@class='product-size' and text() = 'S']
+    ${count}    Get Matching Xpath Count    //ul[@class='items-list-box']/li
+    Should Be True    ${count} > 0
+    Element Should Be Visible    //div[@class='sort-active']/span[text()='ขนาด : S']
+    Click Element    //span[@class='product-size' and text() = 'M']
+    ${count}    Get Matching Xpath Count    //ul[@class='items-list-box']/li
+    Should Be True    ${count} > 0
+    Element Should Be Visible    //div[@class='sort-active']/span[text()='ขนาด : M']
+    Execute Javascript    $('.item-name')[20].click()
+    ${check_first}    Check Element    //div[@data-option-title='S']
+    Run Keyword If    '${check_first}'=='FAIL'    Element Should Be Visible    //div[@data-option-title='M']
+    Run Keyword If    '${check_first}'=='PASS'    Element Should Be Visible    //div[@data-option-title='S']
+
+TC_WLS_03087
+    [Documentation]    Level C-Search : Search store by English keyword
+    # Go to    ${URL_PORTAL}
+    Execute Javascript    ${search_type}.mouseover()
+    Execute Javascript    ${search_shop}.click()
+    Input Text    ${input_search}    fashion
+    Execute Javascript    ${button_search}.click()
+    ${count_shop}    Get Matching Xpath Count    //a[contains(@class,'shop-name') and contains(text(),'fashion') or contains(text(),'Fashion')]
+    Should Be True    ${count_shop} > 0
+    Element Should Be Visible    //*[@class='nl-main-cat ']
+    Run Keyword IF    ${count_shop} == 12    Click Element    //ul[@class='pagination portal-pagination']//li[4]
+    ${count_shop_page3}    Get Matching Xpath Count    //div[@class='box-shop-rec']
+    ${count_shop}    Get Matching Xpath Count    //a[contains(@class,'shop-name') and contains(text(),'fashion') or contains(text(),'Fashion')]
+    Should Be True    ${count_shop} > 0
+    Element Should Be Visible    //*[@class='nl-main-cat ']
+
+TC_WLS_03095
+    [Documentation]    Level C - Search : Click Filter "จัดส่งฟรี" on Search product
+    # Go to    ${URL_PORTAL}
+    Execute Javascript    ${button_search}.click()
+    Element Should Be Visible    //input[@id='filter-shipping']
+    Execute Javascript    ${checkbox_shipping}.click()
+    Element Should Be Visible    //span[text()='จัดส่งฟรี']
+    Execute Javascript    $("img.item-img").first().click()
+    Execute Javascript    $("a.at-view-tab3").click()
+    #    Element Should Contain    //div[@class='shipment-detail ng-scope']    แบบเหมา
+    Page Should Contain    ฟรีค่าจัดส่ง    Message : สินค้าที่เลือกไม่มีฟรีค่าจัดส่ง
+    # TC_WLS_03096
+    #    [Documentation]    Level C - Search : Click Filter "รับบัตรเครดิต" on Search product
+    #    Go to    ${URL_PORTAL}
+    #    Input Text    ${input_search}    นาฬิกา
+    #    Execute Javascript    ${button_search}.click()
+    #    Element Should Be Visible    //input[@id='filter-credit']
+    #    Execute Javascript    ${checkbox_credit}.click()
+    #    Element Should Be Visible    //span[text()='รับบัตรเครดิต']
+    #    Execute Javascript    $("img.item-img").first().click()
+    #    Execute Javascript    $("a.at-view-tab2").click()
+    #    Element Should Contain    //div[@class="payment-detail ng-scope"][1]/div[@class="detail-title"]    ชำระผ่าน บัตรเครดิต หรือบัตรเดบิต
+    #    #    Element Should Contain    //div[@class="payment-detail ng-scope"][1]/div[@class="detail-title"]    Visa / MasterCard
+    #    Element Should Be Visible    //div[@class="payment-detail ng-scope"][1]/div[@class="box-overflow"]/div[@class="detail-img text-center"]/img
+
+TC_WLS_03099
+    [Documentation]    FlashSale product on time
+    # Go to    ${URL_PORTAL}
+    # Click Element    ${h_flashsale_item}[1]
+    ${result}    Run Keyword And Return Status    Execute Javascript    $('.h-flashsale-box > ul > li > div > a')[0].click()
+    Pass Execution If    '${result}' == 'False'    Message : ไม่มี DealZapp ในช่วงเวลานี้
+    ${result}    Run Keyword And Return Status    Element Should Be Visible    ${leveld_active_fl}
+    Pass Execution If    '${result}' == 'False'    Message : ไม่มี DealZapp ในช่วงเวลานี้
+    Element Should Contain    ${leveld_active_fl}    เหลือเวลาอีก
+    Element Should Be Visible    ${leveld_itemname_fl}
+
+TC_WLS_03100
+    [Documentation]    FlashSale product next time
+    # Go to    ${URL_PORTAL}
+    Execute Javascript    ${megamenu_flashsale}.click()
+    # ${n_flashsale}=    Check Element    ${box_next_flashsale}
+    ${result}    Run Keyword And Return Status    Execute Javascript    $('.dz-tab')[1].click()
+    Pass Execution If    '${result}' == 'False'    Message : ไม่มี DealZapp ในช่วงเวลานี้
+    ${product_count}    Get Matching Xpath Count    ${active_dealzapp}//div[3]//div[2]//ul[1]//li
+    Pass Execution If    '${product_count}' == '0'    Message : ไม่มี DealZapp ในช่วงเวลาถัดไป
+    # Run Keyword If    ${product_count} != 0    Click Element    ${box_next_flashsale}${fl_item}[1]
+    Execute Javascript    $("ul[class='items-list-box box-tmr-dealzapp '] > li > div > a")[0].click()
+    Element Should Be Visible    ${leveld_off_fl}
+    Element Should Contain    ${leveld_off_fl}    ราคาพิเศษ
+    Element Should Contain    ${leveld_off_fl}    เริ่มเวลา 10:00 น.
+    Element Should Be Visible    ${leveld_itemname_fl}
+    # TC_WLS_03100
+    #    [Documentation]    FlashSale list have FlashSale in next day
+    #    Go to    ${URL_PORTAL}
+    #    Execute Javascript    ${megamenu_flashsale}.click()
+    #    ${n_flashsale}=    Check Element    ${box_next_flashsale}
+    #    Run Keyword If    '${n_flashsale}' == 'PASS'    Should Be True    '${n_flashsale}' == 'PASS'
+
+TC_WLS_03089
+    [Documentation]    Level C-Search : Sorting product by Price as ASC
+    [Tags]    Regression
+    # Go to    ${URL_PORTAL}
+    Input Text    ${input_search}    กางเกง
+    Execute Javascript    ${button_search}.click()
+    Click Element    ${price_category}
+    Click Element    ${sort_price_asc}
+    : FOR    ${i}    IN RANGE    1    5
+    \    ${price_now}=    Get Text    //ul[@class='items-list-box']/li[${i}]/div/div[2]/div/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //ul[@class='items-list-box']/li[${i_next}]/div/div[2]/div/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} <= ${price_next}
+    Click Element    ${clickpage_two}
+    : FOR    ${i}    IN RANGE    15    20
+    \    ${price_now}=    Get Text    //ul[@class='items-list-box']/li[${i}]/div/div[2]/div/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //ul[@class='items-list-box']/li[${i_next}]/div/div[2]/div/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} <= ${price_next}
+
+TC_WLS_03090
+    [Documentation]    Level C-Category : Sorting product by Price as DESC
+    # Go to    ${URL_PORTAL}
+    Execute Javascript    ${megamenu_all_cate}.click()
+    Sleep    1s
+    Execute Javascript    $("a[href=11]")[0].click()
+    ${sort}=    Get Text    //*[@id="select_order"]/a
+    Should Be Equal    ${sort}    สินค้าแนะนำ
+    Execute Javascript    ${selected_sort_js}.click()
+    Click Element    ${sort_price_desc}
+    ${sort_desc}=    Get Text    //*[@id="select_order"]/a
+    Should Be Equal    ${sort_desc}    ราคาสูงสุด
+    : FOR    ${i}    IN RANGE    1    5
+    \    ${price_now}=    Get Text    //ul[@class='items-list-box']/li[${i}]/div/div[2]/div/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //ul[@class='items-list-box']/li[${i_next}]/div/div[2]/div/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท
+    \    ${price_next}    Remove String    ${price_next}    บาท
+    \    Should Be True    ${price_now} >= ${price_next}
+    # Click Element    ${clickpage_two}
+    Execute Javascript    $('.pagination.portal-pagination > li > a:contains(2)')[0].click()
+    : FOR    ${i2}    IN RANGE    15    20
+    \    ${price_now2}=    Get Text    //ul[@class='items-list-box']/li[${i2}]/div/div[2]/div/span[1]
+    \    ${i_next2}    Add Operation    ${i2}    1
+    \    ${price_next2}=    Get Text    //ul[@class='items-list-box']/li[${i_next2}]/div/div[2]/div/span[1]
+    \    ${price_now2}    Remove String    ${price_now2}    บาท
+    \    ${price_next2}    Remove String    ${price_next2}    บาท
+    \    Should Be True    ${price_now2} >= ${price_next2}
+
+TC_WLS_03091
+    [Documentation]    Level C-Search : Filtering product by price range
+    # Go to    ${URL_PORTAL}
+    Input Text    ${input_search}    หมวกแฟชั่น
+    Execute Javascript    ${button_search}.click()
+    Element Should Be Visible    ${filter_min_price}
+    Element Should Be Visible    ${filter_max_price}
+    Input Text    ${filter_min_price}    200
+    Input Text    ${filter_max_price}    500
+    Click Element    ${submit_price}
+    ${count_product_filter}    Get Matching Xpath Count    ${product_lvc}
+    ${count_product_filter}    Convert To Integer    ${count_product_filter}
+    Should Be true    ${count_product_filter} > 0
+    Element Should Be Visible    //*[@class='sort-active'][1]/span
+    ${badge_min_price}    Get Text    //*[@class='sort-active'][1]/span
+    Should Be Equal    ${badge_min_price}    ราคา : 200 - 500 บาท
+    Execute Javascript    ${selected_sort_js}.click()
+    Click Element    ${sort_price_asc}
+    ${product_price_1}    Get Text    ${product_lvc_price}
+    ${check_price_min}=    Set Variable    200
+    ${product_price_1}    Remove String    ${product_price_1}    บาท
+    Should Be True    ${product_price_1} >= ${check_price_min}
+    Execute Javascript    ${selected_sort_js}.click()
+    Click Element    ${sort_price_desc}
+    ${product_price_2}    Get Text    ${product_lvc_price}
+    ${check_price_max}=    Set Variable    500
+    ${product_price_2}    Remove String    ${product_price_2}    บาท
+    Should Be True    ${product_price_2} <= ${check_price_max}
+
+TC_WLS_03092
+    [Documentation]    Level C-Category : Filtering product by Special Promotion
+    # Go to    ${URL_PORTAL}
+    Execute Javascript    ${megamenu_all_cate}.click()
+    Sleep    1s
+    Execute Javascript    $("a[href=10]")[0].click()    # clothes category
+    Click Element    ${checkbox_promocode}
+    Sleep    0.3s
+    ${count_result}    Get Matching Xpath Count    //ul[@class='items-list-box']/li
+    ${count_result}    Convert To Integer    ${count_result}
+    ${count_promocode}    Get Matching Xpath Count    ${image_promocode}
+    ${count_promotion}    Get Matching Xpath Count    ${image_promotion}
+    ${sum_result}    Evaluate    ${count_promocode} + ${count_promotion}
+    Should Be Equal    ${count_result}    ${sum_result}
+    Element Should Be Visible    ${badge_promocode}
+    Run Keyword If    ${sum_result} == 0    Element Should Contain    //*[@class='title-lvc']    แสดงทั้งหมด 0 รายการ
+    Run Keyword If    ${sum_result} == 0    Element Should Contain    //*[@class='no-result-title']    การค้นหาของท่าน ไม่ตรงกับสินค้าใดๆ กรุณาค้นหาอีกครั้ง
+    # ${active_filter}    Get Text    ${badge_promocode}
+    # Should Be Equal    ${active_filter}    โปรโมชั่นพิเศษ
+
+TC_MC_08305
+    [Documentation]    Filtering and sorting product DealZapp on DealZapp on time
+    # Go to    ${URL_PORTAL}/dealzapp
+    ${product_count}    Get Matching Xpath Count    ${active_dealzapp}//div[3]//div[2]//ul[1]//li
+    Pass Execution If    '${product_count}' == '0'    Message : ไม่มี DealZapp ในช่วงเวลานี้
+    # Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("มือถือและแท็บเล็ต") input').click();
+    ${filter_category}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust > div > label').eq(1).text().trim()
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust > div > label > input').eq(1).click()
+    sleep    1s
+    Execute javascript    $('#select_order ul li').eq(2).find('a')[0].click();
+    Sleep    2s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("${filter_category}")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('#select_order ul li').eq(1).find('a')[0].click();
+    Sleep    2s
+    Element Should Contain    ${selected_sort}    ส่วนลดสูงสุด
+    : FOR    ${i}    IN RANGE    1    5
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/a/div
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/a/div
+    # \    ${price_now}    Remove String    ${price_now}    %    ${\n}    OFF
+    # \    ${price_next}    Remove String    ${price_next}    %    ${\n}    OFF
+    \    ${price_now}    Remove String Using Regexp    ${price_now}    %\n+[A-Z]+
+    \    ${price_next}    Remove String Using Regexp    ${price_next}    %\n+[A-Z]+
+    \    Should Be True    ${price_now} >= ${price_next}
+    Execute javascript    $('#select_order ul li').eq(2).find('a')[0].click();
+    Sleep    1.5s
+    Element Should Contain    ${selected_sort}    ราคาต่ำสุด
+    : FOR    ${i}    IN RANGE    1    5
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/div/div[2]/div[1]/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/div/div[2]/div[1]/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท    ,
+    \    ${price_next}    Remove String    ${price_next}    บาท    ,
+    \    Should Be True    ${price_now} <= ${price_next}
+    Execute javascript    $('#select_order ul li').eq(3).find('a')[0].click();
+    Sleep    1.5s
+    Element Should Contain    ${selected_sort}    ราคาสูงสุด
+    : FOR    ${i}    IN RANGE    1    5
+    \    ${price_now}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i}]/div/div[2]/div[1]/span[1]
+    \    ${i_next}    Add Operation    ${i}    1
+    \    ${price_next}=    Get Text    //*[@id="wrapper"]/div[3]/div[2]/div[3]/div[2]/ul[1]/li[${i_next}]/div/div[2]/div[1]/span[1]
+    \    ${price_now}    Remove String    ${price_now}    บาท    ,
+    \    ${price_next}    Remove String    ${price_next}    บาท    ,
+    \    Should Be True    ${price_now} >= ${price_next}
+    Execute javascript    $('.items-list-box li').eq(0).find('a')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.breadcrumb-box:contains("${filter_category}")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.inner-dealzapp:contains("เหลือเวลาอีก")').is(':visible')
+    Should Be True    ${is_contain}
+
+TC_MC_08285
+    [Documentation]    Filtering and sorting product DealZapp on DealZapp next time
+    Go to    ${URL_PORTAL}/dealzapp
+    sleep    0.5s
+    ${product_count}    Get Matching Xpath Count    ${active_dealzapp}//div[3]//div[2]//ul[1]//li
+    Pass Execution If    '${product_count}' == '0'    Message : ไม่มี DealZapp ในช่วงเวลานี้
+    Execute Javascript    $('.dz-tab')[1].click()
+    Sleep    1s
+    ${product_count}    Get Matching Xpath Count    ${active_dealzapp}//div[3]//div[2]//ul[1]//li
+    Pass Execution If    '${product_count}' == '0'    Message : ไม่มี DealZapp ในช่วงเวลาถัดไป
+    # Execute javascript    $('.group-lvc-menu-list .option-wetrust').eq(1).find('.checkbox:contains("มือถือและแท็บเล็ต") input').click();
+    ${filter_category}    Execute Javascript    return $('.group-lvc-menu-list .option-wetrust > div > label').eq(2).text().trim()
+    sleep    1s
+    Execute javascript    $('.group-lvc-menu-list .option-wetrust > div > label > input').eq(2).click()
+    Sleep    2s
+    ${is_contain}    Execute Javascript    return $('.sort-active:contains("${filter_category}")').is(':visible')
+    Should Be True    ${is_contain}
+    Execute javascript    $('.items-list-box li').eq(0).find('a')[0].click();
+    sleep    1s
+    ${is_contain}    Execute Javascript    return $('.breadcrumb-box:contains("${filter_category}")').is(':visible')
+    Should Be True    ${is_contain}
+    ${is_contain}    Execute Javascript    return $('.inner-dealzapp:contains("เริ่มเวลา 10:00 น.")').is(':visible')
+    Should Be True    ${is_contain}
+
+*** Keyword ***
+Open and Prepare Data
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+
+Clear All Test
+    Close All Browsers

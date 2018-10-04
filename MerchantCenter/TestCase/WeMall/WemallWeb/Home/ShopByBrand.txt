@@ -1,0 +1,45 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Test Teardown     Run Keywords    Capture Page Screenshot    AND    Close Browser
+Force Tags        Wemall-Web
+Resource          ../../../../Resource/WeMall/Configuration/Staging/serverconfig.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Portal.txt
+Resource          ../../../../Keyword/Common/Home.txt
+
+*** Keywords ***
+Go To 'Shop by Brand' section on WeMall Portal Page
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+    Home.Scroll Down to section    Shop By Brand
+
+Go To View All Brands Page
+    Go To 'Shop by Brand' section on WeMall Portal Page
+    Home.Open View All Brands link
+    Home.View All Brand page should be appeared
+
+*** Variables ***
+${GOPROPAGETITLE}    GoPro | Wemall.com - ห้างออนไลน์ สินค้าแบรนด์ดัง เครื่องสำอาง เครื่องใช้ไฟฟ้า
+
+*** Test Cases ***
+TC_MC_05145
+    [Documentation]    [Portal] Shop by Brand - Filter
+    [Tags]    Ligo    Sprint2017MC13
+    [Setup]    Go To 'Shop by Brand' section on WeMall Portal Page
+    Home.Scroll Down to section    Shop By Brand
+    Home.Select Brand Filter    Recommend
+    Home.Select Brand Icon    GoPro
+    Home.Selected product should be appeared    สินค้าแนะนำ
+
+TC_MC_05146
+    [Documentation]    Shop by Brand page - Breadcrumb
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    [Setup]    Go To View All Brands Page
+    Home.Shop by Brand Breadcrumb should be appeared
+
+TC_MC_05149
+    [Documentation]    Shop by Brand page - View Brand
+    [Tags]    Regression    Ligo    Sprint2017MC13
+    [Setup]    Go To View All Brands Page
+    Home.Click Brand Name    GoPro
+    Home.Selected product should be appeared    สินค้าแนะนำ

@@ -1,0 +1,180 @@
+*** Variables ***
+### Data ###
+${char_less_80}    มาร์กบำรุงผิวหน้าMark!@#$%12345
+${char_over_80}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky
+${char_equal_80}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345
+${char_over_170}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky1234567890
+${char_equal_170}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345
+${char_less_170}    pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky12345pocky
+${same_wls}       --- ใช้ชื่อเดียวกับหมวดหมู่ weloveshopping ---
+${create_category}    --- สร้างหมวดหมู่ใหม่ ---
+${select_shopcate}    --- เลือกหมวดหมู่สินค้า weloveshopping ---
+${category_lv1}    เสื้อผ้า
+${category_lv2}    ผู้หญิง
+${category_lv3}    กระโปรง
+${category_lv4}    กระโปรงแฟชั่น
+${p_name_over_80}    น้ำหอมเป็นหนึ่งในอาวุธสำคัญในการสร้างเสน่ห์ให้ดึงดูดรวมทั้งสร้างเอกลักษณ์ของบุคคลผู้มีอารยธรรม
+${p_name_equl_80}    น้ำหอมเป็นหนึ่งในอาวุธสำคัญในการสร้างเสน่ห์ให้ดึงดูดรวมทั้งสร้างเอกลักษณ์ของบุคค
+${invalid_p_desc1}    <!DOCTYPE html><html><body><table style=""width:100%""><tr><td>Jill</td><td>Smith</td><td>50</td></tr></table></body></html>
+${invalid_p_desc2}    http://www.google.co.th 0891234567 wlsautomate12@gmail.com http://instagram.com/wlsautomate 1234-5678-9012
+###
+### Locator ###
+${url_product_add}    ${URL_STORE}/${USER_S001}/admin/product/create
+${url_product_add_MF}    ${URL_STORE}/${user_wm_type_mf_name}/admin/product/create
+${url_product_edit}    ${URL_STORE}/${category_shopname2}/admin/product/edit/${product_id}
+${url_product_edit_MF}    ${URL_STORE}/${user_wm_type_mf_name}/admin/product/edit
+${url_product_list}    ${URL_STORE}/${USER_S001}/admin/product
+${url_product_list2}    ${URL_STORE}/${USER_S002}/admin/product
+${url_product_list_MF}    ${URL_STORE}/${user_wm_type_mf_name}/admin/product
+${url_product_collection}    ${URL_STORE}/${USER_S001}/admin/collection
+${btn_hide}       //input[@id="btn_hide"]
+${btn_show}       //input[@id="btn_visible"]
+${btn_del}        //input[@id="btn_delete"]
+${my_shop}        //*[@id="titan"]/div[2]/div/div[3]/div[2]/a/img
+${lvd_product_name}    $('.product-name')
+${lvd_product_price}    $('#product-price')
+${lvd_product_type}    $('.text-product-type')
+${lvd_product_desc}    $('#howto-description')
+${top_record_pid}    //*[@id="table_report"]/tbody/tr[1]/td[2]/a[2]/div
+${top_record_p_name}    //*[@id="table_report"]/tbody/tr[1]/td[3]/div[1]/a[1]
+${top_record_p_error}    //*[@id="table_report"]/tbody/tr/td[3]/div[4]
+${top_record_selling_price}    //*[@id="table_report"]/tbody/tr[1]/td[4]
+${top_record_normal_price}    //*[@id="table_report"]/tbody/tr[1]/td[5]
+${top_record_amount}    //*[@id="table_report"]/tbody/tr[1]/td[6]
+${top_record_p_type}    //*[@id="table_report"]/tbody/tr[1]/td[7]
+${top_record_p_hide}    //*[@id="table_report"]/tbody/tr[1]/td[8]
+${top_record_p_status}    //*[@id="table_report"]/tbody/tr/td[9]
+${check_all}      $('input[type="checkbox"]').eq(1)
+${check_record}    $('.checkbox-select')
+${icon_delete}    $('.icon-delete')
+${btn_choose_image}    //*[@id="btn_select_photo"]
+${btn_browse_image}    //a[@id="upload-img-product"]
+${input_upload_file}    //input[@id="fileuploadinput"]
+${thumb_from_browse}    //*[@id="fileupload"]/div[3]/div/div[1]/div/div[2]/ul/li/a/img
+${btn_save_browse}    //*[@id="fileupload"]/div[3]/div/div[2]/button[2]
+${quick_edit}     $('.icon-q-editpd').eq(0)
+${box_quick_edit}    $('.q-editpd-modal').eq(0)
+${icon_product_status}    $('.status-icon').eq(0)
+${btn_save_quick_edit}    $('.quick-save').eq(0)
+${quick_selling_price}    $('.price').eq(0)
+${btn_save_quick_edit}    //button[@class="btn btn-small btn-primary quick-save btn-save"]
+${quick_normal_price}    $('.compare_at_price').eq(0)
+${quick_amount}    $('.quantity').eq(0)
+${quick_product_name}    $('.title').eq(0)
+${input_keyword}    //*[@id="search"]
+${box_attribute}    //div[@id="sub-attr"]
+${table_cross_attr}    //table[@id="cross-sub-attr"]//tbody/tr
+${table_cross_attr_data_lv1}    //*[@id="cross-sub-attr-sel-tbody"]/div[2]
+${table_cross_attr_data_lv0}    //*[@id="cross-sub-attr-sel-tbody"]/div[1]
+${table_cross_attr_data_lv2}    //*[@id="cross-sub-attr-sel-tbody"]/div[3]
+${attr_r1}        //*[@id="optrow0"]/td[3]
+${attr_r2}        //*[@id="optrow1"]/td[3]
+${attr_r3}        //*[@id="optrow2"]/td[3]
+${attr_r4}        //*[@id="optrow3"]/td[3]
+${attr_r5}        //*[@id="optrow4"]/td[3]
+${attr_r6}        //*[@id="optrow5"]/td[3]
+${attr_r7}        //*[@id="optrow6"]/td[3]
+${attr_r8}        //*[@id="optrow7"]/td[3]
+${attr_r9}        //*[@id="optrow8"]/td[3]
+${table_cross_attr_data_lv1}    //table[@id="cross-sub-attr"]//tbody[@data-lv="1"]//tr
+${table_cross_attr_data_lv0}    //table[@id="cross-sub-attr"]//tbody[@data-lv="0"]//tr
+${table_cross_attr_data_lv2}    //table[@id="cross-sub-attr"]//tbody[@data-lv="2"]//tr
+${attr_r1}        //*[@id="optrow0"]/td[4]
+${attr_r2}        //*[@id="optrow1"]/td[4]
+${attr_r3}        //*[@id="optrow2"]/td[4]
+${attr_r4}        //*[@id="optrow3"]/td[4]
+${attr_r5}        //*[@id="optrow4"]/td[4]
+${attr_r6}        //*[@id="optrow5"]/td[4]
+${attr_r7}        //*[@id="optrow6"]/td[4]
+${attr_r8}        //*[@id="optrow7"]/td[4]
+${attr_r9}        //*[@id="optrow8"]/td[4]
+${sku_r1}         //*[@id="optrow0"]/td[3]/span/input
+${selling_price_r1}    //*[@id="optrow0"]/td[5]/span/input
+${amount_r1}      //*[@id="optrow0"]/td[7]/span/input
+${icon_delete_attr_all}    //*[@id="check_all"]
+${btn_delete_attr}    //*[@id="btn_delete_inv"]
+${icon_delete_attr_r2}    //*[@id="optrow1"]/td[1]/label/input
+${btn_edit_seo}    //*[@id="edit_meta_th"]/a
+${input_seo_title}    //*[@id="seo_title_th"]
+${seo_title}      //*[@class="snippet-title"]
+${input_seo_desc}    //*[@id="seo_description_th"]
+${seo_desc}       //*[@class="snippet-desc"]
+${input_product_name}    //*[@id="title_th"]
+${input_product_desc}    //*[@id="th_content"]/div[2]/div/div/div
+${icon_incomplete_p_data}    xpath=(//*[@class="icon-ok-sign"])[1]
+${icon_incomplete_p_category}    xpath=(//*[@class="icon-ok-sign"])[2]
+${icon_incomplete_p_price}    xpath=(//*[@class="icon-ok-sign"])[3]
+${box_stock}    //input[@id="instockunit"]
+${edit_p_category_lv1}    //select[@id="category1"]
+${p_category_lv1}    //select[@id="category"]
+${p_category_lv2}    //select[@id="category2"]
+${p_category_lv3}    //select[@id="category3"]
+${p_category_lv4}    //select[@id="category4"]
+${shop_category}    //select[@id="shop_category"]
+${input_product_sku}    //*[@name="sku"]
+${input_product_weight}    //input[@id="weight"]
+${input_product_tag}    //*[@id="tag_tag"]
+${input_selling_price}    //input[@id="price"]
+${input_normal_price}    //*[@name="compare_at_price"]
+${product_type_new}    $('input[name="pdtype"]').eq(0)
+${product_type_used}    $('input[name="pdtype"]').eq(1)
+${status_instock}    $('input[name="condition"]').eq(0)
+${prepare_shipping}    //*[@name="prepare_shipping"]
+${unit_instock}    //*[@name="instockunit"]
+${status_preorder}    $('input[name="condition"]').eq(1)
+${shipping_in}    //*[@name="shipping_in"]
+${unit_preorder}    //*[@name="preorderunit"]
+${empty_canbuy}    //input[@id="emptycanbuy"]
+${txt_quantity}    //input[@name="quantity"]
+${btn_saved}    //button[@class="btn btn-primary btn-small btn-save"]
+${btn_save_edit}    //button[@class="btn btn-small btn-primary quick-save btn-save"]
+${icon_status_hide}    //i[@class="icon-eye-hide-grey tooltip-grey"]
+${icon_status_show}    //i[@class="icon-eye-show-green tooltip-grey"]
+${icon_status_somehide}    //i[@class="icon-eye-hide-orange"]
+${Stock}          //span[@class="quantity-text"]
+${stock_icon}     //i[@class="icon-chevron-sign-down"]
+${PID_NA}         //tr[td[6][contains(.,'N/A')]]//td[2]//div
+${PID_Stock}      //tr[td[6][not(contains(.,'N/A'))]]//td[2]//div
+${Stock_popup}    //div[@class="modal hide fade pdstock-modal in"]
+${AvailableTooltip_Icon}    //a[@id="pd-ready-sell"]//i
+${Tooltip}        //div[@class="tooltipster-content"]
+${HoldTooltip_Icon}    //a[@id="pd-hold-stock"]//i
+${Table_Stock}    //div[@class="pdstock-table-box"]
+${StockTotal}     //span[@class="total"]
+${StockAvailable}    //span[@class="quantity"]
+${StockHold}      //span[@class="hold"]
+${FilterTooltip}    //a[@class="hidden-phone"]//i
+${ShowProductStatus}    //i[@class="icon-eye-hide-orange tooltip-grey" or @class="icon-eye-show-green tooltip-grey"]
+${HideProductStatus}    //i[@class="icon-eye-hide-grey tooltip-grey"]
+${AllProductStatus}    //i[@class="icon-eye-hide-orange tooltip-grey" or @class="icon-eye-show-green tooltip-grey" or @class="icon-eye-hide-grey tooltip-grey"]
+${Icon_Delete_Category}    btn_delete_cat
+${obj_robot_test_fill_form_number}    $('#product-feature-box .control-group .control-label strong:contains("RobotTestFillFormNumber20Digit")').parent().next().find('.fill-form')
+${obj_robot_test_fill_form_text}    $('#product-feature-box .control-group .control-label strong:contains("RobotTestFillFormText20Char")').parent().next().find('.fill-form')
+${obj_robot_test_fill_form_date}    $('#product-feature-box .control-group .control-label strong:contains("RobotTestFillFormDate")').parent().next().find('.date-picker')
+${url_monitoring_listing}    ${URL_WMS}/monitoringlisting
+${url_product_list_shopname_user002}    ${URL_STORE}/${category_shopname2}/admin/product
+${d_width}    id=d_width
+${d_length}    id=d_length
+${d_height}    id=d_height
+${icon_fast_editproduct}    //tr[2]//div[@class="pd-list-name"]//i[@class="icon-edit-sign icon-q-editpd"]
+${modal_fast_editproduct}    //div[@class="modal hide fade q-editpd-modal in"]
+${lbl_status_for_approval}    //span[@class="mo_s"]
+${txt_quick_product_name}    //input[@name="title"]
+${lbl_warning_message}    //div[@class="span12 alert alert-error no-margin"]
+${icn_hide_status}    //i[@class="icon-eye-hide-grey tooltip-grey"]
+${icn_show_status}    //i[@class="icon-eye-show-green tooltip-grey"]
+${txt_stock_first_attr}    //*[@id="cross-sub-attr"]/tbody/tr[1]/td[7]/span/input
+${txt_stock_second_attr}    //*[@id="cross-sub-attr"]/tbody/tr[2]/td[7]/span/input
+${txt_stock_third_attr}    //*[@id="cross-sub-attr"]/tbody/tr[3]/td[7]/span/input
+${txt_product_name}    id=title_th
+${txt_description}    //div[@class="redactor-editor"]
+${txt_stock}    id=instockunit
+${txt_sku_product}    id=sku
+${txt_price_product}    id=price
+${txt_compare_price}    id=compare_at_price
+${btn_search_product_id}    //*[@id="table_report_filter"]/button
+${txt_search_rpoduct_id}    id=search
+${chk_select_product}    //tbody/tr[1]/td[1]/label
+${btn_show_product}    id=btn_visible
+${fre_pop-up_confirm}    //div[@class="bootbox modal fade in"]
+${btn_ok_confirm}    //a[@class="btn btn-primary"]

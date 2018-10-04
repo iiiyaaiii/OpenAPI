@@ -1,0 +1,183 @@
+*** Settings ***
+Library           SeleniumLibrary
+Library           String
+Library           OperatingSystem
+Library           Collections
+Library           BuiltIn
+Resource          ../../Resource/WeMall/WebElement/Gallery.txt
+
+
+*** Keywords ***
+Count Album in shop
+    [Documentation]    Count Album in shop
+    ${CheckPage}    Execute Javascript    return $('.pagination li').length;
+    ${CheckPaging}    Set Variable    ${CheckPage}
+    ${CheckPage}    Set Variable If    ${CheckPage} == 0    4    ${CheckPage}
+    : FOR    ${Index}    IN RANGE    0    ${CheckPage}-3
+    \    Wait Until Element Is Visible    //div[contains(@class,'box-album')]
+    \    ${count_before}    Get Matching Xpath Count    //div[contains(@class,'box-album')]
+    \    Exit For Loop If    '${CheckPaging}' == '0'
+    \    Go to next page
+    \    Wait Until Element Is Visible    //div[contains(@class,'box-album')]
+    \    ${Get_Album}    Get Matching Xpath Count    //div[contains(@class,'box-album')]
+    \    ${count_before}    Evaluate    ${Count_Before} + ${Get_Album}
+    [Return]    ${count_before}
+
+Count Album in shop from delete Icon
+    [Documentation]    Count Album in shop from delete Icon
+    ${CheckPage}    Execute Javascript    return $('.pagination li').length;
+    ${CheckPaging}    Set Variable    ${CheckPage}
+    #Log To console    ${CheckPaging}
+    ${CheckPage}    Set Variable If    ${CheckPage} == 0    4    ${CheckPage}
+    : FOR    ${Index}    IN RANGE    0    ${CheckPage}-3
+    \    ${count_before}    Execute Javascript    return $('.icon-delete').length;
+    \    Exit For Loop If    '${CheckPaging}' == '0'
+    \    Go to next page
+    \    ${Get_Album}    Execute Javascript    return $('.icon-delete').length;
+    \    ${count_before}    Evaluate    ${Count_Before} + ${Get_Album}
+    [Return]    ${count_before}
+
+Upload Image To Gallery
+    [Documentation]    Upload Image by Gallery
+    [Arguments]    ${image}    ${input_file}
+    ${IMG_DIR}=    Replace String Using Regexp    ${CURDIR}    Keyword$    Image
+    ${CUR_IMG_DIR}=    Remove String    ${IMG_DIR}    ${/}Keyword${/}Common
+    ${file}=    Catenate    SEPARATOR=${/}    ${CUR_IMG_DIR}${/}Resource/${BU}${/}Image    ${image}
+    Choose File    ${input_file}    ${file}
+
+Upload Image To Banner
+    [Documentation]    Upload Image banner
+    [Arguments]    ${button}    ${image}    ${input_file}
+    Execute Javascript    ${button}.css({"visibility":"visible"});
+    ${visibility}=    Execute Javascript    return ${button}.css("visibility");
+    ${IMG_DIR}=    Replace String Using Regexp    ${CURDIR}    Keyword$    Image
+    ${CUR_IMG_DIR}=    Remove String    ${IMG_DIR}    ${/}Keyword${/}Common
+    ${file}=    Catenate    SEPARATOR=${/}    ${CUR_IMG_DIR}${/}Resource/${BU}${/}Image    ${image}
+    Choose File    ${input_file}    ${file}
+    Sleep    10s
+    Execute Javascript    $('#banner_link-modal').val('https://alpha-store.wemall-dev.com/anywherewithme/admin/theme/setting');
+    Execute Javascript    $('#btn-save-banner').click()
+
+Choose Image From Gallery Correct
+    [Documentation]    Choose Image From Gallery Correct
+    Wait Until Element Is Visible    //div[@class="span3 box-album"]    10s
+    Execute Javascript    $('.modal-addimg tbody tr').eq(0).click()
+    Sleep    2s
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    Sleep    2s
+    ${count_thumb_image}    Execute Javascript    return $('.wls-total-selected').text()
+    ${count}    Remove String    ${count_thumb_image}    0
+    Run Keyword If    '${count}' == '1'    Execute Javascript    $('.save_photo').eq(2).click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    Wait Until Element Is Not Visible    //div[@class="span3 box-album"]    10s
+
+Choose Image From Gallery Correct2
+    [Documentation]    Choose Image From Gallery Correct2
+    Execute Javascript    $('.modal-addimg tbody tr').eq(0).click()
+    Sleep    2s
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    Sleep    2s
+    ${count_thumb_image}    Execute Javascript    return $('.wls-total-selected').text()
+    ${count}    Remove String    ${count_thumb_image}    0
+    Run Keyword If    '${count}' == '1'    Execute Javascript    $('.save_photo').eq(0).click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    Sleep    1s
+
+Choose Image From Gallery Correct New
+    [Documentation]    Choose Image From Gallery Correct New
+    Execute Javascript    $('.modal-addimg tbody tr').eq(0).click()
+    Sleep    2s
+    Execute Javascript    $('.widget-main-container').last().find('li img').eq(0).click()
+    Sleep    2s
+    ${count_thumb_image}    Execute Javascript    return $('.wls-total-selected').text()
+    ${count}    Remove String    ${count_thumb_image}    0
+    Execute Javascript    $('.save_photo').last()[0].click()
+    Sleep    1s
+
+Choose Image From Gallery Correct3
+    [Documentation]    Choose Image From Gallery Correct3
+    Execute Javascript    $('.modal-addimg tbody tr').eq(0).click()
+    Sleep    2s
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    Sleep    2s
+    ${count_thumb_image}    Execute Javascript    return $('.wls-total-selected').text()
+    ${count}    Remove String    ${count_thumb_image}    0
+    Run Keyword If    '${count}' == '1'    Execute Javascript    $('.save_photo').click()
+    Sleep    1s
+
+Choose Image From Gallery Correct4
+    [Documentation]    Choose Image From Gallery Correct4
+    Execute Javascript    $('.modal-addimg tbody tr').eq(0).click()
+    Sleep    2s
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    Sleep    2s
+    Execute Javascript    $('.save_photo').last()[0].click()
+    Sleep    2s
+
+Choose Image From Gallery Correct5
+    [Documentation]    Choose Image From Gallery Correct5
+    [Arguments]    ${btn_number}
+    Execute Javascript    $('.modal-addimg tbody tr').eq(0).click()
+    Sleep    2s
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    Sleep    2s
+    Execute Javascript    $('.save_photo').eq(${btn_number}).click()
+    Sleep    2s
+
+Choose Image From Gallery Incorrect
+    [Documentation]    Can choose Image From Gallery Incorrect
+    Execute Javascript    $('.modal-addimg tbody tr').eq(0).click()
+    Sleep    1s
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    Sleep    2s
+    Execute Javascript    $('.box-album, .photo-click li').eq(1).find("a").click()
+    Sleep    2s
+    ${msg_over_limit}    Get Alert Message
+
+Get Alert Text
+    [Documentation]    Display pop-up alert incase upload image incorrect type file
+    [Arguments]    ${text}
+    ${msg_alert}    Get Alert Message
+    Should Be Equal    ${msg_alert}    ${text}
+
+Add Image In Gallery
+    [Documentation]    Add Image In Gallery
+    Upload Image To Gallery    logo_mi6_seller_1.jpg    id=fileuploadinput
+    Sleep    1s
+    Upload Image To Gallery    logo_mi6_seller_2.jpg    id=fileuploadinput
+    Sleep    1s
+    Upload Image To Gallery    logo_mi6_seller_3.jpg    id=fileuploadinput
+    Sleep    1s
+    Upload Image To Gallery    logo_mi6_seller_4.jpg    id=fileuploadinput
+    Sleep    1s
+
+Select Album For Edit
+    [Arguments]    ${album}
+    ${album_default}=    Replace String    ${lnk_album_default}    _name    ${album}
+    Click Element    ${album_default}
+
+Click Edit Name Album
+    [Arguments]    ${number_album}
+    ${name_album}    Replace String    ${lnk_name_album}    _number    ${number_album}
+    Click Element    ${name_album}
+
+Click Submit button
+    Click Element    ${btn_submit}
+    Wait Until Element Is Visible    ${fre_album_list}
+
+Verify Message Alert Clear Name Album
+    Focus    ${input_name}
+    Wait Until Element Is Visible    ${fre_alert}
+    Element Text Should Be    ${fre_alert}    กรุณาใส่ข้อมูล
+
+Edit Album Name
+    Clear Element Text    ${input_name}
+    ${time}    Get Time    epoch
+    ${album_name_edit}    Catenate    R${time}
+    Input Text    ${input_name}    ${album_name_edit}
+    Set Test Variable    ${album_name_edit}
+
+Verify After Edit Album Name
+    ${new_album_name}    Execute Javascript    return $('.ab-name').eq(0).text()
+    ${new_album_name_str}    Convert To String    ${new_album_name}
+    Should Be Equal    ${new_album_name_str}    ${album_name_edit}

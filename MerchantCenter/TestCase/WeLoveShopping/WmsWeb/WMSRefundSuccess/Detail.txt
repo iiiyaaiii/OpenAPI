@@ -1,0 +1,85 @@
+*** Setting ***
+Suite Setup       Go to Login and Check Seller Login    ${URL_PORTAL}    ${BROWSER}    ${slug_order_store}    ${user_store_order}    ${password_store_order}
+Suite Teardown    Clear All Test
+Test Setup        Create order offline channel    ${slug_order_store}    ${robot_inpage_product_product}    ${select_address}    ${shipping_post}    ${ibank_channel_radio_button}    ${lbl_payment_offline_ref2_number}
+Library           SeleniumLibrary
+Library           String
+Force Tags        WMS-Web    mc-wls
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Account_History.txt
+Resource          ../../../../Keyword/Common/Account_Detail.txt
+Resource          ../../../../Keyword/Common/Account_Refund.txt
+Resource          ../../../../Keyword/Common/Store_History.txt
+Resource          ../../../../Keyword/Common/Store_Detail.txt
+Resource          ../../../../Keyword/Common/Bulktracking.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/ManageOrder.txt
+Resource          ../../../../Keyword/Common/WMS_OrderRequestRefund.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/AccountHistory.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/AccountRefund.txt
+
+*** Test Cases ***
+TC_MC_04081
+    [Documentation]    WLSWMSRefundSuccess : View refund success Menu Search
+    [Tags]    Regression    Medium    WMS-Web
+    Go to account order detail page    ${order_id}
+    Create Valid SCB Mid Day Bank Text File    ${order_id}    ${NAME_20CHARS}    ${ref1}    ${order_id}
+    ...    CSH
+    Offline Upload And Reconcile    ${order_id}    ${file_path}${/}SCB_TexFile.txt     ${dateReconcile}
+    Close Browser
+    Go to Login and Check Seller Login    ${URL_PORTAL}    ${BROWSER}    ${slug_order_store}    ${user_store_order}    ${password_store_order}
+    Go To Store Order History    ${slug_order_store}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Buyer request refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า    A02.jpg
+    Go to store order detail    ${slug_order_store}    ${order_id}
+    Seller accept the refund request    ${password_store_order}
+    Go to account order detail page    ${order_id}
+    Buyer attach document refund offline    ธนาคารกรุงไทย จำกัด (มหาชน)    11111111111    bookbank_exam.jpg
+    Go to WMS    wlsapprove@recon.com    escrow123
+    Go to Seller Accept Refund page
+    Search order id on wms refund success    ${order_id}
+    Go To Refund Detail page
+    Admin decline some refund documents    เอกสารไม่ชัด    ไม่ตรงกับข้อมูลผู้ซื้อ    ไม่ตรงกับบัญชีธนาคาร
+    Go to account order detail page    ${order_id}
+    Buyer upload refund documents
+    Check status of Book Bank name    ไม่ผ่านเนื่องจาก : ไม่ตรงกับข้อมูลผู้ซื้อ
+    Check status of Bank name    ไม่ผ่านเนื่องจาก : ไม่ตรงกับบัญชีธนาคาร
+    Check status of Bank number    ${EMPTY}
+    Check status of copy Book Bank    ไม่ผ่านเนื่องจาก : เอกสารไม่ชัด
+    Login admin manage order web
+    Search email    ${order_id_sub}    NB400RD
+    Check sent email on order admin page
+
+
+TC_MC_04082
+    [Documentation]    WLSWMSRefundSuccess : WLS Approve : approve refund document
+    [Tags]    RECON2017MC12    Medium    WMS-Web
+    Go to account order detail page    ${order_id}
+    Create Valid SCB Mid Day Bank Text File    ${order_id}    ${NAME_20CHARS}    ${ref1}    ${order_id}
+    ...    CSH
+    Offline Upload And Reconcile    ${order_id}    ${file_path}${/}SCB_TexFile.txt     ${dateReconcile}
+    Go To Store Order History    ${slug_order_store}
+    Search order id on store order history    ${order_id}
+    Seller ship the order with tracking number    EX123456789TH
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Buyer request refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า    A02.jpg
+    Go to store order detail    ${slug_order_store}    ${order_id}
+    Seller accept the refund request    ${password_store_order}
+    Go to account order detail page    ${order_id}
+    Buyer attach document refund offline    ธนาคารกรุงไทย จำกัด (มหาชน)    11111111111    bookbank_exam.jpg
+    Go to WMS    ${user_wlsapprove}    ${password_approve}
+    Go to Seller Accept Refund page
+    Search order id on wms refund success    ${order_id}
+    Go To Refund Detail page
+    Admin approve refund documents
+
+
+
+
+

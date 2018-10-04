@@ -1,0 +1,786 @@
+*** Settings ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close Browser
+Test Setup        Go To    ${URL_STORE}/${user_s001}/admin/store
+Force Tags        Store-Web    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/StoreInformation.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Keywords ***
+Clear Document
+    [Documentation]    Clear Document
+    ###    Clear Document
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/sellerregister
+    Set Selenium Speed    1
+    Input Text    title    $("#idcard:visible").length;
+    Press Key    title    \\13
+    Sleep    1
+    Wait Until Element Is Visible    //td[contains(.,'${user_4step}')]
+    Click Element    //i[@class="ace-icon fa fa-pencil bigger-120"]
+    Wait Until Element Is Visible    frm_sellerregiter
+    Select From List By Value    //form[@id="frm_sellerregiter"]//tr[td[5][contains(.,'รอตรวจสอบ')]]//select    reject
+    Click Element    save_sellerregister
+    Wait Until Element Is Visible    //div[@class="modal-dialog"]
+    Click Button    OK
+    Sleep    3
+    Close Browser
+
+*** Test Cases ***
+TC_MC_02382
+    [Documentation]    To ensure the system cannot save data. If no information required on shop info.
+    [Tags]    Regression    High
+    Input Text    ${shop_name_info}    ${EMPTY}
+    Input Text    ${shop_desc}    ${EMPTY}
+    Input Text    ${shop_address_info}    ${EMPTY}
+    Select From List By Label    ${shop_province_info}    - กรุณาเลือกจังหวัด -
+    Input Text    ${shop_zipcode}    ${EMPTY}
+    Select From List By Label    ${shop_category_info}    --- กรุณาเลือกหมวดหมู่ร้านค้า---
+    Input Text    ${shop_mobile_info}    ${EMPTY}
+    Input Text    ${shop_email}    ${EMPTY}
+    Click Button Save
+    Element Should Be Visible    ${s_error_shop_name}
+    Element Should Be Visible    ${s_error_shop_province}
+    Element Should Be Visible    ${s_error_shop_zipcode}
+    Element Should Be Visible    ${s_error_shop_category}
+    Element Should Be Visible    ${s_error_shop_email}
+
+TC_MC_02383
+    [Documentation]    Verify shop name. Incase user enter character less than 80 characters.
+    Clear Element Text    ${shop_name_info}
+    Input Text    ${shop_name_info}    Automateเทส
+    Click Button Save
+    Textfield Value Should Be    ${shop_name_info}    Automateเทส
+
+TC_MC_02385
+    [Documentation]    Verify shop name. Incase user enter character more than 80 characters.
+    Clear Element Text    ${shop_name_info}
+    Input Text    ${shop_name_info}    HelloPockyHelloPockyHelloPockyHelloPocky
+    Focus    ${btn_save_info}
+    Textfield Value Should Be    ${shop_name_info}    HelloPockyHelloPockyHelloPocky
+
+TC_MC_02386
+    [Documentation]    Verify shop description. Incase user enter character less than 170 characters.
+    Clear Element Text    ${shop_desc}
+    Input Text    ${shop_desc}    ${char_less_170}
+    Focus    ${btn_save_info}
+    Textarea Should Contain    ${shop_desc}    ${char_less_170}
+
+TC_MC_02388
+    [Documentation]    Verify shop description. Incase user enter character more than 170 characters.
+    Clear Element Text    ${shop_desc}
+    Input Text    ${shop_desc}    ${char_more_170}
+    Focus    ${btn_save_info}
+    Textarea Should Contain    ${shop_desc}    ${char_equal_170}
+
+TC_MC_02389
+    [Documentation]    Verify shop infomation. The validateion shop address.
+    Clear Element Text    ${shop_address_info}
+    Input Text    ${shop_address_info}    Autoเมส
+    Click Button Save
+    Textarea Should Contain    ${shop_address_info}    Autoเมส
+
+TC_MC_02390
+    [Documentation]    Verify shop address - district. If user select province then show district of province only.
+    [Tags]    Medium
+    Select From List By Label    ${shop_province_info}    ลำปาง
+    Select From List By Label    ${shop_city_info}    เมืองลำปาง
+    Click Button Save
+    Element Should Contain    ${shop_province_info}    ลำปาง
+    Element Should Contain    ${shop_city_info}    เมืองลำปาง
+
+TC_MC_02391
+    [Documentation]    Verify shop address - city. If user select district then show city of district only.
+    [Tags]    Medium
+    Select From List By Label    ${shop_province_info}    ลำปาง
+    Select From List By Label    ${shop_city_info}    เมืองลำปาง
+    Select From List By Label    ${shop_district_info}    หัวเวียง
+    Click Button Save
+    Element Should Contain    ${shop_province_info}    ลำปาง
+    Element Should Contain    ${shop_city_info}    เมืองลำปาง
+    Element Should Contain    ${shop_district_info}    หัวเวียง
+
+TC_MC_02392
+    [Documentation]    Verify zip code. If user enter invalid format character.
+    Clear Element Text    ${shop_zipcode}
+    Input Text    ${shop_zipcode}    CHกขค
+    Click Button Save
+    Textfield Value Should Be    ${shop_zipcode}    ${EMPTY}
+
+TC_MC_02394
+    [Documentation]    Verify zip code. Incase user enter numeric less than 5 digits.
+    Clear Element Text    ${shop_zipcode}
+    Input Text    ${shop_zipcode}    109
+    Click Button Save
+    Textfield Value Should Be    ${shop_zipcode}    109
+
+TC_MC_02396
+    [Documentation]    Verify zip code. Incase user enter numeric more than 5 digits.
+    Clear Element Text    ${shop_zipcode}
+    Input Text    ${shop_zipcode}    1090088
+    Click Button Save
+    Textfield Value Should Be    ${shop_zipcode}    10900
+
+TC_MC_02398
+    [Documentation]    Verify telephone. If User enter invalid format.
+    Clear Element Text    ${shop_phone_info}
+    Input Text    ${shop_phone_info}    phoneโฟน
+    Click Button Save
+    Textfield Value Should Be    ${shop_phone_info}    ${EMPTY}
+
+TC_MC_02399
+    [Documentation]    Verify telephone. If User enter numeric less than 9 digits.
+    Clear Element Text    ${shop_phone_info}
+    Input Text    ${shop_phone_info}    08912345
+    Click Button Save
+    Textfield Value Should Be    ${shop_phone_info}    ${EMPTY}
+
+TC_MC_02400
+    [Documentation]    Verify telephone. If User enter numeric equal to 9 digits.
+    Clear Element Text    ${shop_phone_info}
+    Input Text    ${shop_phone_info}    444444444
+    Focus    ${btn_save_info}
+    Textfield Value Should Be    ${shop_phone_info}    (44) 444-4444
+
+TC_MC_02401
+    [Documentation]    Verify telephone. If User enter numeric more than 9 digits.
+    Clear Element Text    ${shop_phone_info}
+    Input Text    ${shop_phone_info}    0891234567
+    Focus    ${btn_save_info}
+    Textfield Value Should Be    ${shop_phone_info}    (08) 912-3456
+
+TC_MC_02402
+    [Documentation]    Verify mobilephone. If User enter invalid format.
+    Clear Element Text    ${shop_mobile_info}
+    Input Text    ${shop_mobile_info}    phoneโฟน
+    Click Button Save
+    Textfield Value Should Be    ${shop_mobile_info}    (___) ___-____
+
+TC_MC_02403
+    [Documentation]    Verify mobilephone. If User enter numeric less than 10 digits.
+    Clear Element Text    ${shop_mobile_info}
+    Input Text    ${shop_mobile_info}    08812345
+    Click Button Save
+    Element Should Contain    ${error_shop_mobile}    กรุณาเพิ่มหมายเลขโทรศัพท์มือถือ
+    #Textfield Value Should Be    ${shop_mobile_info}    (088) 123-4505
+
+TC_MC_02404
+    [Documentation]    Verify mobilephone. If User enter numeric equal to 10 digits.
+    Clear Element Text    ${shop_mobile_info}
+    Input Text    ${shop_mobile_info}    0555555555
+    Focus    ${btn_save_info}
+    Textfield Value Should Be    ${shop_mobile_info}    (055) 555-5555
+
+TC_MC_02405
+    [Documentation]    Verify mobilephone. If User enter numeric more than 10 digits.
+    Clear Element Text    ${shop_mobile_info}
+    Input Text    ${shop_mobile_info}    08812345678
+    Focus    ${btn_save_info}
+    Textfield Value Should Be    ${shop_mobile_info}    (088) 123-4567
+
+TC_MC_02406
+    [Documentation]    Verify fax. If User enter invalid format.
+    Clear Element Text    ${shop_fax}
+    Input Text    ${shop_fax}    phoneโฟน
+    Focus    ${btn_save_info}
+    Textfield Value Should Be    ${shop_fax}    ${EMPTY}
+
+TC_MC_02407
+    [Documentation]    Verify fax. If User enter numeric less than 9 digits.
+    Clear Element Text    ${shop_fax}
+    Input Text    ${shop_fax}    02123456
+    #Focus    ${btn_save_info}
+    Click Button Save
+    Textfield Value Should Be    ${shop_fax}    ${EMPTY}
+    #Textfield Value Should Be    ${shop_fax}    (02) 123-4564
+
+TC_MC_02408
+    [Documentation]    Verify fax. If User enter numeric equal to 9 digits.
+    Clear Element Text    ${shop_fax}
+    Input Text    ${shop_fax}    444444444
+    Focus    ${btn_save_info}
+    Textfield Value Should Be    ${shop_fax}    (44) 444-4444
+
+TC_MC_02409
+    [Documentation]    Verify fax. If User enter numeric more than 9 digits.
+    Clear Element Text    ${shop_fax}
+    Input Text    ${shop_fax}    0212345678
+    Focus    ${btn_save_info}
+    Textfield Value Should Be    ${shop_fax}    (02) 123-4567
+
+TC_MC_02410
+    [Documentation]    Verify email. If User does not enter format email "name@domain.com".
+    [Tags]    Regression    Medium
+    Clear Element Text    ${shop_email}
+    Input Text    ${shop_email}    emailhotmail.com
+    Click Element    fax
+    Comment    Focus    ${btn_save_info}
+    Sleep    3s
+    Element Should Be Visible    ${s_error_shop_email}
+    Clear Element Text    ${shop_email}
+    Input Text    ${shop_email}    email@hotmailcom
+    Click Element    fax
+    Comment    Focus    ${btn_save_info}
+    Element Should Be Visible    ${s_error_shop_email}
+    Clear Element Text    ${shop_email}
+    Input Text    ${shop_email}    emailhotmailcom
+    Click Element    fax
+    Comment    Focus    ${btn_save_info}
+    Element Should Be Visible    ${s_error_shop_email}
+    Clear Element Text    ${shop_email}
+    Input Text    ${shop_email}    email@hotmail.com,th
+    Click Element    fax
+    Comment    Focus    ${btn_save_info}
+    Element Should Be Visible    ${s_error_shop_email}
+
+TC_MC_02411
+    [Documentation]    Verify email. If User enter format email "name@domain.com".
+    [Tags]    Regression    Medium
+    Set Selenium Speed    0.3
+    Clear Element Text    ${shop_email}
+    Input Text    ${shop_email}    testweb@hotmail.com
+    Focus    ${btn_save_info}
+    Run Keyword And Continue On Failure    Textfield Value Should Be    ${shop_email}    testweb@hotmail.com
+    Clear Element Text    ${shop_email}
+    Input Text    ${shop_email}    testweb@live.com
+    Focus    ${btn_save_info}
+    Run Keyword And Continue On Failure    Textfield Value Should Be    ${shop_email}    testweb@live.com
+    Clear Element Text    ${shop_email}
+    Input Text    ${shop_email}    testweb@hotmail.co.th
+    Focus    ${btn_save_info}
+    Run Keyword And Continue On Failure    Textfield Value Should Be    ${shop_email}    testweb@hotmail.co.th
+    Clear Element Text    ${shop_email}
+    Input Text    ${shop_email}    testweb@gmail.com
+    Focus    ${btn_save_info}
+    Textfield Value Should Be    ${shop_email}    testweb@gmail.com
+
+TC_MC_02412
+    [Documentation]    Verify logo shop. If User upload file type is not supported.
+    Upload Image To Gallery    $("#logo")    image_hack.jpg    id=logo
+    Click Button    ${btn_save_info}
+    #Sleep    1s
+    ${alert}    Execute Javascript    return $('#notify-msg').text()
+    ${alert_str}    Convert To String    ${alert}
+    Should Be True    '${alert_str}' == 'บันทึกข้อมูลสำเร็จ'
+
+TC_MC_02413
+    [Documentation]    Verify logo shop. If User upload image file size over limit.
+    Upload Image To Gallery    $("#logo")    image_oversize.jpg    id=logo
+    Click Button Save
+    #Sleep    1s
+    ${alert}    Execute Javascript    return $('#notify-msg').text()
+    ${alert_str}    Convert To String    ${alert}
+    Should Be True    '${alert_str}'    == 'ไม่สามารถบันทึกข้อมูลได้'
+
+TC_MC_02415
+    [Documentation]    Verify logo shop. If User upload image correct
+    Upload Image To Gallery    $("#logo")    logo_mi6_seller_6.jpg    id=logo
+    Click Button Save
+    #Sleep    1s
+    ${alert}    Execute Javascript    return $('#notify-msg').text()
+    ${alert_str}    Convert To String    ${alert}
+    Should Be True    '${alert_str}' == 'บันทึกข้อมูลสำเร็จ'
+
+TC_MC_02416
+    [Documentation]    Verify logo shop. If User choose image over limit (Maximum 1 file)
+    Click Element    ${btn_choose_logo}
+    Choose Image From Gallery Incorrect
+
+TC_MC_02417
+    [Documentation]    Verify logo shop. If User choose image not to exceed 1 image (Maximum 1 file)
+    Click Element    ${btn_choose_logo}
+    Choose Image From Gallery correct3
+
+TC_MC_02427
+    [Documentation]    Verify map. If User upload file type is not supported.
+    Upload Image To Gallery    $("#map")    image_hack.jpg    id=map
+    Click Button Save
+    Sleep    1s
+    ${alert}    Execute Javascript    return $('#notify-msg').text()
+    ${alert_str}    Convert To String    ${alert}
+    Should Be True    '${alert_str}' == 'บันทึกข้อมูลสำเร็จ'
+
+TC_MC_02428
+    [Documentation]    Verify map. If User upload image file size over limit.
+    Upload Image To Gallery    $("#map")    image_oversize.jpg    id=map
+    Click Button Save
+    #Sleep    1s
+    ${alert}    Execute Javascript    return $('#notify-msg').text()
+    ${alert_str}    Convert To String    ${alert}
+    Should Be True    '${alert_str}'    == 'ไม่สามารถบันทึกข้อมูลได้'
+
+TC_MC_02430
+    [Documentation]    Verify map. If User upload image correct.
+    Upload Image To Gallery    $("#map")    logo_mi6_seller_5.jpg    id=map
+    Click Button Save
+    #Sleep    1s
+    ${alert}    Execute Javascript    return $('#notify-msg').text()
+    ${alert_str}    Convert To String    ${alert}
+    Should Be True    '${alert_str}' == 'บันทึกข้อมูลสำเร็จ'
+
+TC_MC_02431
+    [Documentation]    Verify map. If User choose image over limit (Maximum 1 file)
+    Execute Javascript    $('#btn_select_map').click()
+    Choose Image From Gallery Incorrect
+
+TC_MC_02432
+    [Documentation]    Verify map. If User choose image not to exceed 1 image (Maximum 1 file)
+    Execute Javascript    $('#btn_select_map').click()
+    Choose Image From Gallery Correct3
+
+TC_MC_02433
+    [Documentation]    Verify map. If Change map status SHOW to HIDE
+    #Open Browser    ${URL_STORE}/${user_s001}/info
+    Sleep    3s
+    Element Should Be Visible    ${show_map}
+    #Close Browser
+    #Account Login    ${user_wlsatm12}    ${pwd_wlsatm12}
+    #Go To    ${URL_STORE}/${user_s001}/admin/store
+    Execute Javascript    $('#map_status').click()
+    Click Button Save
+    Display Alert Footer
+    #Go To    ${URL_STORE}/${user_s001}/info
+    Sleep    3s
+    Element Should Not Be Visible    ${show_map}
+
+TC_MC_02434
+    [Documentation]    Verify map. If Change map status HIDE to SHOW
+    #Open Browser    ${URL_STORE}/${user_s001}/info
+    Sleep    3s
+    Element Should Not Be Visible    ${show_map}
+    #Close Browser
+    #Account Login    ${user_wlsatm12}    ${pwd_wlsatm12}
+    #Go To    ${URL_STORE}/${user_s001}/admin/store
+    Execute Javascript    $('#map_status').click()
+    Click Button Save
+    Display Alert Footer
+    #Go To    ${URL_STORE}/${user_s001}/info
+    Sleep    3s
+    Element Should Be Visible    ${show_map}
+
+TC_MC_02436
+    [Documentation]    Verify save button
+    Set Selenium Speed    0.5
+    ${old_shop_desc}    Execute Javascript    return $('#description_th').val()
+    ${str1}    Convert To String    ${old_shop_desc}
+    ${time}    Get Time    epoch
+    ${shop_desc}    Catenate    wlsautomate ${time}
+    Execute Javascript    $('#description_th').focus()
+    Execute Javascript    $('#description_th').val('${shop_desc}')
+    Capture Page Screenshot
+    Click Button Save
+    Sleep    5s
+    Wait Until Page Does Not Contain Element    //button[@class="btn btn-primary btn-small disabled"]
+    ${new_shop_desc}    Execute Javascript    return $('#description_th').val()
+    ${str2}    Convert To String    ${new_shop_desc}
+    Capture Page Screenshot
+    Sleep    5s
+    Should Not Contain    ${str1}    ${str2}
+
+TC_MC_02438
+    [Documentation]    Verify Cancel button (Cancel reset)
+    ${old_shop_desc}    Execute Javascript    return $('#description_th').val()
+    ${str1}    Convert To String    ${old_shop_desc}
+    ${time}    Get Time    epoch
+    ${shop_desc}    Catenate    wlsautomate ${time}
+    Execute Javascript    $('#description_th').val('${shop_desc}')
+    Click Button    ${btn_cancel}
+    Choose Cancel On Next Confirmation
+    Confirm Action
+    ${current_shop_desc}    Execute Javascript    return $('#description_th').val()
+    ${str2}    Convert To String    ${current_shop_desc}
+    Should Not Contain    ${str1}    ${shop_desc}
+    Should Be True    '${str1}' == '${current_shop_desc}'
+
+TC_MC_02439
+    [Documentation]    Verify DBD number. Incase user enter is null.
+    Clear Element Text    ${shop_dbd}
+    Focus    ${btn_save_info}
+    Textfield Value Should Be    ${shop_dbd}    ${EMPTY}
+
+TC_MC_02440
+    [Documentation]    Verify DBD number. Incase user enter numeric less than 13 digits.
+    Clear Element Text    ${shop_dbd}
+    Input Text    ${shop_dbd}    021234567812
+    Focus    ${btn_save_info}
+    Element Should Contain    ${error_shop_dbd}    กรุณาใส่อย่างน้อย 13 ตัวอักษร
+
+TC_MC_02442
+    [Documentation]    Verify DBD number. Incase user enter numeric more than 13 digits.
+    Clear Element Text    ${shop_dbd}
+    Input Text    ${shop_dbd}    123456789012312
+    Focus    ${btn_save_info}
+    Textfield Value Should Be    ${shop_dbd}    1234567890123
+
+TC_MC_02443
+    [Documentation]    Verify DBD image. If User upload image correct.
+    Upload Image To Gallery    $("#dbd_img")    logo_mi6_seller_4.jpg    id=dbd_img
+    Element Should Be Visible    ${icon_trash_dbd}
+    #TC_Seller_WeStore_00238
+    #    [Documentation]    Verify bin icon logo. Incase user choose image by gallery or computer for upload Logo.
+    #    Upload Image To Gallery    $("#logo")    logo_mi6_seller_5.jpg    id=logo
+    #    Element Should Be Visible    ${thumb_logo_upload}
+    #    Element Should Be Visible    ${icon_trash_logo}
+    #    Execute Javascript    $('#del_logo_old').click()
+    #    Click OK Alert Box
+    #    Element Should Not Be Visible    ${thumb_logo_upload}#
+    #TC_Seller_WeStore_00239
+    #    [Documentation]    Verify bin icon map. Incase user choose image by gallery or computer for upload Map.
+    #    Upload Image To Gallery    $("#map")    logo_mi6_seller_3.jpg    id=map
+    #    Element Should Be Visible    ${thumb_map_upload}
+    #    Element Should Be Visible    ${icon_trash_map}
+    #    Execute Javascript    $('#del_map_old').click()
+    #    Click OK Alert Box
+    #    Element Should Not Be Visible    ${thumb_map_upload}
+
+TC_MC_02448
+    [Documentation]    To Ensure mobilephone. when user open shop Information page
+    [Tags]    Low
+    Remove Input Mobile
+    Element Should Be Visible    //button[@id="mobile_alter_add"]
+
+TC_MC_02449
+    [Documentation]    Verify when user click "เพิ่มเบอร์โทรศัพท์"" button.
+    [Tags]    Regression    Medium    mock
+    Set Selenium Speed    0.3
+    Remove Input Mobile
+    Execute Javascript    $('#mobile_alter_add').click()
+    Element Should Be Visible    ${input_add_mobile_1}
+    Input Text    ${input_add_mobile_1}    0845555555
+    Click Button Save
+    Capture Page Screenshot
+    Wait Until Page Does Not Contain Element    //button[@class="btn btn-primary btn-small disabled"]
+    #Textfield Value Should Be    ${input_add_mobile_1}    0845555555
+    Sleep    10s
+    Textfield Value Should Be    ${input_add_mobile_1}    (084) 555-5555
+
+TC_MC_02450
+    [Documentation]    Verify mobilephone. If User click add new mobilephone 3 numbers.
+    Set Selenium Speed    0.3
+    Wait Until Element Is Visible    mobile
+    Comment    Remove Input Mobile
+    ${CountMobile}    Execute Javascript    return $('.mobile_alter_remove').length
+    : FOR    ${INDEX}    IN RANGE    0    ${CountMobile}
+    \    Execute Javascript    $('.mobile_alter_remove').eq(0).click();
+    Execute Javascript    $('#mobile').val('0923333388').keydown();
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $('[id="mobile-container"] input').eq(0).val('0845555555');
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $('[id="mobile-container"] input').eq(1).val('0932224433');
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $('[id="mobile-container"] input').eq(2).val('0443555555');
+    Click Button Save
+    Wait Until Page Does Not Contain Element    //button[@class="btn btn-primary btn-small disabled"]
+    Comment    Execute Javascript    $('.row-fluid .btn-primary').click()
+    Comment    Wait Until Page Does Not Contain Element    //i[@class="icon-ok bigger-110"]
+    Comment    Sleep    1s
+    Wait Until Page Contains Element    //i[@class="icon-ok bigger-110"]
+    Textfield Value Should Be    mobile    (092) 333-3388
+    Textfield Value Should Be    //div[@id="mobile-container"]//div[@class="morephone-box"][1]//input    (084) 555-5555
+    Textfield Value Should Be    //div[@class="morephone-box"][2]//input    (093) 222-4433
+    Textfield Value Should Be    //div[@class="morephone-box"][3]//input    (044) 355-5555
+    Go To    ${URL_STORE}/${user_s001}/info
+    ${value_html}    Execute Javascript    return $('.col-lg-11').eq('1').html()
+    Should Contain    ${value_html}    0923333388
+    Should Contain    ${value_html}    0845555555
+    Should Contain    ${value_html}    0932224433
+    Should Contain    ${value_html}    0443555555
+
+TC_MC_02451
+    [Documentation]    Verify mobilephone. If User click add new mobilephone 5 numbers.
+    Remove Input Mobile
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $('#mobile_alter_add').click()
+    Element Should Not Be Visible    //button[@id="mobile_alter_add"]
+
+TC_MC_02452
+    [Documentation]    Verify mobilephone. If User Input invalid format.
+    Remove Input Mobile
+    Execute Javascript    $('#mobile').val('phone number')
+    Execute Javascript    $('#mobile').focus()
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $("input[name='mobile_alternate[]']").eq(0).val('เบอร์โทรศัพท์')
+    Execute Javascript    $("input[name='mobile_alternate[]']").eq(0).focus()
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $("input[name='mobile_alternate[]']").eq(1).val('@#%%^&*_-')
+    Execute Javascript    $("input[name='mobile_alternate[]']").eq(1).focus()
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $("input[name='mobile_alternate[]']").eq(2).val('09534')
+    Execute Javascript    $("input[name='mobile_alternate[]']").eq(2).focus()
+    ${value_html}    Execute Javascript    return $('span.help-inline').eq(3).html()
+    ${str1}    Convert To String    ${value_html}
+    Should Contain    ${str1}    กรุณาเพิ่มหมายเลขโทรศัพท์มือถือ
+    Textfield Value Should Be    ${input_add_mobile_1}    ${EMPTY}
+    Textfield Value Should Be    ${input_add_mobile_2}    ${EMPTY}
+    Textfield Value Should Be    ${input_add_mobile_3}    (___) ___-____
+
+TC_MC_02453
+    [Documentation]    Verify mobilephone. If User Input numeric equal to 10 digits.
+    Remove Input Mobile
+    Execute Javascript    $('#mobile').val('3333333333')
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $("input[name='mobile_alternate[]']").eq(0).val('0923333388')
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $("input[name='mobile_alternate[]']").eq(1).val('0845555555')
+    Click Button Save
+    Sleep    2s
+    ${value_html}    Execute Javascript    return $('#mobile').val()
+    Should Contain    ${value_html}    (333) 333-3333
+    Textfield Value Should Be    ${input_add_mobile_1}    (092) 333-3388
+    Textfield Value Should Be    ${input_add_mobile_2}    (084) 555-5555
+
+TC_MC_02454
+    [Documentation]    Verify mobilephone. If User Input numeric more than 10 digits.
+    Remove Input Mobile
+    Execute Javascript    $('#mobile').val('092333338899')
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $("input[name='mobile_alternate[]']").eq(0).val('08455555553333')
+    Click Button Save
+    Sleep    1s
+    ${value_html}    Execute Javascript    return $('#mobile').val()
+    Should Contain    ${value_html}    (092) 333-3388
+    Textfield Value Should Be    ${input_add_mobile_1}    (084) 555-5555
+
+TC_MC_02455
+    [Documentation]    Verify Delete mobilephone.
+    Set Selenium Speed    0.3
+    Wait Until Element Is Visible    mobile
+    Comment    Remove Input Mobile
+    ${CountMobile}    Execute Javascript    return $('.mobile_alter_remove').length
+    : FOR    ${INDEX}    IN RANGE    0    ${CountMobile}
+    \    Execute Javascript    $('.mobile_alter_remove').eq(0).click();
+    Execute Javascript    $('#mobile').val('0909048154')
+    Click Button Save
+    Capture Page Screenshot
+    Sleep    10s
+    Wait Until Page Does Not Contain Element    //button[@class="btn btn-primary btn-small disabled"]
+    Wait Until Page Contains Element    //i[@class="icon-ok bigger-110"]
+    Textfield Value Should Be    ${shop_mobile_info}    (090) 904-8154
+    Capture Page Screenshot
+    Go To    ${URL_STORE}/${user_s001}/info
+    Sleep    10s
+    Wait Until Element Is Visible    //div[@class="box-main box-info"]
+    ${value_html}    Execute Javascript    return $('.col-lg-11').eq('1').html()
+    Should Contain    ${value_html}    0909048154
+    Capture Page Screenshot
+
+TC_MC_02456
+    [Documentation]    Verify Delete mobilephone. Incase input mobilephone only 1 number.
+    Set Selenium Speed    0.3
+    Remove Input Mobile
+    Execute Javascript    $('#mobile').val('0845555555')
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $("input[name='mobile_alternate[]']").eq(0).val('0932224433')
+    Execute Javascript    $('#mobile_alter_add').click()
+    Execute Javascript    $("input[name='mobile_alternate[]']").eq(1).val('0443555555')
+    Execute Javascript    $('.mobile_alter_remove').eq(1).click();
+    Execute Javascript    $('.mobile_alter_remove').eq(0).click();
+    Click Button Save
+    Wait Until Page Does Not Contain Element    //button[@class="btn btn-primary btn-small disabled"]
+    ${value_html}    Execute Javascript    return $('#mobile').val()
+    Sleep    5s
+    Should Contain    ${value_html}    (084) 555-5555
+    Go To    ${URL_STORE}/${user_s001}/info
+    ${value_html}    Execute Javascript    return $('.col-lg-11').eq('1').html()
+    ${str2}    Convert To String    ${value_html}
+    ${str3}    Remove String    ${str2}    (
+    ${str4}    Remove String    ${str3}    )
+    ${str5}    Remove String    ${str4}    -
+    Should Contain    ${str5}    0845555555
+
+TC_MC_02605
+    [Documentation]    Verify default social contact on Store admin page
+    [Tags]    Low
+    Set Selenium Speed    .3
+    Element Should Be Visible    ${input_facebook}
+    Textfield Value Should Be    ${input_facebook}    ${EMPTY}
+    Element Should Be Visible    ${input_googleplus}
+    Textfield Value Should Be    ${input_googleplus}    ${EMPTY}
+    Element Should Be Visible    ${btn_add_social}
+
+TC_MC_02464
+    [Documentation]    Verify "Add Social" button when select all social
+    Execute Javascript    ${social_instagram}
+    Execute Javascript    ${social_pinterest}
+    Execute Javascript    ${social_twitter}
+    Sleep    3s
+    ${status_btn_add}    Execute Javascript    return $("button[id=btn_add_social]").is(":disabled")
+    Should Be True    '${status_btn_add}' == 'True'
+    Click Button Save
+    Sleep    3s
+    Element Should Not Be Visible    ${input_instagram}
+    Element Should Not Be Visible    ${input_pinterest}
+    Element Should Not Be Visible    ${input_twitter}
+
+TC_MC_02462
+    [Documentation]    Verify social network. If User Add social into store contact with success.
+    Set Selenium Speed    .3
+    Clear Element Text    ${input_facebook}
+    Clear Element Text    ${input_googleplus}
+    Execute Javascript    ${social_instagram}
+    Element Should Be Visible    ${input_instagram}    ${EMPTY}
+    Input Text    ${input_facebook}    https://www.facebook.com/myhomeandbj
+    Input Text    ${input_googleplus}    https://plus.google.com/
+    Input Text    ${input_instagram}    https://instagram.com/myhomeandbj
+    Click Button Save
+    Sleep    3s
+    Element Should Be Visible    ${input_facebook}
+    Textfield Value Should Be    ${input_facebook}    https://www.facebook.com/myhomeandbj
+    Element Should Not Be Visible    ${input_googleplus}
+    Element Should Be Visible    ${input_instagram}
+    Textfield Value Should Be    ${input_instagram}    https://instagram.com/myhomeandbj
+    Go To    ${URL_STORE}/${user_s001}/info
+    Sleep    5s
+    ${count_social}    Execute Javascript    return $("div[class=shop-follow]").find('a').length
+    Should Be True    ${count_social} == 2
+    Execute Javascript    $("i[class=icon-white-facebook]").eq(0).click()
+    Select Window    url=https://www.facebook.com/myhomeandbj
+    Go To    ${URL_STORE}/${user_s001}/info
+    Execute Javascript    $("i[class=icon-white-instagram]").eq(0).click()
+    Select Window    url=https://www.instagram.com/myhomeandbj/
+    Sleep    3s
+    Go To    ${URL_STORE}/${user_s001}/admin/store
+    Click Element    ${icon_del_instagram}
+    Click Button Save
+
+TC_MC_02458
+    [Documentation]    Verify "Add Social" button when not select social
+    Click Element    ${icon_del_instagram}
+    Sleep    3s
+    Execute Javascript    ${social_googleplus}
+    Click Button Save
+    Wait Until Page Does Not Contain Element    //button[@class="btn btn-primary btn-small disabled"]
+    Textfield Value Should Be    ${input_facebook}    https://www.facebook.com/myhomeandbj
+    Element Should Not Be Visible    ${input_instagram}
+    Element Should Not Be Visible    ${input_googleplus}
+
+TC_MC_02459
+    [Documentation]    Verify "Add Social" button when not select social
+    Clear Element Text    ${input_facebook}
+    Execute Javascript    ${social_googleplus}
+    Sleep    2s
+    Click Button Save
+    Textfield Value Should Be    ${input_facebook}    ${EMPTY}
+    Textfield Value Should Be    ${input_googleplus}    ${EMPTY}
+
+TC_MC_02461
+    [Documentation]    Verify social network. If Add social into store contact invalid format.
+    Set Selenium Speed    .3
+    Element Should Be Visible    ${input_facebook}
+    Element Should Be Visible    ${input_googleplus}
+    Input Text    ${input_facebook}    aaaa
+    Input Text    ${input_googleplus}    bbbb
+    Click Button Save
+    Wait Until Page Does Not Contain Element    //button[@class="btn btn-primary btn-small disabled"]
+    Textfield Value Should Be    ${input_facebook}    aaaa
+    Textfield Value Should Be    ${input_googleplus}    bbbb
+    Go To    ${URL_STORE}/${user_s001}/info
+    Wait Until Page Contains Element    //div[@class="shop-follow"]
+    Execute Javascript    $("i[class=icon-white-facebook]").eq(0).click()
+    Select Window    url=${URL_STORE}/${user_s001}/aaaa
+    Go To    ${URL_STORE}/${user_s001}/info
+    Execute Javascript    $("i[class=icon-white-google]").eq(0).click()
+    Select Window    url=${URL_STORE}/${user_s001}/bbbb
+    Go To    ${URL_STORE}/${user_s001}/admin/store
+    Clear Element Text    ${input_facebook}
+    Clear Element Text    ${input_googleplus}
+    Input Text    ${input_facebook}    https://www.facebook.com/
+    Input Text    ${input_googleplus}    https://plus.google.com/
+    Click Button Save
+    Wait Until Page Does Not Contain Element    //button[@class="btn btn-primary btn-small disabled"]
+    Textfield Value Should Be    ${input_facebook}    ${EMPTY}
+    Textfield Value Should Be    ${input_googleplus}    ${EMPTY}
+    Go To    ${URL_STORE}/${user_s001}/info
+    Element Should Not Be Visible    //*[@id="row-body"]/div/div/div[3]/div/div[1]/div[6]/div/div[2]/strong
+    Element Should Not Be Visible    //*[@id="row-body"]/div/div/div[3]/div/div[1]/div[6]/div/div[2]/a[1]
+    Element Should Not Be Visible    //*[@id="row-body"]/div/div/div[3]/div/div[1]/div[6]/div/div[2]/a[2]
+
+TC_MC_02465
+    [Documentation]    Verify "Add Social" button when not select social
+    ${status_btn_add}    Execute Javascript    return $("button[id=btn_add_social]").is(":disabled")
+    Should Be True    '${status_btn_add}' == 'False'
+    Click Button Save
+
+TC_MC_02467
+    [Documentation]    Add all social into store contact.
+    Set Selenium Speed    .3
+    ${CountSocial}    Execute Javascript    return $('#sub_form_social .icon-trash').length;
+    : FOR    ${Row}    IN RANGE    2    ${CountSocial}+1
+    \    Exit For Loop If    '${CountSocial}' == '0'
+    \    Click Element    //div[@id="sub_form_social"]//div[2]//i[@class="icon-trash"]
+    Input Text    ${input_facebook}    https://www.facebook.com/myhomeandbj
+    Execute Javascript    ${social_googleplus}
+    Input Text    ${input_googleplus}    https://plus.google.com/myhomeandbj
+    Execute Javascript    ${social_instagram}
+    Input Text    ${input_instagram}    https://instagram.com/myhomeandbj
+    Execute Javascript    ${social_pinterest}
+    Input Text    ${input_pinterest}    https://www.pinterest.com/myhomeandbj
+    Execute Javascript    ${social_twitter}
+    Input Text    ${input_twitter}    https://twitter.com/myhomeandbj
+    Click Button Save
+    Sleep    5
+    Wait Until Page Does Not Contain Element    //button[@class="btn btn-primary btn-small disabled"]
+    Textfield Value Should Be    ${input_facebook}    https://www.facebook.com/myhomeandbj
+    Textfield Value Should Be    ${input_googleplus}    https://plus.google.com/myhomeandbj
+    Textfield Value Should Be    ${input_instagram}    https://instagram.com/myhomeandbj
+    Textfield Value Should Be    ${input_pinterest}    https://www.pinterest.com/myhomeandbj
+    Textfield Value Should Be    ${input_twitter}    https://twitter.com/myhomeandbj
+
+TC_MC_02460
+    [Documentation]    Verify delete all social contact
+    Click Element    ${icon_del_instagram}
+    Click Element    ${icon_del_twitter}
+    Click Element    ${icon_del_pinterest}
+    Click Element    ${icon_del_googleplus}
+    Clear Element Text    ${input_facebook}
+    Click Button Save
+    Wait Until Page Does Not Contain Element    //button[@class="btn btn-primary btn-small disabled"]
+    Textfield Value Should Be    ${input_facebook}    ${EMPTY}
+    Textfield Value Should Be    ${input_googleplus}    ${EMPTY}
+    Element Should Not Be Visible    ${input_instagram}
+    Element Should Not Be Visible    ${input_pinterest}
+    Element Should Not Be Visible    ${input_twitter}
+
+TC_MC_02466
+    [Documentation]    Verify default text label in social field
+    ${default_facebook}    Execute Javascript    return $("input[id='social_Facebook']").attr("placeholder").trim()
+    Should Contain    ${default_facebook}    https://www.facebook.com/ชื่อ account Facebook ของร้านคุณ
+    ${default_googleplus}    Execute Javascript    return $("input[id='social_GooglePlus']").attr("placeholder").trim()
+    Should Contain    ${default_googleplus}    https://plus.google.com/ชื่อ account GooglePlus ของร้านคุณ
+
+TC_MC_02418
+    [Documentation]    Verify Personal ID Document. If User upload file type is not supported.
+    Account Login    wlsatm1461221126@mailinator.com    Abcd001
+    Go To    ${URL_STORE}/wlsatm1461221126/admin/store
+    Upload Image To Gallery    $("#idcard")    image_hack.jpg    id=idcard
+    Element Should Be Visible    ${icon_trash_idcard}
+
+TC_MC_02419
+    [Documentation]    Verify Personal ID Document. If User upload image file size over limit.
+    Account Login    wlsatm1461221126@mailinator.com    Abcd001
+    Go To    ${URL_STORE}/wlsatm1461221126/admin/store
+    Upload Image To Gallery    $("#idcard")    image_oversize.jpg    id=idcard
+    Element Should Be Visible    ${icon_trash_idcard}
+
+TC_MC_02421
+    [Documentation]    Verify Presonal ID Document. If User upload image correct.
+    [Tags]    Regression    Medium
+    Account Login    ${seller_user_4step}    ${seller_pwd_4step}
+    Go To    ${URL_STORE}/${user_4step}/admin/store
+    ${Check_ID}    Execute Javascript    return $("#idcard:visible").length;
+    Run Keyword If    ${Check_ID} == 0    Clear Document
+    Upload Image To Gallery    logo_mi6_seller_3.jpg    id=idcard
+    Element Should Be Visible    ${icon_trash_idcard}
+
+*** Keyword ***
+Remove Input Mobile
+    [Documentation]    Clear mobile number
+    ${length}    Execute Javascript    return $("input[name='mobile_alternate[]']").length
+    Run Keyword If    ${length} > 0    Execute Javascript    $(".mobile_alter_remove").click();

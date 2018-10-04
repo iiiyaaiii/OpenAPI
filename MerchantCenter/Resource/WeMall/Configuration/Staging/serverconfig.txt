@@ -1,0 +1,38 @@
+*** variable ***
+${BROWSER}    gc
+${ENV}    Staging
+${EXPECT_LOADTIME}    60
+### Locator ####
+${URL_ACCOUNT}    https://account.wemall-dev.com
+${URL_STORE}    https://store.wemall-dev.com
+${URL_WMS}    https://wms.wls-dev.com
+${URL_PORTAL}    https://www.wemall-dev.com
+# ${URL_MOBILE}    https://m.wls-dev.com
+${URL_MOBILE}    https://m.wemall-dev.com
+${URL_API}    https://api-order.wemall-dev.com
+${URL_API_FEEDBACK}    https://api-feedback.wemall-dev.com
+${URL_BILL_COUNTERSERVICE}    https://account.wemall-dev.com/billing/counter_service/
+${URL_DASHBOARD}    https://store.wemall-dev.com/${storename}/admin/dashboard/summary
+${URL_NODATA}    https://store.wemall-dev.com/prodtest50/admin/dashboard/summary
+${URL_API_ORDER}    https://api-order.wemall-dev.com
+${URL_ORDER}    https://order.wls-dev.com
+${URL_IMAGE}    https://cdn-a.wemall-dev.com/themes/responsive/assets/images/SmilingSuccess.png
+${URL_FB}    https://www.facebook.com
+${URL_TRACKING}    https://wms.wls-dev.com/order
+${URL_OFFLINE}    ${URL_WMS}/orderoffline
+${URL_REFUND}    https://wms.wls-dev.com/orderrequestrefund
+${TEST_ENV}    SERVER
+${URL_GATEWAY}    https://api.wls-dev.com
+${URL_API_ACCOUNT}    https://api-account.wemall-dev.com
+${URL_API_PORTAL}    https://api-www.wemall-dev.com
+${URL_OLD_BLOG}    http://blog.wemall-dev.com
+${BLOG_PROXY_URL}    https://blog-proxy.wemall-dev.com
+${URL_RESIZE}    https://res.wemall-dev.com
+${REQ_RESIZE}    res.wemall-dev.com
+${URL_EAGLEEYE}    https://eagleeye.wls-dev.com
+${URL_CHECKOUT}    https://checkout.wemall-dev.com
+${URL_ORDER_FOR_API}    api-order.wemall-dev.com
+${URL_ADEN_SP}    http://fms.aden-dev.asia/#
+${url_portal_cart}    ${URL_PORTAL}/cart
+${URL_LEVEL_D}    ${URL_PORTAL}/d
+${URL_SHOP}    https://www.wemall-dev.com

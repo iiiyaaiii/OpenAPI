@@ -1,0 +1,36 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../../Resource/WeLoveShopping/WebElement/WMS_Feedback.txt
+Resource          ../../Resource/WeLoveShopping/init.robot
+Resource          Common.txt
+
+
+*** Keywords ***
+Search Order ID on WMS Feedback
+    [Documentation]    go to wms feedback and search order id
+    [Arguments]    ${order_id}    ${order_id_sub}
+    Go to    ${URL_WMS}/feedback
+    Wait Until Element Is Visible    ${input_orderid_wms_feedback}    60
+    Input text    ${input_orderid_wms_feedback}    ${order_id}
+    Wait Until Element Is Visible    ${btn_feedback_search}    60
+    Click Button    ${btn_feedback_search}
+    Wait Until Element Contains    ${text_orderid_wms_feedback}    ${order_id_sub}
+
+Set Hide Status Feedback And Comment Reason
+    [Documentation]    Hide feedback status and input comment
+    [Arguments]    ${feedback_reason}
+    Select From List    ${DropDown_Hidecomment}    ซ่อน
+    Select From List    ${DropDown_HideReason}    ${feedback_reason}
+    Input text    ${admin_comment}    ขอซ่อนความคิดเห็นนี้
+    Wait Until Element Is Visible    ${Save_Button}    60
+    Click Element    ${Save_Button}
+    Wait Until Element Is Visible    ${Auditor_name}
+    Element Should Contain    ${Auditor_name}    WLSAdmin Test
+
+Set Show Status Feedback
+    [Documentation]    Show feedback status
+    Select From List    ${DropDown_Hidecomment}    แสดง
+    Wait Until Element Is Visible    ${Save_Button}    60
+    Click Element    ${Save_Button}
+    Wait Until Element Is Visible    ${Auditor_name}
+    Element Should Contain    ${Auditor_name}    WLSAdmin Test

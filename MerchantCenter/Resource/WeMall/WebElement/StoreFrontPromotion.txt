@@ -1,0 +1,4 @@
+*** Variables ***
+${store_bar_promotion}    //ul[@class='menu-list']/li/a[contains(text(), 'โปรโมชั่นร้านค้า')]
+${store_promotion_product_list_lvc}    $('ul.product-list li div.product-box div.product-detail')
+${store_promotion_sidebar_lvc}    $('ul.shop-left-submenu li')

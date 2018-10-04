@@ -1,0 +1,79 @@
+*** Settings ***
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           OperatingSystem
+Library           Collections
+Library           ../PythonLibrary/_customkeyword.py
+
+*** Keywords ***
+Click button setting shipping
+    [Documentation]    Use for setting shipping rate
+    Click Element    ${btn_shipping}
+    Wait Until Element Is Visible    ${day_instock}    ${EXPECT_LOADTIME}
+    Location Should Contain    ${URL_STORE}/${shopname}/admin/shipping
+
+Click button setting product
+    [Documentation]    Use for setting product
+    Click Element    ${btn_product}
+    Wait Until Element Is Visible    ${input_product_name}    ${EXPECT_LOADTIME}
+    Location Should Contain    ${URL_STORE}/${shopname}/admin/product/create
+
+Click button upload document
+    [Documentation]    Use for setting shipping rate
+    Click Element    ${btn_shopinfo}
+    Location Should Contain    ${URL_STORE}/${shopname}/admin/store
+
+Click button setting ewallet account
+    [Documentation]    Use for setting shipping rate
+    Click Element    ${btn_ewallet}
+    Location Should Contain    ${URL_STORE}/${shopname}/admin/payment
+
+Setting Shipping
+    [Documentation]    To ensure the system displays Shipping setting icon. Incase store setting shipping already.
+    [Arguments]    ${shopname}
+    Click button setting shipping
+    Input Text    ${day_instock}    3
+    Input Text    ${day_preorder}    7
+    Execute Javascript    ${thailand_post}.click()
+    Execute Javascript    ${rd_post}.click()
+    Sleep    3s
+    Click Element    ${rd_post_order}
+    Click Element    ${rd_post_flat_free}
+    Click Button Save
+    Sleep    5s
+    Go To    ${URL_STORE}/${shopname}/admin
+    ${status}    Get Text    ${status_shipping}
+    ${shipping_status_str}    Convert To String    ${status}
+    Should Be True    "${shipping_status_str}" == "ตั้งค่าการจัดส่งเรียบร้อย"
+
+Upload Document Register Individualshop
+    [Arguments]    ${shopname}
+    Set Selenium Speed    .2
+    Click button upload document
+    Sleep   2s
+    Execute Javascript    $("#idcard").css({"visibility":"visible"});
+    ${visibility}=    Execute Javascript    return $("#idcard").css("visibility");
+    ${IMG_DIR}=    Replace String Using Regexp    ${CURDIR}    Keyword$    Image
+    ${CUR_IMG_DIR}=    Remove String    ${IMG_DIR}    ${/}Keyword${/}Common
+    ${file}=    Catenate    SEPARATOR=${/}    ${CUR_IMG_DIR}${/}Resource/${BU}${/}Image    image.jpg
+    Choose File    id=idcard    ${file}
+    Click Button Save
+    Sleep    5s
+    Go To    ${URL_STORE}/${shopname}/admin
+
+Setting Payment Channel
+    [Arguments]    ${shopname}
+    Click button setting ewallet account
+    Click Link    //a[@class="btn btn-small btn-primary"]
+    Select Window    register TrueMoney Wallet - Weloveshopping
+    Wait Until Element Is Visible    ${btn_connect_ewallet}    ${EXPECT_LOADTIME}
+    Click Element    ${btn_connect_ewallet}
+    Sleep    8s
+    Execute Javascript    $('#loginButton').click()
+    Sleep    8s
+    Input Text    ${input_email_ewallet}    ${email_ewallet}
+    Input Text    ${input_pwd_ewallet}    ${pass_ewallet}
+    Execute Javascript    $('#submit').click()
+    Wait Until Element Is Visible    ${btn_ewallet}    ${EXPECT_LOADTIME}
+    Goto    ${URL_STORE}/${shopname}/admin
+

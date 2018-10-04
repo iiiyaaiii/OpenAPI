@@ -1,0 +1,79 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Force Tags        WeMall-Web    Ligo   LevelC - PromotionList
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Category.txt
+Resource          ../../../../Resource/WeMall/WebElement/StoreFrontPromotion.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Store_Front.txt
+
+*** Test Cases ***
+TC_MC_06449
+    [Documentation]    Promotion list should not display. Incase Store no have promotion period at today.
+    [Tags]    Regression     Ligo    Medium    Sprint2017MC15
+    Open Browser    ${URL_PORTAL}/${seller_name002}    ${BROWSER}
+    Maximize Browser Window
+    Click Element    ${store_bar_promotion}
+    Page Should Contain    โปรโมชั่นร้านค้า
+    Page Should Contain    ทั้งหมด : 0 รายการ
+    Page Should Contain    ร้านนี้ยังไม่มีโปรโมชั่นในช่วงเวลานี้
+
+TC_MC_06450
+    [Documentation]    Verify Landing Promotion should display. Incase Store have promotion baht.
+    [Tags]    Regression     Ligo    Medium    Sprint2017MC15
+    Open Browser    ${URL_PORTAL}/${store_url1}    ${BROWSER}
+    Maximize Browser Window
+    Click Element    ${store_bar_promotion}
+    ${promotion_name}=    Set Variable    thb discount code
+    Execute Javascript    $("h2:contains('${promotion_name}')").closest('div.transparent').find('div.tool-header > span.view-more > a')[0].click()
+    Page Should Contain    ${promotion_name}
+    Element Should Contain    //span[@class='cond-box']    ซื้อสินค้าตั้งแต่ 500 บาทขึ้นไป ลดเพิ่ม 55 บาท
+    Element Should Contain    //span[@class='time-box']    ระยะเวลาโปรโมชั่น: 30 ม.ค. 2561 (16:57 น.) - 3 พ.ค. 2562 (17:07 น.)
+    Validate Store Front Promotion Product List LvC
+
+
+TC_MC_06451
+    [Documentation]    Verify Landing Promotion should display. Incase Store have promotion %0.
+    [Tags]    Regression     Ligo    Medium    Sprint2017MC15
+    Open Browser    ${URL_PORTAL}/${store_url1}    ${BROWSER}
+    Maximize Browser Window
+    Click Element    ${store_bar_promotion}
+    ${promotion_name}=    Set Variable    percent discount code
+    Execute Javascript    $("h2:contains('${promotion_name}')").closest('div.transparent').find('div.tool-header > span.view-more > a')[0].click()
+    Page Should Contain    ${promotion_name}
+    Element Should Contain    //span[@class='cond-box']    ซื้อสินค้าตั้งแต่ 500 บาทขึ้นไป ลดเพิ่ม 10% ลดสูงสุดไม่เกิน 1,000 บาท
+    Element Should Contain    //span[@class='time-box']    ระยะเวลาโปรโมชั่น: 30 ม.ค. 2561 (00:00 น.) - 11 พ.ค. 2562 (23:59 น.)
+    Validate Store Front Promotion Product List LvC
+
+TC_MC_06457
+    [Documentation]    Verify main category at side bar
+    [Tags]    Ligo    Medium    Sprint2017MC15
+    Open Browser    ${URL_PORTAL}/${store_url1}    ${BROWSER}
+    Maximize Browser Window
+    Click Element    ${store_bar_promotion}
+    ## use first promotion
+    Execute Javascript    $('div.tool-header > span.view-more > a')[0].click()
+    Validate Store Front Promotion Product List LvC
+    ## check category
+    ${count_category_main}=    Execute Javascript    return ${store_promotion_sidebar_lvc}.length
+    Run Keyword IF    ${count_category_main} > 5    Validate Category Sidebar Store Front Promotion LvC    5    ELSE    Validate Category Sidebar Store Front Promotion LvC    ${count_category_main}
+
+TC_MC_06458
+    [Documentation]    Verify main have sub category at side bar
+    [Tags]    Regression     Ligo    Medium    Sprint2017MC15
+    Open Browser    ${URL_PORTAL}/${store_url1}    ${BROWSER}
+    Maximize Browser Window
+    Click Element    ${store_bar_promotion}
+    ## use first promotion
+    Execute Javascript    $('div.tool-header > span.view-more > a')[0].click()
+    Validate Store Front Promotion Product List LvC
+    ## check category
+    ${count_category_main}=    Execute Javascript    return ${store_promotion_sidebar_lvc}.length
+    Validate Category Sidebar Store Front Promotion LvC    ${count_category_main}
+
+

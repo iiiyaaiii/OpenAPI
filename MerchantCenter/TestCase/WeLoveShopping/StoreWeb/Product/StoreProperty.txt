@@ -1,0 +1,78 @@
+*** Settings ***
+Suite Setup       Generate Property Fill Form    wls
+Test Setup        Account Login    ${reg_user_001}    ${reg_pass_001}
+Suite Teardown    Run Keywords    Delete Product    AND    Close All Browsers
+Force Tags        Store-Web    mock    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/WMS_PropertyManagement.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Product.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_MonitoringListing.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Keyword ***
+Delete Product
+    Go To    ${URL_STORE}/${shopname_user001}/admin/product
+    Wait Until Element Is Visible    //input[@id="search"]    ${EXPECT_LOADTIME}
+    Input Text    ${input_keyword}    TestAddProduct
+    Click Button    //*[@id="table_report_filter"]/button
+    Execute Javascript    $('input[id="check_all"]').click()
+    Sleep    2s
+    Execute Javascript    $('button[id="btn_delete"]').click()
+    Click OK Alert Box
+    Sleep    2s
+    Wait Until Element Is Visible    //*[@id="errortext"]    ${EXPECT_LOADTIME}
+
+*** Test Case ***
+TC_MC_02089
+    [Documentation]    Verify sequence of property - On Add product page
+    [Tags]    Medium
+    Go To    ${URL_STORE}/${shopname_user001}/admin/product/create
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Hobbies
+    Wait Until Page Contains    คุณสมบัติสินค้า
+    ${product_feature}    Execute Javascript    return $('#product-feature-box .control-label strong').text().replace(/ /g, "");
+    Execute Javascript    window.onbeforeunload = null;
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/seller_product_property/category
+    Sleep    5s
+    Wait Until Element Is Visible    //*[@id="page-content"]
+    ${wms_product_feature}    Execute Javascript    return $('span.used_features_1830 span').attr('title').replace(/ /g, "");
+    Should Contain    ${product_feature}    ${wms_product_feature}
+
+TC_MC_02091
+    [Documentation]    Select property value more than 1 - On Add product page
+    [Tags]    Low
+    Go To    ${URL_STORE}/${shopname_user001}/admin/product/create
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Hobbies
+    ${Count_Prop}    Execute Javascript    return $('#product-feature-box select:first option').length;
+    ${random} =    Evaluate    random.randint(0, ${Count_Prop})    random
+    Execute Javascript    $('#product-feature-box select:first').find('option:eq(${random})').attr('selected','true').trigger("liszt:updated");
+    Execute Javascript    $('#product-feature-box select:first').find('option:eq(${random})').attr('selected','true').trigger("liszt:updated");
+    ${count_select_feature}    Execute Javascript    return $('#product-feature-box select:first').next('.chzn-container').find('ul.chzn-choices li.search-choice').length;
+    ${count_select_feature_int}    Convert To Integer    ${count_select_feature}
+    Should Be Equal As Integers    ${count_select_feature_int}    1
+    Execute Javascript    window.onbeforeunload = null;
+
+TC_MC_02092
+    [Documentation]    Change category after select property - On Add product page
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${shopname_user001}/admin/product/create
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Hobbies
+    ${Count_Prop}    Execute Javascript    return $('#product-feature-box select:first option').length;
+    ${random} =    Evaluate    random.randint(0, ${Count_Prop})    random
+    Execute Javascript    $('#product-feature-box select:first').find('option:eq(${random})').attr('selected','true').trigger("liszt:updated");
+    Sleep    1s
+    Select Category Hobbies
+    Sleep    1s
+    ${count_select_feature}    Execute Javascript    return $('#product-feature-box select:first').next('.chzn-container').find('ul.chzn-choices li.search-choice').length;
+    ${count_select_feature_int}    Convert To Integer    ${count_select_feature}
+    Should Be Equal As Integers    ${count_select_feature_int}    0
+    Execute Javascript    window.onbeforeunload = null;

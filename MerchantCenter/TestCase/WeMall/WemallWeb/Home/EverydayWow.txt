@@ -1,0 +1,26 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Force Tags        Wemall-Web    Ligo    Sprint2017MC8
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Category.txt
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeMall/WebElement/Search.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+
+
+*** Test Cases ***
+TC_MC_03289
+    [Documentation]    [Wemall] Display Everyday WOW (More than 4 product)
+    [Tags]    Regression     Ligo,Sprint2017MC10    High
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Go To    ${URL_PORTAL}
+    Maximize Browser Window
+    ${amount_product}    Execute Javascript    return $('.box-home-wow .items-list-box li').length
+    ${amount_product}    Convert To Integer    ${amount_product}
+    Should Be True    ${amount_product} == 4
+

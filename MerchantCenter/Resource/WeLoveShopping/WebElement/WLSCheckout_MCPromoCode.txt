@@ -1,0 +1,15 @@
+*** Variables ***
+### Data ####
+${user_store_testonly}    kusuma.chom@gmail.com
+${password_store_testonly}    Escrow@1234
+${slug_order_testonly}    AmyShop
+${promotioncode_product}    robot_promocode_product [เทสระบบห้ามลบ]
+${seller_promotion_product}    robot_Seller Promotion P1[ห้ามเปลี่ยนข้อมูล]
+${expect_load_time}    60
+${btn_cart_pop_up}    //div[@id="modalAddCart"]//div[@class="modal-dialog"]
+${btn_order_level_d}    //a[@class="btn btn-default btn-popup-add-cart"]
+${btn_address}    //button[@class="btn btn-default btn-xs btn-add new_address"]
+${input_coupon_checkout_3}    //input[@id="coupon_code"]
+${btn_use_coupon}    //button[@id="coupon_btn"]
+${txt_title_promotion_code}    //span[@class="title color-promo"]
+${txt_condition_promotion_code}    //div[@id="coupon_condition"]

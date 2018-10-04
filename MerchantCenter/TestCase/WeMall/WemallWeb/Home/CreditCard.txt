@@ -1,0 +1,39 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Test Teardown     Run Keywords	Capture Page Screenshot	AND 	Close Browser
+Force Tags        Wemall-Web
+Resource          ../../../../Resource/WeMall/Configuration/Staging/serverconfig.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Keyword/Common/Home.txt
+
+*** Test Cases ***
+TC_MC_05315
+    [Documentation]	[Portal] Main Top Menu: สิทธิพิเศษบัตรเครดิต - View all promotions
+    [Tags]    Smoke    Regression    Ligo    Sprint2017MC13
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+    Home.Mouse Over Credit Card Promotion
+    Home.Select View All Credit Card Promotion
+    Home.Credit Card Promotion Landing page should be appeared
+    Home.Credit Card Promotion Sidebar Menu is selected    promotions
+
+TC_MC_05531
+    [Documentation]	[Credit Cards] Breadcrumb
+    [Tags]    Regression    Ligo    Sprint2017MC16
+    Go To Credit Card Promotion Landing page
+    Default Credit Card Promotion Breadcrumb should be appeared
+
+TC_MC_05534
+    [Documentation]	[Credit Cards] View Promotion Details
+    [Tags]    Smoke    Regression    Ligo    Sprint2017MC16
+    Go To Credit Card Promotion Landing page
+    Home.View Credit Card Promotion Details    รับเครดิตเงินคืน 17% เมื่อผ่อนชำระ 0% นาน 10 เดือน บลาบลา Admin ใส่ได้ตามใจ${EMPTY}
+    Home.Credit Card Promotion Sidebar Menu is selected    Tesco รับเครดิตเงินคืน 2,000 บาท
+
+*** Keywords ***
+Go To Credit Card Promotion Landing page
+    Home.Open Wemall Portal page
+    Home.Wemall Portal page should be appeared
+    Home.Mouse Over Credit Card Promotion
+    Home.Select View All Credit Card Promotion

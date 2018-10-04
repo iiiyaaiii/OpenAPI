@@ -1,0 +1,162 @@
+*** Settings ***
+Suite Teardown    Close All Browsers
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../Resource/WeLoveShopping/WebElement/Member_SignUp.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/Backend_Dashboard.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/Backend_Shipping.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/Product.txt
+Resource          ../../../Resource/WeLoveShopping/WebElement/WMS_SellerDocumentRegister.txt
+Resource          ../../../Keyword/Common/Common.txt
+Resource          ../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../Keyword/Common/Member_StoreRegister.txt
+Resource          ../../../Keyword/Common/Backend_Dashboard.txt
+Resource          ../../../Keyword/Common/Product.txt
+Resource          ../../../Keyword/Common/WMS_SellerDocumentRegister.txt
+
+*** variable ***
+#ระบุชื่อร้านค้าที่ต้องการสมัครเอาเอง
+${variable_user}    mcwlsprod_user_4
+${variable_pwd}    mcwlsprod_pass_4
+${variable_shopid}    user_mcwlsprod4_id
+${variable_shopurl}    user_mcwlsprod4_url
+${variable_shopname}    shopname_mcwlsprod4
+${user_email}    mcwlsprodtest_4@mailinator.com
+${shopname}    mcwlsprodtest_4
+${pwd_test}    Joy@123456
+
+*** Keywords ***
+Write Variable to File
+    [Arguments]    ${variable_name}    ${value}
+    ${variable}    Catenate    SEPARATOR=    ${    ${variable_name}    }    ${SPACE}${SPACE}${SPACE}${SPACE}    ${value}
+    #Append To File    ${path}${/}Config${/}${ENV}/robotdata.txt    ${\n}${variable}
+    ${FilePath}    Replace String    ${CURDIR}    /TestCase/Common/PrepareUserandShoptest    /Resource/${BU}/Configuration/${ENV}
+    Append To File   ${FilePath}${/}robotdata.txt    ${\n}${variable}
+
+*** Test Cases ***
+TC_Create_Shop_Corporate
+    [Documentation]    Register New Corporate shop WLS Success
+    Set Selenium Speed    .2
+    #${new_email}    Catenate    ${shopname}@mailinator.com
+    Open Browser    ${URL_ACCOUNT}/corporate/user    ${BROWSER}
+    Maximize Browser Window
+    Input Text    ${input_email}    ${user_email}
+    Input Password    ${input_password}    ${pwd_test}
+    Input Password    ${input_cf_password}    ${pwd_test}
+    Input Text    ${input_phone}    ${mobileno_test}
+    Select Checkbox    ${accept_term_signup}
+    Click Button    ${btn_signup_corporate}
+    Sleep    5s
+    ${errormsg}    Execute javascript    return $("span[class='error-box']").text().trim()
+    Run Keyword If    "${errormsg}" == "อีเมลนี้ถูกใช้งานแล้ว" or "${errormsg}" == "true id นี้ถูกใช้งานแล้ว"     Register by exiting user    ${user_email}    ${pwd_test}
+    Sleep    3s
+    Go To    ${URL_ACCOUNT}/corporate/store
+    Sleep    2s
+    Input Text    ${input_company_name}    ${shopname}
+    Execute javascript    $('input[id=rdohead]').click()
+    Input Text    ${input_b_address}    123 ซ.รัชดาภิเษก5 ห้วยขวาง ห้วยขวาง
+    Select From List By Label    ${select_province}    กรุงเทพมหานคร
+    Sleep    2s
+    Select From List By Label    ${select_city}    จตุจักร
+    Sleep    2s
+    Select From List By Label    ${select_district}    จอมพล
+    Input Text    ${input_b_postcode}    10900
+    Input Text    ${input_company_phone}    ${mobileno_test}
+    Input Text    ${input_tax_id}    ${idcard}
+    Input Text    ${comittee_firstname}    wls
+    Input Text    ${comittee_lastname}    automate
+    Execute javascript    $('input[name=committee_idtype][value=1]').prop('checked', 'checked')
+    Input Text    ${input_committee_idcard}    ${idcard}
+    Select From List By Label    ${shop_category}    แฟชั่น
+    Input Text    //*[@name="s_name"]    ${shopname}
+    Input Text    ${shop_url}    ${shopname}
+    Execute javascript    $('input[id="rdosame"]').click()
+    Input Text    ${shop_phone}    028888888
+    Input Text    ${shop_mobile}    ${mobileno_test}
+    Click Button    ${btn_register_shop}
+    Sleep    5s
+    Location Should Contain    ${URL_ACCOUNT}/corporate/complete
+    ${shop_name}=    Get Text    //*[@class="registcor-success-box"]/div[1]/div[1]/span[1]
+    ${shop_name_c}    Remove String    ${shop_name}    ชื่อร้านค้า :
+    ${shop_id}=    Get Text    //*[@class="registcor-success-box"]/div[1]/div[1]/span[2]
+    ${shop_id_c}    Remove String    ${shop_id}    ID ร้านค้า :
+    Write Variable to File    ${variable_user}    ${user_email}
+    Write Variable to File    ${variable_pwd}    ${pwd_test}
+    Write Variable to File    ${variable_shopid}    ${shop_id_c}
+    Write Variable to File    ${variable_shopurl}    ${shopname_c}
+    Sleep    3s
+
+# #    Register Individual shop    ${user_email}    ${pwd_test}    ${shopname}
+#     Open Browser    ${URL_ACCOUNT}/register/user    ${BROWSER}
+#     Maximize Browser Window
+#     Register by exiting user    ${user_email}    ${pwd_test}
+#     Sleep    3s
+#     Go To    ${URL_ACCOUNT}/corporate/store
+#     Sleep    2s
+#     Input Text    ${input_company_name}    ${shopname}
+#     Execute javascript    $('input[id=rdohead]').click()
+#     Input Text    ${input_b_address}    123 ซ.รัชดาภิเษก5 ห้วยขวาง ห้วยขวาง
+#     Select From List By Label    ${select_province}    กรุงเทพมหานคร
+#     Sleep    2s
+#     Select From List By Label    ${select_city}    จตุจักร
+#     Sleep    2s
+#     Select From List By Label    ${select_district}    จอมพล
+#     Input Text    ${input_b_postcode}    10900
+#     Input Text    ${input_company_phone}    ${mobileno_test}
+#     Input Text    ${input_tax_id}    1212121212121
+#     Input Text    ${comittee_firstname}    wls
+#     Input Text    ${comittee_lastname}    automate
+#     Execute javascript    $('input[name=committee_idtype][value=1]').prop('checked', 'checked')
+#     Input Text    ${input_committee_idcard}    1212121212121
+#     Select From List By Label    ${shop_category}    แฟชั่น
+#     Input Text    //*[@name="s_name"]    ${shopname}
+#     Input Text    ${shop_url}    ${shopname}
+#     Execute javascript    $('input[id="rdosame"]').click()
+#     Input Text    ${shop_phone}    028888888
+#     Input Text    ${shop_mobile}    ${mobileno_test}
+#     Click Button    ${btn_register_shop}
+#     Sleep    5s
+#     Location Should Contain    ${URL_ACCOUNT}/corporate/complete
+#     ${shop_name}=    Get Text    //*[@class="desc-box"]/dl[1]/dd
+#     ${shop_id}=    Get Text    //*[@class="desc-box"]/dl[2]/dd
+#     ${shop_url}=    Get Text    //*[@class="desc-box"]/dl[3]/dd
+#     Write Variable to File    ${variable_user}    ${user_email}
+#     Write Variable to File    ${variable_pwd}    ${pwd_test}
+#     Write Variable to File    ${variable_shopid}    ${shop_id}
+#     Write Variable to File    ${variable_shopurl}    ${shopname}
+#     Sleep    3s
+
+
+TC_Manage3step_corpshop
+    [Documentation]    [Welove]Manage 3 step for open corporate shop
+    Set Selenium Speed    .2
+    #${new_email}    Catenate    ${shopname}@mailinator.com
+    Account Login    ${user_email}    ${pwd_test}
+    Go To    ${URL_STORE}/${shopname}/admin
+    ${statusshipping}    Get Text    ${status_shipping}
+    ${shipping_status_str}    Convert To String    ${statusshipping}
+    Run Keyword IF    "${shipping_status_str}" == "ยังไม่ได้ตั้งค่าจัดส่ง"    Backend_Dashboard.Setting Shipping    ${shopname}
+    ${statusproduct}    Get Text    ${msg_status_product}
+    ${product_status_str}    Convert To String    ${statusproduct}
+    Run Keyword IF    "${product_status_str}" == "ยังไม่ได้เพิ่มสินค้า"    Product.Add 5 Product for new shop    ${shopname}
+    ${statusdocument}    Get Text    ${status_shopinfo}
+    ${shopinfo_status_str}    Convert To String    ${statusdocument}
+    Run Keyword IF    "${shopinfo_status_str}" == "ยังไม่ได้ส่งเอกสาร"    WMS_SellerDocumentRegister.Upload All Document Register Corporate shop    ${shopname}    wls
+    ${statusdocument}    Get Text    ${status_shopinfo}
+    ${shopinfo_status_str}    Convert To String    ${statusdocument}
+    Run Keyword IF    "${shopinfo_status_str}" == "รอตรวจสอบเอกสาร"    WMS_SellerDocumentRegister.Approve Document Corporate shop    ${shopname}    wls
+    Element Should Be Visible    ${icon_shopinfo_enable}
+    sleep    2s
+    Element Should Be Visible    ${icon_shipping_enable}
+    sleep    2s
+    Element Should Be Visible    ${icon_product_enable}
+    sleep    2s
+    Element Should Be Visible    ${btn_openshop}
+    Click Element    ${btn_openshop}
+
+
+

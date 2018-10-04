@@ -1,0 +1,130 @@
+*** Settings ***
+Library           SeleniumLibrary
+Resource          ../../Resource/WeLoveShopping/WebElement/AccountFeedback.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/AccountHistory.txt
+Resource          Common.txt
+
+*** Keywords ***
+Click Rating Star Feedback
+    [Documentation]    Use for click select rating star feedback modal
+    [Arguments]    ${order_id}    ${type_box_rating}    ${star}
+    Click ELement    //*[@id="feedback_form_${order_id}"]/div[2]/div[2]/div[${type_box_rating}]/div[2]/a[${star}]/i
+
+Select Emotional Feedback
+    [Documentation]    Use for select emotion feedback modal
+    [Arguments]    ${type_emotion}
+    Wait Until Element Is Visible    ${type_emotion}    ${expect_load_time}
+    Click ELement    ${type_emotion}
+
+Input Comment Feedback
+    [Documentation]    Use for input text comment feedback modal
+    [Arguments]    ${input_box}    ${text}
+    Input Text    ${input_box}    ${text}
+
+Click Button Confirm Feedback
+    [Documentation]    Use for click button confirm feedback
+    Click ELement    ${button_submit_feedback}
+    Confirm Action
+
+Check Feedback After Give Score
+    [Documentation]    Use for check feedback score after give feedback
+    [Arguments]    ${feedback_score}    ${text}
+    Element Should Contain    ${feedback_score}    ${text}
+
+Check Link Edit Score Feedback
+    [Documentation]    Use for check link edit score feedback
+    [Arguments]    ${order_id}    ${text}
+    Check Text    //*[@data-target="#feedback_${order_id}"]    ${text}
+
+Check Text Feedback After Expire Give Feedback
+    [Documentation]    Use for check link edit score feedback
+    [Arguments]    ${order_id}    ${text}
+    Check Text    //*[@data-target="#viewfeedback_${order_id}"]    ${text}
+
+Click Link Edit Score Feedback
+    [Documentation]    Use for click link edit score feedback
+    [Arguments]    ${order_id}
+    Wait Until Element Is Not Visible    ${notify_message}    ${expect_load_time}
+    Click Element    //*[@data-target="#feedback_${order_id}"]
+
+Check Star Active On Feedback Detail
+    [Documentation]    Use for check select rating star feedback detail
+    [Arguments]    ${order_id}    ${type_box_rating}    ${star}
+    Check Element Is Visible    //*[@id="feedback_form_${order_id}"]/div[2]/div[2]/div[${type_box_rating}]/div[2]//a[@class="box-star selected2"][${star}]
+
+Check Feedback Feeling Active Detail
+    [Documentation]    Use for check feeling feedback after give score
+    [Arguments]    ${feeling_active}
+    Element Should Be Visible    ${feeling_active}
+
+Go to Admin Feedback Page
+    [Documentation]    Use for go to admin feedback page
+    [Arguments]    ${slug_store}
+    Go To    ${URL_STORE}/${slug_store}/admin/feedback
+
+Go to Feedback Store
+    [Documentation]    Use for go to feedback store page
+    [Arguments]    ${slug_store}
+    Go To    ${URL_STORE}/${slug_store}/feedback
+
+Close feedback pop up
+    [Documentation]    User for close feedback pop up
+    Check Element Visible    ${close_feedback_modal}    ${expect_load_time}
+    Click Element    ${close_feedback_modal}
+
+Click Give Feedback button
+    [Documentation]    click give feedback button
+    Wait Until Element Is Not Visible    ${notify_message}
+    Wait Until Element Is Visible    ${give_feedback_button}
+    Click ELement    ${give_feedback_button}
+
+Give Comment And Feedback Fair Rate
+    [Documentation]    Input fair feedback comment and rating
+    [Arguments]    ${comment_message}    ${order_id_sub}
+    Select Emotional Feedback    ${icon_fair}
+    Input Comment Feedback    ${comment_box}    ${comment_message}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star1}    ${star_2}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star2}    ${star_2}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star3}    ${star_2}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star4}    ${star_2}
+    Click Button Confirm Feedback
+
+Give Comment And Feedback Good Rate
+    [Documentation]    Input good feedback comment and rating
+    [Arguments]    ${comment_message}    ${order_id_sub}
+    Select Emotional Feedback    ${icon_good}
+    Input Comment Feedback    ${comment_box}    ${comment_message}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star1}    ${star_3}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star2}    ${star_3}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star3}    ${star_3}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star4}    ${star_3}
+    Click Button Confirm Feedback
+
+Give Comment And Feedback Excellent Rate
+    [Documentation]    Input good feedback comment and rating
+    [Arguments]    ${comment_message}    ${order_id_sub}
+    Select Emotional Feedback    ${icon_excellent}
+    Input Comment Feedback    ${comment_box}    ${comment_message}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star1}    ${star_4}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star2}    ${star_4}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star3}    ${star_4}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star4}    ${star_4}
+    Click Button Confirm Feedback
+
+Give Feedback Rate Without Comment
+   [Documentation]    Only rating feedback
+    [Arguments]    ${order_id_sub}
+    Select Emotional Feedback    ${icon_good}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star1}    ${star_3}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star2}    ${star_3}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star3}    ${star_3}
+    Click Rating Star Feedback    ${order_id_sub}    ${row_star4}    ${star_3}
+    Click ELement    ${button_submit_feedback}
+
+Get Feedback date on Admin Feedback Page
+    [Documentation]    search order is and get feedback date on admin feedback page
+    [Arguments]    ${order_id}
+    Input Text    ${input_seller_ordernum}    ${order_id}
+    Click Element    ${seller_feedback_search_button}
+    ${date_give_feedback}=    Get Text    ${text_wait_feedback_date}
+    Set Test Variable    ${date_give_feedback}

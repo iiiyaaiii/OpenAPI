@@ -1,0 +1,20 @@
+*** Variables ***
+&{label_promotion_list}    chk_enable_and_live=Enable & Live on web
+...    chk_enable_and_not_live=Enabled but not Live on web
+...    chk_disabled=Disabled
+...    chk_expired=Expired
+...    ddl_promo_type=Promotion Type :
+...    tbl_status=Status
+...    tbl_live_status=Live
+...    tbl_promo_id=Prom ID
+...    tbl_promo_name=Prom Name
+...    tbl_promo_type=Prom Type
+...    tbl_camp_id=Camp ID
+...    tbl_camp_name=Camp Name
+...    tbl_campaign_start=Start
+...    tbl_campaign_end=End
+...    tbl_campaign_created=Created Date
+...    tbl_campaign_edited=Last Edit
+...    btn_build=Build
+...    btn_clear=${SPACE}Clear
+...    btn_search=Search

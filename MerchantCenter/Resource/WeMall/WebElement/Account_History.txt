@@ -1,0 +1,89 @@
+*** Variables ***
+
+### Data ###
+${slug_order_store}    qamcautomate001
+${Vio_baseball_cap}    Vio baseball cap
+${sku_Vio_baseball_cap}    Vio baseball cap
+${Adidas_shoe}    รองเท้า ADIDAS 20
+${sku_Adidas_shoe}    รองเท้า ADIDAS 20
+${sku_product3}    L90578806
+${user_admin_manage_orderweb}    automate
+${pass_admin_manage_orderweb}    Tfs7o8JMRwcr
+${Nike_Thailand_National_DR001}    Nike Thailand National DR001
+${sku_nike_thailand}    Nike Thailand National DR001
+
+### Locator ###
+${input_product_name}    //input[@name="product_name"]
+${input_orderid}    //input[@name="order_no"]
+${input_order_status_dropdown_list}    //select[@name="order_status"]
+${input_store_name}    //input[@name="store_name"]
+${search_button_on_account_history}    //button[@type="submit"]
+${status_text_on_account_history}    //strong[@class="order__process-status"]
+${countdown_time_text_on_account_history}    //p[@class="order__process-time"]
+${request_refund_link}    //p[@class="order__process-refund"]
+${lnk_view_order_detail}    //div[@class="link-view-detail"]
+${order_list_row}    //div[@class="order-list-inner"]
+${select_address}    $('.select_address')[0].click()
+${ccw_channel_radio_button}    $('#wetrust_CCW').find('.button-payment-inner')
+${element_status_thankyou_page}    //div[@class="thk-payment-status"]
+${element_countdowntime_account_history}    //p[@class="order__process-time"]
+${input_username_admin_orderweb}    //input[@name="username"]
+${input_password_admin_orderweb}    //input[@name="userpass"]
+${login_button_admin_orderweb}    //button[@type="submit"]
+${user_sign_admin_orderweb}    //*[@class="user-panel"]
+${input_search_manage_datetime}    //*[@name='order_id']
+${button_search_manage_datetime}    //input[@value="Search"]
+${select_list_status}    //select[@id="order-fields"]
+${select_list_type}    //select[@id="order-type"]
+${input_order_time}    //input[@id="order-time"]
+${update_button}    //input[@id="order-btn"]
+${wallet_cancel}    //a[contains(text(),'ยกเลิกรายการ')]
+${btn_view_order_detail_thankyou_page}    //*[@class="btn btn-action-main"]
+${text_order_id_thankyou_page}    //*[@id="collapseTwo"]/div/p/strong
+${account_history_refund_link_}    //p[@class="order__process-refund"]//a
+${input_orderid_store_history}    //input[@id="keyword"]
+${request_tracking_button}    //a[@class="btn btn-small btn_request_tracking"]
+${request_tracking_modal}    //div[@id="shipCustom"]
+${input_tracking_button}    //button[@id="btn_submit_ship"]
+${tracking_modal}    //div[@id="tracking"]
+${input_tracking_number}    //input[@id="tracking_number"]
+${confirm_tracking_button}    //button[@id="btn_submit_trackingCom"]
+${receive_button_account_history}    //button[@class="btn-black btn_receive"]
+${receive_modal}    //div[@class="modal-content"]
+${confirm_receive_button}    //button[@class="btn btn_confirm_receive"]
+${close_feedback_modal}    //button[@class="close"]
+${give_feedback_button}    //button[@class="btn-feedback"]
+${text_ship_by_item_account_history}    //div[@class="shipby-item_ margin-top8"]
+${element_reason_refund}    //select[@id="order_request_reasons_code"]
+${element_description_refund}    //textarea[@id="request_description"]
+${element_browse_file}    //input[@id="evidence"]
+${request_refund_button}    //input[@type="submit"]
+${account_refund_detail_button}    $('.btn__send-file')[0]
+${cancel_refund_button}    //a[@class="btn-black cancel_refund"]
+${element_box_view_refund}    //div[@class="box-view-refund"]
+${text_refund_account_history}    //div[@class="order-list-refund"]
+${view_detail_store_order_detail}    //a[@class="btn btn-small"]
+${accept_refund_button}    //a[@class="btn btn-small btn-primary btn_request_refund"]
+${accept_refund_modal}    //form[@id="frm_request_accept"]
+${element_password_accept_refund}    //input[@id="request_password"]
+${confirm_accept_button}    //button[@class="btn btn-small request_accept btn-primary"]
+${ok_button_confirm_accept_modal}    //button[@id="confirm_modal_ok"]
+${element_text_accept_refund}    //h3[@class="span11"]
+${decline_refund_button}    //a[@class="btn btn-small btn-default btn_request_refund"]
+${decline_refund_modal}    //form[@id="frm_request_decline"]
+${element_description_decline}    //textarea[@id="request_description"]
+${element_browse_file_decline}    //input[@id="refund_upload"]
+${confirm_decline_button}    //button[@class="btn btn-small btn-primary request_decline"]
+${ok_button_confirm_decline_modal}    //button[@id="confirm_decline_ok"]
+${go_to_detail_button}    //a[@class="btn btn-small btn-default"]
+${btn_shipping}    //a[@class="btn btn-small btn_request_tracking"]
+${btn_shipping_custom}    //*[@id="btn_submit_shipCus"]
+${input_url_custom}    //*[@id="tracking_url"]
+${input_url_custom_2}    //*[@id="tracking_url_2"]
+${input_custom_file}    //input[@id="tracking_file"]
+${confirm_custom_button}    //button[@id="btn_submit_trackingCus"]
+${input_tracking_custom}    //*[@id="tracking_desc"]
+${account_history_expired_ship}    //*[@class="order__process-time"]
+${lbl_promotion_tag}	//div[@class="notic-promotion"]
+${lbl_payment_channel}    //div[contains(text(),"การชำระเงิน")]
+${img_promotion_tag}	//i[@class="promotion-icon"]

@@ -1,0 +1,25 @@
+*** variable ***
+### Data ###
+${user_admin_manage_orderweb}    automate
+${pass_admin_manage_orderweb}    Tfs7o8JMRwcr
+
+### Locator ###
+${input_username_admin_orderweb}    //input[@name="username"]
+${input_password_admin_orderweb}    //input[@name="userpass"]
+${login_button_admin_orderweb}    //button[@type="submit"]
+${user_sign_admin_orderweb}    //*[@class="user-panel"]
+${input_search_manage_datetime}    //*[@name='order_id']
+${button_search_manage_datetime}    //input[@value="Search"]
+${select_list_status}    //select[@id="order-fields"]
+${select_list_type}    //select[@id="order-type"]
+${input_order_time}    //input[@id="order-time"]
+${update_button}    //input[@id="order-btn"]
+${select_escrow_product1}    //*[@id="manage-process"]/div/div[2]/table/tbody/tr[2]/td[1]/div/ins
+
+
+${escrow_select_list_status}    //select[@id="escrow-fields"]
+${escrow_select_list_type}    //select[@id="escrow-type"]
+${escrow_time}    //input[@id="escrow-time"]
+${escrow_unit}    //select[@id="escrow-unit"]
+${escrow_btn_update}    //*[@id="escrow-btn"]
+

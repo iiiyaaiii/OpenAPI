@@ -1,0 +1,18 @@
+*** variable ***
+${url_get_token_tmn}    card-payment.tmn-dev.com
+${card_number}    4111111111111111
+${card_expiry_month}    10
+${card_expiry_year}    2019
+${card_cvn}    123
+${card_holder_name}    QA TEST
+${content_type}    application/x-www-form-urlencoded
+${pubilc_token}    Bearer YzM3YWM2NzItMjNkYy0xMWU2LWI2N2ItOWU3MTEyOGNhZTc3Og
+${app_secret}    wlsPasswordSecret
+${order_request_reasons_code}    7
+${request_description}    เทส api
+${action_shipping}    shipping
+${action_receive}    receive
+${action_request_refund}    requestrefund
+${action_accept}    accept
+${action_decline}    decline
+${action_cancel}    cancel

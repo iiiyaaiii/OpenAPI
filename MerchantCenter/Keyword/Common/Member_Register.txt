@@ -1,0 +1,116 @@
+*** Settings ***
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           OperatingSystem
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeLoveShopping/WebElement/Member_SignUp.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/Widget.txt
+
+*** Keywords ***
+##PORTAL FLOW
+Go To Member Registration Page
+    Click Element    ${btn_signup}
+
+Member Registration Page Should Be Appeared
+    Wait Until Element Is Visible    ${form_registration}
+
+##COMMON KEYWORDS
+Enter Email
+    [Arguments]    ${email}
+    Input Text    ${txt_email}    ${email}
+
+Enter Password
+    [Arguments]    ${password}
+    Input Text    ${txt_password}    ${password}
+
+Enter Confirm Password
+    [Arguments]    ${confirmPassword}
+    Input Text    ${txt_confirmPassword}    ${confirmPassword}
+
+Enter Mobile Number
+    [Arguments]    ${mobileNumber}
+    Input Text    ${txt_mobileNumber}    ${mobileNumber}
+
+Tick On Agreement Checkbox
+    Click Element    ${cb_agreement}
+
+Click Register Button
+    Click Element    ${btn_register}
+
+Successfully Register Page Should Be Appeared
+    Wait Until Element Is Visible    ${regis_success_box}
+
+Validate Email - Incorrect Format
+    Element Should Contain    ${err_email}    กรุณากรอกอีเมลให้ถูกต้อง
+
+Validate Email - Already Used
+    Element Should Contain    ${error_common}    อีเมลนี้ถูกใช้งานแล้ว
+
+Validate Password - Incorrect Format
+    Element Should Contain    ${err_password}    กรุณาใส่รหัสผ่านที่คาดเดาได้ยาก
+
+Validate Password - Incorrect Data Type
+    Element Should Contain    ${err_password}    ข้อมูลไม่ถูกต้อง (ตัวอักษรและตัวเลขเท่านั้น)
+
+Validate Password - Minimum Range
+    Element Should Contain    ${err_password}    กรุณากรอกอย่างน้อย 8 ตัวอักษร
+
+Validate Confirm Password - Mismatch
+    Element Should Contain    ${err_confirmPassword}    กรุณากรอกให้ตรงกับรหัสผ่าน
+
+Validate Mobile Number - Incorrect Format
+    Element Should Contain    ${err_mobileNumber}    กรุณากรอกเบอร์โทรศัพท์มือถือ 10 หลัก
+
+Validate Mobile Number - Incorrect Data Type
+    Element Should Contain    ${err_mobileNumber}    เบอร์โทรศัพท์มือถือไม่ถูกต้อง
+
+Validate Mobile Number - Leading Zero
+    Element Should Contain    ${err_mobileNumber}    หมายเลขโทรศัพท์ต้องขึ้นต้นด้วย 0 เท่านั้น
+
+Hint Message Should Be Appeared
+    [Arguments]    ${expectedMessage}
+    Wait Until Element Is Visible    ${checkout_regis_hint}
+    Element Should Contain    ${checkout_regis_hint}    ${expectedMessage}
+
+Check To Change Register Tab
+    ${register_tab}    Run Keyword And Return Status    Element Should Be Visible    ${tab_register}
+    Run Keyword If    '${register_tab}' == 'True'    Click Element    ${tab_register}
+
+Validate Registration Form
+    [Documentation]    Enter in Registration Form fields, then click on Password Strength bar to display message and verify the message
+    [Arguments]    ${field}    ${input}    ${error_case}    ${action}    ${error_after}
+    ##INPUT DATA
+    ${register_tab}    Run Keyword And Return Status    Element Should Be Visible    ${tab_register}
+    Run Keyword If    '${register_tab}' == 'True'    Click Element    ${tab_register}
+    Run Keyword If    '${field}' == 'Email'     Enter Email    ${input}
+    Run Keyword If    '${field}' == 'Password'    Enter Password    ${input}
+    Run Keyword If    '${field}' == 'Confirm Password'    Enter Confirm Password    ${input}
+    Run Keyword If    '${field}' == 'Mobile Number'    Enter Mobile Number    ${input}
+    Run Keyword If    '${field}' == 'Agreement' and '${input}' == 'Tick'    Tick On Agreement Checkbox
+    Click Element    ${bar_password_strength}
+    ##VALIDATION
+    Run Keyword If    '${error_case}' == 'Email Format'             Validate Email - Incorrect Format
+    Run Keyword If    '${error_case}' == 'Password Format'          Validate Password - Incorrect Format
+    Run Keyword If    '${error_case}' == 'Password Type'            Validate Password - Incorrect Data Type
+    Run Keyword If    '${error_case}' == 'Password Range'           Validate Password - Minimum Range
+    Run Keyword If    '${error_case}' == 'Password Mismatch'        Validate Confirm Password - Mismatch
+    Run Keyword If    '${error_case}' == 'Mobile Format'            Validate Mobile Number - Incorrect Format
+    Run Keyword If    '${error_case}' == 'Mobile Type'              Validate Mobile Number - Incorrect Data Type
+    Run Keyword If    '${error_case}' == 'Mobile Leading'           Validate Mobile Number - Leading Zero
+    ##ACTION
+    Run Keyword If    '${action}' == 'Submit'    Click Register Button
+    ##VALIDATE AFTER SUBMIT
+    Run Keyword If    '${error_after}' == 'Email Already Used'      Validate Email - Already Used
+
+Verify Message Password Error
+    [Arguments]    ${message}
+    Element Should Be Visible    ${regis_checkout_formerr}
+    Element Should Contain    ${regis_checkout_pass_errmsg}    ${message}
+
+Verify Message Password Confirm Error
+    [Arguments]    ${message}
+    Element Should Contain    ${regis_checkout_confirmpass_errmsg}    ${message}
+
+Verify Message Number Error
+    [Arguments]    ${message}
+    Element Should Contain    ${regis_checkout_phone_errmsg}    ${message}

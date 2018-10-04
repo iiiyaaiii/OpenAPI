@@ -1,0 +1,41 @@
+*** Setting ***
+Library           SeleniumLibrary
+Library           HttpLibrary.HTTP
+Library           RequestsLibrary
+Library           Collections
+Library           DateTime
+*** keyword ***
+Get Token
+    Create Session    get_token    https://staging.ascendanalyticshub.com    verify=True
+    ${body_data}    Create Dictionary    grant_type=client_credentials
+    ${header}    Create Dictionary    Authorization=Basic Y2xpZW50OnNlY3JldA=="    Content-Type=application/x-www-form-urlencoded
+    ${response}    Post Request    get_token    /oauth/token    data=${body_data}    headers=${header}
+    ${response_body}    To Json    ${response.content}
+    Log    ${response_body}
+    ${token}     Get From Dictionary    ${response_body}    access_token
+    [return]    ${token}
+    # Create Http Context    api-account.wls-dev.com    https
+    # Set Request Body    grant_type=client_credentials&client_id=86151b263565b45b&client_secret=9fff17ac24cfef4d1a326267c114e949
+    # POST    ${URL_API_ACCOUNT}/oauth2/access_token
+    # Log Response Body
+
+Set Request Header
+    ${token}    Get Token
+    ${header}    Create Dictionary    Authorization=bearer ${token}
+    [return]    ${header}
+
+Get Late Shipment
+    [Arguments]    ${store_id}
+    Create Session    late_shipment    https://staging.ascendanalyticshub.com    verify=True
+    ${header}    Set Request Header
+    ${response}    Get Request    late_shipment    /api/lateshipment/${store_id}    headers=${header}
+    Log    ${response.content}
+    [return]    ${response}
+
+Get Refund Rate
+    [Arguments]    ${store_id}
+    Create Session    late_shipment    https://staging.ascendanalyticshub.com    verify=True
+    ${header}    Set Request Header
+    ${response}    Get Request    late_shipment    /api/refund/${store_id}    headers=${header}
+    Log    ${response.content}
+    [return]    ${response}

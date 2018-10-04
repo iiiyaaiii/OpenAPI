@@ -1,0 +1,53 @@
+*** Settings ***
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           OperatingSystem
+Library           ../PythonLibrary/_customkeyword.py
+# Resource          ../../Resource/WeLoveShopping/WebElement/Cart.txt
+# Resource          ../../Resource/WeLoveShopping/WebElement/Checkout.txt
+Resource          ../../Resource/Wemall/WebElement/Cart.txt
+Resource          ../../Resource/Wemall/WebElement/Checkout.txt
+Resource          ../../Resource/Wemall/WebElement/LevelD.txt
+
+*** Variable ***
+${product_sim}    L91200122
+
+*** Keywords ***
+### Pre ###
+Delete All Product In Cart Truemoveh
+    Go to    ${URL_PORTAL}/cart
+    ${count}=    Get Matching Xpath Count    ${delete_product_cart}
+    : FOR    ${a}    IN RANGE    0    ${count}
+    \    Wait Until Element Is Visible    ${delete_product_cart}
+    \    Log    ${a}
+    \    Click Element    ${delete_product_cart}
+    \    Confirm Action
+    Wait Until Page Contains    ไม่มีสินค้าในตะกร้าของท่าน
+
+Select Sim Product
+    Go to    ${URL_LEVEL_D}/${product_sim}
+    Wait Until Element Is Visible    btn-add-cart
+    Click Element    ${type_sim}
+
+Select Adress For Checkout
+    Execute Javascript    $("button:contains(เลือกที่อยู่จัดส่งนี้)")[0].click()
+
+Verify Payment Channel Other Product
+    [Documentation]    Verify all payment channel at checkout other product
+    Wait Until Element Is Visible    ${box_payment_type}
+
+Verify Payment Channel SIM Product
+    [Documentation]    Verify all payment channel at checkout SIM product
+    Wait Until Element Is Visible    ${box_payment_type}
+    ${count}    Execute Javascript    return ${payment_type}.length
+    ${count1}    Convert To String    ${count}
+    Should Be Equal    ${count1}    2
+
+Wallet Payment Should Be Appeared
+    Element Should Be Visible    ${ewallet}
+
+Credit Card Payment Should Be Appeared
+    Element Should Be Visible    ${creditcard}
+
+ATM Payment Should Not Be Appeared
+    Element Should Not Be Visible

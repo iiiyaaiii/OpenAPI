@@ -1,0 +1,33 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Force Tags        Account-Web    ManageProfile    Ligo    mc-wls
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00042
+    [Documentation]    [Welove]Profile page
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Execute JavaScript    ${myacc}.mouseover()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Element Should Contain    ${profile_surname}    Buyer
+    Element Should Contain    ${profile_gender}    ชาย
+    Element Should Contain    ${profile_bday}    9 กุมภาพันธ์ 2530
+    Element Should Contain    ${profile_phone}    0810000001
+    Element should Be Visible    //li[@title="ข้อมูลส่วนตัว"]
+    Element should Be Visible    //li[@title="ที่อยู่จัดส่ง"]
+    Element should Be Visible    //li[@title="ร้านค้าโปรด"]
+    Element should Be Visible    //li[@title="รายการสั่งซื้อ"]
+    Element should Be Visible    //li[@title="เปลี่ยนรหัสผ่าน"]
+    Page Should Contain    ออกจากระบบ
+    Clear Active Login

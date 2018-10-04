@@ -1,0 +1,295 @@
+*** Settings ***
+Library           String
+Library           SeleniumLibrary
+Library           HttpLibrary.HTTP
+Library           Collections
+Library           BuiltIn
+Resource           ../../Resource/WeLoveShopping/init.robot
+
+*** Keywords ***
+Request Access Token For E-stamp
+    [Documentation]    Use for get access token
+    [Arguments]    ${client_id_estamp}    ${client_secret_estamp}    ${grant_type}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Body    client_id=${client_id_estamp}&client_secret=${client_secret_estamp}&grant_type=${grant_type}
+    POST    /estamp/oauth/access_token
+    ${response_data}=   Get Response Body
+    ${token}=    Get Json Value    ${response_data}    /access_token
+    ${token}=    Remove String    ${token}    "
+    Set Test Variable    ${token}
+
+Get Banner List
+    [Arguments]    ${limit}    ${order}    ${sort}    ${status}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token   ${token}
+    Set Request Header    Content-Type   application/json
+    GET    /estamp/banner?limit=${limit}&order=${order}&sort=${sort}&status=${status}
+
+Verify Body Banner List
+    ${status_listbanner}=    Get Response Status
+    ${body_listbanner}=    Get Response Body
+    Response Status Code Should Equal    200
+    Should Contain    ${body_listbanner}    data
+    Should Contain    ${body_listbanner}    id
+    Should Contain    ${body_listbanner}    name
+    Should Contain    ${body_listbanner}    url
+    Should Contain    ${body_listbanner}    image
+    Should Contain    ${body_listbanner}    position
+    Should Contain    ${body_listbanner}    status
+    Should Contain    ${body_listbanner}    created_at
+    Should Contain    ${body_listbanner}    updated_at
+
+Post Add Banner
+    [Arguments]    ${banner_name}    ${banner_url}    ${banner_image}    ${banner_status}    ${banner_position}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token   ${token}
+    Set Request Header    Content-Type   application/json
+    Set Request Body    { "name": "${banner_name}", "url": "${banner_url}", "image": "${banner_image}", "status": "${banner_status}", "position": "${banner_position}" }
+    POST    /estamp/banner
+
+Verify Body Add Banner
+    ${status_addbanner}=    Get Response Status
+    ${body_addbanner}=    Get Response Body
+    Response Status Code Should Equal    201
+    Should Contain    ${body_addbanner}    id
+    Should Contain    ${body_addbanner}    name
+    Should Contain    ${body_addbanner}    url
+    Should Contain    ${body_addbanner}    image
+    Should Contain    ${body_addbanner}    status
+    Should Contain    ${body_addbanner}    position
+    Should Contain    ${body_addbanner}    created_at
+
+Put Edit Banner
+    [Arguments]    ${name_editbanner}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token   ${token}
+    Set Request Header    Content-Type   application/json
+    Set Request Body    { "name": "${name_editbanner}" }
+    PUT    /estamp/banner/87
+
+Verify Body Edit Name Banner
+    ${status_editbanner}=    Get Response Status
+    ${body_editbanner}=    Get Response Body
+    Response Status Code Should Equal    200
+    Should Contain    ${body_editbanner}    id
+    Should Contain    ${body_editbanner}    name
+    Should Contain    ${body_editbanner}    updated_at
+    Log To Console    body=${body_editbanner}
+
+Verify Body Edit Url Banner
+    ${status_editbanner}=    Get Response Status
+    ${body_editbanner}=    Get Response Body
+    Response Status Code Should Equal    200
+    Should Contain    ${body_editbanner}    id
+    Should Contain    ${body_editbanner}    url
+    Should Contain    ${body_editbanner}    updated_at
+    Log To Console    body=${body_editbanner}
+
+Verify Body Edit Image Url Banner
+    ${status_editbanner}=    Get Response Status
+    ${body_editbanner}=    Get Response Body
+    Response Status Code Should Equal    200
+    Should Contain    ${body_editbanner}    id
+    Should Contain    ${body_editbanner}    url
+    Should Contain    ${body_editbanner}    updated_at
+    Log To Console    body=${body_editbanner}
+
+Get History List
+    [Arguments]    ${user_id}    ${order}    ${sort}    ${limit}    ${page}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token   ${token}
+    Set Request Header    Content-Type   application/json
+    GET    /estamp/history?user_id=${user_id}&order=${order}&sort=${sort}&limit=${limit}&page=${page}
+
+Verify Body History List
+    ${status_historylist}=    Get Response Status
+    ${body_historylist}=    Get Response Body
+    Response Status Code Should Equal    200
+    Should Contain    ${body_historylist}    pagination
+    Should Contain    ${body_historylist}    data
+
+Get My Stamp
+    [Arguments]    ${user_id}    ${limit}    ${page}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token   ${token}
+    Set Request Header    Content-Type   application/json
+    GET    /estamp/mystamp?user_id=${user_id}&limit=${limit}0&page=${page}
+
+Verify Body Mystamp
+    ${status_mystamp}=    Get Response Status
+    ${body_mystamp}=    Get Response Body
+    Response Status Code Should Equal    200
+    Should Contain    ${body_mystamp}    pagination
+    Should Contain    ${body_mystamp}    data
+    Should Contain    ${body_mystamp}    id
+    Should Contain    ${body_mystamp}    name
+    Should Contain    ${body_mystamp}    notify
+    Should Contain    ${body_mystamp}    stamp
+    Should Contain    ${body_mystamp}    stamp_per_page
+    Should Contain    ${body_mystamp}    expired_at
+    Should Contain    ${body_mystamp}    merchant
+    Should Contain    ${body_mystamp}    logo_url
+    Should Contain    ${body_mystamp}    banner_url
+
+Create Stamp By Using QR Code
+    [Documentation]    Get new stamp by sending only QR Code
+    [Arguments]    ${campaign_id}    ${qr_code}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    Set Request Body    {"user_id": "8500345630468","campaign_id": "${campaign_id}","qr_code": "${qr_code}"}
+    POST    /estamp/stamp
+    ${response_data}=   Get Response Body
+    Set Test Variable    ${response_data}
+
+Create Stamp By Using Password
+    [Documentation]    Get new stamp by sending only password
+    [Arguments]    ${campaign_id}    ${password}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    Set Request Body    {"user_id": "8500345630468","campaign_id": "${campaign_id}","password": "${password}"}
+    POST    /estamp/stamp
+    ${response_data}=   Get Response Body
+    Set Test Variable    ${response_data}
+
+Create Stamp By Using QR Code and Password
+    [Documentation]    Get new stamp by sending only password
+    [Arguments]    ${campaign_id}    ${qr_code}    ${password}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    Set Request Body    {"user_id": "8500345630468","campaign_id": "${campaign_id}","qr_code": "${qr_code}","password": "${password}"}
+    POST    /estamp/stamp
+    ${response_data}=   Get Response Body
+    Set Test Variable    ${response_data}
+
+The Create Stamp API returns the response correctly
+    Response Status Code Should Equal    201
+    Should Contain  ${response_data}    id
+    Should Contain  ${response_data}    position
+
+Redeem Stamp to get the reward
+    [Documentation]    Mark used stamp by stamp id
+    [Arguments]    ${campaign_id}    ${stamp_id}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    Set Request Body    {"user_id": "8500345630468","campaign_id": "${campaign_id}"}
+    PUT    /estamp/stamp/${stamp_id}/redeem
+    ${response_data}=   Get Response Body
+    Set Test Variable    ${response_data}
+
+The Redeem Stamp API returns the response correctly
+    Response Status Code Should Equal    200
+    Should Contain  ${response_data}    Success
+
+Get Campaign List By Campaign Id
+    [Documentation]    Use for get campaign list by camapign id
+    [Arguments]    ${campaign_id}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    GET    /estamp/campaign/${campaign_id}
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+Get Campaign List By Parameter
+    [Documentation]    Use for get campaign list by parameter
+    [Arguments]    ${parameter}    ${parameter_value}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    GET    /estamp/campaign?${parameter}=${parameter_value}
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+Get Value From Response Data
+    [Documentation]    Use for get value from response json data
+    [Arguments]    ${response_data}    ${json_data_node}
+    ${value}    Get Json Value    ${response_data}    ${json_data_node}
+    Set Test Variable    ${value}
+
+
+Get Merchant List By Merchant Id
+    [Documentation]    Use for get merchant list by camapign id
+    [Arguments]    ${merchant_id}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    GET    /estamp/merchant/${merchant_id}
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+Get Merchant List By Parameter
+    [Documentation]    Use for get merchant list by parameter
+    [Arguments]    ${parameter}    ${parameter_value}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    GET    /estamp/merchant?${parameter}=${parameter_value}
+    ${response_data}=   Get Response Body
+    [return]    ${response_data}
+
+
+Get QR Code
+    [Documentation]    Get QR Code
+    [Arguments]    ${user_id}    ${campaign_id}    ${merchant_id}    ${code_type}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    Set Request Body    { "user_id": "${user_id}", "campaign_id": ${campaign_id}, "merchant_id": ${merchant_id}, "code_type": "${code_type}" }
+    POST    /estamp/edc/qrcode
+    ${response_data}=   Get Response Body
+    ${unique_code}    Get Json Value    ${response_data}    /unique_code
+    ${unique_code_not_string}=    Remove String    ${unique_code}    "
+    Set Test Variable    ${unique_code_not_string}
+
+
+Create stamp by EDC
+    [Documentation]    Create stamp by EDC
+    [Arguments]    ${merchant_code}    ${branch_code}    ${merchant_terminal}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    Set Request Body    { "merchant_code": "${merchant_code}", "branch_code" : "${branch_code}", "merchant_terminal" : ${merchant_terminal}, "unique_code":"${unique_code_not_string}" }
+    POST    /estamp/edc/stamp
+    ${response_data}=   Get Response Body
+    ${estamp_id}    Get Json Value    ${response_data}    /id
+    ${estamp_id_not_string}=    Remove String    ${estamp_id}    ,
+    Set Test Variable    ${unique_code_not_string}
+    Set Test Variable    ${merchant_code}
+    Set Test Variable    ${branch_code}
+    Set Test Variable    ${merchant_terminal}
+    Set Test Variable    ${estamp_id_not_string}
+
+Get QR Code For Redeem
+    [Documentation]    Get QR Code For Redeem
+    [Arguments]    ${user_id}    ${campaign_id}    ${merchant_id}    ${code_type}
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    Set Request Body    { "user_id": "${user_id}", "campaign_id": ${campaign_id}, "merchant_id": ${merchant_id}, "code_type": "${code_type}", "stamp_id": ${estamp_id_not_string}}
+    POST    /estamp/edc/qrcode
+    ${response_data}=   Get Response Body
+    ${unique_code_for_redeem}    Get Json Value    ${response_data}    /unique_code
+    ${unique_code_for_redeem_not_string}=    Remove String    ${unique_code_for_redeem}    "
+    Set Test Variable    ${unique_code_for_redeem_not_string}
+
+
+Redeem stamp by EDC
+    [Documentation]    Redeem stamp by EDC
+    Create Http Context    ${URL_STAMP_API}    https
+    Set Request Header    X-STAMP-Access-Token    ${token}
+    Set Request Header    Content-Type    application/json
+    Set Request Body    { "merchant_code": "${merchant_code}", "branch_code" : "${branch_code}", "merchant_terminal" : "${merchant_terminal}", "unique_code":"${unique_code_for_redeem_not_string}" }
+    PUT    /estamp/edc/redeem
+    ${response_data}=   Get Response Body
+
+
+
+
+
+
+
+

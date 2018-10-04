@@ -1,0 +1,189 @@
+*** Setting ***
+Suite Setup       Run Keywords    Account Login    ${seller_user_001}    ${seller_pwd_001}    AND    Set product data
+Suite Teardown    Close Browser
+Test Setup        Go To    ${URL_STORE}/${user_s001}/admin/product
+Force Tags        Store-API    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Product.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_MonitoringListing.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Keywords ***
+Write Variable to File
+    [Arguments]    ${variable_name}    ${value}
+    ${variable}    Catenate    SEPARATOR=    ${    ${variable_name}    }    ${SPACE}${SPACE}${SPACE}${SPACE}    ${value}
+    #Append To File    ${path}${/}Config${/}${ENV}/robotdata.txt    ${\n}${variable}
+    ${FilePath}    Replace String    ${CURDIR}    /TestCase/WeLoveShopping/StoreAPI/Product    /Resource/${BU}/Configuration/${ENV}
+    Append To File   ${FilePath}${/}robotdata.txt    ${\n}${variable}
+
+Check product data
+    [Arguments]    ${productname}
+    Go To    ${URL_STORE}/${user_s001}/admin/product
+    Search product    ${productname}
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบสินค้า
+    ${status}    Run Keyword If    '${Result}' == 'True'    Set Variable    ${Result}
+    [Return]    ${status}
+
+Set product data
+    Set Selenium Speed    .2
+    ${status}    Check product data    productnoattr
+    Run Keyword If    '${status}' == 'True'    Run Keywords    Go To    ${URL_STORE}/${user_s001}/admin/product/create    AND
+    ...    Store Add Product By Add Photo    electronic    robot_product1_1.jpg    productnoattr    product_NoAttr
+    ...    New    5    1    0    0    1
+    ${status}    Check product data    productattr
+    Run Keyword If    '${status}' == 'True'    Run Keywords    Go To    ${URL_STORE}/${user_s001}/admin/product/create    AND
+    ...    Store Add Product By Add Photo    fashion    robot_product1_7.jpg    productattr    product_Attr    New
+    ...    1000    1    2    3    2
+    ${status}    Check product data    product_NoStock
+    Run Keyword If    '${status}' == 'True'    Run Keywords    Go To    ${URL_STORE}/${user_s001}/admin/product/create    AND
+    ...    Store Add Product Pre-Order By Select Photo    electronic    robot_product1_1    product_NoStock    product_NoStock
+    ...    New    1000    0    0    0    3    N    N
+    ${status}    Check product data    preorder_Stock
+    Run Keyword If    '${status}' == 'True'    Run Keywords    Go To    ${URL_STORE}/${user_s001}/admin/product/create    AND
+    ...    Store Add Product Pre-Order By Select Photo    electronic    robot_product1_3    preorder_Stock    preorder_Stock
+    ...    New    1000    0    1    3    4    Y    N
+    ${status}    Check product data    preorder_NoAttr
+    Run Keyword If    '${status}' == 'True'    Run Keywords    Go To    ${URL_STORE}/${user_s001}/admin/product/create    AND
+    ...    Store Add Product Pre-Order By Select Photo    electronic    robot_product1_2    preorder_NoAttr    preorder_NoAttr
+    ...    New    1000    0    0    0    34    Y    N
+
+*** Test Case ***
+TC_MC_02107
+    [Documentation]    Verify icon "Down Arrow" on stock field
+    ${PID}    Get Text    ${PID_Stock}
+    Search product    ${PID}
+    Wait Until Element Is Visible    table_report
+    ${check_stock}    Get Text    ${stock}
+    Run Keyword If    ${check_stock} == "N/A"    Element Should Not Be Visible    ${stock_icon}
+    Run Keyword If    ${check_stock} != "N/A"    Element Should Be Visible    ${stock_icon}
+
+TC_MC_02108
+    [Documentation]    Verify "Available Stock" tooltip
+    ${PID}    Get Text    ${PID_Stock}
+    Search product    ${PID}
+    Wait Until Element Is Visible    table_report
+    Click Element    ${stock_icon}
+    Wait Until Element Is Visible    ${Stock_popup}
+    Click Element    ${AvailableTooltip_Icon}
+    Wait Until Element Is Visible    ${Tooltip}
+    Page Should Contain    จำนวนสินค้าพร้อมขาย คือ จำนวนสินค้าที่พร้อมจำหน่ายที่หน้าร้านค้า
+
+TC_MC_02109
+    [Documentation]    Verify "Hold Stock" tooltip
+    ${PID}    Get Text    ${PID_Stock}
+    Search product    ${PID}
+    Wait Until Element Is Visible    table_report
+    Click Element    ${stock_icon}
+    Wait Until Element Is Visible    ${Stock_popup}
+    Click Element    ${HoldTooltip_Icon}
+    Wait Until Element Is Visible    ${Tooltip}
+    Page Should Contain    จำนวนสินค้ารอการชำระเงิน คือ จำนวนสินค้าที่รอผู้ซื้อชำระเงิน หากผู้ซื้อไม่ชำระเงินภายใน ระยะเวลาที่กำหนด สินค้านี้จะถูกย้ายกลับไปอยู่ในรายการสินค้าพร้อมขาย
+
+TC_MC_02110
+    [Documentation]    Verify popup "Product amount", Incase product haven't attribute and use stock
+    [Tags]    Regression    Low
+    Search product    productnoattr
+    Wait Until Element Is Visible    table_report
+    Click Element    ${stock_icon}
+    Wait Until Element Is Visible    ${Stock_popup}
+    Page Should Contain    จำนวนสต็อก
+    Page Should Contain    จำนวนสินค้าทั้งหมด:
+    Page Should Contain    จำนวนสินค้าพร้อมขาย:
+    Page Should Contain    จำนวนสินค้ารอการชำระเงิน :
+    Page Should Not Contain    รหัสสินค้าของร้าน
+    Element Should Not Be Visible    ${Table_Stock}
+
+TC_MC_02111
+    [Documentation]    Verify popup "Product amount", Incase product have attribute and use stock
+    [Tags]    Regression    Medium
+    Search product    productattr
+    Wait Until Element Is Visible    table_report
+    Click Element    ${stock_icon}
+    Wait Until Element Is Visible    ${Stock_popup}
+    Page Should Contain    จำนวนสต็อก
+    Page Should Contain    จำนวนสินค้าทั้งหมด:
+    Page Should Contain    จำนวนสินค้าพร้อมขาย:
+    Page Should Contain    จำนวนสินค้ารอการชำระเงิน :
+    Page Should Contain    รหัสสินค้าของร้าน
+    Element Should Be Visible    ${Table_Stock}
+
+TC_MC_02112
+    [Documentation]    Verify popup "Product amount", Incase product is Preoder and not use stock
+    [Tags]    Regression    Low
+    Search product    product_NoStock
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Wait Until Element Is Visible    table_report
+    Element Should Not Be Visible    ${stock_icon}
+
+TC_MC_02113
+    [Documentation]    Verify popup "Product amount", Incase product have attribute and use stock (Pre Order)
+    [Tags]    Regression    Low
+    Search product    preorder_Stock
+    Wait Until Element Is Visible    table_report
+    Click Element    ${stock_icon}
+    Wait Until Element Is Visible    ${Stock_popup}
+    Page Should Contain    จำนวนสต็อก
+    Page Should Contain    จำนวนสินค้าทั้งหมด:
+    Page Should Contain    จำนวนสินค้าพร้อมขาย:
+    Page Should Contain    จำนวนสินค้ารอการชำระเงิน :
+    Page Should Contain    รหัสสินค้าของร้าน
+    Element Should Be Visible    ${Table_Stock}
+
+TC_MC_02114
+    [Documentation]    Verify popup "Product amount", Incase product haven't attribute and use stock (Pre Order)
+    [Tags]    Regression    Low
+    Search product    preorder_NoAttr
+    Wait Until Element Is Visible    table_report
+    Click Element    ${stock_icon}
+    Wait Until Element Is Visible    ${Stock_popup}
+    Page Should Contain    จำนวนสต็อก
+    Page Should Contain    จำนวนสินค้าทั้งหมด:
+    Page Should Contain    จำนวนสินค้าพร้อมขาย:
+    Page Should Contain    จำนวนสินค้ารอการชำระเงิน :
+    Page Should Not Contain    รหัสสินค้าของร้าน
+    Element Should Not Be Visible    ${Table_Stock}
+
+TC_MC_02115
+    [Documentation]    Verify popup "Product amount", Incase product have hold stock and not have attribute
+    [Tags]    Regression    Medium
+    Search product    productnoattr
+    Wait Until Element Is Visible    table_report
+    Click Element    ${stock_icon}
+    Wait Until Element Is Visible    ${Stock_popup}
+    Check Stock
+    #Get shop name
+    #Go To    ${URL_ACCOUNT}/${shop_name}
+    #Wait Until Element Is Visible    product-wrapper-home
+    #Click Element    //div[@*="product-wrapper-home"]//li[1]
+
+TC_MC_02116
+    [Documentation]    Verify popup "Product amount", Incase product have hold stock and have attribute
+    Search product    productattr
+    Wait Until Element Is Visible    table_report
+    Click Element    ${stock_icon}
+    Wait Until Element Is Visible    ${Stock_popup}
+    Check Stock
+    #Get shop name
+    #Go To    ${URL_ACCOUNT}/${shop_name}
+    #Wait Until Element Is Visible    product-wrapper-home
+    #Click Element    //div[@*="product-wrapper-home"]//li[1]
+
+TC_MC_02121
+    [Documentation]    Payment success
+    Input Text    search    productnoattr
+    Execute Javascript    $('#frm_search .btn-primary').click()
+    Wait Until Element Is Visible    table_report
+    Click Element    ${stock_icon}
+    Wait Until Element Is Visible    ${Stock_popup}
+    Check Stock
+    #Get shop name
+    #Go To    ${URL_ACCOUNT}/${shop_name}
+    #Wait Until Element Is Visible    product-wrapper-home
+    #Click Element    //div[@*="product-wrapper-home"]//li[1]

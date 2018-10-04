@@ -1,0 +1,34 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Test Setup        Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Teardown     Close All Browsers
+Force Tags        LevelD    feature-leveld    mc-wls    Portal-Web
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Account_Refund.txt
+
+*** Test Cases ***
+TC_MC_08439
+    [Documentation]    On Desktop - verify CCW chanel on "Payment" menu with close CCW chanel
+    [Tags]    Regression    Medium    mock
+    Go to WMS    ${wms_user}    ${wms_pass}
+    Wait Until Element Is Visible    navbar
+    Go To    ${URL_WMS}/categorymanagement/edit/1924
+    ###    Close CCW chanel
+    Wait Until Page Contains    เปิดใช้งานช่องทางบัตรเครดิต
+    Select Radio Button    allow_ccw    false
+    Click Element    //button[@type='submit']
+    Wait Until Page Contains    บันทึกข้อมูลสำเร็จ
+    Go to    ${URL_PORTAL}/testing-1924
+    Wait Until Element Is Visible    //ul[@class="items-list-box"]
+    Click Element    //ul[@class="items-list-box"]//li[1]//img[@class="item-img"]
+    ${location}    Get Location
+    Go to    ${location}?refresh=changeme
+    ###    Verify CCW chanel on product detail
+    Wait Until Element Is Visible    //div[@class[contains(.,'product-shipment')]]
+    Page Should Not Contain Element    //i[@class="icon-payment-credit"]
+    ###    Verify CCW chanel on Payment Information
+    Click Element    payment-tab
+    Wait Until Element Is Visible    //div[@*="paymentChannel"]
+    Page Should Not Contain Element    //div[@*="payWithCreditCard"]

@@ -1,0 +1,264 @@
+*** variable ***
+
+### SELLER ###
+${wms_user}    joyjorjar@hotmail.com
+${wms_pass}    1234
+${seller_user_001}    wlsautomate20@mailinator.com
+${seller_pwd_001}    Abcd001
+${seller_user_002}    wlsautomate21@mailinator.com
+${seller_pwd_002}    Abcd001
+${seller_user_003}    wlsautomate13@mailinator.com
+${seller_pwd_003}    Abcd001
+${seller_user_new}    wlsautomate23@mailinator.com
+${seller_pwd_new}    Abcd001
+${user_new}    automate23
+${user_s001}    automate20
+${user_s002}    automate21
+${seller_user_4step}    wlsatm1458533594@mailinator.com
+${seller_pwd_4step }    Abcd001
+${user_4step }    wlsatm1458533594
+${seller_user_004}    wlsautomate23@mailinator.com
+${seller_pwd_004}    Abcd001
+${user_004}    automate23
+${trust_user_001}    trustteam.test@gmail.com
+${trust_pwd_001}    escrow123
+${user_trust001}    testescrow
+${seller_user_block}    wlsatm1457685885@mailinator.com
+${seller_pwd_block}    Abcd001
+${user_block}    wlsatm1457685885
+${category_id}    26453
+${product_id}    90129647
+${promotion_id}    112
+${edit_product_id}    90530595
+${edit_product1_id}    90131045
+${edit_product2_id}    90530602
+${edit_product3_id}    90530601
+${edit_product4_id}    90530705
+${store_id}    L913592
+${product_block2}    L90170774,L90129990
+${product_block1}    L90170774
+${email_ewallet}    welove@9que.com
+${pass_ewallet}    Quedesign123
+${shop_open}    wlsatm1457685885@mailinator.com
+${shop_close}    prodtest13@mailinator.com
+${reg_user_001}    wlsautomate12@mailinator.com
+${reg_pass_001}    Abcd001
+${shopname_user001}    wlsautomate12
+${reg_user_002}    wlsautomate23@mailinator.com
+${reg_pass_002}    Abcd001
+${shopname_user002}    automate23
+${seller_promotion_shop_id}    L913589
+${seller_promotion_shop_name_display}    Alpha test1
+${seller_promotion_shop_name_url}    alphatest1
+${seller_promotion_shop_username}    alpha_test1@mailinator.com
+${seller_promotion_shop_password}    123456
+#${blockstore_email1}    wlsautomate20@mailinator.com
+#${blockstore_password1}    Abcd001
+#${blockstore_name1}    automate20
+#${blockstore_id1}    L913592
+#${blockstore_url1}    automate20
+
+###Eagle Eye###
+${eagleeye_user}    automationqa
+${eagleeye_password}    P@ssw0rd
+
+###user for test register shop ###
+${member_user_001}    sellertest01@mailinator.com
+${member_pwd_001}    12345678
+
+###user for test category###
+${category_user_001}    wlsautomate23@mailinator.com
+${category_pwd_001}    Abcd001
+${category_shopname}    automate23
+${category_user_002}    wlsautomate12@mailinator.com
+${category_pwd_002}    Abcd001
+${category_shopname2}    wlsautomate12
+
+
+${cart_robot_store1}    //*[@id="L913611"]
+${cart_robot_store2}    //*[@id="L913612"]
+${cart_robot_store_name_store1}    robot_store1
+${cart_robot_store_name_store2}    robot_store2
+${cart_robot_store1_product}    //*[@id="L90130130"]
+${cart_robot_store2_product}    //*[@id="L90130096"]
+${cart_robot_store1_product_name}    robot_store1 - สินค้า Seller Promotion
+${cart_robot_store2_product_name}    robot_store1 - สินค้า FlashSale 1
+
+
+### BUYER ###
+${image_wetrustforkey}    //img[@src="https://alpha-cdn-p.wls-aws.com/themes/titan/assets/images/logo/logo_wetrust.png"]
+${buyer_user_fb1}    supawan_nga@ascendinter.com
+${buyer_user_fb2}    supawan_nga@truecorp.co.th
+${buyer_pwd_fb1}    wlstest
+${buyer_account}    user_alpha_buyer@mailinator.com
+${buyer_account_pass}    123456
+${store_we_you_user}    joyjorjar@hotmail.com
+${store_we_you_pass}    joy36827
+${buyer_account_not_confirm}    user_alpha_not_confirm@mailinator.com
+${buyer_account_not_confirm_pass}    123456
+${buyer_account_change_pwd}    alpha.changepwd@gmail.com
+${buyer_account_change_pwd_old}    Escrow@1234
+${buyer_account_change_pwd_new}    Welcome@1
+${buyer_cart}    user_alpha_cart@mailinator.com
+${buyer_cart_pass}    123456
+${buyer_checkout}    user_alpha_checkout@mailinator.com
+${buyer_checkout_pass}    123456
+${store_email1}    robot_alpha_store1@mailinator.com
+${store_password1}    123456
+${store_email2}    robot_alpha_store2@mailinator.com
+${store_password2}    123456
+${store_name1}    robot_store1
+${store_robotId1}    L913611
+${store_url1}    robot_store1
+${store_name2}    robot_store2
+${store_robotId2}    L913612
+${store_url2}    robot_store2
+${blockstore_email1}    robot_Alpha_blockstore1@mailinator.com
+${blockstore_password1}    P@ssw0rd
+${blockstore_name1}    robot_blockstore1
+${blockstore_id1}    L913730
+${blockstore_url1}    robot_blockstore1
+${blockstore_email2}    robot_Alpha_blockstore2@mailinator.com
+${blockstore_password2}    P@ssw0rd
+${blockstore_name2}    robot_blockstore2
+${blockstore_id2}    L913731
+${blockstore_url2}    robot_blockstore2
+${blockstore_email3}    robot_Alpha_blockstore3@mailinator.com
+${blockstore_password3}    P@ssw0rd
+${blockstore_name3}    robot_blockstore3
+${blockstore_id3}    L913732
+${blockstore_url3}    robot_blockstore3
+${wms_buyer}    supawan_nga@truecorp.co.th
+${blog_user}    weloveshoppingofficial@gmail.com
+${blog_password}    welove123
+## product ##
+${robot_store1_instock_type_new}    L90130096
+${robot_store1_instock_type_new2}	L90170768
+${robot_store1_instock_type_use}    L90130097
+${robot_store1_have_weight}    L90130098
+${robot_store1_1attr_1inv}    L90130099
+${robot_store1_1attr_3inv}    L90130100
+${robot_store1_2attr_1inv}    L90130101
+${robot_store1_2attr_3inv}    L90130102
+${robot_store1_flashsale1}    L90130103
+${robot_store1_flashsale2}    L90130105
+${robot_store1_flashsale3}    L90130107
+${robot_store1_preorder_ignore_stock}    L90130109
+${robot_store1_preorder_ignore_stock_inv}    L90130110
+${robot_store1_preorder_use_stock_inv}    L90130112
+${robot_store1_preorder_use_stock_allow}    L90130113
+${robot_store1_preorder_use_stock_inv_allow}    L90130114
+${robot_store1_instock_soldout}    L90130115
+${robot_store1_instock_soldout_inv}    L90130116
+${robot_store1_join_camapign}    L90130117
+${robot_store1_none_join_camapign}    L90130118
+${robot_store1_custom_camapign}    L90130119
+${robot_store1_promotion_item_price}    L90130120
+${robot_store1_promotion_item_percent}    L90130121
+${robot_store1_promotion_cart_price_by_price}    L90130122
+${robot_store1_promotion_cart_percent_by_price}    L90130123
+${robot_store1_promotion_cart_price_by_qty}    L90130124
+${robot_store1_promotion_cart_percent_by_qty}    L90130125
+${robot_store1_preorder_use_stock_soldout}    L90130126
+${robot_store1_preorder_use_stock_inv_soldout}    L90130127
+${robot_store1_preorder_use_stock_allow_soldout}    L90130128
+${robot_store1_test_promotion_item}    L90130235
+${robot_store1_promotion_flashsale}    L90130236
+${robot_store1_sellerpromotion}    L90130237
+${robot_store1_test_promotion_item2}    L90159784
+${robot_store1_sellerpromotion_flashsale}    L90130238
+${robot_store1_more_price}    L90130239
+${robot_store1_less_qty}    L90130240
+${robot_store1_test_promotion_cart1}    L90159787
+${robot_store2_instock_type_new}    L90130130
+${robot_store2_join_camapign}    L90130152
+${robot_store2_sellerpromotion}    L90130243
+${robot_store2_more_price}    L90130245
+${robot_store2_test_promotion_item2}    L90159785
+${robot_store2_test_promotion_cart1}    L90159788
+${robot_store2_custom_camapign}    L90130156
+${robot_blockstore1_instock_type_new}    L90159761
+${robot_blockstore1_1attr_3inv}    L90159765
+${robot_blockstore2_instock_type_new}    L90159768
+${robot_blockstore2_1attr_3inv}    L90159772
+${robot_blockstore3_instock_type_new}    L90159775
+${robot_blockstore3_1attr_3inv}    L90159779
+
+${flashsale1}    L90130103 L90130104 L90130138 L90130139
+${flashsale2}    L90130105 L90130106 L90130140 L90130141
+${flashsale3}    L90130107 L90130108 L90130142 L90130143
+${current_deal_product}    L90130103 L90130104 L90130138 L90130139 L90130142 L90130236 L90130238 L90130240
+${current_deal_fashion}    L90084252 L90120361 L90032689 L90028916 L90041628 L90017932 L90101821 L90063646 L90005524 L90018308 L90126076 L90101368 L90038029 L90005993 L90106549 L90045583 L90016120 L90084618 L90105317 L90080800 L90089662
+${current_deal_beauty}    L90098351 L90018464 L90005767 L90011537 L90029415 L90029611 L90065104 L90098221 L90054386 L90117047 L90019100 L90023773 L90084450 L90044139 L90030603 L90068178 L90044427 L90065208 L90011139 L90044766 L90043742
+${current_deal_mobile}    L90067680 L90088680 L90101907 L90123310 L90028435 L90039983 L90078616 L90064982 L90060410 L90087471 L90075668 L90061302 L90115146 L90091300 L90062845 L90067157 L90125565 L90051531 L90079577 L90031937 L90022173
+${next_deal_beauty}    L90048534 L90121237 L90033608 L90067170 L90044455 L90078800 L90033654 L90121394 L90083883 L90071880 L90066073 L90027546 L90032795 L90039843 L90082013 L90053866 L90109464 L90110894 L90025222 L90116537 L90033651 L90068607
+${next_deal_product}    L90130105 L90130106 L90130140 L90130141
+${robot_store2_fix_next_deal}    L90159790
+${robot_store2_fix_current_deal}    L90159791
+
+${join_campaign_id}    1992
+${empty_join_campaign_id}    1541
+${expired_join_campaign_id}    1542
+${none_join_campaign_id}    1543
+${empty_none_join_campaign_id}    1544
+${expired_none_join_campaign_id}    1545
+${custom_campaign_id}    2171
+${promotion_item_percent_id}    1547
+${promotion_item_fixprice_id}    1548
+${promotion_cart_price_by_price_id}    1549
+${promotion_cart_price_by_qty_id}    1550
+${promotion_item_for_edit_id}    2086
+${promotion_cart_price_for_edit_id}    2087
+${promotion_custom_price}    2059
+
+
+${promo_code}    AUTOTEST
+${promo_name}    Autotest
+
+${seller_promotion_shop}    test AWS 02
+${seller_promotion_shop5product_highlight}    alpha
+${seller_promotion_shop5product_no_highlight}    alpha
+
+${view_blog}    new-disease-geny
+
+### TRUST ###
+${numcard}    4111111111111111
+${visa1}    5555
+${visa2}    5555
+${visa3}    5555
+${visa4}    4444
+${lbl_credit1}    5555
+${lbl_credit2}    5555
+${lbl_credit3}    5555
+${lbl_credit4}    4444
+${cardname}    WLS TEST
+${cnv}    123
+${month}    10
+${year}    2019
+${type_card}    Visa
+${username_wms}    automatealpha@gmail.com
+${password_wms}    escrow
+${ems_tracking}    EX123456789TH
+${product_inpage}    Robotreconfeedback normal product
+${normal_product1}    robot_feedback_product [Alpha]
+${normal_product2}    robot_inpage_product [Alpha]
+${normal_product2_reconstore}    robot_inpage_product [Alpha]
+${normal_product1_reconstore}    robot_feedback_product [Alpha]
+${user_reconorder}    trustteam.test@gmail.com
+${password_reconorder}    escrow123
+${reconorder_slug}    testescrow
+${user_reconnodata}    trustteam.test@gmail.com
+${password_reconnodata}    escrow123
+${reconnodata_slug}    testescrow
+${user_reconteststore}    trustteam.test@gmail.com
+${password_reconteststore}    escrow123
+${reconteststore_slug}    testescrow
+${user_order_admin}    automate
+${pass_order_admin}    Tfs7o8JMRwcr
+${expect_load_time}    60
+${user_login_feedback}     reconfeedback.alpha@gmail.com
+${pass_login_feedback}     Escrow@1234
+${storename_slug_feedback}    reconfeedback
+
+
+${product_NoAttr}    L90170797

@@ -1,0 +1,404 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Test Setup        Check Mobile Price Plan
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Library           XML
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_06556
+    [Documentation]    Create price plan page display error message if user leaves Price Plan Name field as blank
+    [Tags]    Regression    High
+    Go To    ${url_price_plan}/create
+
+    ${str_name}    ${str_plan}    Generate Price Plan Name And Code
+
+    Focus    //*[@id="name"]
+    Press Key    //*[@id="name"]    \\8
+    Press Key    //*[@id="name"]    \\8
+    Press Key    //*[@id="name"]    \\8
+    Focus    //input[@id="code"]
+    Input Text    //input[@id="code"]    ${str_plan}
+    Input Text    //textarea[@id="description"]    ${str_name}
+    Execute Javascript    CKEDITOR.instances['long_description'].setData(${str_name});
+    Execute Javascript    $('#submit_btn').removeClass('disabled');
+    Click Element    //*[@id="submit_btn"]
+    Sleep    1s
+    Element Should Be Visible    //*[@id="name-form-group"]/div[1]/span/div/ul/li
+    Element Should Contain    //*[@id="name-form-group"]/div[1]/span/div/ul/li    The price plan name field is required.
+
+TC_MC_06558
+    [Documentation]    Create price plan page display error message when user input price plan name is existing in system
+    [Tags]    Regression    High
+    Go To    ${url_price_plan}/create
+
+    ${str_name}    ${str_plan}    Generate Price Plan Name And Code
+
+    Input Text    //input[@id="name"]    Do not delete Initial First Price Plan 1
+    Input Text    //input[@id="code"]    ${str_plan}
+    Input Text    //textarea[@id="description"]    Do not delete Initial First Price Plan 1
+    Execute Javascript    CKEDITOR.instances['long_description'].setData('Test Description Price Plan 1');
+    Execute Javascript    $('#submit_btn').removeClass('disabled');
+    Click Element    //*[@id="submit_btn"]
+    Sleep    1s
+    Element Should Be Visible    //*[@id="result-error"]
+    Element Should Contain    //*[@id="result-error"]    The name Do not delete Initial First Price Plan 1 has already been taken.
+
+TC_MC_06562
+    [Documentation]    Create price plan page display error message if user leaves Price Plan Code field as blank
+    [Tags]    Regression    High
+
+    Go To    ${url_price_plan}/create
+    ${str_name}    ${str_plan}    Generate Price Plan Name And Code
+
+    Focus    //*[@id="name"]
+    Input Text    //input[@id="name"]    ${str_name}
+    Focus    //input[@id="code"]
+    Press Key    //*[@id="code"]    \\8
+    Press Key    //*[@id="code"]    \\8
+    Press Key    //*[@id="code"]    \\8
+    Focus    //textarea[@id="description"]
+    Input Text    //textarea[@id="description"]    ${str_name}
+    Execute Javascript    CKEDITOR.instances['long_description'].setData(${str_name});
+    Execute Javascript    $('#submit_btn').removeClass('disabled');
+    Click Element    //*[@id="submit_btn"]
+    Sleep    1s
+    Element Should Be Visible    //*[@id="code-form-group"]/div[1]/span/div/ul/li
+    Element Should Contain    //*[@id="code-form-group"]/div[1]/span/div/ul/li    The price plan code field is required.
+
+TC_MC_06566
+    [Documentation]    Create price plan page display error message when user input price plan code is existing in system
+    [Tags]    High
+
+    Go To    ${url_price_plan}/create
+    ${str_name}    ${str_plan}    Generate Price Plan Name And Code
+
+    Input Text    //input[@id="name"]    ${str_name}
+    Input Text    //input[@id="code"]    priceplan1
+    Input Text    //textarea[@id="description"]    ${str_name}
+    Execute Javascript    CKEDITOR.instances['long_description'].setData('${str_name}');
+    Execute Javascript    $('#submit_btn').removeClass('disabled');
+    Click Element    //*[@id="submit_btn"]
+    Sleep    1s
+    Element Should Be Visible    //*[@id="result-error"]
+    Element Should Contain    //*[@id="result-error"]    The code priceplan1 has already been taken.
+
+TC_MC_06567
+    [Documentation]    Create price plan page display error message if user leaves "Description (Short)" field as blank
+    [Tags]    Regression    High
+
+    Go To    ${url_price_plan}/create
+    ${str_name}    ${str_plan}    Generate Price Plan Name And Code
+
+    Focus    //*[@id="name"]
+    Input Text    //input[@id="name"]    ${str_name}
+    Focus    //input[@id="code"]
+    Input Text    //input[@id="code"]    ${str_plan}
+    Focus    //textarea[@id="description"]
+    Press Key    //textarea[@id="description"]    \\8
+    Press Key    //textarea[@id="description"]    \\8
+    Press Key    //textarea[@id="description"]    \\8
+    Focus    //*[@id="name"]
+    Execute Javascript    CKEDITOR.instances['long_description'].setData('${str_name}');
+    Execute Javascript    $('#submit_btn').removeClass('disabled');
+    Click Element    //*[@id="submit_btn"]
+    Sleep    1s
+    Element Should Be Visible    //*[@id="description-with-errors"]/ul/li
+    Element Should Contain    //*[@id="description-with-errors"]/ul/li    The description short field is required.
+
+TC_MC_06571
+    [Documentation]    Create price plan page display error message if user leaves "Description (Long)" field as blank
+    [Tags]    Regression    High
+
+    Go To    ${url_price_plan}/create
+    ${str_name}    ${str_plan}    Generate Price Plan Name And Code
+
+    Focus    //*[@id="name"]
+    Input Text    //input[@id="name"]    ${str_name}
+    Focus    //input[@id="code"]
+    Input Text    //input[@id="code"]    ${str_plan}
+    Focus    //textarea[@id="description"]
+    Input Text    //textarea[@id="description"]    ${str_name}
+    Execute Javascript    CKEDITOR.instances['long_description'].focus();
+    Focus    //textarea[@id="description"]
+    Execute Javascript    $('#submit_btn').removeClass('disabled');
+    Click Element    //*[@id="submit_btn"]
+    Sleep    1s
+    Element Should Be Visible    //*[@id="long_description-with-errors"]/ul/li
+    Element Should Contain    //*[@id="long_description-with-errors"]/ul/li    The description long field is required.
+
+TC_MC_06574
+    [Documentation]    Appear new price plan in list price plan on MAP Proposition with Price Plan page
+    [Tags]    Ligo    Sprint2017MC18    Regression    High
+    ${str_name}    ${str_plan}    Generate New Price Plan    yes    active
+
+    ################## Go To a fixed proposition and price_plan mapping page
+    ${mapping_url}    ${number_plan}    Get Mapping Url By Nas Code    ${init_proppo_code_1}
+    Go To    ${mapping_url}
+    Wait Until Element Is Visible    //*[@id="m-selectable"]
+    Element Should Contain    //*[@id="m-selectable"]    ${str_name}
+
+    ################## Clear Price Plan
+    Go To    ${url_price_plan}
+    Delete Price Plan By Code    ${str_plan}
+
+TC_MC_06575
+    [Documentation]    Price Plan page display new entries after create price plan by using criteria: Status = Active Recommend = No
+    [Tags]    Regression    High
+
+    ${str_name}    ${str_plan}    Generate New Price Plan    no    active
+    Sleep    1s
+    Wait Until Element Is Visible    //*[@id="code"]
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Input Text    //input[@id="code"]    ${str_plan}
+    Click Element    ${btn_submit_search_priceplan}
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+
+    Element Should Contain    //*[@id="sample-table-2_wrapper"]/table/tbody/tr/td[4]/span    Active
+    ${count}=    Get Matching XPath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[5]/i[contains(@class, 'text-danger')]
+    Should Be True    ${count} > 0
+
+    Sleep    2s
+    Click Element    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[6]/form/div/a[contains(@class, 'btndel')]
+    Wait Until Element Is Visible    //*[@id="confirm_delete"]
+    Sleep    1s
+    Click Element    //*[@id="btn_confirm_delete"]
+
+TC_MC_06576
+    [Documentation]    Price Plan page display new entries after create price plan by using criteria: Status = Active Recommend = Yes
+    [Tags]    Regression    High
+
+    Go To    ${url_price_plan}/create
+    ${str_name}    ${str_plan}    Generate Price Plan Name And Code
+    Focus    //*[@id="name"]
+    Input Text    //input[@id="name"]    ${str_name}
+    Focus    //input[@id="code"]
+    Input Text    //input[@id="code"]    ${str_plan}
+    Focus    //textarea[@id="description"]
+    Input Text    //textarea[@id="description"]    ${str_name}
+    Execute Javascript    CKEDITOR.instances['long_description'].focus();
+    Execute Javascript    CKEDITOR.instances['long_description'].setData('${str_name}');
+
+    Click Element    //input[@id="yes"]
+    Click Element    //input[@id="active"]
+    Click Element    //*[@id="submit_btn"]
+
+    Sleep    2s
+
+    Wait Until Element Is Visible    //*[@id="code"]
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Input Text    //input[@id="code"]    ${str_plan}
+    Click Element    ${btn_submit_search_priceplan}
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+
+    Element Should Contain    //*[@id="sample-table-2_wrapper"]/table/tbody/tr/td[4]/span    Active
+    ${count}=    Get Matching XPath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[5]/i[contains(@class, 'text-success')]
+    Should Be True    ${count} > 0
+
+    Sleep    2s
+    Click Element    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[6]/form/div/a[contains(@class, 'btndel')]
+    Wait Until Element Is Visible    //*[@id="confirm_delete"]
+    Sleep    1s
+    Click Element    //*[@id="btn_confirm_delete"]
+
+TC_MC_06583
+    [Documentation]    Edit price plan page display error message when user input price plan name is existing in system
+    [Tags]    High
+    Go To    ${url_price_plan}
+    Input Text    //input[@id="code"]    ${init_price_plan_code_1}
+    Click Element    ${btn_submit_search_priceplan}
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Sleep    1s
+    Click Element    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[6]/form/div/a[contains(@class, 'btnedit')]
+    Wait Until Element Is Visible    //*[@id="edit_form"]
+    Sleep    1s
+    Clear Element Text  //input[@id="name"]
+    Input Text    //input[@id="name"]    ${init_price_plan_name_2}
+    Click Element    //*[@id="submit_btn"]
+    Sleep    1s
+    Element Should Be Visible    //*[@id="result-error"]
+    Element Should Contain    //*[@id="result-error"]    The name Do not delete Initial First Price Plan 2 has already been taken.
+
+TC_MC_06591
+    [Documentation]    Edit price plan page display error message when user input price plan code is existing in system
+    [Tags]    Regression    High
+    Go To    ${url_price_plan}
+    Input Text    //input[@id="code"]    ${init_price_plan_code_1}
+    Click Element    ${btn_submit_search_priceplan}
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Sleep    1s
+    Click Element    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[6]/form/div/a[contains(@class, 'btnedit')]
+    Wait Until Element Is Visible    //*[@id="edit_form"]
+    Sleep    1s
+    Clear Element Text  //input[@id="code"]
+    Input Text    //input[@id="code"]    ${init_price_plan_code_2}
+    Click Element    //*[@id="submit_btn"]
+    Sleep    1s
+    Element Should Be Visible    //*[@id="result-error"]
+    Element Should Contain    //*[@id="result-error"]    The code priceplan2 has already been taken.
+
+TC_MC_06600
+    [Documentation]    Price Plan page display edit entries after edit price plan by using criteria: Status = Active Recommend = No
+    [Tags]    Regression    High
+    Go To    ${url_price_plan}
+    Input Text    //input[@id="code"]    ${init_price_plan_code_edit}
+    Click Element    ${btn_submit_search_priceplan}
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Sleep    1s
+    Click Element    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[6]/form/div/a[contains(@class, 'btnedit')]
+    Wait Until Element Is Visible    //*[@id="edit_form"]
+    Click Element    //input[@id="no"]
+    Click Element    //input[@id="active"]
+    Click Element    //*[@id="submit_btn"]
+    Sleep    1s
+    Wait Until Element Is Visible    //*[@id="result-success"]
+    Element Should Contain    //*[@id="result-success"]    Successful
+    Sleep    1s
+    Go To    ${url_price_plan}
+    Input Text    //input[@id="code"]    ${init_price_plan_code_edit}
+    Click Element    ${btn_submit_search_priceplan}
+
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Element Should Contain    //*[@id="sample-table-2_wrapper"]/table/tbody/tr/td[4]/span    Active
+    ${count}=    Get Matching XPath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[5]/i[contains(@class, 'text-danger')]
+    Should Be True    ${count} > 0
+
+TC_MC_06601
+    [Documentation]    Price Plan page display edit entries after edit price plan by using criteria: Status = Active Recommend = Yes
+    [Tags]    Regression    High
+
+    Go To    ${url_price_plan}
+    Input Text    //input[@id="code"]    ${init_price_plan_code_edit}
+    Click Element    ${btn_submit_search_priceplan}
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Sleep    1s
+    Click Element    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[6]/form/div/a[contains(@class, 'btnedit')]
+    Wait Until Element Is Visible    //*[@id="edit_form"]
+    Click Element    //input[@id="yes"]
+    Click Element    //input[@id="active"]
+    Click Element    //*[@id="submit_btn"]
+    Sleep    1s
+    Wait Until Element Is Visible    //*[@id="result-success"]
+    Element Should Contain    //*[@id="result-success"]    Successful
+    Sleep    1s
+    Go To    ${url_price_plan}
+    Input Text    //input[@id="code"]    ${init_price_plan_code_edit}
+    Click Element    ${btn_submit_search_priceplan}
+
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Element Should Contain    //*[@id="sample-table-2_wrapper"]/table/tbody/tr/td[4]/span    Active
+    ${count}=    Get Matching XPath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[5]/i[contains(@class, 'text-success')]
+    Should Be True    ${count} > 0
+
+TC_MC_06604
+    [Documentation]    Can be delete price plan on Price Plan page although it was mapped with proposition already
+    [Tags]    Ligo    Sprint2017MC18    Regression    High
+    Go To    ${url_price_plan}/create
+    ${str_name}    ${str_plan}    Generate Price Plan Name And Code
+
+    ################## Create a new price plan
+    Focus    //*[@id="name"]
+    Input Text    //input[@id="name"]    ${str_name}
+    Focus    //input[@id="code"]
+    Input Text    //input[@id="code"]    ${str_plan}
+    Focus    //textarea[@id="description"]
+    Input Text    //textarea[@id="description"]    ${str_name}
+    Execute Javascript    CKEDITOR.instances['long_description'].focus();
+    Execute Javascript    CKEDITOR.instances['long_description'].setData('${str_name}');
+
+    Click Element    //input[@id="yes"]
+    Click Element    //input[@id="active"]
+    Click Element    //*[@id="submit_btn"]
+
+    Wait Until Element Is Visible    //*[@id="notify-top"]
+    Element Should Contain    //*[@id="notify-top"]    Successful
+
+    ################## Mapping a new price_plan to a fixed proposition
+    ${mapping_url}    ${number_plan}    Get Mapping Url By Nas Code    ${init_proppo_code_1}
+    Go To    ${mapping_url}
+    Wait Until Element Is Visible    //*[@id="select-form-group"]
+    Element Should Be Visible    //*[@id="m-selectable"]/option[contains(text(),'${str_name}')]
+    Click Element    //*[@id="m-selectable"]/option[contains(text(),'${str_name}')]
+    Click Element    //*[@id="select-form-group"]/div/span/div/div[2]/button[1]
+    Click Element    //*[@id="submit_btn"]
+
+    Sleep    1s
+    Wait Until Element Is Visible    //*[@id="result-success"]
+    Element Should Contain    //*[@id="result-success"]    Successful
+
+    ################## Delete a new price_plan
+    Sleep    1s
+    Go To    ${url_price_plan}
+    Delete Price Plan By Code    ${str_plan}
+
+    ################## To check a new price_plan is deleted
+    Go To    ${mapping_url}
+    Element Should Not Contain    //*[@id="m-selectable"]    ${str_name}
+    Element Should Not Contain    //*[@id="m-selected"]    ${str_name}
+
+TC_MC_06605
+    [Documentation]    Can be delete price plan on Price Plan page although it was not mapped with proposition already
+    [Tags]    Ligo    Sprint2017MC18    Regression    High
+    Go To    ${url_price_plan}/create
+    ${str_name}    ${str_plan}    Generate Price Plan Name And Code
+
+    ################## Create a new price plan
+    Focus    //*[@id="name"]
+    Input Text    //input[@id="name"]    ${str_name}
+    Focus    //input[@id="code"]
+    Input Text    //input[@id="code"]    ${str_plan}
+    Focus    //textarea[@id="description"]
+    Input Text    //textarea[@id="description"]    ${str_name}
+    Execute Javascript    CKEDITOR.instances['long_description'].focus();
+    Execute Javascript    CKEDITOR.instances['long_description'].setData('${str_name}');
+
+    Click Element    //input[@id="yes"]
+    Click Element    //input[@id="active"]
+    Click Element    //*[@id="submit_btn"]
+
+    Wait Until Element Is Visible    //*[@id="notify-top"]
+    Element Should Contain    //*[@id="notify-top"]    Successful
+
+    ################## Delete a new price_plan
+    Go To    ${url_price_plan}
+    Delete Price Plan By Code    ${str_plan}
+
+    ################## To check a new price_plan is deleted
+    ${mapping_url}    ${number_plan}    Get Mapping Url By Nas Code    ${init_proppo_code_1}
+    Go To    ${mapping_url}
+    Element Should Not Contain    //*[@id="m-selectable"]    ${str_name}
+    Element Should Not Contain    //*[@id="m-selected"]    ${str_name}
+
+TC_MC_06613
+    [Documentation]    Display price plan correctly when user search by full price plan code is existing in the system
+    [Tags]    High
+
+    Input Text    //input[@id="code"]    ${init_price_plan_code_1}
+    Click Element    ${btn_submit_search_priceplan}
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Sleep    1s
+    Element Should Contain    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[1]/td[3]/span    ${init_price_plan_code_1}
+
+TC_MC_06618
+    [Documentation]    Display price plan correctly when user search by some part of price plan code is existing in the system
+    [Tags]    Regression    High
+
+    Input Text    //input[@id="code"]    ${init_price_plan_search}
+    Click Element    ${btn_submit_search_priceplan}
+    Wait Until Element Is Visible    //*[@id="sample-table-2_wrapper"]/table
+    Sleep    1s
+
+    ${count}=    Get Matching Xpath Count    //*[@id="sample-table-2_wrapper"]/table/tbody/tr
+    ${new_count}=    Set Variable If    ${count} > 10    10    ${count}
+
+    : FOR    ${a}    IN RANGE    1    ${new_count}
+    \    Element Should Contain    //*[@id="sample-table-2_wrapper"]/table/tbody/tr[${a}]/td[3]    ${init_price_plan_search}

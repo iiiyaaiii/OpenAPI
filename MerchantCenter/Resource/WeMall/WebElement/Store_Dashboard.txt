@@ -1,0 +1,28 @@
+*** Variables ***
+### Locator ###
+${msg_shopinfo}    //*[@id="page-content"]/div/div[2]/ul/li[1]/div/div[2]/p[1]
+${status_shopinfo}    //*[@id="page-content"]/div/div[2]/ul/li[1]/div/div[2]/p[2]/strong[2]
+${icon_shopinfo_disable}    //div[@class="span4 icon-4step-box icon-4step-01 "]
+${icon_shopinfo_enable}    //div[@class="span4 icon-4step-box icon-4step-01 active"]
+${status_shipping}    //*[@id="page-content"]/div/div[2]/ul/li[2]/div/div[2]/p[2]/strong[2]
+${msg_product}    //*[@id="page-content"]/div/div[2]/ul/li[3]/div/div[2]/p[1]
+${msg_status_product}    //*[@id="page-content"]/div/div[2]/ul/li[3]/div/div[2]/p[2]/strong[2]
+${icon_product_disable}    //div[@class="span4 icon-4step-box icon-4step-04"]
+${txt_size}    //div[@id="cross_attr_group"][2]/div/div[@id="attr_sel_661_chzn"]/ul/li/input
+${txt_color}    //div[@id="cross_attr_group"][1]/div/div[@id="attr_sel_662_chzn"]/ul/li/input
+${btn_select_album}    id=btn_select_photo_att
+${img_first}    //div[@class="modal hide modal-addimg in"]/div[2]/div/div[2]/div/div/div[1]/div[1]/ul/li/a
+${btn_save_album}    //div[@class="modal hide modal-addimg in"]/div[3]/div/div[2]/button[@class="btn btn-primary save_photo"]
+${txt_store_code}    //input[@name="inventory[replace_here][sku]"]
+${btn_delete_image}    //td[@id="img-btn-replace_here"]/div/div/a/i[@class="icon-trash"]
+${btn_add_image}    //td[@id="img-btn-replace_here"]
+${ddl_size_list}    //li[text()="replace_here"]
+${img_logo}    //div[@class='img-option']
+${lbl_color_selected}    //div[@id='attr_sel_38_chzn']/ul/li[@class='search-choice']
+${lbl_size_selected}    //div[@id='attr_sel_37_chzn']/ul/li[@class='search-choice']
+${btn_add_product}    //a[@class="btn btn-success btn-addpd pull-right"]
+${lnk_pending_product}    //span[@class="pending"]
+${lnk_edit_product}    //a[@class="title"]
+${lbl_product_info}	   //div[@class="redactor-editor"]/p
+${lnk_approved_product}    //span[@class="approved"]
+${txt_product_info}	   //div[@class="redactor-editor"]

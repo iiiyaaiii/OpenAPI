@@ -1,0 +1,185 @@
+*** variable ***
+${register}       $(".w-register > a")
+${regis_email}    //input[@name='email']
+${regis_pass}     //input[@id='password_register']
+${regis_passconfirm}    //input[@name='password_confirmation']
+${regis_phone}    //input[@name='phone']
+${regis_pass_js}     $("input[id='password_register']")
+${regis_passconfirm_js}    $("input[name='password_confirmation']")
+${regis_phone_js}    $("input[name='phone']")
+${regis_pass_errmsg}    //span[@id='password_register-error']
+${regis_confirmpass_errmsg}    //span[@id='password_confirmation-error']
+${regis_phone_errmsg}    //span[@id='phone-error']
+${regis_form_err}    //div[@class='setuppass-alert control-content']
+${regis_accept}    //input[@name='accept_condition']
+${regis_emailerror}    //span[@id='email-error']
+${regis_emailalreadyuse}    //div[@class='alert alert-error']
+${regis_success_box}    //div[@class='signup-success-box']
+${regis_youremail}    //*[@id="content-container"]/div/div/div[2]/div[1]/strong/span
+${regis_checkout_pass}    //input[@id='password_register']
+${regis_checkout_confirmpass}    //input[@id='password_confirmation']
+${regis_checkout_phone}    //input[@id='phone']
+${regis_checkout_pass_errmsg}    //span[@id='password_register-error']
+${regis_checkout_formerr}    //div[@class='form-group has-error']
+${regis_checkout_confirmpass_errmsg}    //span[@id='password_confirmation-error']
+${regis_checkout_phone_errmsg}    //span[@id='phone-error']
+${regis_checkout_pass_js}    $('#password_register')
+${regis_checkout_confirmpass_js}    $('#password_confirmation')
+${regis_checkout_phone_js}    $('#phone')
+${password_register}     //*[@id="password_register"]
+${password_register_js}     $("input[id='password_register']")
+${password_register_error}    //*[@id="password_register-error"]
+${password_confirmation}    //*[@id="password_confirmation"]
+${phone_register}    //*[@id="phone"]
+${button_register}    //*[@id="signup_user"]/div[5]/div[3]/button
+${checkout_regis_hint}    //div[@class='setuppass-alert control-content']
+${checkout_regis_email}    //input[@id='email']
+${checkout_regis_pass}    //input[@id='password_register']
+${checkout_regis_pass_confirm}    //input[@id='password_confirmation']
+${checkout_regis_pass_js}    $("input[id='password_register']")
+${checkout_regis_pass_errmsg}    //span[@id='password_register-error']
+${submit}         //button[@class='btn-default btn-register']
+
+###
+### Locator ###
+${url_register_shop}    ${URL_ACCOUNT}/register/store
+${input_image}    //input[@type='file' and @name='image']
+${img_upload}     //div[@class="col-lg-8 col-sm-12"]//p[@class="select-file"]
+${msg_upload}     //div[@class="col-lg-8 col-sm-12"]//span[@class="ex-inline"]
+${msg_dupicate_slug}    //*[@id="signup_store"]/div[1]/div[1]/span
+${msg_dupicate_shop_name}    //*[@id="s_name-msg"]
+${input_email}    //input[@name="email"]
+${input_password}    //input[@id="password"]
+${input_cf_password}    //input[@name="password_confirmation"]
+${input_phone}    //input[@name="phone"]
+${accept_term_signup}    //*[@id="accept_condition"]
+${btn_signup_user}    //*[@id="signup_user"]/div[8]/div/button
+${user_success}    //*[@id="content-container"]/div/div/div[2]/div[1]/strong/span
+### Corporate ###
+${btn_signup_corporate}    //button[@class="btn btn-regis-s"]
+${input_company_name}    //input[@id="company_name"]
+${radio_head}     //input[@id="rdohead"]
+${radio_branch}    //input[@id="rdobranch"]
+${input_branch}    //input[@id="branch"]
+${input_b_address}    //input[@id="b_address"]
+${select_province}    //select[@id="b_province"]
+${select_city}    //select[@id="b_city"]
+${select_district}    //select[@id="b_district"]
+${input_b_postcode}    //input[@id="b_postcode"]
+${input_company_phone}    //input[@name="company_phone"]
+${input_tax_id}    //input[@name="tax_id"]
+${comittee_firstname}    //input[@id="committee_firstname"]
+${comittee_lastname}    //input[@id="committee_lastname"]
+${input_committee_idcard}    //input[@id="committee_idcard"]
+${no_sell_healthfood}    //input[@name="sell_healthfood" and @value="n"]
+${comittee_shop_address}    //input[@name="s_address"]
+${comittee_shop_province}    //*[@name="s_province"]
+${comittee_shop_city}    //*[@name="s_city"]
+${comittee_shop_district}    //*[@name="s_district"]
+${comittee_shop_postcode}    //input[@name="s_postcode"]
+${corp_login}     //a[@id="userlogin"]
+${corp_file1}     file_with_variable.txt
+${corpbt1}        //a[@contains("เข้าสู่ระบบ")]
+${corp_company_phone_error}    //*[@id="company_phone-error"]
+${corp_company_name_error}    //*[@id="company_name-error"]
+${corp_branch_error}    //*[@id="branch-error"]
+${corp_b_address_error}    //*[@id="b_address-error"]
+${corp_b_postcode_error}    //*[@id="b_postcode-error"]
+${corp_company_phone_error}    //*[@id="company_phone-error"]
+${corp_tax_id_error}    //*[@id="tax_id-error"]
+${corp_committee_firstname_error}    //*[@id="committee_firstname-error"]
+${corp_committee_lastname_error}    //*[@id="committee_lastname-error"]
+${corp_committee_idtype_error}    //*[@id="committee_idtype-error"]
+${corp_committee_idcard_error}    //*[@id="committee_idcard-error"]
+${corp_s_category_error}    //*[@id="s_category-error"]
+${corp_s_name_error}    //*[@id="s_name-error"]
+${corp_slug_error}    id:slug-error
+${corp_use_address_error}    //*[@id="use_address-error"]
+${corp_s_address_error}    //*[@id="s_address-error"]
+${corp_s_province_error}    //*[@id="s_province-error"]
+${corp_s_postcode_error}    //*[@id="s_postcode-error"]
+${corp_s_mobile_error}    //*[@id="s_mobile-error"]
+${corp_user1}     qawlsautomate@gmail.com
+${corp_pass1}     12345678
+${corp_user2}     wlsautotest2016a@mailinator.com
+${corp_pass2}     wlsautotest2016aQ!
+${txa_corp}    //div[@class="msg-slug"]
+${txa_corp1}    //div[@id="slug-error"]
+${btn_check_url}    //input[@id="btn-approve"]
+${txa_remark}    //div[@class="help-box"]
+### Individuals ###
+${owner_name}     //*[@name="first_name"]
+${owner_surname}    //*[@name="last_name"]
+${owner_idcard}    //*[@name="idcard"]
+${lbl_shop_name}      //*[@name="s_name"]
+${shop_category}    //*[@name="s_category"]
+${lbl_shop_url}       //*[@name="slug"]
+${shop_address}    //*[@name="s_address1"]
+${shop_province}    //*[@name="province"]
+${shop_city}      //*[@name="city"]
+${shop_district}    //*[@name="district"]
+${shop_postcode}    //*[@name="s_postcode"]
+${shop_phone}     //*[@name="s_phone"]
+${shop_mobile}    //*[@name="s_mobile"]
+${accept_condition}    //*[@id="accept_condition"]
+${btn_register_shop}    //*[@id="btn_submit_form"]
+${error_owner_name}    //*[@id="first_name-error"]
+${error_owner_surname}    //*[@id="last_name-error"]
+${error_owner_idcard}    //*[@id="idcard-error"]
+${error_owner_taxid}    //*[@id="tax_id-error"]
+${error_committee_idcard}    //*[@id="committee_idcard-error"]
+${error_shop_name}    //*[@id="s_name-error"]
+${error_shop_category}    //*[@id="s_category-error"]
+${error_shop_url}    //*[@id="slug-error"]
+${error_shop_address}    //*[@id="s_address1-error"]
+${error_shop_province}    //*[@id="province-error"]
+${error_shop_city}    //*[@id="city-error"]
+${error_shop_district}    //*[@id="district-error"]
+${error_shop_postcode}    //*[@id="s_postcode-error"]
+${error_shop_phone}    //*[@id="s_phone-error"]
+${error_shop_mobile}    //*[@id="s_mobile-error"]
+${error_accept_condition}    //*[@id="accept_condition-error"]
+${city_fix}       //*[@id="city"]/option[2]
+${district_fix}    //*[@id="district"]/option[2]
+${btn_check_url}    //*[@class="btn btn-approve"]
+${msg_error_slug}    //div[@class="col-lg-12 help-inline msg-slug"]
+${msg_ok_slug}    //div[@class="col-lg-12 help-inline msg-slug"]//font[@class="green"]
+${box_tooltip}    //div[@class="introjs-tooltip"]
+${hilight_menu_step1}    //li[@id="knowledge-step1"]
+${hilight_menu_step2}    //li[@id="knowledge-step2"]
+${hilight_menu_step3}    //li[@id="knowledge-step3"]
+${hilight_menu_step4}    //li[@id="knowledge-step4"]
+${hilight_openshop_button}    //form[@id="frm_open_shop"]//p[@id="knowledge-step5"]
+${btn_check_url_individual}    //button[@class="btn btn-approve"]
+${txa_remark_individual}    //div[@class="col-lg-12 col-sm-12"]//span
+### WMS ###
+${btn_Inbox}      //button[@onclick="showPublicInbox();"]
+${email_confirm}    //div[@class="innermail ng-binding" and contains(.,"ยืน")]
+${Count}          0
+${Click_Close_T&C}    //div[@id="sellercond"]//button[@class="close"]
+${T&C_Popup}      sellercond
+${TC_error_message}    //div[@class="alert alert-danger hide alert-cond"]
+
+##REGISTRATION FORM FROM PORTAL FLOW
+${form_registration}    id:signup_user
+${txt_email}    id=email
+${txt_password}    id=password_register
+${txt_confirmPassword}    id=password_confirmation
+${txt_mobileNumber}    id=phone
+${cb_agreement}    id=accept_condition
+${btn_register}    //button[@class='btn-default btn-register']
+${bar_password_strength}    //div[@class='pwstrength_viewport_progress']
+${tab_register}    //a[@aria-controls="checkoutregist"]
+
+${txt_email_js}    $('#email')
+${txt_password_js}    $('#password_register')
+${txt_confirmPassword_js}    $('#password_confirmation')
+${txt_mobileNumber_js}    $('#phone')
+
+${err_email}    email-error
+${err_password}    password_register-error
+${err_confirmPassword}    password_confirmation-error
+${err_mobileNumber}    phone-error
+${error_common}    //div[@class='alert alert-error']
+${shop_name}    id=s_name
+${shop_url}    id=slug

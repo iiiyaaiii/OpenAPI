@@ -1,0 +1,14 @@
+*** Variables ***
+${btn_edit_gallery}    id=tool_albume_edit
+${btn_delete_album}    id=tool_albume_delete
+${select_all}     $('#tool_albume_select_all')
+${thumb_selected}    $('.ace-thumbnails').eq(0)
+${btn_album_delete}    //*[@id="tool_albume_delete"]
+${delete_thumb}    //*[@id="fileupload"]/div/div[1]/div/div[2]/div/div/div[1]/div[1]/ul/li/div/a[2]
+${input_name}     //*[@class="input-medium"]
+${upl_input}            id=fileuploadinput
+${chk_first_album}    //div[@class="row-fluid list-albums clear-fix"]/div[1]//input[@class="check_selected"]
+${lnk_album_name}    //a[@class="bar_data_usedbar_data_used editable editable-click"]
+${lbl_first_album_name}    //span[@class="ab-name"]
+${btn_submit_edit}    //button[@class="btn btn-success btn-small editable-submit"]
+${lbl_edit_album}    //div[@class="editable-error-block help-block"]

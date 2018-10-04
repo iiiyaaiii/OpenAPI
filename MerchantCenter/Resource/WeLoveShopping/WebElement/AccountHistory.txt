@@ -1,0 +1,86 @@
+*** Variables ***
+### Data ####
+${slug_name_shop_no_data}    wlsautomate27
+${user_nodata}    wlsautomate27@mailinator.com
+${password_nodata}    12345678
+${user_store_order}    recontestreport@gmail.com
+${password_store_order}    Escrow@1234
+${slug_order_store}    recontestreport
+${robot_inpage_product_product}    Robotrecontestreport Seller Promotion
+${recon_orange_product}    Recon Orange
+${expect_load_time}    60
+${user_admin_manage_orderweb}    automate
+${pass_admin_manage_orderweb}    Tfs7o8JMRwcr
+### Locator ###
+${status_text_on_account_history}    //strong[@class="order__process-status"]
+${element_totalandpage}    //div[@class="totalandpage"]
+${element_data_not_found}    //ul[@class="order-list"]
+${element_box_items_title_table}    //div[@class="order-list-title"]//div[@class="box-order-items"]
+${element_box_price_title_table}    //div[@class="order-list-title"]//div[@class="box-order-price"]
+${element_box_piece_title_table}    //div[@class="order-list-title"]//div[@class="box-order-piece"]
+${element_box_status_title_table}    //div[@class="order-list-title"]//div[@class="box-order-status"]
+${select_address}    $('.select_address')[1].click()
+${shipping_post}    $('.radio-box')[0]
+${shipping_ems}    $('.radio-box')[1]
+${shipping_kerry}    $('.radio-box')[2]
+${atm_channel_radio_button}    $('#wetrust_ATM').find('.button-payment-inner')
+${cs_channel_radio_button}    $('#wetrust_CS').find('.button-payment-inner')
+${ew_channel_radio_button}    $('#wetrust_EW').find('.button-payment-inner')
+${banktrans_channel_radio_button}    $('#wetrust_BANKTRANS').find('.button-payment-inner')
+${ibank_channel_radio_button}    $('#wetrust_IBANK').find('.button-payment-inner')
+${ccw_channel_radio_button}    $('#wetrust_CCW').find('.button-payment-inner')
+${element_status_thankyou_page}    //div[@class="thk-payment-status"]
+${element_countdowntime_account_history}    //p[@class="order__process-time"]
+${input_username_admin_orderweb}    //input[@name="username"]
+${input_password_admin_orderweb}    //input[@name="userpass"]
+${login_button_admin_orderweb}    //button[@type="submit"]
+${user_sign_admin_orderweb}    //*[@class="user-panel"]
+${input_search_manage_datetime}    //*[@name='order_id']
+${button_search_manage_datetime}    //input[@value="Search"]
+${select_list_status}    //select[@id="order-fields"]
+${select_list_type}    //select[@id="order-type"]
+${input_order_time}    //input[@id="order-time"]
+${update_button}    //input[@id="order-btn"]
+${wallet_cancel}    //a[contains(text(),'ยกเลิกรายการ')]
+${btn_view_order_detail_thankyou_page}    //*[@class="btn btn-action-main"]
+${text_order_id_thankyou_page}    //*[@id="collapseTwo"]/div/p/strong
+${refund_link_account_history}    //p[@class="order__process-refund"]
+${input_orderid_store_history}    //input[@id="keyword"]
+${request_tracking_button}    //a[@class="btn btn-small btn_request_tracking"]
+${request_tracking_modal}    //div[@id="shipCompany"]
+${input_tracking_button}    //button[@id="btn_submit_ship"]
+${tracking_modal}    //div[@id="tracking"]
+${input_tracking_number}    //input[@id="tracking_number"]
+${confirm_tracking_button}    //button[@id="btn_submit_trackingCom"]
+${receive_button_account_history}    //button[@class="btn-black btn_receive"]
+${receive_modal}    //div[@class="modal-content"]
+${confirm_receive_button}    //button[@class="btn btn_confirm_receive"]
+${close_feedback_modal}    //button[@class="close"]
+${give_feedback_button}    //button[@class="btn-feedback"]
+${text_ship_by_item_account_history}    //div[@class="shipby-item_ margin-top8"]
+${element_reason_refund}    //select[@id="order_request_reasons_code"]
+${element_description_refund}    //textarea[@id="request_description"]
+${element_browse_file}    //input[@id="evidence"]
+${request_refund_button}    //input[@type="submit"]
+${element_box_view_refund}    //div[@class="box-view-refund"]
+${text_refund_account_history}    //div[@class="order-list-refund"]
+${view_detail_store_order_detail}    //a[@class="btn btn-small"]
+${accept_refund_button}    //a[@class="btn btn-small btn-primary btn_request_refund"]
+${accept_refund_modal}    //form[@id="frm_request_accept"]
+${element_password_accept_refund}    //input[@id="request_password"]
+${confirm_accept_button}    //button[@class="btn btn-small request_accept btn-primary"]
+${ok_button_confirm_accept_modal}    //button[@id="confirm_modal_ok"]
+${element_text_accept_refund}    //h3[@class="span11"]
+${decline_refund_button}    //a[@class="btn btn-small btn-default btn_request_refund"]
+${decline_refund_modal}    //form[@id="frm_request_decline"]
+${element_description_decline}    //textarea[@id="request_description"]
+${element_browse_file_decline}    //input[@id="refund_upload"]
+${confirm_decline_button}    //button[@class="btn btn-small btn-primary request_decline"]
+${ok_button_confirm_decline_modal}    //button[@id="confirm_decline_ok"]
+${go_to_detail_button}    //a[@class="btn btn-small btn-default"]
+${input_orderid}    //input[@name="order_no"]
+${search_button_on_account_history}    //button[@type="submit"]
+${notify_message}    //div[@class="notify"]
+
+
+

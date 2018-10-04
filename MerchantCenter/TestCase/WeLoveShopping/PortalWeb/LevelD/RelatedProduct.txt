@@ -1,0 +1,22 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Teardown     Close All Browsers
+Force Tags        LevelD    feature-leveld    Portal-Web    mc-wls
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+
+*** Test Cases ***
+TC_MC_08479
+    [Documentation]    Related product
+    [Tags]    Regression    Medium    Portal-Web    mock
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme
+    Element Should Be Visible    ${breadcrumb_new}
+    Element Should Contain    ${leveld_related_product}    สินค้าที่เกี่ยวข้อง
+    Element Should Be Visible    ${leveld_box_related}
+    Click Element    //ul[@class="items-list-box related-product"]//li
+    Element Should Be Visible    ${breadcrumb_new}
+    ${category1}    Get Text    ${breadcrumb_new}
+    ${category2}    Get Text    ${breadcrumb_new}
+    Should Contain    ${category1}    ${category2}

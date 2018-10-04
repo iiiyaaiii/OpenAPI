@@ -1,0 +1,854 @@
+*** Settings ***
+Suite Teardown    Run Keywords    Delete Robot Campaign    AND    Close All Browsers
+Force Tags        WMS-Web    Ligo    Sprint2017MC10    WLSPromotion    mc-wls
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+
+*** Test Cases ***
+TC_MC_03304
+    [Documentation]    [Welove] [ByItem] Create promotion choose ByItem promotion type discount 10% but not over 1000 baht
+    [Tags]    Regression    High    SmokeTest
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign
+    Click Button Add Campaign    ${btn_add_wls_promotion}    ${URL_WMS}/campaign/promotion/create
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] WLSPromotion
+    Choose Campaign Banner    promotion_itemprecent_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    ## Set Promotion By Item
+    Checked Promotion Type     ${promotion_type_by_item}
+    Select From List By Label    ${select_discount_type}    เปอร์เซ็นต์ส่วนลด (%)
+    Wait Until Element Is Visible    //*[@id="discount_max"]    60s
+    Input Text    //*[@id="discount_value"]    10
+    Input Text    //*[@id="discount_max"]    1000
+    Input WLS Promotion Date
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    List Campaign - Get Last Campaign Name
+    List Campaign - Get Last Campaign Type    promotion by item
+    List Campaign - Click Icon Edit Last Campaign
+    ${promotion_id}    Get Promotion ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${promotion_id}
+    Verify Campaign Name TH
+    Verify Date Join Compaign
+    Verify Date Show Compaign
+    Verify Minimum quantity of product
+    Verify Handle URL TH
+    ## Verify Promotion By Item
+    ${result}=    Get Selected List Label    ${select_discount_type}
+    Should Be Equal    ${result}    เปอร์เซ็นต์ส่วนลด (%)
+    Textfield Value Should Be    //*[@id="discount_value"]   10
+    Textfield Value Should Be    //*[@id="discount_max"]    1000
+    Delete Robot Campaign
+
+TC_MC_03305
+    [Documentation]    [Welove] [ByItem] Create promotion type byitem discount % more than 1 promotion at same time
+    [Tags]    Regression    High
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/campaign
+    Execute Javascript    $(".btn-info")[3].click();
+    Execute Javascript    $("#campaign_fee_2").click();
+    Execute Javascript    $("#price_fee").val('10');
+    Execute Javascript    $("#campaign_name_th").val('[QA-Robot] WLSPromotion Percent');
+    Choose Campaign Banner    promotion_itemprecent_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Execute Javascript    tinyMCE.get('description_th').setContent('Test Description Campaign');
+    Execute Javascript    $("#campaign_group_id").val('3');
+    Execute Javascript    $("#discount_value").val('10');
+    Execute Javascript    $("#discount_max").val('1000');
+    Execute Javascript    $("#date_join_campaign").val('12/09/2017 0:00 - 13/09/2017 23:59');
+    Execute Javascript    $("#date_show_campaign").val('12/09/2017 0:00 - 13/09/2017 23:59');
+    Execute Javascript    $("select[name='plaza_category[]']").val('7');
+    Execute Javascript    $(".btn_addmore").click();
+    Execute Javascript    $("#min_quantity").val('9');
+    Execute Javascript    $("input[name='order_product']")[1].click();
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    ${text_campaign}    Get Text    //*[@id="sample-table-2"]/tbody/tr[1]/td[3]
+    ${type_campaign}    Get Text    //*[@id="sample-table-2"]/tbody/tr[1]/td[6]
+    Should Be Equal    ${text_campaign}    [QA-Robot] WLSPromotion Percent
+    Should Be Equal    ${type_campaign}    promotion by item
+    Delete Robot Campaign
+
+TC_MC_03318
+    [Documentation]    [Welove] [ByItem] Add Dealzapp product to promotion type discount %
+    [Tags]    High
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/campaign
+    Execute Javascript    $(".btn-group .btn").eq(3).click();
+    Execute Javascript    $(".btn-group .dropdown-toggle").eq(0).click();
+    Execute Javascript    $(".btn-group .dropdown-menu-right li a")[0].click();
+    Sleep    5s
+    Execute Javascript    $(".btn-danger").click();
+    Execute Javascript    $(".btn-primary").eq(1).click();
+    Execute Javascript    $(".btn-warning").click();
+    ${list_promotion}    Execute Javascript    return $("#list_product_promotion tr").length;
+    Should Be Equal As Integers    ${list_promotion}    1
+    Close All Browsers
+
+TC_MC_03306
+    [Documentation]    [Welove] [ByItem] Create promotion choose ByItem promotion type fix price = 100
+    [Tags]    Regression    High
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/campaign
+    Execute Javascript    $(".btn-info")[3].click();
+    Execute Javascript    $("#campaign_fee_2").click();
+    Execute Javascript    $("#price_fee").val('10');
+    Execute Javascript    $("#campaign_name_th").val('[QA-Robot] WLSPromotion Fix Price Score');
+    Choose Campaign Banner    promotion_itemprecent_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Execute Javascript    tinyMCE.get('description_th').setContent('Test Description Campaign');
+    Execute Javascript    $("#discount_type").val('3').trigger('change');
+    Execute Javascript    $("#discount_value").val('100');
+    Execute Javascript    $("#date_join_campaign").val('12/09/2017 0:00 - 13/09/2017 23:59');
+    Execute Javascript    $("#date_show_campaign").val('12/09/2017 0:00 - 13/09/2017 23:59');
+    Execute Javascript    $("select[name='plaza_category[]']").val('7');
+    Execute Javascript    $(".btn_addmore").click();
+    Execute Javascript    $("#min_quantity").val('9');
+    Execute Javascript    $("input[name='order_product']")[0].click();
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    ${text_campaign}    Get Text    //*[@id="sample-table-2"]/tbody/tr[1]/td[3]
+    ${type_campaign}    Get Text    //*[@id="sample-table-2"]/tbody/tr[1]/td[6]
+    Should Be Equal    ${text_campaign}    [QA-Robot] WLSPromotion Fix Price Score
+    Should Be Equal    ${type_campaign}    promotion by item
+    Delete Robot Campaign
+
+ TC_MC_03319
+     [Documentation]    [Welove] [ByItem] Add Dealzapp product to promotion type fix price
+     [Tags]    High
+     WMS Switch Project    wls
+     Go To    ${URL_WMS}/campaign
+     Execute Javascript    $(".btn-group .btn").eq(3).click();
+     Execute Javascript    $(".btn-group .dropdown-toggle").eq(0).click();
+     Execute Javascript    $(".btn-group .dropdown-menu-right li a")[0].click();
+     Execute Javascript    $(".btn-danger").click();
+     Execute Javascript    $(".btn-primary").eq(1).click();
+     Execute Javascript    $(".btn-primary").eq(1).click();
+     Execute Javascript    $(".btn-warning").click();
+     ${list_promotion}    Execute Javascript    return $("#list_product_promotion tr").length;
+     Should Be Equal As Integers    ${list_promotion}    2
+     Close All Browsers
+TC_MC_03320
+    [Documentation]    [Welove] [ByItem] Admin add product to active fix price
+    [Tags]    High    Mock
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/campaign
+    Execute Javascript    $(".btn-group .btn").eq(3).click();
+    Execute Javascript    $(".btn-group .dropdown-toggle").eq(0).click();
+    Execute Javascript    $(".btn-group .dropdown-menu-right li a")[0].click();
+    Execute Javascript    $(".btn-danger").click();
+    Wait Until Element Is Visible    //div[@class="table-header"]
+    ${left_product}    Execute Javascript    return $(".mn-available td").eq(2).text().trim();
+    ${left_stock}    Execute Javascript    return $(".mn-available td").eq(3).text().trim();
+    ${left_feedback}    Execute Javascript    return $(".mn-available td").eq(4).text().trim();
+    ${left_discount}    Execute Javascript    return $(".mn-available td").eq(7).text().trim();
+    ${left_price}    Execute Javascript    return $(".mn-available td").eq(8).text().trim();
+    Execute Javascript    $(".btn-primary").eq(1).click();
+    ${right_product}    Execute Javascript    return $(".item td").eq(2).text().trim();
+    ${right_stock}    Execute Javascript    return $(".item td").eq(3).text().trim();
+    ${right_feedback}    Execute Javascript    return $(".item td").eq(4).text().trim();
+    ${right_discount}    Execute Javascript    return $(".item td").eq(5).text().trim();
+    ${right_price}    Execute Javascript    return $(".item td").eq(8).text().trim();
+    Should Be Equal    ${left_product}    ${right_product}
+    Should Be Equal    ${left_stock}    ${right_stock}
+    Should Be Equal    ${left_feedback}    ${right_feedback}
+    Should Be Equal    ${left_discount}    ${right_discount}
+    Should Be Equal    ${left_price}    ${right_price}
+    Close All Browsers
+
+TC_MC_03321
+     [Documentation]    [Welove] [ByItem] Admin add product to active discount %
+     [Tags]    High    mock
+     WMS Switch Project    wls
+     WMS Select Product To Campaign    promotion    ${promotion_item_percent_id}    ${robot_store1_test_promotion_item}
+     Remove Product from Campaign    ${promotion_item_percent_id}    ${robot_store1_test_promotion_item}    promotion
+
+TC_MC_03330
+    [Documentation]    [Welove] [ByItem] Admin add product to active promotion when product in other active promotion at same time
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/campaign
+    Execute Javascript    $(".btn-group .btn").eq(3).click();
+    Select From List By Value    //select[@id="status"]    1
+    Click Button    //button[@type="submit"]
+    Execute Javascript    $(".btn-group .dropdown-toggle").eq(0).click();
+    Execute Javascript    $(".btn-group .dropdown-menu-right li a")[0].click();
+    Execute Javascript    $('#txt_search_product').val('${robot_store2_sellerpromotion}');
+    Click Button    //button[@class="btn btn-sm btn-success"]
+    Click Button    //button[@class="btn btn-primary btn-sm"]
+    Execute Javascript    $(".btn-warning").click();
+    Sleep    1s
+    ${warning_text}    Execute Javascript    return $(".alert-warning").text().trim();
+    Should Be Equal    ${warning_text}     มีสินค้าบางรายการไม่สามารถเข้าร่วม promotion ได้ เนื่องจากเข้าร่วมกับ promotion อื่น
+
+TC_MC_03331
+    [Documentation]    [Welove] [ByItem] Admin approved product to active promotion when product not in other active promotion at same time
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    Go To    ${URL_WMS}/campaign
+    Execute Javascript    $(".btn-group .btn").eq(3).click();
+    Execute Javascript    $("input[name='campaign_name']").val('[QA-Automation] WLS Promotion by Item Percent Discount');
+    Execute Javascript    $(".btn-purple").click();
+    Execute Javascript    $(".btn-group .dropdown-toggle").eq(1).click();
+    Execute Javascript    $(".btn-group .dropdown-menu-right li a")[2].click();
+    ${option}    Execute Javascript    return $(".manage_status option").eq(3).text().trim();
+    Should Be Equal    ${option}     Approve
+
+TC_MC_03335
+    [Documentation]    [Welove] [ByItem] Admin add product to active promotion when product in active seller promotion at same time
+    [Tags]    Regression    Medium    Mock
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_item_fixprice_id}    ${robot_store1_sellerpromotion}    0    \    Yes
+
+TC_MC_03336
+    [Documentation]    [Welove] [ByItem] Admin approved product to active promotion when product not in active seller promotion at same time
+    [Tags]    Regression    High    Mock
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Go To    ${URL_PORTAL}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_item_percent_id}
+    Click Element    ${btn_add_product_join}
+    Select From List By Label    selectplaza    แฟชั่น
+    Select Product To join Campaign    ${robot_store1_join_promotion_item}
+    WMS Switch Project    wls
+    WLS Approve Product    promotion    ${promotion_item_percent_id}    ${robot_store1_join_promotion_item}    approve
+    Go to    ${URL_PORTAL}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/status/${promotion_item_percent_id}
+    Click Element    ${btn_cancel_joined_campaign}
+    Click Element    ${btn_confirm_cancel_campaign}
+
+TC_MC_03313
+    [Documentation]    [Welove] [ByItem] Edit promotion by switch ON promotion to OFF
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_item_for_edit_id}
+    Get CampaignID    ${URL_WMS}/campaign/promotion/edit/
+    Get Campaign Name
+    Checked Campaign Status    ${radio_campaign_close}
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/promotion/${compaign_name_th}-${campaignID}?refresh=changeme
+    Verify Campaign Portal    Element Should Be Visible    ${text_not_found_campaign}
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_item_for_edit_id}
+    Checked Campaign Status    ${radio_campaign_open}
+    Click Button Submit Campaign
+
+# TC_MC_03314
+#     [Documentation]    [Welove] [ByItem] Edit promotion by switch OFF promotion to ON
+#     [Tags]    Regression    High    Mock
+#     WMS Switch Project    wls
+#     Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_item_for_edit_id}
+#     Get CampaignID    ${URL_WMS}/campaign/promotion/edit/
+#     Get Campaign Name
+#     Checked Campaign Status    ${radio_campaign_open}
+#     Click Button Submit Campaign
+#     ## Verify expect result
+#     Go To    ${URL_PORTAL}/promotion/${compaign_name_th}-${campaignID}?refresh=changeme
+#     Verify Campaign Portal    Element Should Be Visible    ${img_banner_campaign}
+
+TC_MC_03315
+    [Documentation]    [Welove] [ByItem] Edit promotion by switch SHOW to HIDE
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_item_for_edit_id}
+    Checked Campaign Show    ${radio_campaign_hide}
+    Get Campaign Name
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/campaign/?refresh=changeme
+    Verify Campaign Portal    Page Should Not Contain    ${compaign_name_th}
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_item_for_edit_id}
+    Checked Campaign Show    ${radio_campaign_show}
+    Click Button Submit Campaign
+
+TC_MC_03316
+    [Documentation]    [Welove] [ByItem] Edit promotion by switch HIDE to SHOW
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_item_for_edit_id}
+    Checked Campaign Show    ${radio_campaign_show}
+    Get Campaign Name
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/campaign/?refresh=changeme
+    Verify Campaign Portal    Page Should Contain    ${compaign_name_th}
+
+TC_MC_03372
+    [Documentation]    [Welove] [ByCart] Create promotion choose promotion type discount by % with baht ไม่กำหนดช่วง (ซื้อครบบาทลด%)
+    [Tags]    Regression    High     mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign
+    Click Button Add Campaign    ${btn_add_wls_promotion}    ${URL_WMS}/campaign/promotion/create
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] WLSPromotion
+    Choose Campaign Banner    promotion_cartb2p_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    ## Set Promotion By Cart
+    Checked Promotion Type     ${promotion_type_by_cart}
+    Select From List By Label    ${select_discount_type}    เปอร์เซ็นต์ส่วนลด (%)
+    Wait Until Element Is Visible    ${select_discount_unit}    60s
+    Select From List By Label    ${select_discount_unit}    บาท
+    Wait Until Element Is Visible    ${input_condition_min1}    60s
+    Input Text    ${input_condition_min1}     2000
+    Input Text    ${input_condition_value1}    30
+    Input Text    ${input_discount_max1}    5000
+    Input WLS Promotion Date
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    ${promotion_id}    Get Promotion ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${promotion_id}
+    Verify Campaign Name TH
+    Verify Date Join Compaign
+    Verify Date Show Compaign
+    Verify Minimum quantity of product
+    Verify Handle URL TH
+    ## Verify Promotion By Cart
+    ${result}=    Get Selected List Label    ${select_discount_type}
+    Should Be Equal    ${result}    เปอร์เซ็นต์ส่วนลด (%)
+    ${result}=    Get Selected List Label    ${select_discount_unit}
+    Should Be Equal    ${result}    บาท
+    Textfield Value Should Be    ${input_condition_min1}     2000
+    Textfield Value Should Be    ${input_condition_value1}    30
+    Textfield Value Should Be    ${input_discount_max1}    5000
+    Delete Robot Campaign
+
+TC_MC_03396
+    [Documentation]    [Welove] [ByCart] Add Dealzapp product to promotion discount % - bath
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    WMS Select Product To Campaign    promotion    ${promotion_cart_percent_by_price_id}    ${robot_store1_flashsale3}
+    Remove Product from Campaign    ${promotion_cart_percent_by_price_id}    ${robot_store1_flashsale3}    promotion
+
+TC_MC_03375
+    [Documentation]    [Welove] [ByCart] Create promotion choose promotion type discount by % and determine pieces length with more pieces lenght กำหนดช่วง (ซื้อครบกี่ชิ้นลดกี่%)
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign
+    Click Button Add Campaign    ${btn_add_wls_promotion}    ${URL_WMS}/campaign/promotion/create
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] WLSPromotion
+    Choose Campaign Banner    promotion_cartb2p_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    ## Set Promotion By Cart
+    Input Campaign Description
+    Checked Promotion Type     ${promotion_type_by_cart}
+    Select From List By Label    ${select_discount_type}    เปอร์เซ็นต์ส่วนลด (%)
+    Wait Until Element Is Visible    ${select_discount_unit}    60s
+    Select From List By Label    ${select_discount_unit}    ชิ้น
+    Wait Until Element Is Visible    ${input_condition_min1}    60s
+    Input Text    ${input_condition_min1}     1
+    Select From List By Label    ${select_condition_range1}    ถึง
+    Wait Until Element Is Visible    ${input_discount_max1}    60s
+    Input Text    ${input_condition_max1}    5
+    Input Text    ${input_condition_value1}    10
+    Input Text    ${input_discount_max1}    500
+    Execute Javascript    ${btn_addmore}.click()
+    Wait Until Element Is Visible    ${input_condition_min2}    60s
+    Input Text    ${input_condition_min2}     6
+    Select From List By Label    ${select_condition_range2}    ถึง
+    Wait Until Element Is Visible    ${input_discount_max2}    60s
+    Input Text    ${input_condition_max2}    10
+    Input Text    ${input_condition_value2}    20
+    Input Text    ${input_discount_max2}    200
+    Execute Javascript    ${btn_addmore}.click()
+    Wait Until Element Is Visible    ${input_condition_min3}    60s
+    Input Text    ${input_condition_min3}     10
+    Select From List By Label    ${select_condition_range3}    ขึ้นไป
+    Wait Until Element Is Visible    ${input_discount_max3}    60s
+    Input Text    ${input_condition_value3}    30
+    Input Text    ${input_discount_max3}    300
+    Input WLS Promotion Date
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    ${promotion_id}    Get Promotion ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${promotion_id}
+    Verify Campaign Name TH
+    Verify Date Join Compaign
+    Verify Date Show Compaign
+    Verify Minimum quantity of product
+    Verify Handle URL TH
+    ## Verify Promotion By Cart
+    ${result}=    Get Selected List Label    ${select_discount_type}
+    Should Be Equal    ${result}    เปอร์เซ็นต์ส่วนลด (%)
+    ${result}=    Get Selected List Label    ${select_discount_unit}
+    Should Be Equal    ${result}    ชิ้น
+    Textfield Value Should Be    ${input_condition_min1}     1
+    ${result}=    Get Selected List Label    ${select_condition_range1}
+    Should Be Equal    ${result}    ถึง
+    Textfield Value Should Be    ${input_condition_max1}    5
+    Textfield Value Should Be    ${input_condition_value1}    10
+    Textfield Value Should Be    ${input_discount_max1}    500
+    Textfield Value Should Be    ${input_condition_min2}     6
+    ${result}=    Get Selected List Label    ${select_condition_range2}
+    Should Be Equal    ${result}    ถึง
+    Textfield Value Should Be    ${input_condition_max2}    10
+    Textfield Value Should Be    ${input_condition_value2}    20
+    Textfield Value Should Be    ${input_discount_max2}    200
+    Textfield Value Should Be    ${input_condition_min3}     10
+    ${result}=    Get Selected List Label    ${select_condition_range3}
+    Should Be Equal    ${result}    ขึ้นไป
+    Textfield Value Should Be    ${input_condition_value3}    30
+    Textfield Value Should Be    ${input_discount_max3}    300
+
+TC_MC_03397
+    [Documentation]    [Welove] [ByCart] Add Dealzapp product to promotion (ซื้อครบกี่ชิ้นลดกี่%)
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    WMS Select Product To Campaign    promotion    ${promotion_cart_percent_by_qty_id}    ${robot_store1_flashsale1}
+    Remove Product from Campaign    ${promotion_cart_percent_by_qty_id}    ${robot_store1_flashsale1}    promotion
+
+TC_MC_03398
+    [Documentation]    [Welove] [ByCart] Add Dealzapp product to promotion (ซื้อครบบาทลดกี่บาท)
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    WMS Select Product To Campaign    promotion    ${promotion_cart_price_by_price_id}    ${robot_store1_flashsale2}
+    Remove Product from Campaign    ${promotion_cart_price_by_price_id}    ${robot_store1_flashsale2}    promotion
+
+TC_MC_03383
+    [Documentation]    [Welove] [ByCart] Create promotion choose promotion type discount by price and determine pieces length with more pieces lenght กำหนดช่วง (ซื้อครบกี่ชิ้นลดกี่บาท)
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign
+    Click Button Add Campaign    ${btn_add_wls_promotion}    ${URL_WMS}/campaign/promotion/create
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] WLSPromotion
+    Choose Campaign Banner    promotion_cartb2b_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    ## Set Promotion By Cart
+    Checked Promotion Type     ${promotion_type_by_cart}
+    Select From List By Label    ${select_discount_type}    ราคาส่วนลด (บาท)
+    Wait Until Element Is Visible    ${select_discount_unit}    60s
+    Select From List By Label    ${select_discount_unit}    ชิ้น
+    Wait Until Element Is Visible    ${input_condition_min1}    60s
+    Input Text    ${input_condition_min1}     1
+    Select From List By Label    ${select_condition_range1}    ถึง
+    Wait Until Element Is Visible    ${input_condition_value1}    60s
+    Input Text    ${input_condition_max1}    5
+    Input Text    ${input_condition_value1}    100
+    Execute Javascript    ${btn_addmore}.click()
+    Wait Until Element Is Visible    ${input_condition_min2}    60s
+    Input Text    ${input_condition_min2}     6
+    Select From List By Label    ${select_condition_range2}    ถึง
+    Wait Until Element Is Visible    ${input_condition_value2}    60s
+    Input Text    ${input_condition_max2}    10
+    Input Text    ${input_condition_value2}    200
+    Execute Javascript    ${btn_addmore}.click()
+    Wait Until Element Is Visible    ${input_condition_min3}    60s
+    Input Text    ${input_condition_min3}     10
+    Select From List By Label    ${select_condition_range3}    ขึ้นไป
+    Wait Until Element Is Visible    ${input_condition_value3}    60s
+    Input Text    ${input_condition_value3}    500
+    Input WLS Promotion Date
+    Input Minimum quantity of product    1
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    ${promotion_id}    Get Promotion ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${promotion_id}
+    Verify Campaign Name TH
+    Verify Date Join Compaign
+    Verify Date Show Compaign
+    Verify Minimum quantity of product
+    Verify Handle URL TH
+    ## Verify Promotion By Cart
+    ${result}=    Get Selected List Label    ${select_discount_type}
+    Should Be Equal    ${result}    ราคาส่วนลด (บาท)
+    ${result}=    Get Selected List Label    ${select_discount_unit}
+    Should Be Equal    ${result}    ชิ้น
+    Textfield Value Should Be    ${input_condition_min1}     1
+    ${result}=    Get Selected List Label    ${select_condition_range1}
+    Should Be Equal    ${result}    ถึง
+    Textfield Value Should Be    ${input_condition_max1}    5
+    Textfield Value Should Be    ${input_condition_value1}    100
+    Textfield Value Should Be    ${input_condition_min2}     6
+    ${result}=    Get Selected List Label    ${select_condition_range2}
+    Should Be Equal    ${result}    ถึง
+    Textfield Value Should Be    ${input_condition_max2}    10
+    Textfield Value Should Be    ${input_condition_value2}    200
+    Textfield Value Should Be    ${input_condition_min3}     10
+    ${result}=    Get Selected List Label    ${select_condition_range3}
+    Should Be Equal    ${result}    ขึ้นไป
+    Textfield Value Should Be    ${input_condition_value3}    500
+
+TC_MC_03399
+    [Documentation]    [Welove] [ByCart] Add Dealzapp product to promotion (ซื้อครบกี่ชิ้นลดกี่บาท)
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    WMS Select Product To Campaign    promotion    ${promotion_cart_price_by_qty_id}    ${robot_store1_flashsale1}
+    Remove Product from Campaign    ${promotion_cart_price_by_qty_id}    ${robot_store1_flashsale1}    promotion
+
+TC_MC_03400
+    [Documentation]    [Welove] [ByCart] Admin add product to active promotion discount by price with price lenght when product not in other active promotion at same time (ซื้อครบกี่บาท ลดกี่บาท)
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_cart_price_by_price_id}    ${robot_store1_promotion_by_admin}
+    Remove Product from Campaign    ${promotion_cart_price_by_price_id}    ${robot_store1_promotion_by_admin}    promotion
+
+TC_MC_03401
+    [Documentation]    [Welove] [ByCart] Admin add product to active promotion discount by price with pieces lenght when product in other active promotion at same time (ซื้อครบกี่ชิ้น ลดกี่บาท)
+    [Tags]    Regression    High   mock
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_cart_price_by_price_id}    ${robot_store1_promotion_by_admin}
+    WMS Select Product to Campaign    promotion    ${promotion_cart_price_by_qty_id}    ${robot_store1_promotion_by_admin}    0    \    Yes
+    Remove Product from Campaign    ${promotion_cart_price_by_price_id}    ${robot_store1_promotion_by_admin}    promotion
+
+TC_MC_03402
+    [Documentation]    [Welove] [ByCart] Admin approved product to active promotion discount by price with pieces lenght when product not in other active promotion at same time (ซื้อครบกี่ชิ้น ลดกี่บาท)
+    [Tags]    Regression    High    Mock
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_cart_price_by_qty_id}
+    Click Element    ${btn_add_product_join}
+    Select From List By Label    selectplaza    กีฬา
+    Select Product To join Campaign    ${robot_store1_join_promotion_cart}
+    WMS Switch Project    wls
+    WLS Approve Product    promotion    ${promotion_cart_price_by_qty_id}    ${robot_store1_join_promotion_cart}    approve
+    Go to    ${URL_PORTAL}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/status/${promotion_cart_price_by_qty_id}
+    Element Should Contain    //tbody//tr//td[5]    ผ่านการตรวจสอบ
+    Click Element    ${btn_cancel_joined_campaign}
+    Click Element    ${btn_confirm_cancel_campaign}
+    Wait Until Page Contains    แคมเปญทั้งหมดที่เข้าร่วม    ${EXPECT_LOADTIME}
+
+TC_MC_03404
+    [Documentation]    [Welove] [ByCart] Admin add product to active promotion discount by price with pieces lenght when product not in active seller promotion at same time (ซื้อครบกี่ชิ้น ลดกี่บาท)
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_cart_price_by_qty_id}    ${robot_store1_promotion_by_admin}
+    Remove Product from Campaign    ${promotion_cart_price_by_qty_id}    ${robot_store1_promotion_by_admin}    promotion
+
+TC_MC_03405
+    [Documentation]    [Welove] [ByCart] Admin add product to active promotion discount by price with price lenght when product in active seller promotion at same time (ซื้อครบกี่บาท ลดกี่บาท)
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_cart_price_by_price_id}    ${robot_store1_sellerpromotion}    0    \    Yes
+
+TC_MC_03406
+    [Documentation]    [Welove] [ByCart] Admin approved product to active promotion discount by price with price lenght when product not in active seller promotion at same time (ซื้อครบกี่บาท ลดกี่บาท)
+    [Tags]    Regression    High    Mock
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_cart_price_by_price_id}
+    Click Element    ${btn_add_product_join}
+    Select From List By Label    selectplaza    กีฬา
+    Select Product To join Campaign    ${robot_store1_join_promotion_cart}
+    WMS Switch Project    wls
+    WLS Approve Product    promotion    ${promotion_cart_price_by_price_id}    ${robot_store1_join_promotion_cart}    approve
+    Go to    ${URL_PORTAL}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/status/${promotion_cart_price_by_price_id}
+    Element Should Contain    //tbody//tr//td[5]    ผ่านการตรวจสอบ
+    Click Element    ${btn_cancel_joined_campaign}
+    Click Element    ${btn_confirm_cancel_campaign}
+    Wait Until Page Contains    แคมเปญทั้งหมดที่เข้าร่วม    ${EXPECT_LOADTIME}
+
+TC_MC_03408
+    [Documentation]    [Welove] [ByCart] Admin add product to active promotion discount by % with ชิ้น lenght when product not in other active promotion at same time (ซื้อครบกี่ชิ้น ลดกี่%)
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_cart_percent_by_qty_id}    ${robot_store1_promotion_by_admin}
+    Remove Product from Campaign    ${promotion_cart_percent_by_qty_id}    ${robot_store1_promotion_by_admin}    promotion
+
+TC_MC_03409
+    [Documentation]    [Welove] [ByCart] Admin add product to active promotion discount by % with ราคา lenght when product in other active promotion at same time (ซื้อครบกี่บาท ลดกี่%)
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_cart_price_by_price_id}    ${robot_store1_promotion_by_admin}
+    WMS Select Product to Campaign    promotion    ${promotion_cart_percent_by_price_id}    ${robot_store1_promotion_by_admin}    0    \    Yes
+    Remove Product from Campaign    ${promotion_cart_price_by_price_id}    ${robot_store1_promotion_by_admin}    promotion
+
+TC_MC_03410
+    [Documentation]    [Welove] [ByCart] Admin approved product to active promotion discount by % with ราคา lenght when product not in other active promotion at same time (ซื้อครบกี่บาท ลดกี่%)
+    [Tags]    Regression    High    Mock
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_cart_percent_by_price_id}
+    Click Element    ${btn_add_product_join}
+    Select From List By Label    selectplaza    กีฬา
+    Select Product To join Campaign    ${robot_store1_promotion_by_admin}
+    WMS Switch Project    wls
+    WLS Approve Product    promotion    ${promotion_cart_percent_by_price_id}    ${robot_store1_promotion_by_admin}    approve
+    Go to    ${URL_PORTAL}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/status/${promotion_cart_percent_by_price_id}
+    Element Should Contain    //tbody//tr//td[5]    ผ่านการตรวจสอบ
+    Click Element    ${btn_cancel_joined_campaign}
+    Click Element    ${btn_confirm_cancel_campaign}
+    Wait Until Page Contains    แคมเปญทั้งหมดที่เข้าร่วม    ${EXPECT_LOADTIME}
+
+TC_MC_03412
+    [Documentation]    [Welove] [ByCart] Admin add product to active promotion discount by % with price lenght when product not in active seller promotion at same time(ซื้อครบกี่บาท ลดกี่%)
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_cart_percent_by_price_id}    ${robot_store1_promotion_by_admin}
+    Remove Product from Campaign    ${promotion_cart_percent_by_price_id}    ${robot_store1_promotion_by_admin}    promotion
+
+TC_MC_03413
+    [Documentation]    [Welove] [ByCart] Admin add product to active promotion discount by % with pieces lenght when product in active seller promotion at same time (ซื้อครบกี่ชิ้น ลดกี่%)
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_cart_percent_by_qty_id}    ${robot_store1_sellerpromotion}    0    \    Yes
+
+TC_MC_03414
+    [Documentation]    [Welove] [ByCart] Admin approved product to active promotion discount by % with pieces lenght when product not in active seller promotion at same time (ซื้อครบกี่ชิ้น ลดกี่%)
+    [Tags]    Regression    High    Mock
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/${promotion_cart_percent_by_qty_id}
+    Click Element    ${btn_add_product_join}
+    Select From List By Label    selectplaza    กีฬา
+    Select Product To join Campaign    ${robot_store1_join_promotion_cart}
+    WMS Switch Project    wls
+    WLS Approve Product    promotion    ${promotion_cart_percent_by_qty_id}    ${robot_store1_join_promotion_cart}    approve
+    Go to    ${URL_PORTAL}
+    Check and Reset Seller Login    ${store_name1}    ${store_email1}    ${store_password1}
+    Go to    ${URL_STORE}/${store_name1}/admin/campaign/status/${promotion_cart_percent_by_qty_id}
+    Element Should Contain    //tbody//tr//td[5]    ผ่านการตรวจสอบ
+    Click Element    ${btn_cancel_joined_campaign}
+    Click Element    ${btn_confirm_cancel_campaign}
+    Wait Until Page Contains    แคมเปญทั้งหมดที่เข้าร่วม    ${EXPECT_LOADTIME}
+
+TC_MC_03395
+    [Documentation]    [Welove] [ByCart] Edit promotion by switch ON promotion to OFF
+    [Tags]    Regression    Medium    Mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_cart_price_for_edit_id}
+    Get CampaignID    ${URL_WMS}/campaign/promotion/edit/
+    Get Campaign Name
+    Checked Campaign Status    ${radio_campaign_close}
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/promotion/${compaign_name_th}-${campaignID}?refresh=changeme
+    Verify Campaign Portal    Element Should Be Visible    ${text_not_found_campaign}
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_cart_price_for_edit_id}
+    Checked Campaign Status    ${radio_campaign_open}
+    Click Button Submit Campaign
+
+TC_MC_03388
+    [Documentation]    [Welove] [ByCart] Edit promotion by switch OFF promotion to ON
+    [Tags]    Regression    Medium    Mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_cart_price_for_edit_id}
+    Get CampaignID    ${URL_WMS}/campaign/promotion/edit/
+    Get Campaign Name
+    Checked Campaign Status    ${radio_campaign_open}
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/promotion/${compaign_name_th}-${campaignID}?refresh=changeme
+    Verify Campaign Portal    Element Should Be Visible    ${img_banner_campaign}
+
+TC_MC_03389
+    [Documentation]    [Welove] [ByCart] Edit promotion by switch SHOW to HIDE
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_cart_price_for_edit_id}
+    Checked Campaign Show    ${radio_campaign_hide}
+    Get Campaign Name
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/campaign/?refresh=changeme
+    Verify Campaign Portal    Page Should Not Contain    ${compaign_name_th}
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_cart_price_for_edit_id}
+    Checked Campaign Show    ${radio_campaign_show}
+    Get Campaign Name
+    Click Button Submit Campaign
+
+TC_MC_03441
+    [Documentation]    [Welove] Create new promotion type nonejoin custom price
+    [Tags]    Regression    High    Mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign
+    Click Button Add Campaign    ${btn_add_wls_promotion}    ${URL_WMS}/campaign/promotion/create
+    Checked Campaign Status    ${radio_campaign_open}
+    Checked Campaign Show    ${radio_campaign_show}
+    Checked Campaign Fee    ${radio_campaign_no_fee}
+    Input Campaign Name TH    [QA-Robot] WLSPromotion
+    Choose Campaign Banner    promotion_cartb2b_banner.jpg    join_top_banner.jpg    join_m_banner.jpg
+    Input Campaign Description
+    Checked Promotion Type     ${promotion_type_nonjoin}
+    Input WLS Promotion Date
+    Input Handle URL TH
+    Click Button Submit Campaign
+    ## Verify expect result
+    List Campaign - Get Last Campaign Name
+    List Campaign - Get Last Campaign Type    promotion non-join
+    List Campaign - Click Icon Edit Last Campaign
+    ${promotion_id}    Get Promotion ID    ${campaign_name_th}
+    Go to    ${URL_WMS}/campaign/campaign-view/${promotion_id}
+    Verify Campaign Name TH
+    Verify Date Show Compaign
+    Verify Handle URL TH
+
+TC_MC_03446
+    [Documentation]    [Welove] Edit new promotion type nonejoin custom price switch SHOW to HIDE
+    [Tags]    Regression    Medium    Mock
+    WMS Switch Project    wls
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_custom_price_for_edit}
+    Checked Campaign Show    ${radio_campaign_hide}
+    Get Campaign Name
+    Click Button Submit Campaign
+    ## Verify expect result
+    Go To    ${URL_PORTAL}/campaign/?refresh=changeme
+    Verify Campaign Portal    Page Should Not Contain    ${compaign_name_th}
+    Go to    ${URL_WMS}/campaign/promotion/edit/${promotion_custom_price_for_edit}
+    Checked Campaign Show    ${radio_campaign_show}
+    Get Campaign Name
+    Click Button Submit Campaign
+
+TC_MC_03449
+    [Documentation]    [Welove] Add product to new promotion type nonejoin adjust price
+    [Tags]    Regression    Medium    Mock
+    WMS Switch Project    wls
+    WMS Select Product To Campaign    promotion_type3    ${promotion_custom_price}    ${robot_store1_flashsale2}    0    99
+    Remove Product from Campaign    ${promotion_custom_price}    ${robot_store1_flashsale2}    promotion_type3
+
+TC_MC_03451
+    [Documentation]    [Welove] Add Dealzapp product to new promotion type nonejoin custom price
+    [Tags]    Regression    Medium    Mock
+    WMS Switch Project    wls
+    WMS Select Product To Campaign    promotion_type3    ${promotion_custom_price}    ${robot_store1_flashsale3}
+    Remove Product from Campaign    ${promotion_custom_price}    ${robot_store1_flashsale3}    promotion_type3
+
+TC_MC_03452
+    [Documentation]    [Welove] Add product to active new promotion type nonejoin custom price when product in other active promotion at same time
+    [Tags]    Regression    Medium    Mock
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_cart_price_by_price_id}    ${robot_store1_promotion_by_admin}
+    WMS Select Product to Campaign    promotion    ${promotion_custom_price}    ${robot_store1_promotion_by_admin}    0    \    Yes
+    Remove Product from Campaign    ${promotion_cart_price_by_price_id}    ${robot_store1_promotion_by_admin}    promotion
+
+TC_MC_03453
+    [Documentation]    [Welove] Add product to active new promotion type nonejoin custom price when product not in active seller promotion at same time
+    [Tags]    Regression    Medium    Mock
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_custom_price}    ${robot_store1_promotion_by_admin}
+    Remove Product from Campaign    ${promotion_custom_price}    ${robot_store1_promotion_by_admin}    promotion
+
+TC_MC_03454
+    [Documentation]    [Welove] Add product to active new promotion type nonejoin custom price when product in active seller promotion at same time
+    [Tags]    Regression    Medium    Mock
+    WMS Switch Project    wls
+    WMS Select Product to Campaign    promotion    ${promotion_custom_price}    ${robot_store1_sellerpromotion}    0    \    Yes
+
+TC_MC_03455
+    [Documentation]    [Welove] Create WLS Promotion with insert meta title, meta keyword and meta description
+    [Tags]    Regression    Medium    Mock
+    Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Open Custom Browser    ${URL_PORTAL}    Mobile
+    Switch Browser    1
+    WMS Switch Project    wls
+    ${my_campaign_id}    Create WLS Promotion    none    2    meta
+    Verify metatags After Save    ${my_campaign_id}
+    ${handleurl}    Set Variable    qa-automate-wls-promotion-campaign-for-seo
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify metatags Portal Web Mobile    portal
+    Switch Browser    2
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify metatags Portal Web Mobile    mobile
+    WMS Switch Project    wls
+    Delete My Campaign    promotion    ${my_campaign_id}
+
+TC_MC_03468
+    [Documentation]    [Welove] Validate new Handle url field in wls promotion create page
+    [Tags]    Regression    High    mock
+    Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Open Custom Browser    ${URL_PORTAL}    Mobile
+    Switch Browser    1
+    WMS Switch Project    wls
+    ${my_campaign_id}    Create WLS Promotion    qa-wls-promotion-testhandle////12345    2
+    ${groupcampignid}    Get Group Campaign ID     ${my_campaign_id}
+    Verify Handle URL After Save    qa-wls-promotion-testhandle12345    ${my_campaign_id}
+    ${handleurl}    Set Variable    qa-wls-promotion-testhandle12345
+    #Go to    ${URL_PORTAL}/campaign/${groupcampignid}-${my_campaign_id}
+    #Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}-${handleurl}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify Redirect URL    portal    ${my_campaign_id}    ${handleurl}
+    Switch Browser    2
+    #Go to    ${URL_PORTAL}/campaign/${groupcampignid}-${my_campaign_id}
+    #Verify Redirect URL    mobile    ${my_campaign_id}    campaign-mobile
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}-${handleurl}
+    Verify Redirect URL    mobile    ${my_campaign_id}    ${handleurl}
+    Go to    ${URL_PORTAL}/promotion/${my_campaign_id}
+    Verify Redirect URL    mobile    ${my_campaign_id}    campaign-mobile
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${my_campaign_id}
+    Verify Redirect URL    mobile    ${my_campaign_id}    ${handleurl}
+    Switch Browser    1
+    WMS Switch Project    wls
+    Delete My Campaign    promotion    ${my_campaign_id}
+
+TC_MC_03473
+    [Documentation]    [Welove] Edit WLS Promotion with insert meta title, meta keyword and meta description
+    [Tags]    Regression    Medium    Mock
+    Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    Open Custom Browser    ${URL_PORTAL}    Mobile
+    Switch Browser    1
+    WMS Switch Project    wls
+    Edit Meta Tags    promotion    ${promotion_cart_price_by_price_id}    Edit meta tags robot SEO
+    ${handleurl}    Set Variable    qa-robot-promotion-cart-price-price
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${promotion_cart_price_by_price_id}
+    Verify Edit Metatags Portal Web Mobile    portal
+    Switch Browser    2
+    Go to    ${URL_PORTAL}/promotion/${handleurl}-${promotion_cart_price_by_price_id}
+    Verify Edit Metatags Portal Web Mobile    mobile
+    Switch Browser    1
+    WMS Switch Project    wls
+    Edit Meta Tags    promotion    ${promotion_cart_price_by_price_id}    Metags WLS PROMOTION Robot SEO
+
+*** Keywords ***
+Delete Robot Campaign
+    #BuyerKeyword.Go to WMS
+    Go to    ${URL_WMS}
+    Go to    ${URL_WMS}/campaign?filter_campaign_type=6
+    Input Text    //input[@name='campaign_name']    QA-Robot
+    Select From List By Label    id=status    Expired
+    Click Element    //button[@class='btn btn-purple btn-sm']
+    Sleep    1s
+    ${result}    Execute Javascript    return $('#sample-table-2 > tbody > tr').length
+    Run Keyword If    ${result} != 1    Confirm Delete Campaign
+    Go to    ${URL_WMS}/campaign?filter_campaign_type=1
+    Input Text    //input[@name='campaign_name']    QA-Robot
+    Click Element    //button[@class='btn btn-purple btn-sm']
+    Sleep    1s
+    ${result}    Execute Javascript    return $('#sample-table-2 > tbody > tr').length
+    Run Keyword If    ${result} != 1    Confirm Delete Campaign
+    Go to    ${URL_WMS}/campaign?filter_campaign_type=4
+    Input Text    //input[@name='campaign_name']    QA-Robot
+    Click Element    //button[@class='btn btn-purple btn-sm']
+    Sleep    1s
+    ${result}    Execute Javascript    return $('#sample-table-2 > tbody > tr').length
+    Run Keyword If    ${result} != 1    Confirm Delete Campaign
+
+Confirm Delete Campaign
+    Execute Javascript    $('#check_all').click()
+    Execute Javascript    $('.btn-remove-multi').click()
+    Sleep    2s
+    Confirm Action
+    Sleep    5s
+    Confirm Action

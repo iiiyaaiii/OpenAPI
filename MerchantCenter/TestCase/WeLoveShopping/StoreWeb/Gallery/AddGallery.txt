@@ -1,0 +1,59 @@
+*** Settings ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close Browser
+Test Setup        Go To    ${URL_STORE}/${user_s001}/admin/gallery
+Force Tags        Store-Web    Gallery    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Gallery.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Test Cases ***
+TC_MC_00419
+    [Documentation]    [Welove] Verify add image with upload file. If file type is not supported.
+    [Tags]    Regression    Low
+    Upload Image To Gallery    image_hack.jpg    id=fileuploadinput
+    Wait Until Element Is Visible    show_error_upload
+    Element Should Contain    show_error_upload    อนุญาตให้ใช้ไฟล์ประเภท .jpg .png และ .gif เท่านั้นค่ะ.
+
+TC_MC_00421
+    [Documentation]    [Welove] Verify add image with upload file. If size over limit.
+    [Tags]    Regression    Low
+    Upload Image To Gallery    Over3MB.jpg    id=fileuploadinput
+    Wait Until Element Is Visible    show_error_upload
+    Element Should Contain    show_error_upload    ขนาดไฟล์ไม่ควรเกิน 3 MB.
+
+TC_MC_00425
+    [Documentation]    [Welove] Verify add image with upload file. If image correct.
+    [Tags]    Regression    High
+    ${count_before} =    Count Album in shop
+    Upload Image To Gallery    logo_mi6_seller_3.jpg    id=fileuploadinput
+    Sleep    3s
+    Reload Page
+    Sleep    3s
+    ${count_after} =    Count Album in shop
+    Should Be True    ${count_after} > ${count_before}
+
+TC_MC_00465
+    [Documentation]    [Welove] Verify add image to album with upload file. Incase User upload image correct.
+    [Tags]    Regression    High
+    Set Selenium Speed    1
+    Upload Image To Gallery    logo_mi6_seller_3.jpg    id=fileuploadinput
+    Sleep    3s
+    Execute Javascript    ${thumb_selected}.click()
+    Sleep    3s
+    ${count_before}    Count Album in shop from delete Icon
+    Log To console    Count Before : ${count_before}
+    Upload Image To Gallery    logo_mi6_seller_3.jpg    id=fileuploadinput
+    Sleep    3s
+    ${count_default}    Count Album in shop from delete Icon
+    Log To console    Count Default : ${count_default}
+    Run Keyword If    ${count_default} == ${count_before}    Reload Page
+    ${count_after}    Count Album in shop
+    Log To console    Count After : ${count_after}
+    Should Be True    ${count_after} > ${count_before}

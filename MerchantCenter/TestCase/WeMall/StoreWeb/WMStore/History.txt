@@ -1,0 +1,731 @@
+*** Setting ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+#Test Timeout      3 minutes
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Store_History.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/ManageOrder.txt
+Resource          ../../../../Keyword/Common/Freebie.txt
+Resource          ../../../../Keyword/Common/Account_History.txt
+Resource          ../../../../Keyword/Common/Account_Detail.txt
+Resource          ../../../../Keyword/Common/Store_History.txt
+Resource          ../../../../Keyword/Common/Store_Detail.txt
+Resource          ../../../../Resource/Wemall/WebElement/Checkout.txt
+Resource          ../../../../Resource/Wemall/WebElement/Cart.txt
+Resource          ../../../../Resource/WeMall/WebElement/Store_History.txt
+
+*** Variable ***
+${freebie_orderid}    800011406732
+${freebie_orderid_with_promo}    800011406738
+
+*** Test Cases ***
+TC_MC_05396
+    [Documentation]    View Store History (Not Ship and Request Refund)
+    [Tags]    Regression    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox all product for refund
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status}    รอการแจ้งจัดส่งสินค้า
+    Check Button Shipping History Page
+    Check Text Refund Order List
+    Check More Detail With Refund
+
+TC_MC_05397
+    [Documentation]    View Store History (Ship and Request Refund)
+    [Tags]    Regression    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Execute Javascript    ${shipping_checkall_button}
+    Execute Javascript    $("input[data-name='${trustmall_product1_name}']").click()
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox all product for refund
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status}    กำลังจัดส่งสินค้า
+    Check Text Refund Order List
+
+TC_MC_05398
+    [Documentation]    View Store History (Request Refund After Ship 1 Product and Waiting Ship 1 Product)
+    [Tags]    Regression    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    ${products}    Create List    ${sanity1_product}    ${sanity2_product}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${slug_name_sanity}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Execute Javascript    ${shipping_checkall_button}
+    Execute Javascript    $("input[data-name='${trustmall_product1_name}']").click()
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${trustmall_product1_name}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status}    รอการแจ้งจัดส่งสินค้า
+    Check Text partial ship    (จัดส่งไปแล้ว 1 จาก 2 รายการ)
+    Check Text Refund Order List
+
+TC_MC_05399
+    [Documentation]    View Store History (Request Refund Not Ship 1 Product and Ship 1 Product)
+    [Tags]    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product2_name}
+    Add Product To Cart
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${ccw_channel_radio_button}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${text_order_id_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Execute Javascript    ${shipping_checkall_button}
+    Execute Javascript    $("input[data-name='${trustmall_product1_name}']").click()
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${trustmall_product1_name}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status}    รอการแจ้งจัดส่งสินค้า
+    Check Text partial ship    (จัดส่งไปแล้ว 1 จาก 2 รายการ)
+    Check Text Refund Order List
+    Check More Detail With Refund
+
+TC_MC_05400
+    [Documentation]    View Store History (Request Refund After Ship 1 Product and Ship 1 Product)
+    [Tags]    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product2_name}
+    Add Product To Cart
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${ccw_channel_radio_button}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${text_order_id_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Execute Javascript    ${shipping_checkall_button}
+    Execute Javascript    $("input[data-name='${trustmall_product1_name}']").click()
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${trustmall_product1_name}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Execute Javascript    ${shipping_checkall_button}
+    Execute Javascript    $("input[data-name='${trustmall_product2_name}']").click()
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status}    กำลังจัดส่งสินค้า
+    Check Text Refund Order List
+    Check More Detail With Refund
+
+TC_MC_05464
+    [Documentation]    Check item status in case place order 2 product, ship 1 product and refund non ship
+    [Tags]    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product2_name}
+    Add Product To Cart
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${ccw_channel_radio_button}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${text_order_id_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Execute Javascript    ${shipping_checkall_button}
+    Execute Javascript    $("input[data-name='${trustmall_product1_name}']").click()
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${trustmall_product2_name}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status}    รอการแจ้งจัดส่งสินค้า
+    Check Button Shipping History Page
+    Check Text partial ship    (จัดส่งไปแล้ว 1 จาก 2 รายการ)
+    Check Text Refund Order List
+
+TC_MC_05465
+    [Documentation]    Check item status in case place order 1 product, expired ship
+    [Tags]    Regression    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Login admin manage order web
+    Go To    ${URL_ORDER}/admin/manage/datetime
+    Search order id on manage datetime page    ${order_id_sub}
+    Click ELement   ${select_escrow_product1}
+    Select From List    escrow-fields    ship_expired_time
+    Select From List    escrow-type    เพิ่ม-ลด
+    Input Text    ${escrow_time}    -7
+    Select From List    escrow-unit    Day
+    Click Element    ${escrow_btn_update}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status}    รอการแจ้งจัดส่งสินค้า
+    Check Text    ${txt_time_out}    หมดเวลา
+    Check Button Shipping History Page
+
+TC_MC_05466
+    [Documentation]    Check item status in case place order 2 product, expired ship and partial ship
+    [Tags]    Regression    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    ${products}    Create List    ${sanity1_product}    ${sanity2_product}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${storename_slug_wemall}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Login admin manage order web
+    Go To    ${URL_ORDER}/admin/manage/datetime
+    Search order id on manage datetime page    ${order_id_sub}
+    API Order Manage Escrow Datetime    2    escrow_products.ship_expired_time    addsub    -7    day
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Execute Javascript    ${shipping_checkall_button}
+    Execute Javascript    $("input[data-name='${sanity1_product}']").click()
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status}    รอการแจ้งจัดส่งสินค้า
+    Check Text    ${txt_time_out}    หมดเวลา
+    Check Button Shipping History Page
+    Check Text partial ship    (จัดส่งไปแล้ว 1 จาก 2 รายการ)
+
+TC_MC_05468
+    [Documentation]    Check item status in case place order 2 product, expired ship and partial ship
+    [Tags]    Regression    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    ${products}    Create List    ${sanity1_product}    ${sanity2_product}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${slug_name_sanity}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${sanity1_product}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status}    กำลังจัดส่งสินค้า
+    Check Text Refund Order List
+
+TC_MC_05471
+    [Documentation]    Check item status in case place order 2 product, non ship, partial refund and refund remaining product
+    [Tags]    Regression    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    ${products}    Create List    ${sanity1_product}    ${sanity2_product}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${slug_name_sanity}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${sanity1_product}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${sanity2_product}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status}    รอการแจ้งจัดส่งสินค้า
+    Check Button Shipping History Page
+    Check Text Refund Order List
+
+TC_MC_05474
+    [Documentation]    Check item status in case place order 2 product, partial ship, partial refund non ship product and refund remaining productremaining product
+    [Tags]    Regression    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    ${products}    Create List    ${sanity1_product}    ${sanity2_product}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${storename_slug_wemall}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Execute Javascript    ${shipping_checkall_button}
+    Execute Javascript    $("input[data-name='${sanity1_product}']").click()
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${sanity2_product}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${trustmall_product1_name}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status}    รอการแจ้งจัดส่งสินค้า
+    Check Button Shipping History Page
+    Check Text partial ship    (จัดส่งไปแล้ว 1 จาก 2 รายการ)
+    Check Text Refund Order List
+
+TC_MC_05955
+    [Documentation]    WMStoreHistory Check waiting ship button in case, place order success MX shop 1 product
+    [Tags]    Regression    Low    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall_mx}    ${pass_login_trust_wemall_mx}
+    Create order credit card channel    ${storename_slug_wemall_mx}    ${trustmall_mx_product1_name}   ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall_mx}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status_history}    รอการแจ้งจัดส่งสินค้า
+    Check Order Countdown Main Status Order
+    Element Should Not Be Visible    ${request_tracking_button}
+
+TC_MC_05961
+    [Documentation]    WMStoreHistory Check waiting ship button in case, place order success MF shop 2 product and ship 1 product
+    [Tags]    Regression    Low    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall_mf}    ${pass_login_trust_wemall_mf}
+    ${products}    Create List    ${trustmall_mf_product1_name}    ${trustmall_mf_product2_name}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${storename_slug_wemall_mf}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go to store order history    ${storename_slug_wemall_mf}
+    Search order id on store order history    ${order_id}
+    Click search button on account order history
+    Element Should Not Be Visible    ${request_tracking_button}
+    Check Text    ${order_status_history}    รอการแจ้งจัดส่งสินค้า
+    Check Order Countdown Main Status Order
+
+TC_MC_05963
+    [Documentation]    WMStoreHistory Check waiting ship button in case, place order success MX shop 2 product and request refund 1 product
+    [Tags]    Regression    Low    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall_mx}    ${pass_login_trust_wemall_mx}
+    ${products}    Create List    ${trustmall_mx_product1_name}    ${trustmall_mx_product2_name}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${storename_slug_wemall_mx}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go to account order detail page    ${order_id}
+    Click Element    ${account_detail_refund_link}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Select checkbox product for refund by product name    ${trustmall_mx_product1_name}
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Go to store order history    ${storename_slug_wemall_mx}
+    Search order id on store order history    ${order_id}
+    Click search button on account order history
+    Check Text    ${order_status_history}    รอการแจ้งจัดส่งสินค้า
+    Check Text    ${text_refund_store_history}    ผู้ซื้อได้ทำการขอเงินคืน
+    Check Order Countdown Main Status Order
+    Element Should Not Be Visible    ${request_tracking_button}
+
+TC_MC_05967
+    [Documentation]    WMStoreHistory Check waiting ship button in case, place order success MX shop 1 product and ship expired
+    [Tags]    Regression    Low    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall_mx}    ${pass_login_trust_wemall_mx}
+    Create order credit card channel    ${storename_slug_wemall_mx}    ${trustmall_mx_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Login admin manage order web
+    Go To    ${URL_ORDER}/admin/manage/datetime
+    Search order id on manage datetime page    ${order_id}
+    API Order Manage Escrow Datetime    1     escrow_products.ship_expired_time     เพิ่ม-ลด    -30    Day
+    Go to store order history    ${storename_slug_wemall_mx}
+    Search order id on store order history    ${order_id}
+    Click search button on account order history
+    Check Text    ${txt_time_out}    หมดเวลา
+    Check Text    ${order_status_history}    รอการแจ้งจัดส่งสินค้า
+    Check Order Countdown Main Status Order
+    Element Should Not Be Visible    ${request_tracking_button}
+
+TC_MC_05971
+    [Documentation]    WMStoreHistory Check waiting ship button in case, place order success MX shop 2 product, ship 1 product and request refund product was shipped
+    [Tags]    Regression    Low    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall_mx}    ${pass_login_trust_wemall_mx}
+    ${products}    Create List    ${trustmall_mx_product1_name}    ${trustmall_mx_product2_name}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${storename_slug_wemall_mx}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go to account order detail page    ${order_id}
+    Click Element    ${account_detail_refund_link}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Select checkbox product for refund by product name    ${trustmall_mx_product1_name}
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Go to store order history    ${storename_slug_wemall_mx}
+    Search order id on store order history    ${order_id}
+    Click search button on account order history
+    Element Should Not Be Visible    ${request_tracking_button}
+    Check Text    ${order_status_history}    รอการแจ้งจัดส่งสินค้า
+    Check Text    ${text_refund_store_history}    ผู้ซื้อได้ทำการขอเงินคืน
+    Check Order Countdown Main Status Order
+    Element Should Not Be Visible    ${request_tracking_button}
+
+TC_MC_05378
+    [Documentation]    WMStoreHistory View Store History (Order=0)
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Check and Reset Seller Login    ${slug_name_wm_shop_no_data}    ${user_wm_nodata}    ${pass_wm_nodata}
+    Go To    ${URL_STORE}/${slug_name_wm_shop_no_data}/admin/orders
+    Check Text    ${txt_nodata}    ไม่พบรายการสั่งซื้อ
+
+TC_MC_05388
+    [Documentation]    WMStoreHistory View Store History (Place Order 1 Product)
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order offline channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${cs_channel_radio_button}    ${lbl_payment_cs_ref2_number}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${txt_product_name_store_history}    ${trustmall_product1_name}
+    Check Text    ${order_status_history}    รอการชำระเงิน
+    Check Order Countdown Time
+
+TC_MC_05390
+    [Documentation]    WMStoreHistory View Store History (Payment Expired 1 Product)
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order offline channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${cs_channel_radio_button}    ${lbl_payment_cs_ref2_number}
+    Login admin manage order web
+    Go To    ${URL_ORDER}/admin/manage/datetime
+    Search order id on manage datetime page    ${order_id_sub}
+    API Order Manage Datetime    payment_expired_time    เพิ่ม-ลด    -5    day
+    Run cron order expire on admin manage order web    ${order_id_sub}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status_history}    รายการนี้ถูกยกเลิก
+    Check Text    ${lnk_view_detail_store_hisory}    ดูรายละเอียด
+
+TC_MC_05391
+    [Documentation]    WMStoreHistory View Store History (Payment Not found 1 Product)
+    [Tags]    Regression    Medium    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order ewallet channel    ${storename_slug_wemall}    trustmall 004    ${select_address}    ${shipping_post}    ${ew_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status_history}    ชำระเงินไม่สำเร็จ
+
+TC_MC_05392
+    [Documentation]    WMStoreHistory View Store History (Payment Success 1 Product)
+    [Tags]    Regression    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status_history}    รอการแจ้งจัดส่งสินค้า
+    Check Order Countdown Time
+    Check Text    ${lnk_view_detail_store_hisory}    ดูรายละเอียด
+
+TC_MC_05394
+    [Documentation]    WMStoreHistory View Store History (Ship)
+    [Tags]    Regression    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Check Text    ${order_status_history}    กำลังจัดส่งสินค้า
+    Check Text    ${lnk_view_detail_store_hisory}    ดูรายละเอียด
+
+TC_MC_05395
+    [Documentation]    WMStoreHistory View Store History (Receive)
+    [Tags]    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${ccw_channel_radio_button}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${text_order_id_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+    ${order_id_sub}    Get substring order id form thankyou page    ${order_id}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Login admin manage order web
+    Go To    ${URL_ORDER}/admin/manage/datetime
+    Search order id on manage datetime page    ${order_id_sub}
+    API Order Manage Escrow Datetime    1    escrow_products.receive_expired_time    addsub    -17    day    ${order_id_sub}
+    Check Element Visible    ${escrow_btn_update}    ${expect_load_time}
+    Go to    https://api-order.wls-dev.com/v3/auto/receive?order_id=${order_id_sub}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Check Text    ${order_status_history}    ดำเนินการเรียบร้อย
+    Check Text    ${lnk_view_detail_store_hisory}    ดูรายละเอียด
+
+TC_MC_10972
+    [Documentation]    [Seller] Verify the freebie product on checkout page when normal product have promotion freebie in the same shop on Order History page
+    Go to Login    ${kamufreebie_shop_user}    ${kamufreebie_shop_pwd}
+    Go To Store Order History Page    ${storename_freebie_kamu}
+    Search order id on store order history    ${freebie_orderid}
+    Click search button on store order history
+    Validate freebie product correctly displayed
+
+TC_MC_10978
+    [Documentation]    [Seller] Verify the freebie product on Order History page when seller promotion product has promotion freebie
+    Go to Login    ${store_email2}    ${store_password2}
+    Go To Store Order History Page    ${store_name1}
+    Search order id on store order history    ${freebie_orderid_with_promo}
+    Click search button on store order history
+    Validate freebie product correctly displayed
+    Seller Promotion Tag Displays On Main Product Correctly
+

@@ -1,0 +1,189 @@
+*** Settings ***
+Suite Setup       Run Keyword    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}     #AND    Reset Store/Product Status    wls
+#Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Test Setup        Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Teardown     Close All Browsers
+Force Tags        Portal-Web    Ligo    Sprint2017MC8    mc-wls
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Cart.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Cart.txt
+
+*** Test Cases ***
+TC_MC_02266
+    [Documentation]    [Welove] [NonJoin Campaign]: Increase Product Quantily as 1 equal to limit
+    [Tags]    Medium    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_none_join_camapign}?refresh=changeme
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Wait Until Element Is Visible    //button[@class="btn btn-buy"]    ${EXPECT_LOADTIME}
+    Repeat Keyword    5 Times    Execute Javascript    ${cart_increase_btn}[0].click()
+    Click Button    //button[@class="btn btn-buy"]
+    Wait Until Element Is Visible    //button[@class="btn-fb"]    ${EXPECT_LOADTIME}
+    Element Should Be Visible    //button[@class="btn-fb"]
+
+TC_MC_02267
+    [Documentation]    [Welove] [NonJoin Campaign]: Increase Product Quantily as over limit
+    [Tags]    Regression    High    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_none_join_camapign}?refresh=changeme
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Wait Until Element Is Visible    //button[@class="btn btn-buy"]    ${EXPECT_LOADTIME}
+    Repeat Keyword    8 Times    Execute Javascript    ${cart_increase_btn}[0].click()
+    Element Should Be Visible    ${cart_limit}
+    Element Should Contain    ${cart_limit}    *จำกัดการซื้อรวมกันสูงสุด
+    Element Should Contain    ${cart_limit}    ชิ้นต่อครั้ง
+
+TC_MC_02268
+    [Documentation]    [Welove] [NonJoin Campaign]: Increase Product Quantily as lower limit
+    [Tags]    Medium    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_none_join_camapign}?refresh=changeme
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Wait Until Element Is Visible    //button[@class="btn btn-buy"]    ${EXPECT_LOADTIME}
+    Repeat Keyword    5 Times    Execute Javascript    ${cart_increase_btn}[0].click()
+    Click Button    //button[@class="btn btn-buy"]
+    # Wait Until Element Is Visible    //button[@class="btn-fb"]    ${EXPECT_LOADTIME}
+    # Element Should Be Visible    //button[@class="btn-fb"]
+
+TC_MC_08327
+    [Documentation]    [Join Campaign]: Increase Product Quantily as over limit
+    [Tags]    High    Portal-Web    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_join_camapign}?refresh=changeme
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Repeat Keyword    8 Times    Execute Javascript    ${cart_increase_btn}[0].click()
+    Element Should Be Visible    ${cart_limit}
+    Element Should Contain    ${cart_limit}    *จำกัดการซื้อรวมกันสูงสุด
+    Element Should Contain    ${cart_limit}    ชิ้นต่อครั้ง
+
+TC_MC_08332
+    [Documentation]    Product have to join more than 1 campaign
+    [Tags]    Regression    High    Portal-Web    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store2_join_camapign}?refresh=changeme
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Repeat Keyword    10 Times    Execute Javascript    ${cart_increase_btn}[0].click()
+    Element Should Be Visible    ${cart_limit}
+    Element Should Contain    ${cart_limit}    *จำกัดการซื้อรวมกันสูงสุด
+    Element Should Contain    ${cart_limit}    ชิ้นต่อครั้ง
+
+TC_MC_08333
+    [Documentation]    [Cart : Verify Stock] Product Westore type availibility
+    [Tags]    Regression    High    Portal-Web    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Execute Javascript    ${cart_input_qty}.eq(0).val(81)
+    Sleep    1
+    Execute Javascript    ${cart_click_qty}.eq(1).click()
+    Sleep    1
+    Element Should Be Visible    ${cart_limit}
+    Element Should Contain    ${cart_limit}    *สินค้านี้มีจำนวน
+    Element Should Contain    ${cart_limit}    ชิ้นเท่านั้น
+
+TC_MC_08334
+    [Documentation]    [Cart : Verify Stock] Product Westore type availibility and have more inventories
+    [Tags]    Regression    High    Portal-Web    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_2attr_3inv}?refresh=changeme
+    Selected Attribute    สี    ฟ้า
+    Selected Attribute    ขนาด    S
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    $("a[class='btn btn-default cursor-pointer']").click()
+    Selected Attribute    สี    แดง
+    Selected Attribute    ขนาด    M
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Execute Javascript    ${cart_input_qty}.eq(0).val(81)
+    Sleep    1
+    Repeat Keyword    1 Times    Execute Javascript    ${cart_click_qty}.eq(1).click()
+    Sleep    1
+    Element Should Be Visible    ${cart_limit}
+    Element Should Contain    ${cart_limit}    *สินค้านี้มีจำนวน
+    Element Should Contain    ${cart_limit}    ชิ้นเท่านั้น
+    Execute Javascript    ${cart_input_qty}.eq(1).val(81)
+    Sleep    1
+    Repeat Keyword    1 Times    Click Element    ${cart_product}[2]${cart_increase_quantity}
+    ${count_alert}    Get Matching Xpath Count    ${cart_limit}
+    Should Be True    ${count_alert} == 2
+
+TC_MC_08338
+    [Documentation]    [Cart : Verify Flashsale limit] Product have more inventories is flashsale and limit not equal 0
+    [Tags]    Regression    High    Portal-Web    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/L91199584
+    # Execute Javascript    ${megamenu_flashsale}.click()
+    # Get DealZapp Product    robot_store1 - สินค้า FlashSale มี Attr. 1
+    # Click Element    ${active_dealzapp}//div[3]//div[2]//ul[1]//li//a[contains(text(),'robot_store1 - สินค้า FlashSale 1 มี Attr.') or contains(text(),'robot_store1 - สินค้า FlashSale 2 มี Attr.') or contains(text(),'robot_store1 - สินค้า FlashSale 3 มี Attr.')]
+    Sleep    1
+    ${url}    Get Location
+    Go to    ${url}?refresh=changeme
+    Sleep    1
+    Selected Attribute    สี    แดง
+    Selected Attribute    ขนาด    M
+    Click Element    ${addtocart}
+    Execute Javascript    ${continue_shopping}.click()
+    Sleep    1
+    Selected Attribute    สี    ขาว
+    Selected Attribute    ขนาด    S
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Execute Javascript    ${cart_input_qty}.eq(0).val(4)
+    Sleep    1
+    Execute Javascript    ${cart_click_qty}.eq(0).click()
+    Sleep    1
+    Element Should Be Visible    ${cart_limit}
+    Element Should Contain    ${cart_limit}    *จำกัดการซื้อรวมกันสูงสุด
+    Element Should Contain    ${cart_limit}    ชิ้นต่อครั้ง
+    ${count_alert}    Get Matching Xpath Count    ${cart_limit}
+    Should Be True    ${count_alert} == 2
+
+TC_MC_08339
+    [Documentation]    Increase product quantity
+    [Tags]    Medium    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    ${name}=    Get Text    ${leveld_itemname}
+    ${price}=    Get Text    ${leveld_itemprice}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Execute Javascript    ${addtocart}.click()
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Repeat Keyword    4 Times    Execute Javascript    ${cart_increase_btn}[0].click()
+    Sleep    2
+    ${new_quantity}=    Get Value    ${cart_shop}${cart_product_list}${cart_product}${cart_boxitempiece}${cart_itempiece}
+    Verify Product In Cart    ${shopname}    ${name}    ${new_quantity}    ${price}
+
+

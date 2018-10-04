@@ -1,0 +1,93 @@
+*** Settings ***
+Suite Setup       Run Keyword    Open Custom Browser    ${URL_PORTAL}    Mobile
+Suite Teardown    Close All Browsers
+Test Setup        Run Keywords    Clear Mobile Login    AND    Capture Page Screenshot
+Test Timeout      2 minutes
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/MobileElement/MainMenu.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Mobile_Home.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Force Tags        Portal-Mobile    mc-wls
+
+*** Variables ***
+${BROWSER}    Mobile
+
+*** Test Cases ***
+TC_MC_10518
+    [Documentation]    [Mobile] Verify menu incase not login
+    [Tags]    Regression    Medium
+    Mobile_Home.Click Main Menu On Homepage
+    Mobile_Home.Verify Menu Free Register Not Login
+    Mobile_Home.Verify Menu Individual
+    Mobile_Home.Verify Menu Corperate
+    Mobile_Home.Verify Not Display Menu Exit Not Login
+
+TC_MC_10519
+    [Documentation]    [Mobile] Verify incase login by user member (user not have store)
+    [Tags]    Regression    High
+    Mobile Login    ${buyer_user_only}    ${buyer_pwd_member}
+    Mobile_Home.Click Main Menu On Homepage
+    Mobile_Home.Verify Menu Free Register Login
+    Mobile_Home.Verify Menu Individual
+    Mobile_Home.Verify Menu Corperate
+    Mobile_Home.Verify Menu Exit When Login
+
+TC_MC_10520
+    [Documentation]    [Mobile] Verify incase login by user store (user have store)
+    [Tags]    Regression    High
+    Mobile Login    ${seller_user_002}    ${seller_pwd_002}
+    Mobile_Home.Click Main Menu On Homepage
+    Mobile_Home.Verify Not Display Menu Register When Login User Store
+    Mobile_Home.Verify Display Menu ManageShop When Login User Store
+
+TC_MC_10521
+    [Documentation]    [Mobile] Verify click บุคคลธรรมดา incase not login
+    [Tags]    Regression    Medium
+    Mobile_Home.Click Main Menu On Homepage
+    Mobile_Home.Click Individual Menu
+    Mobile_Home.Verify When Click Individual Menu Incase Not Login
+
+TC_MC_10522
+    [Documentation]    [Mobile] Verify click นิติบุคคล incase not login
+    [Tags]    Regression    Medium
+    Mobile_Home.Click Main Menu On Homepage
+    Mobile_Home.Click Corperate Menu
+    Mobile_Home.Verify When Click Corperate Menu Incase Not Login
+
+TC_MC_10523
+    [Documentation]    [Mobile] Verify click บุคคลธรรมดา incase login user member
+    [Tags]    Regression    Medium
+    Mobile Login    ${buyer_user_only}    ${buyer_pwd_member}
+    Mobile_Home.Click Main Menu On Homepage
+    Mobile_Home.Click Individual Menu
+    Mobile_Home.Verify When Click Individual Menu Incase Login
+    Go To     https://m.wls-dev.com
+
+TC_MC_10524
+   [Documentation]    [Mobile] Verify click นิติบุคคล incase login user member
+   [Tags]    Regression    Medium
+    Mobile Login    ${buyer_user_only}    ${buyer_pwd_member}
+    Mobile_Home.Click Main Menu On Homepage
+    Mobile_Home.Click Corperate Menu
+    Mobile_Home.Verify When Click Corperate Menu Incase Login
+    Go To     https://m.wls-dev.com
+
+TC_MC_10525
+    [Documentation]    [Mobile] Verify click store menu incase login user store
+    [Tags]    Regression    Medium
+    Mobile Login    ${seller_user_002}    ${seller_pwd_002}
+    Mobile_Home.Click Main Menu On Homepage
+    Mobile_Home.Click Shop Menu
+    Mobile_Home.Verify When Click Shop Menu Incase Login
+
+TC_MC_11901
+    [Documentation]    [Mobile] Verify information of Contact us menu on WeLoveShopping website
+    [Tags]    Regression    Medium
+    Mobile_Home.Click Main Menu On Homepage
+    Mobile_Home.Click Weloveshopping Contact Us Menu
+    Mobile_Home.Verify The WeLoveShopping Information Correctly
+
+

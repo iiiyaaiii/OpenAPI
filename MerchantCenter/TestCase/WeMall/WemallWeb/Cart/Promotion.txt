@@ -1,0 +1,134 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Force Tags        Wemall-Web    Cart    Ligo
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Resource/WeMall/WebElement/Checkout.txt
+Resource          ../../../../Resource/WeMall/WebElement/Cart.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Cart.txt
+Resource          ../../../../Keyword/Common/LevelD.txt
+
+*** Variable ***
+${product_truepoint}    L91556662
+${txt_condition_truepoint}    ใช้ทรูพอยท์ 1,000 คะแนน + 1,000 บาท
+${txt_remark_truepoint}     แลกสินค้าทรูพอยท์สามารถแลกได้เพียงครั้งละ 1 ชิ้นเท่านั้น
+
+*** Test Cases ***
+TC_MC_03994
+    [Documentation]    [New promotion type nonejoin custom price] Verify display product change price
+    [Tags]    Regression    Medium    Portal-Web    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_stg_store1_custom_camapign}?refresh=changeme
+    ${price}=    Get Text     //strong[@id='product-price']
+    Click Add to Cart and go to Cart
+    ${price_cart}=    Execute Javascript    return $("[data-id='${robot_stg_store1_custom_camapign}']").find('.box-col-price span')[0].innerText
+    Should Be True    ${price} == ${price_cart}
+
+TC_MC_03966
+    [Documentation]    [ByItem] Verify display product fix price
+    [Tags]    Regression    Medium    Portal-Web    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_stg_store1_custom_camapign}?refresh=changeme
+    Click Add to Cart and go to Cart
+    ## check condition
+    Element Should Not Be Visible    //div[@class='box-promotion-detail']
+    ## check discount
+    Element Should Not Be Visible    //div[@class='pm-col-right']/ul/li
+    ## check badge
+    Element Should Not Be Visible    //div[@class='text-promotion']
+    Element Should Be Visible    //div[@class='box-cart-product-list']/div[1]/div[2]/span[@class='price-line-red']
+
+TC_MC_03967
+    [Documentation]    [ByItem] Verify display product discount% price
+    [Tags]    Regression    Medium    Portal-Web    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_stg_store1_custom_camapign}?refresh=changeme
+    Click Add to Cart and go to Cart
+    ## check condition
+    Element Should Not Be Visible    //div[@class='box-promotion-detail']
+    ## check discount
+    Element Should Not Be Visible    //div[@class='pm-col-right']/ul/li
+    ## check badge
+    Element Should Not Be Visible    //div[@class='text-promotion']
+    Element Should Be Visible    //div[@class='box-cart-product-list']/div[1]/div[2]/span[@class='price-line-red']
+
+TC_MC_03986
+    [Documentation]    Delete Product Form Promotion In Cart
+    [Tags]    Regression    Medium    Portal-Web    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_stg_store2_sellerpromotion}?refresh=changeme
+    Click Add to Cart and go to Cart
+    Execute Javascript    $('div.remove-product')[0].click()
+    Confirm Action
+    Reload Page
+    ${check_text}=    Set Variable    ไม่มีสินค้าในตะกร้าของท่าน
+    ${check_text1}=    Set Variable    กลับไปซื้อสินค้าต่อ
+    Page Should Contain    ${check_text}
+    Page Should Contain    ${check_text1}
+
+TC_MC_03988
+    [Documentation]    [Seller Promotion] Verify display condition promotion price leght type discount price and show badge Promotion name
+    [Tags]    Regression    Medium    Portal-Web    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_stg_store1_price_length_thb}?refresh=changeme
+    ${promotion_name}=    Execute Javascript    return $('div.promotion-name > a')[0].innerText
+    ${promotion_condition}=    Execute Javascript    return $('ul.new-promotion-list')[0].innerText
+    Selected Attribute    ขนาด    S
+    Selected Attribute    สี    ขาว
+    Click Add to Cart and go to Cart
+    Page Should Contain    ${promotion_name}
+    ## check condition
+    Element Should Be Visible    //div[@class="promotion-remark"]
+    ## check discount
+    Element Should Be Visible    //div[@class="promotion-remark"]/span
+    Element Should Not Contain    //div[@class="promotion-remark"]/span    %
+    Element Should Contain    //div[@class="promotion-remark"]/span    บาท
+    ## check badge
+    Element Should Be Visible    //div[@class="text-promotion"]/span
+
+TC_MC_03989
+    [Documentation]    [Seller Promotion] Verify display condition promotion price leght type discount% and show badge Promotion name
+    [Tags]    Regression    Medium    Portal-Web    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_stg_store1_price_length_percent}?refresh=changeme
+    ${promotion_name}=    Execute Javascript    return $('div.promotion-name > a')[0].innerText
+    ${promotion_condition}=    Execute Javascript    return $('ul.new-promotion-list')[0].innerText
+    Selected Attribute    ขนาด    S
+    Selected Attribute    สี    ขาว
+    Click Add to Cart and go to Cart
+    Page Should Contain    ${promotion_name}
+    ## check condition
+    Element Should Be Visible    //div[@class="promotion-remark"]
+    ## check discount
+    Element Should Be Visible    //div[@class="promotion-remark"]/span
+    Element Should Contain    //div[@class="promotion-remark"]/span    %
+    ## check badge
+    Element Should Be Visible    //div[@class="text-promotion"]/span
+
+TC_MC_12157
+    [Documentation]    [Desktop] Verify icon TruePoint under product on cart when this product already set TruePoint
+    [Tags]    Regression    High
+    Delete All Product In Cart
+    GoTo Lv D WeMall    ${product_truepoint}
+    Click Add TruePoint to Cart and go to Cart
+    Verify Truepoint In Cart    ${txt_condition_truepoint}    ${txt_remark_truepoint}
+
+
+

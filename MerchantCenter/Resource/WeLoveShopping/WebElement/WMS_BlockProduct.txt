@@ -1,0 +1,35 @@
+*** Variables ***
+### Locator ###
+${url_block_product_portal}    ${URL_WMS}/block_product
+${url_block_product_history}    ${URL_WMS}/block_product_history
+${input_product_id}    //textarea[@id="product-ids"]
+${input_store_id}    //*[@name="store_id"]
+${input_store_id_portal}    //*[@id="store-id"]
+${btn_bp_search}    //button[@name="search-btn"]
+${record_result_found}    //table[@id="result-table"]/tbody/tr
+${column_store_id}    //*[@id="result-table"]/tbody/tr[1]/td[8]
+${select_product_status}    //select[@id="status"]
+${column_product_status}    //*[@id="result-table"]/tbody/tr[1]/td[2]
+${column_last_update}    //*[@id="result-table"]/tbody/tr/td[7]
+${icon_status_close}    //i[@data-original-title="ปิด"]
+${icon_status_show}    //i[@data-original-title="เปิด"]
+${paging}    //div[@id="sample-table-2_paginate"]
+${store_last}    //*[@id="result-table"]/tbody/tr/td[1]/label/input
+${select_action_pstatus}    //select[@id="form-status"]
+${select_action_reason}    //select[@id="form-reason"]
+${input_reason}    //textarea[@id="form-comment"]
+${box_notify}    //div[@class="bootbox-body"]
+${btn_ok_action}    //div[@class="modal-footer"]//button[@data-bb-handler="confirm"]
+${btn_save_paction}    //button[@id="action-confirm-save"]
+${check_all_record}    //*[@id="result-table"]/thead/tr/th[1]/label/span
+${check_top_record}    //*[@id="result-table"]/tbody/tr/td[1]/label/span
+${check_record_tr1}    //*[@id="result-table"]/tbody/tr[1]/td[1]/label/span
+${check_record_tr2}    //*[@id="result-table"]/tbody/tr[2]/td[1]/label/span
+${input_email}    //input[@name="store_email"]
+${input_store_id}    //input[@name="store_id"]
+${input_phone}    //input[@name="store_phone"]
+${column_email}    //*[@id="result-table"]/tbody/tr[1]/td[8]
+${column_phone}    //*[@id="result-table"]/tbody/tr[1]/td[9]
+${column_store_id}    //*[@id="result-table"]/tbody/tr[1]/td[2]
+${first_product_name_link}    //*[@id="result-table"]/tbody/tr[1]/td[4]/a
+${first_product_id_link}    //*[@id="result-table"]/tbody/tr[1]/td[3]/a

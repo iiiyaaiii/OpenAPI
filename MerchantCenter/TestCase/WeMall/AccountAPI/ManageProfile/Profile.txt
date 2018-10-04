@@ -1,0 +1,42 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Force Tags        Account-API    ManageProfile    Ligo
+Test Timeout      3 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Widget.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00045
+    [Documentation]    [Wemall]Edit profile
+    [Tags]    Regression    Sprint2017MC5    Medium
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Execute JavaScript    ${myacc}.mouseover()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    ${name}=    Get Text    ${profile_name}
+    ${name}=    Get Substring    ${name}    \    -10
+    ${surname}=    Get Text    ${profile_surname}
+    ${surname}=    Get Substring    ${surname}    \    -10
+    ${gettime}=    Get Time    epoch
+    Click Element    ${profile_edit}
+    Input Text    ${edit_name}    ${name}${gettime}
+    Input Text    ${edit_surname}    ${surname}${gettime}
+    Click Element    ${edit_gender}
+    Click Element    ${edit_bdate}
+    Click Element    ${edit_bmonth}
+    Click Element    ${edit_byear}
+    Input Text    ${edit_phone}    0810000001
+    Execute Javascript    $('button:contains(บันทึก)').click()
+    Element Should Contain    ${profile_name}    ${name}${gettime}
+    Element Should Contain    ${profile_surname}    ${surname}${gettime}
+    Element Should Contain    ${profile_gender}    ชาย
+    Element Should Contain    ${profile_bday}    9 กุมภาพันธ์ 2530
+    Element Should Contain    ${profile_phone}    0810000001
+    Clear Active Login

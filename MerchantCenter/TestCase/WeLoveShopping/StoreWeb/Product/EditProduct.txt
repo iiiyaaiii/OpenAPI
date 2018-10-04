@@ -1,0 +1,684 @@
+*** Setting ***
+Suite Setup       Run Keywords    Account Login    ${category_user_002}    ${category_pwd_002}    AND    Set product data
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_STORE}/${category_shopname2}/admin/product/edit/${product_id}
+Force Tags        Store-Web    mc-wls
+Library           OperatingSystem
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Product.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/WMS_MonitoringListing.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+
+*** Keywords ***
+Write Variable to File
+    [Arguments]    ${variable_name}    ${value}
+    ${value1}    Remove String    ${value}    L
+    ${variable}    Catenate    SEPARATOR=    ${    ${variable_name}    }    ${SPACE}${SPACE}${SPACE}${SPACE}    ${value1}
+    #Append To File    ${path}${/}Config${/}${ENV}/robotdata.txt    ${\n}${variable}
+    ${FilePath}    Replace String    ${CURDIR}    /TestCase/WeLoveShopping/StoreWeb/Product    /Resource/${BU}/Configuration/${ENV}
+    Append To File   ${FilePath}${/}robotdata.txt    ${\n}${variable}
+
+Check product data
+    [Arguments]    ${product_id}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product
+    Search product    L${product_id}
+    Sleep    3s
+    ${Result}    Run Keyword and Return Status    Check Text Page Should Contain    ไม่พบสินค้า
+    ${status}    Run Keyword If    '${Result}' == 'True'    Set Variable    ${Result}
+    [Return]    ${status}
+
+Set product data
+    Set Selenium Speed    .2
+    ${status}    Check product data    ${product_id}
+    Run Keyword If    '${status}' == 'True'    Run Keywords    Go To    ${URL_STORE}/${category_shopname2}/admin/product/create    AND
+    ...    Store Add Product By Add Photo    electronic    robot_product1_1.jpg    productforedit    product_id
+    ...    New    5    1    0    0    1
+
+*** Test Case ***
+TC_MC_01937
+    [Documentation]    Verify change data all fill.
+    [Tags]    Regression    High
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Three Level
+    ${time}    Get Time    epoch
+    ${product_name}    Catenate    EditByRobot ${time}
+    Input Text    ${input_product_name}    ${product_name}
+    Select Radio Button    pdtype    used
+    Select Radio Button    condition    availability
+    ${old_amount}    Get Value    ${unit_instock}
+    ${new_amount}    Evaluate    ${old_amount}+1
+    ${str1}    Convert To String    ${new_amount}
+    Clear Element Text    ${unit_instock}
+    Input Text    ${unit_instock}    ${str1}
+    ${old_weight}    Get Value    ${input_product_weight}
+    ${new_weight}    Evaluate    ${old_weight}+0.01
+    ${str2}    Convert To String    ${new_weight}
+    Clear Element Text    ${input_product_weight}
+    Input Text    ${input_product_weight}    ${str2}
+    ${old_selling_price}    Get Value    ${input_selling_price}
+    ${new_selling_price}    Evaluate    ${old_selling_price}+1
+    ${str3}    Convert To String    ${new_selling_price}
+    Clear Element Text    ${input_selling_price}
+    Input Text    ${input_selling_price}    ${str3}
+    ${old_normal_price}    Get Value    ${input_normal_price}
+    ${new_normal_price}    Evaluate    ${old_normal_price}+1
+    ${str4}    Convert To String    ${new_normal_price}
+    Clear Element Text    ${input_normal_price}
+    Input Text    ${input_normal_price}    ${str4}
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Wait Until Element Is Visible    ${input_product_name}    ${EXPECT_LOADTIME}
+    ${cat_lv1}    Execute Javascript    return $('#category1 option:selected').text();
+    ${cat_lv2}    Execute Javascript    return $('#category2 option:selected').text();
+    ${cat_lv3}    Execute Javascript    return $('#category3 option:selected').text();
+    Should Be Equal    ${cat_lv1}    แฟชั่น
+    Should Be Equal    ${cat_lv2}    กระเป๋า
+    Should Be Equal    ${cat_lv3}    กระเป๋าเอกสาร
+    Textfield Value Should Be    ${input_product_name}    ${product_name}
+    Execute Javascript    $('input[name="pdtype"]').eq(1).is(':checked') == true
+    ${current_amount}    Get Value    ${unit_instock}
+    ${str_amount}    Convert To String    ${current_amount}
+    Should Be Equal    ${str1}    ${str_amount}
+    ${current_weight}    Get Value    ${input_product_weight}
+    ${str_weight}    Convert To String    ${current_weight}
+    Should Be Equal    ${str2}    ${str_weight}
+    ${current_selling_price}    Get Value    ${input_selling_price}
+    ${num_price}    Convert To String    ${current_selling_price}
+    Should Be Equal    ${str3}    ${num_price}
+    ${current_normal_price}    Get Value    ${input_normal_price}
+    ${str_price}    Convert To String    ${current_normal_price}
+    Should Be Equal    ${str4}    ${str_price}
+
+TC_MC_01938
+    [Documentation]    Verify change data not require fill.
+    Wait Until Element Is Visible    ${input_product_name}
+    ${old_weight}    Get Value    ${input_product_weight}
+    ${new_weight}    Evaluate    ${old_weight}+0.01
+    ${str1}    Convert To String    ${new_weight}
+    Clear Element Text    ${input_product_weight}
+    Input Text    ${input_product_weight}    ${str1}
+    ${old_price}    Get Value    ${input_normal_price}
+    ${new_price}    Evaluate    ${old_ price}+1
+    ${str2}    Convert To String    ${new_price}
+    Clear Element Text    ${input_normal_price}
+    Input Text    ${input_normal_price}    ${str2}
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Wait Until Element Is Visible    ${input_product_weight}    ${EXPECT_LOADTIME}
+    ${current_weight}    Get Value    ${input_product_weight}
+    ${str_weight}    Convert To String    ${current_weight}
+    Should Be Equal    ${str1}    ${str_weight}
+    ${current_price}    Get Value    ${input_normal_price}
+    ${str_price}    Convert To String    ${current_price}
+    Should Be Equal    ${str2}    ${str_price}
+
+TC_MC_01939
+    [Documentation]    Verify change data require fill.
+    [Tags]    Low
+    Wait Until Element Is Visible    ${input_product_name}
+    ${old_amount}    Get Value    ${unit_instock}
+    ${new_amount}    Evaluate    ${old_amount}+1
+    ${str1}    Convert To String    ${new_amount}
+    Clear Element Text    ${unit_instock}
+    Input Text    ${unit_instock}    ${new_amount}
+    ${old_price}    Get Value    ${input_selling_price}
+    ${new_price}    Evaluate    ${old_price}+1
+    ${str2}    Convert To String    ${new_price}
+    Clear Element Text    ${input_selling_price}
+    Input Text    ${input_selling_price}    ${new_price}
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Wait Until Element Is Visible    ${unit_instock}    ${EXPECT_LOADTIME}
+    ${current_amount}    Get Value    ${unit_instock}
+    ${str_amount}    Convert To String    ${current_amount}
+    Should Be Equal    ${str1}    ${str_amount}
+    ${current_price}    Get Value    ${input_selling_price}
+    ${str_price}    Convert To String    ${current_price}
+    Should Be Equal    ${str2}    ${str_price}
+
+TC_MC_01940
+    [Documentation]    To ensure The validation icon on Product data tab.
+    Wait Until Element Is Visible    ${input_product_name}
+    Clear Element Text    ${input_product_name}
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    ${msg_error}    Execute Javascript    return $('.help-inline').eq(1).text()
+    Element Should Be Visible    ${icon_incomplete_p_data}
+
+TC_MC_01941
+    [Documentation]    Verify product name. Incase user edit character more than 80 characters.
+    Wait Until Element Is Visible    ${input_product_name}
+    Clear Element Text    ${input_product_name}
+    Input Text    ${input_product_name}    ${char_over_80}
+    Press Key    ${input_product_name}    \\9
+    Textfield Value Should Be    ${input_product_name}    ${char_equal_80}
+    Click Element    ${btn_save_edit}
+
+TC_MC_01942
+    [Documentation]    To ensure The validation icon on Product Category tab.
+    Wait Until Element Is Visible    ${input_product_name}
+    Execute Javascript    $(".showcat select option").filter(function(){ return this.text == '--- เลือกหมวดหมู่สินค้า weloveshopping ---'; }).attr('selected', true).change();
+    Wait Until Element Is Visible    ${btn_save_edit}
+    Click Element    ${btn_save_edit}
+    ${msg_error}    Execute Javascript    return $('.help-inline').eq(0).text()
+
+TC_MC_01943
+    [Documentation]    Verify automatically create variants based.
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    ${input_product_name}
+    Execute Javascript    $('#switch-option').click()
+    Element Should Be Visible    ${box_attribute}
+    Element Should Be Visible    ${table_cross_attr_data_lv0}
+    Element Should Be Visible    ${attr_r1}
+    Clear Element Text    ${sku_r1}
+    Clear Element Text    ${selling_price_r1}
+    Clear Element Text    ${amount_r1}
+    Click Element    ${btn_save_edit}
+    Focus    ${sku_r1}
+    Focus    ${selling_price_r1}
+    Focus    ${amount_r1}
+
+TC_MC_01944
+    [Documentation]    Verify delete all product in automatically create variants based.
+    [Tags]    Regression    Medium
+    [Setup]    Go To    ${URL_STORE}/${category_shopname2}/admin/product/edit/91200037
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Category Three Level
+    Execute Javascript    $('#switch-option').click()
+    Wait Until Element Is Visible    ${box_attribute}    ${EXPECT_LOADTIME}
+    Edit Attribute
+    Input price and stock into product attribute
+    : FOR    ${index}    IN RANGE    0    ${Count_Attr}
+    \    Element Should Be Visible    optrow${index}
+    \    ${attribute}    Get Text    optrow${index}
+    Select Checkbox    ${icon_delete_attr_all}
+    Click Button    ${btn_delete_attr}
+    Element Should Be Visible    ${attr_r1}
+    ${attribute_r1}    Get Text    ${attr_r1}
+    Execute Javascript    $('#switch-option').click()
+    Click Element    ${btn_save_edit}
+
+TC_MC_01946
+    [Documentation]    Verify Product type. If user change "NEW" to "USED"
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Radio Button    pdtype    used
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product/edit/${product_id}
+    Radio Button Should Be Set To    pdtype    used
+
+TC_MC_01947
+    [Documentation]    Verify Product type. If user change "USED" to "NEW"
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Radio Button    pdtype    new
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product/edit/${product_id}
+    Radio Button Should Be Set To    pdtype    new
+
+TC_MC_01948
+    [Documentation]    Verify Product status. If User select "Instock Product"
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Radio Button    condition    availability
+    Input Text    ${unit_instock}    10
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Go To    ${url_product_list}
+    Wait Until Element Is Visible    ${input_keyword}
+    ${status}    Execute Javascript    return $('#table_report tbody tr td').eq(6).text()
+
+TC_MC_01949
+    [Documentation]    Verify Product status. If User select product status "Preorder"
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Radio Button    condition    preorder
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Go To    ${url_product_list}
+    Wait Until Element Is Visible    ${input_keyword}
+    ${status}    Execute Javascript    return $('#table_report tbody tr td').eq(6).text()
+
+TC_MC_01951
+    [Documentation]    Verify Preparation day. If User select "Instock Product" and enter prepare shipping/days is format support.
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Radio Button    condition    availability
+    Clear Element Text    ${prepare_shipping}
+    Input Text    ${prepare_shipping}    2.5
+    Click Element    ${btn_save_edit}
+    Display Alert Footer
+    Wait Until Element Is Visible    ${prepare_shipping}    ${EXPECT_LOADTIME}
+    Textfield Value Should Be    ${prepare_shipping}    2
+    Clear Element Text    ${prepare_shipping}
+    Input Text    ${prepare_shipping}    7
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Wait Until Element Is Visible    ${prepare_shipping}    ${EXPECT_LOADTIME}
+    Textfield Value Should Be    ${prepare_shipping}    7
+
+TC_MC_01953
+    [Documentation]    Verify Instock product Quantity. If User select "Instock Product" and enter Quantity is format support.
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Radio Button    condition    availability
+    Clear Element Text    ${unit_instock}
+    Input Text    ${unit_instock}    2.5
+    Click Element    ${btn_save_edit}
+    Display Alert Footer
+    Wait Until Element Is Visible    ${unit_instock}    ${EXPECT_LOADTIME}
+    Textfield Value Should Be    ${unit_instock}    25
+    Clear Element Text    ${unit_instock}
+    Input Text    ${unit_instock}    15
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Wait Until Element Is Visible    ${unit_instock}    ${EXPECT_LOADTIME}
+    Textfield Value Should Be    ${unit_instock}    15
+
+TC_MC_01954
+    [Documentation]    Verify Shipping In/days. If User select "Preorder" and enter Shipping In/days is format not support.
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Radio Button    condition    preorder
+    Input Text    ${shipping_in}    ห้า
+    Click Element    ${btn_save_edit}
+    Focus    ${shipping_in}
+    Input Text    ${shipping_in}    five!
+    Click Element    ${btn_save_edit}
+    Focus    ${shipping_in}
+
+TC_MC_01955
+    [Documentation]    Verify Shipping In/days. If User select "Preorder" and enter Shipping In/days is format support.
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Radio Button    condition    preorder
+    Clear Element Text    ${shipping_in}
+    Input Text    ${shipping_in}    2.5
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Wait Until Element Is Visible    ${shipping_in}    ${EXPECT_LOADTIME}
+    Textfield Value Should Be    ${shipping_in}    25
+    Clear Element Text    ${shipping_in}
+    Input Text    ${shipping_in}    15
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Wait Until Element Is Visible    ${shipping_in}    ${EXPECT_LOADTIME}
+    Textfield Value Should Be    ${shipping_in}    15
+
+TC_MC_01957
+    [Documentation]    Verify Preorder Quantity. If User select "Preorder", select "Use Stock" and enter Quantity is format support.
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Radio Button    condition    preorder
+    Execute Javascript    $('#new-product-inventory-management').val(1).change()
+    Clear Element Text    ${unit_preorder}
+    Input Text    ${unit_preorder}    2.5
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Wait Until Element Is Visible    ${unit_preorder}    ${EXPECT_LOADTIME}
+    Textfield Value Should Be    ${unit_preorder}    25
+    Clear Element Text    ${unit_preorder}
+    Input Text    ${unit_preorder}    15
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Wait Until Element Is Visible    ${unit_preorder}    ${EXPECT_LOADTIME}
+    Textfield Value Should Be    ${unit_preorder}    15
+
+TC_MC_01958
+    [Documentation]    Verify Preorder Quantity. If User select "Preorder" and select "Not use stock"
+    [Tags]    Regression    Low
+    Wait Until Element Is Visible    ${input_product_name}
+    Execute JavaScript    window.scrollTo(0,1000)
+    Select Radio Button    condition    preorder
+    Execute Javascript    $('#new-product-inventory-management').val(0).change()
+    Element Should Not Be Visible    ${unit_preorder}
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    ### Re-Product Status ###
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product/edit/${product_id}
+    Wait Until Element Is Visible    ${input_product_name}
+    Wait Until Element Is Visible    ${prepare_shipping}
+    Execute JavaScript    window.scrollTo(0,1000)
+    Select Radio Button    condition    availability
+    Clear Element Text    ${prepare_shipping}
+    Input Text    ${prepare_shipping}    3
+    Input Text    ${unit_instock}    20
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+
+TC_MC_01960
+    [Documentation]    Verify Selling price. If User enter integer or decimal.
+    Go To    ${url_product_list}
+    Wait Until Element Is Visible    ${input_keyword}
+    Execute Javascript    ${quick_edit}.click()
+    Execute Javascript    ${box_quick_edit}
+    Execute Javascript    ${quick_selling_price}.val(100.25)
+    ${val1}    Execute Javascript    return ${quick_selling_price}.val()
+    ${str1}    Convert To String    ${val1}
+    Should Be True    ${str1}    100.25
+    Execute Javascript    ${quick_selling_price}.val(150)
+    ${val2}    Execute Javascript    return ${quick_selling_price}.val()
+    ${str2}    Convert To String    ${val2}
+    Should Be True    ${str2}    150
+
+TC_MC_01962
+    [Documentation]    Verify Normal price. If User enter integer or decimal
+    #Go To    ${url_product_list}
+    Wait Until Element Is Visible    ${input_keyword}
+    Execute Javascript    ${quick_edit}.click()
+    Execute Javascript    ${box_quick_edit}
+    Execute Javascript    ${quick_normal_price}.val(100.25)
+    ${val1}    Execute Javascript    return ${quick_normal_price}.val()
+    ${str1}    Convert To String    ${val1}
+    Should Be True    ${str1}    100.25
+    Execute Javascript    ${quick_normal_price}.val(150)
+    Execute Javascript    ${quick_normal_price}.val()
+    ${val2}    Execute Javascript    return ${quick_normal_price}.val()
+    ${str2}    Convert To String    ${val2}
+    Should Be True    ${str2}    100.25
+
+TC_MC_01964
+    [Documentation]    Verify Weight. If User enter weight is format support.
+    #Go To    ${URL_STORE}/${category_shopname2}/admin/product/edit/${product_id}
+    Wait Until Element Is Visible    ${input_product_name}
+    Clear Element Text    ${input_product_weight}
+    Input Text    ${input_product_weight}    0
+    Press Key    ${input_product_weight}    \\9
+    Textfield Value Should Be    ${input_product_weight}    0
+    Clear Element Text    ${input_product_weight}
+    Input Text    ${input_product_weight}    0.5
+    Press Key    ${input_product_weight}    \\9
+    Textfield Value Should Be    ${input_product_weight}    0.5
+    Clear Element Text    ${input_product_weight}
+    Input Text    ${input_product_weight}    0.05
+    Press Key    ${input_product_weight}    \\9
+    Textfield Value Should Be    ${input_product_weight}    0.05
+    Clear Element Text    ${input_product_weight}
+    Input Text    ${input_product_weight}    100.25
+    Press Key    ${input_product_weight}    \\9
+    Textfield Value Should Be    ${input_product_weight}    100.25
+    Clear Element Text    ${input_product_weight}
+    Input Text    ${input_product_weight}    150
+    Press Key    ${input_product_weight}    \\9
+    Textfield Value Should Be    ${input_product_weight}    150
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+
+TC_MC_01966
+    [Documentation]    Verify product image with choose image from album. If User choose image over limit (Maximum 10 file)
+    Wait Until Element Is Visible    ${input_product_name}
+    Execute Javascript    $('#btn_select_photo').click()
+    Execute Javascript    $('.modal-addimg tbody tr').eq(1).click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(1).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(2).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(3).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(4).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(5).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(6).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(7).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(8).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(9).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(10).find("a").click()
+    ${msg_over_limit}    Get Alert Message
+
+TC_MC_01967
+    [Documentation]    Verify product image with choose image from album. If User choose image not to exceed 10 image (Maximum 10 file)
+    Wait Until Element Is Visible    ${input_product_name}
+    Execute Javascript    $('#btn_select_photo').click()
+    Sleep    2s
+    Execute Javascript    $('.modal-addimg tbody tr').eq(0).click()
+    Sleep    1s
+    Execute Javascript    $('.box-album, .photo-click li').eq(0).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(1).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(2).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(3).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(4).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(5).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(6).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(7).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(8).find("a").click()
+    Execute Javascript    $('.box-album, .photo-click li').eq(9).find("a").click()
+    ${count_thumb_image}    Execute Javascript    return $('.wls-total-selected').text()
+    ${count}    Convert To Integer    ${count_thumb_image}
+    Should Be Equal As Integers    ${count}    10
+    Execute Javascript    $('.save_photo').eq(1).click()
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+
+TC_MC_01968
+    [Documentation]    Verify SEO Title. If User to enter character more than 80 characters.
+    Wait Until Element Is Visible    ${input_product_name}
+    Click Element    ${btn_edit_seo}
+    Clear Element Text    ${input_seo_title}
+    Input Text    ${input_seo_title}    ${char_over_80}
+    Click Element    ${btn_save_edit}
+    ${seo_title}    Get Text    ${seo_title}
+    Should Be True    '${seo_title}' == '${char_equal_80}'
+
+TC_MC_01969
+    [Documentation]    Verify SEO Description. If User enter character more than 170 characters.
+    Wait Until Element Is Visible    ${input_product_name}
+    Click Element    ${btn_edit_seo}
+    Clear Element Text    ${input_seo_desc}
+    Input Text    ${input_seo_desc}    ${char_over_170}
+    Click Element    ${btn_save_edit}
+    ${seo_desc}    Get Text    ${seo_desc}
+    Should Be True    '${seo_desc}' == '${char_equal_170}'
+
+TC_MC_01970
+    [Documentation]    Verify Change status SHOW to HIDE.
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product
+    Wait Until Element Is Visible    ${input_keyword}
+    Search product    l${product_id}
+    Click Element    ${quick_edit}
+    Wait Until Element Is Visible    //div[contains(@id,"pd-") and @class="modal hide fade q-editpd-modal in"]//i[contains(@class,"status-icon")]
+    Click Element    //div[contains(@id,"pd-") and @class="modal hide fade q-editpd-modal in"]//i[contains(@class,"status-icon")]
+    Click Element    ${btn_save_quick_edit}
+    Execute Javascript    $('#table_report tbody tr').eq(0).find('.hidden-phone > input').val() == 'true'
+
+TC_MC_01971
+    [Documentation]    Verify Change status HIDE to SHOW.
+    [Tags]    Regression    Medium
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product
+    Wait Until Element Is Visible    ${input_keyword}
+    Search product    l${product_id}
+    Click Element    ${quick_edit}
+    Wait Until Element Is Visible    //div[contains(@id,"pd-") and @class="modal hide fade q-editpd-modal in"]//i[contains(@class,"status-icon")]
+    Click Element    //div[contains(@id,"pd-") and @class="modal hide fade q-editpd-modal in"]//i[contains(@class,"status-icon")]
+    Click Element    ${btn_save_quick_edit}
+    Execute Javascript    $('#table_report tbody tr').eq(0).find('.hidden-phone > input').val() == 'false'
+
+TC_MC_01972
+    [Documentation]    Verify save button.
+    [Tags]    Low
+    Wait Until Element Is Visible    ${input_product_name}
+    # ${product_id}    Execute Javascript    return window.location.href;
+    # @{product_id}    Split String    ${product_id}    /
+    # ${Max}    Get Length    ${product_id}
+    # ${Max}    Evaluate    ${Max} - 1
+    ${time}    Get Time    epoch
+    ${product_name}    Catenate    EditByRobot ${time}
+    Input Text    ${input_product_name}    ${product_name}
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product
+    Wait Until Element Is Visible    table_report
+    Search product    L${product_id}
+    Wait Until Element Is Visible    table_report
+    Page Should Contain    ${product_name}
+    ## Re-Product Name ##
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product/edit/${product_id}
+    Clear Element Text    ${input_product_name}
+    Input Text    ${input_product_name}    [Test] Fix Product 001
+    Click Element    ${btn_save_edit}
+    Sleep    1s
+    Display Alert Footer
+
+TC_MC_01973
+    [Documentation]    Verify cancel button.
+    [Tags]    Low
+    Wait Until Element Is Visible    ${input_product_name}
+    Execute Javascript    $('.row-fluid .btn-cancel').click()
+    Location Should Contain    ${URL_STORE}/${category_shopname2}/admin/product
+
+TC_MC_02179
+    [Documentation]    Change shop category to select "create shop category"
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Shop Category Main
+    Clear Element Text    ${input_product_name}
+    Press Key    ${input_product_name}    new shop category
+    Click Element    ${btn_save_edit}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product
+    Sleep    1s
+    Input Text    //input[@id='search']    new shop category
+    Click Element    //button[@type="submit"]
+    # ${text}    Execute Javascript    return $('table tbody tr').eq(0).find('div.pd-list-name a.title').text()
+    # Should Be True    ${text} ==    new shop category
+    Page Should Contain    new shop category
+
+TC_MC_02180
+    [Documentation]    Change shop category to select main category
+    [Tags]    Low
+    Wait Until Element Is Visible    ${input_product_name}
+    Select Shop Category Main
+    Clear Element Text    ${input_product_name}
+    Press Key    ${input_product_name}    new shop main category
+    Click Element    ${btn_save_edit}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product
+    Sleep    1s
+    Input Text    //input[@id='search']    new shop main category
+    Click Element    //button[@type="submit"]
+    Page Should Contain    new shop main category
+
+TC_MC_02181
+    [Documentation]    Change shop category to select Sub category
+    [Tags]    Regression    Medium
+    Wait Until Element Is Visible    ${input_product_name}
+    Execute Javascript    $("#input_shop_category select option").filter(function(){ return this.text == 'กระเป๋าเอกสาร'; }).attr('selected', true).change();
+    Sleep    3
+    ${element}    Check Element    //select[@id='shop_sub_category']/option[normalize-space(text())="กระเป๋าโน๊ตบุ๊ค"]
+    ${location}    Get Location
+    Run Keyword IF    '${element}' == 'FAIL'    Run Keywords    Go To    ${URL_STORE}/${category_shopname2}/admin/category    AND    Add SubCategory NoteBookBag
+    Run Keyword IF    '${element}' == 'PASS'    Execute Javascript    $("select#shop_sub_category option").filter(function(){ return this.text == 'กระเป๋าโน๊ตบุ๊ค'; }).attr('selected', true).change();
+    Click Element    //button[@type="submit"]
+    Sleep    2
+    Element Should Contain    //select[@id='shop_sub_category']/option[normalize-space(text())="กระเป๋าโน๊ตบุ๊ค"]    กระเป๋าโน๊ตบุ๊ค
+    Sleep    2
+
+TC_MC_02246
+    [Documentation]    Edit Product - Edit picture of attribute
+    # [Tags]    Regression    Medium    mock
+    Set Selenium Speed    0.5
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product/edit/${edit_product4_id}
+    Wait Until Element Is Visible    ${input_product_name}    ${EXPECT_LOADTIME}
+    Sleep    3
+    ${checked}=    Execute Javascript    return $('input[name="use_options"]').eq(1).prop('checked')
+    Run Keyword If    ${checked} == False    Execute Javascript    $('input[name="use_options"]').eq(1).click()
+    Sleep    5
+    ${count_inv}=    Get Matching Xpath Count    //div[@id='attr_sel_7_chzn']/ul/li[@class='search-choice']
+    ${count_img_inv}=    Get Matching Xpath Count    //div[@class='img-option']
+    Run Keyword If    ${count_inv} == 0    Add Choose Size
+    Run Keyword If    ${count_img_inv} <= 3    Edit Image Inv
+    Click Element    ${btn_save_edit}
+    Sleep    2s
+    Comment    Wait Until Element Is Visible    //span[@id="notify-msg"]    ${EXPECT_LOADTIME}
+    Comment    Element Should Contain    //span[@id="notify-msg"]    บันทึกข้อมูลเรียบร้อยแล้ว
+    Go To    ${url_product_list_shopname_user002}
+    Go To    ${URL_LEVEL_D}/L${edit_product4_id}
+    Element Should Be Visible    //div[@class='inner-option' and text()='M']
+    Element Should Be Visible    //div[@class='inner-option' and text()='L']
+    WMS Login
+    Go To    ${url_monitoring_listing}
+    Wait Until Element Is Visible    //input[@name='product_id']    ${EXPECT_LOADTIME}
+    Input Text    //input[@name='product_id']    ${edit_product4_id}
+    Sleep    1s
+    Execute Javascript    $("button[type='submit']").click()
+    Sleep    2s
+    Go To    ${URL_WMS}/monitoringlisting/show/${category_shopid2}/${edit_product4_id}
+    ${ing1}=    Get Matching Xpath Count    //div[@id='sku-detail']//table//tbody//tr
+    Should Be True    ${ing1} == 3
+
+TC_MC_02248
+    [Documentation]    Edit Product - Edit delete picture of all attribute
+    # [Tags]    Regression    Medium    mock
+    Account Login    ${category_user_002}    ${category_pwd_002}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product/edit/${edit_product4_id}
+    Wait Until Element Is Visible    ${input_product_name}    ${EXPECT_LOADTIME}
+    ${checked}=    Execute Javascript    return $('input[name="use_options"]').eq(1).prop('checked')
+    Run Keyword If    ${checked} == False    Execute Javascript    $('input[name="use_options"]').eq(1).click()
+    ${count_inv}=    Get Matching Xpath Count    //div[@id='attr_sel_7_chzn']/ul/li[@class='search-choice']
+    ${count_img_inv}=    Get Matching Xpath Count    //div[@class='img-option']
+    Run Keyword If    ${count_inv} == 0    Add Choose Size
+    Run Keyword If    ${count_img_inv} <= 3    Execute Javascript    $('div.btn-box i').click()
+    Click Element    ${btn_save_edit}
+    Sleep    2s
+    Comment    Wait Until Element Is Visible    //span[@id="notify-msg"]    ${EXPECT_LOADTIME}
+    Comment    Element Should Contain    //span[@id="notify-msg"]    บันทึกข้อมูลเรียบร้อยแล้ว
+    Go To    ${url_product_list_shopname_user002}
+    Go To    ${URL_LEVEL_D}/L${edit_product4_id}
+    Element Should Be Visible    //div[@class='inner-option' and text()='M']
+    Element Should Be Visible    //div[@class='inner-option' and text()='L']
+    WMS Login
+    Go To    ${url_monitoring_listing}
+    Wait Until Element Is Visible    //input[@name='product_id']    ${EXPECT_LOADTIME}
+    Input Text    //input[@name='product_id']    ${edit_product4_id}
+    Sleep    1s
+    Execute Javascript    $("button[type='submit']").click()
+    Go To    ${URL_WMS}/monitoringlisting/show/${category_shopid2}/${edit_product4_id}
+    Comment    Execute Javascript    $(".cursor-pointer")[0].click()
+    ${class}=    Execute Javascript    return $('tr td i').eq(0).attr('class')
+    Should Be True    '${class}'    'fa fa-eye-slash gray'
+    ${count}=    Get Matching Xpath Count    //div[@id='sku-detail']/table/tbody/td/a
+    Should Be True    ${count} == 0
+
+TC_MC_02249
+    [Documentation]    Edit Product - Edit status hide attribute
+    # [Tags]    Regression    Medium    mock
+    Account Login    ${category_user_002}    ${category_pwd_002}
+    Go To    ${URL_STORE}/${category_shopname2}/admin/product/edit/${edit_product4_id}
+    Wait Until Element Is Visible    ${input_product_name}    ${EXPECT_LOADTIME}
+    ${checked}=    Execute Javascript    return $('input[name="use_options"]').eq(1).prop('checked')
+    Run Keyword If    ${checked} == False    Execute Javascript    $('input[name="use_options"]').eq(1).click()
+    ${count_inv}=    Get Matching Xpath Count    //div[@id='attr_sel_7_chzn']/ul/li[@class='search-choice']
+    ${count_img_inv}=    Get Matching Xpath Count    //div[@class='img-option']
+    Run Keyword If    ${count_inv} == 0    Add Choose Size
+    Run Keyword If    ${count_img_inv} <= 3    Edit Image Inv
+    Execute Javascript    $('input[value="optrow0"]').click()
+    Execute Javascript    $('#btn_hide_inv').click()
+    Click Element    ${btn_save_edit}
+    Wait Until Element Is Visible    //span[@id="notify-msg"]    ${EXPECT_LOADTIME}
+    Element Should Contain    //span[@id="notify-msg"]    บันทึกข้อมูลเรียบร้อยแล้ว
+    Go To    ${url_product_list_shopname_user002}
+    Go To    ${URL_LEVEL_D}/L${edit_product4_id}
+    # Element Should Not Be Visible    //span[@class='product-cname' and text()='ขาว']
+    Element Should Not Be Visible    //div[@class='inner-option' and text()='S']
+    WMS Login
+    Go To    ${url_monitoring_listing}
+    Wait Until Element Is Visible    //input[@name='product_id']    ${EXPECT_LOADTIME}
+    Input Text    //input[@name='product_id']    ${edit_product4_id}
+    Click Element    //*button[@type="submit"]
+    Go To    ${URL_WMS}/monitoringlisting/show/${category_shopid2}/${edit_product4_id}
+    Comment    Execute Javascript    $(".cursor-pointer")[0].click()
+    ${class}=    Execute Javascript    return $('tr td i').eq(0).attr('class')
+    Should Be True    '${class}'    'fa fa-eye-slash gray'
+    ${count}=    Get Matching Xpath Count    //td/a
+    Should Be True    ${count} >= 3

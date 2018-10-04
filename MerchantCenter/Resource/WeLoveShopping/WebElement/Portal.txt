@@ -1,0 +1,48 @@
+*** variable ***
+${home_flashsale}    //div[@class='h-dealzapp-box']
+${h_flashsale_icon}    //i[@class='icon-h-fs-title']
+${h_flashsale_title}    //span[@class='text-h-fs-title']
+${h_flashsale_item}    //ul[@class='items-list-box dz-list']//li
+${megamenu_flashsale}    $('.menu-dealzapp')
+${box_next_flashsale}    //div[@class='box-tmr-flashsale']
+${active_dealzapp}    //div[@class='box-main-dealzapp']
+${fl_item}    //ul[@class='items-list-box fs-list']//li
+${fl_item_detail}    //div[@class='item-detail']
+${fl_item_shopname}    //div[@class='shop-name']
+${input_search}    //div[@class='box-group-search']//input
+${button_search}    $('.at-header-search-btn')
+${search_type}    $('.box-search-type')
+${search_shop}    $("a[ng-bind='anotherSearch']")
+${suggestion_box}    //div[@class='search-suggestion']
+${suggest_keyword_search}    //div[@class='search-suggestion']//ul[1]//li
+${suggest_incat}    //div[@class='search-suggestion']//div[@class='keyincat']//ul//li
+${suggest_keyword}    //div[@class='search-suggestion']//ul[2]//li
+${active_flashsale}    //div[@class='active-flashsale']
+${landind-default-btn}  $('.landind-default-btn')[0]
+${pop_select_store}    //*[@id="modalRegistype"]/div
+${individual_text}    //*[@id="modalRegistype"]/div/div/div[2]/ul/li[1]/div[2]
+${corporate_text}    //*[@id="modalRegistype"]/div/div/div[2]/ul/li[2]/div[2]
+${pop_select_store_header1}    //*[@id="modalRegistype"]/div/div/div[2]/p
+${pop_select_store_header2}    //*[@id="modalRegistype"]/div/div/div[2]/p/br
+${individual-btn}    $('.btn-regis-type')[0]
+${corporate-btn}    $('.btn-regis-type')[1]
+${w-seller-btn}     $('.w-seller-service')
+${pop_subscription}    //div[@class='subpop-inactive']
+${pop_email}    //input[@id='form_email']
+${footer_email}    //input[@id='footer_email']
+${subscription_male}    //button[@data-mode='form' and @data-input='m']
+${subscription_female}    //button[@data-mode='form' and @data-input='f']
+${footer_subscription_male}    //button[@data-mode='footer' and @data-input='m']
+${footer_subscription_female}    //button[@data-mode='footer' and @data-input='f']
+${pop_thank}    //div[@class='subpop-form active']
+${pop_thank_message}    //div[@class='subpop-form active']
+${footer_thank}    //div[@class='modal-content']/div/div
+${pop_warning_message}    //span[@id='form_warning']
+${footer_warning_message}    //span[@id='footer_warning']
+${title_pop}    รับโปรโมชั่นดีที่สุดก่อนใคร!
+${thank_message_pop}    ขอบคุณที่สมัครรับข่าวสาร และติดตามโปรโมชั่นพิเศษกับ
+${thank_message_pop1}    ช้อปเลยตอนนี้ ดีลแซ่บ 24 ชั่วโมง เท่านั้น!
+${home_hilight_box}    //div[@id='highlight-container']
+${fre_wls_contactus}    //div[@class="box-content"]
+${lab_wls_contactus}    //div[@class="box-content"]/p[1]
+${lab_wls_email_contactus}    //div[@class="box-content"]/table[2]//td[1]

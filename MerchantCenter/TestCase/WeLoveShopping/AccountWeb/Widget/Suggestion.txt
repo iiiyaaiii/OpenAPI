@@ -1,0 +1,58 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Force Tags        Account-Web    mc-wls
+Test Timeout      2 minutes
+Library           String
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00094
+    [Documentation]    Search product by Thai keyword
+    [Tags]    Regression    High
+    Go to    ${URL_PORTAL}
+    Input Text    ${input_search}    กางเกงขาสั้น
+    Sleep    2
+    Element Should Be Visible    ${suggestion_box}
+    Element Should Contain    ${suggest_keyword_search}    กางเกงขาสั้น
+    ${suggest_cat}    Get Matching Xpath Count    ${suggest_incat}
+    Should Be True    ${suggest_cat} > 0
+    ${suggest_keyword}    Get Matching Xpath Count    ${suggest_keyword}
+    Should Be True    ${suggest_keyword} > 0
+
+TC_MC_00096
+    [Documentation]    Search product by English keyword
+    Go to    ${URL_PORTAL}
+    Input Text    ${input_search}    Product
+    Sleep    2
+    Element Should Be Visible    ${suggestion_box}
+    Element Should Contain    ${suggest_keyword_search}    Product
+    ${suggest_cat}    Get Matching Xpath Count    ${suggest_incat}
+    Should Be True    ${suggest_cat} > 0
+    ${suggest_keyword}    Get Matching Xpath Count    ${suggest_keyword}
+    Should Be True    ${suggest_keyword} > 0
+
+TC_MC_00098
+    [Documentation]    Search Shop by keyword
+    [Tags]    Regression    High
+    Go to    ${URL_PORTAL}
+    Execute Javascript    ${search_type}.mouseover()
+    Execute Javascript    ${search_shop}.click()
+    Input Text    ${input_search}    wl
+    Sleep    2
+    Element Should Be Visible    ${suggestion_box}
+    ${suggest_keyword}    Get Matching Xpath Count    ${suggest_keyword}
+    Should Be True    ${suggest_keyword} > 0
+
+TC_MC_00102
+    [Documentation]    Don't suggestion category if keyword not found in that category
+    Go to    ${URL_PORTAL}
+    Input Text    ${input_search}    dron
+    Sleep    2
+    Element Should not Be Visible    ${suggestion_box}

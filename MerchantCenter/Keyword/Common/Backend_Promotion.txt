@@ -1,0 +1,383 @@
+*** Settings ***
+Library           SeleniumLibrary
+Library           String
+Library           OperatingSystem
+Library           Collections
+Resource          ../../Resource/WeMall/WebElement/Product_Highlight.txt
+
+*** Variable ***
+${id_product}    L91200113
+### Locator ###
+${link_manage_product}    //div[@class="promotion-manage-menu hidden-phone"]//span[1]
+${search_id}    //input[@ng-model="search_ids"]
+${product_name}    //li[1]//div[@class="col-3"]//div[@class="pdname-box"]
+${product_image}    //img[@style="width:50px; height:50px;"]
+
+*** Keywords ***
+Check Have Promotion
+    [Documentation]    Search seller promotion at list seller promotion admin pages
+    [Arguments]    ${promotionname}
+    Input Text    //*[@id="search"]    ${promotionname}
+    Execute Javascript    $(':contains("ค้นหา")').click()
+    Sleep    3s
+    ${check_promotion_type}    Execute Javascript    return $(".promotion-name-seller a").length;
+    [Return]    ${check_promotion_type}
+
+Delete Promotion
+    [Documentation]    Delete seller promotion at list seller promotion admin pages
+    [Arguments]    ${promotionname}
+    Input Text    //*[@id="search"]    ${promotionname}
+    Execute Javascript    $(':contains("ค้นหา")').click()
+    Sleep    3s
+    Execute Javascript    $('[class="ng-isolate-scope"]').click();
+    Sleep    1s
+    Execute Javascript    $("#btn_delete").click();
+    #Click OK Alert Box
+    Sleep    5s
+    Execute Javascript    $('[class="btn btn-primary"]').eq(0).click()
+    Sleep    10s
+
+Add Promotion Without Product Type Baht
+    [Documentation]    Action create promotion without product type baht
+    [Arguments]    ${promotionname}
+    Get shop name
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $("input.span12").val('${promotionname}').trigger('input');
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('500').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('100').trigger('input');
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 3 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    ${textcheck}    Catenate    ${hh}:${ii}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${shop_name}/admin/promotion
+    Wait Until Page Contains Element    table_report
+    Wait Until Page Contains    ${promotionname}
+    ${textdate}    Execute Javascript    return $('#table_report .end-pro-box').eq(1).text().trim();
+    Log To Console    ${datefrom}
+    Log To Console    ${dateto}
+    Log To Console    ${datepromotion}
+    Log To Console    textdate : ${textdate}
+    Log To Console    textcheck : ${textcheck}
+    Should Contain    ${textdate}    ${textcheck}
+    ${value}    Execute Javascript    return $(".promotion-desc").eq(0).text().trim();
+    Should Be Equal    ${value}    ซื้อสินค้าตั้งแต่ 500 บาทขึ้นไป ลดเพิ่ม 100 บาท    Old content
+
+Add Promotion Without Product Type Percent
+    [Documentation]    Action create promotion without product type percent
+    [Arguments]    ${promotionname}
+    Get shop name
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $("input.span12").val('${promotionname}').trigger('input');
+    Execute Javascript    $("select[name='discount_type']").val('percent').change();
+    Execute Javascript    $('.input-mini').eq(0).val('500').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('10').trigger('input');
+    Execute Javascript    $('.input-mini').eq(2).val('100').trigger('input');
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 3 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    ${textcheck}    Catenate    ${hh}:${ii}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${shop_name}/admin/promotion
+    Wait Until Page Contains Element    table_report
+    Wait Until Page Contains    ${promotionname}
+    ${textdate}    Execute Javascript    return $(".end-pro-box").eq(0).text().trim();
+    Should Contain    ${textdate}    ${textcheck}
+    ${value}    Execute Javascript    return $(".promotion-desc").eq(0).text().trim();
+    Should Be Equal    ${value}    ซื้อสินค้าตั้งแต่ 500 บาทขึ้นไป ลดเพิ่ม 10% ลดสูงสุดไม่เกิน 100 บาท
+    Sleep    3s
+
+Add Promotion Percent By Category
+    [Documentation]    Action create promotion percent by category
+    Get shop name
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $("input.span12").val('Promotion Percent by category').trigger('input');
+    Execute Javascript    $("select[name='discount_type']").val('percent').change();
+    Execute Javascript    $('.input-mini').eq(0).val('500').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('10').trigger('input');
+    Execute Javascript    $('.input-mini').eq(2).val('100').trigger('input');
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 1 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    ${textcheck}    Catenate    ${hh}:${ii}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Execute Javascript    $('div.promotion-bycat-box>div:nth-child(1)>label>input').click()
+    # wait for js load data
+    Sleep    5s
+    Execute Javascript    $("label:contains('กระโปรงแฟชั่น') > input").click()
+    Click Element    ${save_on_top}
+    # click cancel on modal
+    Execute Javascript    $('#alertbefore-submit [type="reset"]').click()
+    # wait for modal leaving
+    Sleep    2s
+    Click Element    ${save_on_top}
+    # click save on modal
+    Execute Javascript    $('button:contains(ยืนยัน)')[0].click()
+    # Sleep for next page loading
+    Sleep    10s
+    ${breadcrumbs_title}    Execute Javascript    return $('#breadcrumbs li:last-child').text().trim()
+    Should Be Equal    ${breadcrumbs_title}    เลือกสินค้าไฮไลท์
+    #check count product hi    if    category no product =0 else category have product >0
+    ${total_product}    Execute Javascript    return $('input[ng-model="product.checked"]').length
+    Should Be True    ${total_product} >= 0
+
+Add Promotion Percent By Item
+    [Documentation]    Action create promotion percent by Item
+    Get shop name
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $("input.span12").val('Promotion Percent by item').trigger('input');
+    Execute Javascript    $("select[name='discount_type']").val('percent').change();
+    Execute Javascript    $('.input-mini').eq(0).val('500').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('10').trigger('input');
+    Execute Javascript    $('.input-mini').eq(2).val('100').trigger('input');
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 1 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    ${textcheck}    Catenate    ${hh}:${ii}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Execute Javascript    $('div.promotion-byitem-box>div:nth-child(1)>label>input').click()
+    # wait for js load data
+    Sleep    5s
+    # select firstchild under category
+    Execute Javascript    $('.list-table li input').eq(0).click()
+    Execute Javascript    $('.btn.btn-success').click()
+    Wait Until Page Does Not Contain    ยังไม่มีสินค้า
+    ${product_name}    Execute Javascript    return $('.list-table li .pdname-box').last().text().trim();
+    Element Should Be Disabled    //ul[@class="list-table"]//li[1]//input
+    Click Element    ${save_on_top}
+    # click cancel on modal
+    Execute Javascript    $('#alertbefore-submit [type="reset"]').click()
+    # wait for modal leaving
+    Sleep    2s
+    Click Element    ${save_on_top}
+    # click save on modal
+    Execute Javascript    $('button:contains(ยืนยัน)')[0].click()
+    # Sleep for next page loading
+    Wait Until Element Is Visible    //*[@id="table_report"]
+    ${breadcrumbs_title}    Execute Javascript    return $('#breadcrumbs li:last-child').text().trim();
+    Should Be Equal    ${breadcrumbs_title}    เลือกสินค้าไฮไลท์
+    ${product_hightlight_name}    Execute Javascript    return $('.pd-list-name').last().text().trim();
+    Should Be Equal    ${product_hightlight_name}    ${product_name}
+
+Clear Promotion Box
+    ${promotion_checkall_is_disabled}    Execute Javascript    return $('div.promotion-item-box>div:nth-child(2)>div:nth-child(2)>div>div:nth-child(1)>div:nth-child(1)>label>input').is(':disabled')
+    #If not disabled Click select all item
+    Run Keyword If    ${promotion_checkall_is_disabled}==${False}    Execute Javascript    $('div.promotion-item-box>div:nth-child(2)>div:nth-child(2)>div>div:nth-child(1)>div:nth-child(1)>label>input').click()
+    ${select_all_item_in_promotion_box}    Execute Javascript    return $('div.promotion-item-box>div:nth-child(2)>div:nth-child(2)>div>div:nth-child(1)>div:nth-child(1)>label>input').prop('checked')
+    #If select all is checked click remove from promotion
+    Run Keyword If    ${select_all_item_in_promotion_box}==${True}    Execute Javascript    $('div.promotion-item-box>div:nth-child(2)>div:nth-child(2)>div>div:nth-child(3)>div>div>button').click()
+    #wait for animation
+    Sleep    5s
+
+Go To Manage Product On Row Title
+    [Arguments]    ${name}
+    Input Text    //*[@id="search"]    ${name}
+    Execute Javascript    $(':contains("ค้นหา")').click()
+    Sleep    3s
+    Execute Javascript    $('a:contains("จัดการสินค้า")')[0].click()
+
+Remove Selected Promotion Item
+    [Documentation]    Remove Selected Promotion Item
+    Execute Javascript    $('input[name="selectedProducts"]')[0].click()
+    Execute Javascript    $('[ng-click="removeFromPromotion()"]')[0].click()
+
+Get promotion id
+    [Documentation]    Action get promotion id
+    Go To    ${URL_STORE}/${shop_name}/admin/promotion
+    Wait Until Element Is Visible    table_report
+    ${promotion_id}    Get Element Attribute    //tbody//tr//a@href
+    @{promotion_id}    Split String    ${promotion_id}    /
+    ${Length}    Get Length    ${promotion_id}
+    Set Suite Variable    ${promotion_id}    ${promotion_id[${Length}-2]}
+
+Select promotion by category
+    [Documentation]    Select product by category to seller promotion
+    Go To    ${URL_STORE}/${shop_name}/admin/promotion/${promotion_id}/products
+    Click Element    //div[@class="promotion-tab-box promotion-bycat-box"]//input
+    Sleep    5s
+    Execute Javascript    $("label:contains('กระเป๋าเอกสาร') > input").eq(0).click()
+    Execute Javascript    $('[class="btn btn-primary btn-save"]').eq(0).click()
+    # click cancel on modal
+    Execute Javascript    $('#alertbefore-submit [type="reset"]').click()
+    # wait for modal leaving
+    Sleep    2s
+    Execute Javascript    $('[class="btn btn-primary btn-save"]').eq(0).click()
+    # click save on modal
+    Execute Javascript    $('button:contains(ยืนยัน)')[0].click()
+
+Verify promotion category after submit
+    [Documentation]    Verify product by category after submit
+    Go To    ${URL_STORE}/${shop_name}/admin/promotion/${promotion_id}/highlight
+    Wait Until Element Is Visible    //*[@id="table_report"]
+    ${num_product}    Execute Javascript    return $('.table.table-striped.table-bordered.table-hover tr').length
+    Should Be True    ${num_product} > 0
+
+Select promotion by All
+    [Documentation]    Select product all to seller promotion
+    Go To    ${URL_STORE}/${shop_name}/admin/promotion/${promotion_id}/products
+    Wait Until Page Contains Element    //input[@name="source_all"]
+    Execute Javascript    $('input[name="source_all"]').click();
+    Execute Javascript    $('[class="btn btn-primary btn-save"]').eq(0).click()
+    Sleep   3s
+    Execute Javascript    $('button:contains(ยืนยัน)')[0].click()
+    Wait Until Page Contains Element    table_report    10s
+
+Create seller promotion
+    [Documentation]    Verify add promotion    เอาไว้ใช้รัน create promotion อย่างเดียว
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $("input.span12").val('Promotion A').trigger('input');
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('500').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('100').trigger('input');
+    Input Text    period    2015-12-01 18:12:00 - 2017-04-30 00:00:00
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+
+Add Product To List Search by name
+    [Arguments]    ${name}
+    Execute Javascript    $('.search-box').eq(1).find('input').val('${name}').trigger('change')
+    Execute Javascript    $('.search-box').eq(1).find('button').click()
+    Sleep     2s
+    Execute Javascript    $('.hl-select-table input:first').click();
+    Sleep     2s
+    Execute Javascript    $('.footer-button button').click();
+    Sleep     2s
+
+Delete Promotion All
+    [Documentation]    Delete seller promotion at list seller promotion admin pages
+    Execute Javascript    $('#checkedAll').click()
+    Sleep    1s
+    Execute Javascript    $("#btn_delete").click();
+    #Click OK Alert Box
+    Sleep    2s
+    Execute Javascript    $('[class="btn btn-primary"]').eq(0).click()
+    Sleep    1s
+
+Create seller promotion by name by minute
+    [Arguments]    ${name}    ${min}
+    [Documentation]    Verify add promotion    เอาไว้ใช้รัน create promotion อย่างเดียว
+    Execute Javascript    $('#sidebar_29').find('a').get(1).click();
+    Wait Until Element Is Visible    //span[@class="span12"]
+    Execute Javascript    $("input.span12").val('${name}').trigger('input');
+    Execute Javascript    $("select[name='discount_type']").val('price').change();
+    Execute Javascript    $('.input-mini').eq(0).val('500').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('100').trigger('input');
+     ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + ${min} min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    ${textcheck}    Catenate    ${hh}:${ii}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+
+Edit promotion
+    [Documentation]    Action edit promotion
+    [Arguments]    ${discount_type}
+    Execute Javascript    $(".promotion-name-seller a").get(0).click();
+    Execute Javascript    $("input.span12").val('Promotion A').trigger('input');
+    Execute Javascript    $("select[name='discount_type']").val('${discount_type}').change();
+    Execute Javascript    $('.input-mini').eq(0).val('500').trigger('input');
+    Execute Javascript    $('.input-mini').eq(1).val('100').trigger('input');
+    Run Keyword If    "${discount_type}" == "percent"    Execute Javascript    $('.input-mini').eq(2).val('100').trigger('input');
+    ${datefrom}    Get Time
+    ${yy}    ${mm}    ${dd}    ${hh}    ${ii}    ${ss}    Get Time
+    ...    year,month,day,hour,min,sec    NOW + 7 h 2 min
+    ${dateto}    Catenate    ${yy}-${mm}-${dd} ${hh}:${ii}:${ss}
+    ${datepromotion}    Catenate    ${datefrom} - ${dateto}
+    ${textcheck}    Catenate    ${hh}:${ii}
+    Input Text    period    ${datepromotion}
+    Execute Javascript    $('.range_inputs button').eq(0).click();
+    Sleep    1.5s
+    Execute Javascript    $('.btn-primary').click();
+    Sleep    5s
+    Go To    ${URL_STORE}/${shop_name}/admin/promotion
+    Wait Until Element Is Visible    table_report
+    ${value}    Get Text    ${lbl_promotion}
+    ${Promotion_Description}    Set Variable If    "${discount_type}" == "price"    ซื้อสินค้าตั้งแต่ 500 บาทขึ้นไป ลดเพิ่ม 100 บาท
+    ${Promotion_Description}    Set Variable If    "${discount_type}" == "percent"    ซื้อสินค้าตั้งแต่ 500 บาทขึ้นไป ลดเพิ่ม 10% ลดสูงสุดไม่เกิน 100 บาท    ${Promotion_Description}
+    Should Be Equal    ${value}    ${Promotion_Description}
+
+Check Hide/Show promotion
+    [Documentation]    Check Hide/Show promotion
+    Wait Until Element Is Visible    table_report
+    ${Hide_Status}    Get Matching Xpath Count    //tr[1]//i[@class="icon-eye-hide-grey tooltipstered tooltip-grey"]
+    ${Show_Status}    Get Matching Xpath Count    //tr[1]//i[@class="icon-eye-show-green tooltipstered tooltip-grey"]
+    Run Keyword If    ${Hide_Status} == 1    Hide/Show Promotion on top
+
+Select all product into hightlight promotion
+    [Documentation]    Select all product into highlight promotion
+    ${product_list}    Execute Javascript    return $('#table_report .ng-scope').length;
+    Execute Javascript    $('#check_all').click();
+    Sleep    2s
+    ${product_highlight}    Execute Javascript    return $('#highlight-thumb li').length;
+    ${product_list}    Set Variable If    ${product_list} > 8    8    ${product_list}
+    ${product_list}    Convert To Integer    ${product_list}
+    Should Be Equal    ${product_highlight}    ${product_list}
+    Set Test Variable    ${product_highlight}    ${product_highlight}
+    Execute Javascript    $('.button-submit').get(0).click();
+    Execute Javascript    $('#alertbefore-highlight .button-submit').click();
+    Wait Until Page Contains    จำนวนโปรโมชั่นทั้งหมด
+
+Verify product highlight after submit
+    [Documentation]    Verify product highlight after submit
+    Go To    ${URL_STORE}/${shop_name}/admin/promotion/${promotion_id}/highlight
+    Wait Until Element Is Visible    highlight-thumb
+    ${check_highlight}    Execute Javascript    return $('#highlight-thumb li').length;
+    #Should Be Equal    ${product_highlight}    ${check_highlight}
+    #    :FOR    ${Index}    IN RANGE    1    ${check_highlight}+1
+    #    ${get_attr}    Get Element Attribute    //li[${Index}][@ng-repeat="product in products_selected \ \ track by $index"]//img@src
+    #    @{get_attr}    Split String    ${get_attr}    /
+    #    @{back_product_id}    Create List    @{back_product_id}    ${get_attr[3]}
+    #    ${back_product_id}    Sort List    ${back_product_id}
+    Go To    ${URL_STORE}/${shop_name}
+    Wait Until Element Is Visible    //div[@class="product-highlight-wrapper-2"]
+    #    :FOR    ${Index}    IN RANGE    1    ${check_highlight}+1
+    #    ${get_attr}    Get Element Attribute    //ul[@class="highlight-list-2"]//li[${index}]//div@class
+    #    @{get_attr}    Split String    ${get_attr}    ${Space}
+    #    @{front_product_id}    Create List    @{front_product_id}    ${get_attr[2]}
+    #    ${front_product_id}    sort list    ${front_product_id}
+    ${product_highlight}    Execute Javascript    return $('.highlight-list-2 li').length;
+    Should Be Equal    ${product_highlight}    ${check_highlight}
+
+Click Manage Product Seller Promotion
+    Click Element    ${link_manage_product}
+
+Search Product In MangeProduct Seller Promotion Page
+    Input Text    ${search_id}    ${id_product}
+    Press Key    ${search_id}    \\13
+
+Click Product Name In ManageProduct Seller Promotion Page
+    Click Element    ${product_name}
+
+Click Product Image In ManageProduct Seller Promotion Page
+    Click Element    ${product_image}
+
+Verify Seller Product Link Redirect To LevelD
+    [Documentation]    verify link redirect to level d when click product name at select product to collection page
+    Select Window    title=[Test Do not Delete] Product MC1510642479-WeMall-qamcautomate001
+    ${loc}    Get Location
+    Should Be Equal    ${loc}    https://www.wemall-dev.com/d/${id_product}

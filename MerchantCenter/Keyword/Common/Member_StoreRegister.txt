@@ -1,0 +1,292 @@
+*** Settings ***
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           OperatingSystem
+Library           Collections
+Library           ../PythonLibrary/_customkeyword.py
+
+*** Keywords ***
+Accept Term Condition
+    [Documentation]    Action accept term condition
+    Execute Javascript    $('#accept_condition').click()
+    # Click Element    accept_condition
+    Sleep    2s
+    Focus    ${T&C_Popup}
+    #    Wait Until Element Is Visible    ${T&C_Popup}
+    Execute Javascr ipt    $('.modal-content .modal-body').scrollTop($('.modal-content .modal-body')[0].scrollHeight)
+    Sleep    1.5s
+    Click Element    acceptterms
+    Wait Until Element Is Not Visible    ${T&C_Popup}
+    Checkbox Should Be Selected    accept_condition
+
+Register Corporate shop
+    [Arguments]    ${user_email}    ${pwd_test}    ${shopname}
+    [Documentation]    Register New Corporate shop WLS Success
+    Set Selenium Speed    .2
+    #${new_email}    Catenate    ${shopname}@mailinator.com
+    Open Browser    ${URL_ACCOUNT}/corporate/user    ${BROWSER}
+    Maximize Browser Window
+    Input Text    ${input_email}    ${user_email}
+    Input Password    ${input_password}    ${pwd_test}
+    Input Password    ${input_cf_password}    ${pwd_test}
+    Input Text    ${input_phone}    ${mobileno_test}
+    Select Checkbox    ${accept_term_signup}
+    Click Button    ${btn_signup_corporate}
+    Sleep    5s
+    ${errormsg}    Execute javascript    return $("span[class='error-box']").text().trim()
+    Run Keyword If    "${errormsg}" == "อีเมลนี้ถูกใช้งานแล้ว" or "${errormsg}" == "true id นี้ถูกใช้งานแล้ว"     Register by exiting user    ${user_email}    ${pwd_test}
+    Sleep    3s
+    Go To    ${URL_ACCOUNT}/corporate/store
+    Sleep    2s
+    Input Text    ${input_company_name}    ${shopname}
+    Execute javascript    $('input[id=rdohead]').click()
+    Input Text    ${input_b_address}    123 ซ.รัชดาภิเษก5 ห้วยขวาง ห้วยขวาง
+    Select From List By Label    ${select_province}    กรุงเทพมหานคร
+    Sleep    2s
+    Select From List By Label    ${select_city}    จตุจักร
+    Sleep    2s
+    Select From List By Label    ${select_district}    จอมพล
+    Input Text    ${input_b_postcode}    10900
+    Input Text    ${input_company_phone}    ${mobileno_test}
+    Input Text    ${input_tax_id}    1212121212121
+    Input Text    ${comittee_firstname}    wls
+    Input Text    ${comittee_lastname}    automate
+    Execute javascript    $('input[name=committee_idtype][value=1]').prop('checked', 'checked')
+    Input Text    ${input_committee_idcard}    1212121212121
+    Select From List By Label    ${shop_category}    แฟชั่น
+    Input Text    //*[@name="s_name"]    ${shopname}
+    Input Text    ${shop_url}    ${shopname}
+    Execute javascript    $('input[id="rdosame"]').click()
+    Input Text    ${shop_phone}    028888888
+    Input Text    ${shop_mobile}    ${mobileno_test}
+    Click Button    ${btn_register_shop}
+    Sleep    5s
+#    ${msg_register_success}    Execute javascript    return $("div[class='header-box'] h1").text().trim()
+#    Should Contain    ${msg_register_success}    ยินดีต้อนรับร้านค้าใหม่
+#    Sleep    3s
+#    Open Browser    https://www.mailinator.com/v2/inbox.jsp?zone=public&query=${shopname}    ${BROWSER}
+#    #Go to mailinator inbox
+#    #${r1}    Execute Javascript    return $("#mailcontainer li").filter(function(){ return $(this).find("div.subject").text().trim() == 'ยืนยันการสมัครสมาชิกกับ Weloveshopping.com'; }).first().length;
+#    ${r1}    Get Matching Xpath Count    ${email_confirm}
+#    Set Suite Variable    ${r1}
+#    Run Keyword If    '${r1}' == '0'    Re-Send Mail Corp    ${user_email}    ${pwd_test}
+#    #Execute Javascript    return $("#mailcontainer li").filter(function(){ return $(this).find("div.subject").text().trim() == 'ยืนยันการสมัครสมาชิกกับ Weloveshopping.com'; }).first().find("a").click();
+#    Click Element    ${email_confirm}
+#    ${loc}    Get Location
+#    ${loc_str}    Convert To String    ${loc}
+#    Set Suite Variable    ${loc_str}
+#    ${status}    ${value} =    Run Keyword And Ignore Error    Check Current URL
+#    Run Keyword If    '${status}' == 'PASS'    Activate Mail Corp
+#    Sleep    2s
+#    ${msg_activate_success}    Execute javascript    return $("div[class='header-box'] h1").text().trim()
+#    Should Contain    ${msg_activate_success}    คุณได้ยืนยันการสมัครสมาชิกเรียบร้อยแล้ว
+
+Register Individual shop
+    [Arguments]    ${user_email}    ${pwd_test}    ${shopname}
+    [Documentation]    Signup User and Signup Store
+    Set Selenium Speed    .2
+    #${new_email}    Catenate    ${shopname}@mailinator.com
+    Open Browser    ${URL_ACCOUNT}/register/user    ${BROWSER}
+    Maximize Browser Window
+    Input Text    ${input_email}    ${user_email}
+    Input Password    ${input_password}    ${pwd_test}
+    Input Password    ${input_cf_password}    ${pwd_test}
+    Input Text    ${input_phone}    ${mobileno_test}
+    Select Checkbox    ${accept_term_signup}
+    Click Element    ${btn_signup_user}
+    Sleep    1s
+    ${errormsg}    Execute javascript    return $("div[class='alert alert-error bg-danger']").text().trim()
+    Run Keyword If    "${errormsg}" == "อีเมลนี้ถูกใช้งานแล้ว" or "${errormsg}" == "true id นี้ถูกใช้งานแล้ว"     Register by exiting user    ${user_email}    ${pwd_test}
+    Sleep    3s
+    Go To    ${URL_ACCOUNT}/register/store
+    Sleep    2s
+    Input Text    ${owner_name}    wls
+    Input Text    ${owner_surname}    automate
+    Input Text    ${owner_idcard}    1212121212121
+    Input Text    //*[@name="s_name"]    ${shopname}
+    Select From List By Label    ${shop_category}    แฟชั่น
+    Input Text    ${shop_url}    ${shopname}
+    Input Text    ${shop_address}    123Test
+    Select From List By Label    ${shop_province}    กรุงเทพมหานคร
+    Sleep    2s
+    Select From List By Label    ${shop_city}    จตุจักร
+    Sleep    2s
+    Select From List By Label    ${shop_district}    จอมพล
+    Input Text    ${shop_postcode}    10900
+    Input Text    s_phone    ${mobileno_test}
+    Accept Term Condition
+    Sleep    2s
+    Click Button    ${btn_register_shop}
+    Sleep    5s
+#    ${msg_register_complete}    Execute javascript    return $('.thankyou-box').text()
+#    ${msg_alert_active_mail}    Execute javascript    $('.alert-danger').text()
+#    Sleep   3s
+#    Open Browser    https://www.mailinator.com/v2/inbox.jsp?zone=public&query=${shopname}    ${BROWSER}
+#    #Go to mailinator inbox
+#    #${r1}    Execute Javascript    return $("#mailcontainer li").filter(function(){ return $(this).find("div.subject").text().trim() == 'ยืนยันการสมัครสมาชิกกับ Weloveshopping.com'; }).first().length;
+#    ${r1}    Get Matching Xpath Count    ${email_confirm}
+#    Set Suite Variable    ${r1}
+#    Run Keyword If    '${r1}' == '0'    Re-Send Mail Indiv    ${user_email}    ${pwd_test}
+#    #Execute Javascript    return $("#mailcontainer li").filter(function(){ return $(this).find("div.subject").text().trim() == 'ยืนยันการสมัครสมาชิกกับ Weloveshopping.com'; }).first().find("a").click();
+#    Click Element    ${email_confirm}
+#    ${loc}    Get Location
+#    ${loc_str}    Convert To String    ${loc}
+#    Set Suite Variable    ${loc_str}
+#    ${status}    ${value} =    Run Keyword And Ignore Error    Check Current URL
+#    Run Keyword If    '${status}' == 'PASS'    Activate Mail Indiv
+#    Sleep    2s
+#    ${msg_activate_success}    Execute javascript    return $("div[class='content-box'] h1").text().trim()
+#    Should Contain    ${msg_activate_success}    ยืนยันการสมัครสมาชิกเรียบร้อย
+#    Execute Javascript    $("input[name='password']").val('${pwd_test}')
+#    Execute Javascript    $("button[class='btn-default']").eq(0).click()
+#    Sleep   3s
+#    ## Login Account After Activate Mail ##
+
+Register Wemall shop
+    [Documentation]    Register New Corporate shop Wemall Success
+    [Arguments]    ${user_email}    ${pwd_test}    ${shopname}    ${url_shop}    ${Type}
+    Set Selenium Speed    .2
+    #${new_email}    Catenate    ${shopname}@mailinator.com
+    Open Browser    ${URL_ACCOUNT}/merchant/user    ${BROWSER}
+    Maximize Browser Window
+    Input Text    ${input_email}    ${user_email}
+    Input Password    ${input_password}    ${pwd_test}
+    Input Password    ${input_cf_password}    ${pwd_test}
+    Input Text    ${input_phone}    ${mobileno_test}
+    Select Checkbox    ${accept_term_signup}
+    Execute Javascript    $('div :contains(สมัครสมาชิก)').click();
+    Sleep    5s
+    Go To    ${URL_ACCOUNT}/merchant/store
+    Sleep    2s
+    Input Text    ${input_company_name}    ${shopname}
+    Execute javascript    $('input[id=rdohead]').click()
+    Input Text    ${input_b_address}    123 ซ.รัชดาภิเษก5 ห้วยขวาง ห้วยขวาง
+    Select From List By Label    ${select_province}    กรุงเทพมหานคร
+    Sleep    2s
+    Select From List By Label    ${select_city}    จตุจักร
+    Sleep    2s
+    Select From List By Label    ${select_district}    จอมพล
+    Input Text    ${input_b_postcode}    10900
+    Input Text    ${input_company_phone}    ${mobileno_test}
+    Input Text    ${input_tax_id}    1212121212121
+    Input Text    ${comittee_firstname}    wls
+    Input Text    ${comittee_lastname}    automate
+    Execute javascript    $('input[name=committee_idtype][value=1]').prop('checked', 'checked')
+    Input Text    ${input_committee_idcard}    1212121212121
+    Select From List By Label    ${shop_category}    แฟชั่น
+    Select From List By Value    ${shop_type}    ${Type}
+    #Execute Javascript    $(".showcat select option").filter(function(){ return this.text == 'แฟชั่น'; }).attr('selected', true).change();
+    Input Text    //*[@name="s_name"]    ${shopname}
+    Input Text    ${shop_url}    ${url_shop}
+    Execute javascript    $('input[id="rdosame"]').click()
+    Input Text    ${shop_phone}    028888888
+    Input Text    ${shop_mobile}    ${mobileno_test}
+    Click Button    ${btn_register_shop}
+    Sleep    5s
+    Location Should Contain    ${URL_ACCOUNT}/merchant/complete
+    ${shop_name_c}=    Get Text    //*[@class="registcor-success-box"]/div[1]/div[1]/span[1]
+    ${shop_name_c}    Remove String    ${shop_name_c}    ชื่อร้านค้า :
+    ${shop_id}=    Get Text    //*[@class="registcor-success-box"]/div[1]/div[1]/span[2]
+    ${shop_id_c}    Remove String    ${shop_id}    ID ร้านค้า :
+    Write Variable to File    ${variable_user}    ${user_email}
+    Write Variable to File    ${variable_pwd}    ${pwd_test}
+    Write Variable to File    ${variable_shopid}    ${shop_id_c}
+    Write Variable to File    ${variable_shopurl}    ${url_shop}
+    Write Variable to File    ${variable_shopname}    ${shopname}
+    Sleep    3s
+
+Register by exiting user
+    [Arguments]    ${user_email}    ${pwd_test}
+    Execute Javascript    $('a:contains("เข้าสู่ระบบ")')[0].click()
+    Sleep    0.7s
+    Execute Javascript    ${login_username}.val('${user_email}')
+    Execute Javascript    ${login_password}.val('${pwd_test}')
+    #Wait Until Element Is Enabled    ${btn_login}    ${EXPECT_LOADTIME}
+    Sleep    0.7s
+    Click Element    ${btn_login}
+    Sleep    3s
+    ${r1}    Get Matching Xpath Count    //*[@id="content-container"]/div[1]/div/div/p/a
+    Set Suite Variable    ${r1}
+    Run Keyword If    '${r1}' != '0'    Run Keywords    Re-Send Activate Mail    ${user_email}    ${pwd_test}    AND    Activate Mail register
+
+
+Register SupplierCode MF
+    Open Browser    ${URL_ADEN_SP}    ${BROWSER}
+    Maximize Browser Window
+    Input Text    //*[@id="input-username"]    mc.dev
+    Input Text    //*[@id="input-password"]    password
+    Click Button    //*[@id="button-signin"]
+    Sleep   3s
+    Reload Page
+    Wait Until Element Is Visible    //*[@id="select-bu-type"]    ${EXPECT_LOADTIME}
+
+Verify Confirm Activate Mail
+    [Arguments]    ${user_email}    ${pwd_test}
+    [Documentation]    Verify confirm mail indiv after register
+    ${r1}    Get Matching Xpath Count    ${email_confirm}
+    Run Keyword If    '${Count}' == '5'    End
+    Run Keyword If    '${r1}' == '0'    Re-Send Activate Mail    ${user_email}    ${pwd_test}
+
+Check Current URL
+    [Documentation]    Make sure current mailinator url
+    Should Be Equal    ${loc_str}    https://www.mailinator.com/v2/inbox.jsp?zone=public&query=${shopname}#/#msgpane
+
+Check Current Profile URL
+    [Documentation]    Make sure current mailinator url
+    Should Be Equal    ${loc_str}    ${URL_ACCOUNT}/profile
+
+Activate Mail
+    [Documentation]    Activate mail indiv
+    Sleep    2s
+    Select Frame    msg_body
+    Sleep    1s
+    ${taken}    Get Text    //tr[5]//a
+    Go To    ${taken}
+    Sleep   4s
+    #Wait Until Page Contains Element    //div[@class="box-ac-member"]
+    #${msg}    Execute Javascript    return $('.box-ac-member').text()
+
+Re-Send Activate Mail
+    [Documentation]    Re-Send Activate Mail
+    [Arguments]    ${user_email}    ${pwd_test}
+    ${Count} =    Evaluate    ${Count} + 1
+    Account Login    ${user_email}    ${pwd_test}
+    Sleep    2s
+    Click Element    //*[@id="content-container"]/div[1]/div/div/p/a
+    Sleep    2s
+    Go To    https://www.mailinator.com/v2/inbox.jsp?zone=public&query=${shopname}
+    Verify Confirm Activate Mail    ${user_email}    ${pwd_test}
+
+
+
+Activate Mail register
+    [Arguments]    ${user_email}    ${pwd_test}
+#    Click Element    ${email_confirm}
+#    ${loc}    Get Location
+#    ${loc_str}    Convert To String    ${loc}
+#    Set Suite Variable    ${loc_str}
+#    ${status}    ${value} =    Run Keyword And Ignore Error    Check Current URL
+#    Run Keyword If    '${status}' == 'PASS'    Activate Mail
+#    Sleep    2s
+#    ${msg_activate_success}    Execute javascript    return $("div[class='header-box'] h1").text().trim()
+#    Should Contain    ${msg_activate_success}    คุณได้ยืนยันการสมัครสมาชิกเรียบร้อยแล้ว
+
+    Open Browser    https://www.mailinator.com/v2/inbox.jsp?zone=public&query=${shopname}    ${BROWSER}
+    #Go to mailinator inbox
+    #${r1}    Execute Javascript    return $("#mailcontainer li").filter(function(){ return $(this).find("div.subject").text().trim() == 'ยืนยันการสมัครสมาชิกกับ Weloveshopping.com'; }).first().length;
+    ${r1}    Get Matching Xpath Count    ${email_confirm}
+    Set Suite Variable    ${r1}
+    Run Keyword If    '${r1}' == '0'    Re-Send Activate Mail    ${user_email}    ${pwd_test}
+    #Execute Javascript    return $("#mailcontainer li").filter(function(){ return $(this).find("div.subject").text().trim() == 'ยืนยันการสมัครสมาชิกกับ Weloveshopping.com'; }).first().find("a").click();
+    Click Element    ${email_confirm}
+    ${loc}    Get Location
+    ${loc_str}    Convert To String    ${loc}
+    Set Suite Variable    ${loc_str}
+    ${status}    ${value} =    Run Keyword And Ignore Error    Check Current URL
+    Run Keyword If    '${status}' == 'PASS'    Activate Mail
+    Sleep    2s
+#    ${msg_activate_success}    Execute javascript    return $("div[class='content-box'] h1").text().trim()
+#    Should Contain    ${msg_activate_success}    ยืนยันการสมัครสมาชิกเรียบร้อย
+#    Execute Javascript    $("input[name='password']").val('${pwd_test}')
+#    Execute Javascript    $("button[class='btn-default']").eq(0).click()
+#    Sleep   3s

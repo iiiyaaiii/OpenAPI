@@ -1,0 +1,38 @@
+*** Settings ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close Browser
+Test Setup        Go To    ${URL_STORE}/${user_s001}/admin/gallery
+Force Tags        Store-Web    Gallery    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Gallery.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Gallery.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+*** Test Cases ***
+TC_MC_00437
+    [Documentation]    [Welove] Verify edit album name. If User does not enter album name.
+    [Tags]    Regression    Low
+    Click Element    ${lnk_album_name}
+    Clear Element Text    ${input_name}
+    Click Element    ${btn_submit_edit}
+    Focus    ${input_name}
+    Wait Until Element Is Visible    ${lbl_edit_album}
+    Element Text Should Be    ${lbl_edit_album}    กรุณาใส่ข้อมูล
+
+TC_MC_00439
+    [Documentation]    [Welove] Verify edit album name. If User enter character to album name.
+    [Tags]    Regression    High
+    Click Element    ${lnk_album_name}
+    Clear Element Text    ${input_name}
+    ${time}    Get Time    epoch
+    ${album_name_edit}    Catenate    R${time}
+    Input Text    ${input_name}    ${album_name_edit}
+    Click Element    ${btn_submit_edit}
+    Display Alert Footer
+    ${new_album_name}    Get Text    ${lbl_first_album_name}
+    ${new_album_name_str}    Convert To String    ${new_album_name}
+    Should Be Equal    ${new_album_name_str}    ${album_name_edit}

@@ -1,0 +1,159 @@
+*** Settings ***
+Library           SeleniumLibrary    15    10    run_on_failure=Capture Page Screenshot
+Library           String
+Library           OperatingSystem
+Library           ../PythonLibrary/_customkeyword.py
+Resource          ../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../Resource/WeLoveShopping/WebElement/Campaign.txt
+
+*** Keywords ***
+Go to Login and Check Seller Login
+    [Documentation]    Open browser and check seller login
+    [Arguments]    ${URL_PORTAL}    ${BROWSER}    ${store_name}    ${user}    ${password}
+    Set Selenium Speed    0.3
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Check and Reset Seller Login    ${store_name}    ${user}    ${password}
+
+Check and Reset Seller Login
+    [Documentation]    Check and reset seller login
+    [Arguments]    ${store_name}    ${user}    ${password}
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Go to Login    ${user}    ${password}
+    ${result_store}=    Check Element    //a[@title='ร้านค้าของฉัน']
+    Run Keyword If    '${result_store}'=='PASS'    Execute JavaScript    $("a[title='ร้านค้าของฉัน']").mouseover()
+    ${store_login}    Run Keyword If    '${result_store}'=='PASS'    Execute JavaScript    return $("li[ng-if='profile.we_store'] > a").attr("href")
+    ${check_storename}    Run Keyword And Return Status    Should Contain    ${store_login}    ${store_name}
+    Run Keyword If    '${check_storename}' == 'False'    Clear Active Login
+    Run Keyword If    '${check_storename}' == 'False'    Go to Login    ${user}    ${password}
+
+Check and Reset Seller Login Wemall
+    [Documentation]    Check and reset seller login Wemall
+    [Arguments]    ${store_name}    ${user}    ${password}
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='FAIL'    Go to Login    ${user}    ${password}
+    ${result_store}=    Check Element    //a[@title='ร้านค้าของฉัน']
+    Run Keyword If    '${result_store}'=='PASS'    Execute JavaScript    $("a[title='ร้านค้าของฉัน']").click()
+    ${store_login}    Run Keyword If    '${result_store}'=='PASS'    Execute JavaScript    return $("li[ng-if='profile.we_store'] > a").attr("href")
+    ${check_storename}    Run Keyword And Return Status    Should Contain    ${store_login}    ${store_name}
+    Run Keyword If    '${check_storename}' == 'False'    Clear Active Login
+    Run Keyword If    '${check_storename}' == 'False'    Go to Login    ${user}    ${password}
+
+Go to Login
+    [Documentation]    Login on portal page
+    [Arguments]    ${email}    ${pass}
+    Wait Until Element Is Visible    //a[@title="เข้าสู่ระบบ"]    60
+    Click Element    //a[@title="เข้าสู่ระบบ"]
+    Wait Until Element Is Visible    //input[@name="username"]    60
+    Input Text    //input[@id="username"]    ${email}
+    Input Text    //input[@id="password"]    ${pass}
+    Click Element    //button[@type="submit"]
+
+Clear Active Login
+    [Documentation]    Clear Active Login Portal
+    Go to    ${URL_PORTAL}
+    Sleep    1.5s
+    ${result}=    Check Element    //a[@title='บัญชีของฉัน']
+    Run Keyword If    '${result}'=='PASS'    Myacc Logout
+
+WMS Login
+    [Documentation]    WMS Login
+    Open Custom Browser    ${URL_WMS}/login    ${BROWSER}
+    Maximize Browser Window
+    Input Text    //input[@name="email"]    ${wms_user}
+    Input Password    //input[@name="password"]    ${wms_pass}
+    Click Button    //button[@class="width-35 pull-right btn btn-sm btn-primary"]
+    Sleep    2s
+    Location Should Be    ${URL_WMS}/dashboard
+
+Account Login
+    [Arguments]    ${email}    ${pass}
+    Open Custom Browser    ${URL_ACCOUNT}    ${BROWSER}
+    Wait Until Element Is Visible    //input[@name="username"]    60
+    Input Text    //input[@id="username"]    ${email}
+    Input Text    //input[@id="password"]    ${pass}
+    Wait Until Element Is Visible    ${btn_login}    60
+    Click Element    ${btn_login}
+
+Myacc Logout
+    [Documentation]    Logout
+    Execute JavaScript    $("a[title='บัญชีของฉัน']").mouseover()
+    Execute JavaScript    $('a:contains(ออกจากระบบ)').click()
+    Sleep    3s
+
+Clear Mobile Login
+    Go to    ${URL_PORTAL}
+    ${result}=    Check Element    ${h_user_icon}
+    Run Keyword If    '${result}'=='PASS'    Mobile Logout
+
+Mobile Login
+    [Arguments]    ${email}    ${pass}
+    Click Element    ${h_before_login}
+    Input Text    //input[@name='username']    ${email}
+    Input Text    //input[@name='password']    ${pass}
+    Click Element    //button[@class='btn-default btn-login']
+
+
+Mobile Logout
+    #myaccount page
+    Wait Until Element Is Visible    ${hamburger_menu}
+    Click Element    ${hamburger_menu}
+    Sleep    3
+    Click Element    ${menu_logout}
+    Sleep    5
+
+### WeLoveShopping ###
+Go To Corporate Register
+    [Arguments]    ${user}    ${password}
+    Open Browser    ${URL_PORTAL}    ${BROWSER}
+    Account Login    ${user}    ${password}
+    Go To    ${URL_ACCOUNT}/corporate/store
+
+Scroll Drown
+    Common.Scroll Element Into View    ${btn_register_shop}
+
+Click Button Register Shop
+    Click Button    ${btn_register_shop}
+
+Input Text For Company Name
+    [Arguments]    ${name}
+    Input Text    ${input_company_name}    ${name}
+
+Input Text For Shop Name
+    [Arguments]    ${shop}
+    Input Text    ${lbl_shop_name}    ${shop}
+
+Input Text For URL
+    [Arguments]    ${url}
+    Input Text    ${lbl_shop_url}    ${url}
+
+Verify Message Alert
+    [Arguments]    ${message}
+    Click Element    ${btn_check_url}
+    Element Should Contain    ${txa_corp1}    ${message}
+    Element Should Contain    ${txa_remark}    ตัวอักษรภาษาอังกฤษพิมพ์เล็ก ความยาว 4-20 ตัวอักษร, อักขระพิเศษใส่ได้เฉพาะ _ หรือ – เท่านั้น URL ร้านค้านี้ไม่สามารถเปลี่ยนแปลงได้ในภายหลัง
+
+Verify Message Alert Availability
+    [Arguments]    ${message_availability}
+    Click Element    ${btn_check_url}
+    Element Should Contain    ${txa_corp}    ${message_availability}
+    Element Should Contain    ${txa_remark}    ตัวอักษรภาษาอังกฤษพิมพ์เล็ก ความยาว 4-20 ตัวอักษร, อักขระพิเศษใส่ได้เฉพาะ _ หรือ – เท่านั้น URL ร้านค้านี้ไม่สามารถเปลี่ยนแปลงได้ในภายหลัง
+
+Verify Message Error Incase Doesn't Enter Required Field
+    Element Should Contain    ${corp_company_name_error}    กรุณากรอก ชื่อบริษัท / นิติบุคคล
+    Element Should Contain    ${corp_branch_error}    กรุณาระบุ สำนักงานใหญ่/สาขา
+    Element Should Contain    ${corp_b_address_error}    กรุณากรอกที่อยู่ในการ ออกใบกำกับภาษี
+    Element Should Contain    ${corp_b_postcode_error}    กรุณากรอกรหัสไปรษณีย์
+    Element Should Contain    ${corp_company_phone_error}    กรุณากรอกเบอร์โทรศัพท์บริษัท
+    Element Should Contain    ${corp_tax_id_error}    กรุณากรอกเลขประจำตัวผู้เสียภาษี
+    Element Should Contain    ${corp_committee_firstname_error}    กรุณากรอกชื่อตัวแทนกรรมการ
+    Element Should Contain    ${corp_committee_lastname_error}    กรุณากรอกนามสกุลตัวแทนกรรมการ
+    Element Should Contain    ${corp_committee_idtype_error}    กรุณาระบุเอกสารยืนยันตัวตน
+    Element Should Contain    ${corp_committee_idcard_error}    กรุณากรอกเอกสารยืนยันตัวตน
+    Element Should Contain    ${corp_s_category_error}    กรุณาระบุหมวดหมู่ร้านค้า
+    Element Should Contain    ${corp_s_name_error}    กรุณากรอกชื่อร้านค้า
+    Element Should Contain    ${corp_slug_error}    กรุณากรอก URL ของร้านค้า
+    Element Should Contain    ${corp_use_address_error}    กรุณาระบุที่อยู่ในการติดต่อ
+    Element Should Contain    ${corp_s_address_error}    กรุณากรอกที่อยู่
+    Element Should Contain    ${corp_s_province_error}    กรุณาเลือกจังหวัด
+    Element Should Contain    ${corp_s_postcode_error}    กรุณากรอกรหัสไปรษณีย์
+    Element Should Contain    ${corp_s_mobile_error}    กรุณากรอกเบอร์โทรศัพท์มือถือ

@@ -1,0 +1,32 @@
+*** Variables ***
+
+###DATA###
+${product_name_a}    KAMUA
+${product_name_differnce_merchant}    KAMUVS
+${product_name_no_freebie}    KAMUNOFREEBIE
+${product_name_expired_freebie}    KAMUEX
+${product_name_disabled_freebie}    KAMUDISABLE
+#${category_name}    electronic-1867    #alpha
+${category_name}    พระเครื่อง-1960    #staging
+${product_name_buy_a_get_a}    envy
+
+###TEXT####
+${txt_search_freebie}    xpath=(//*[@id="titan"]/div[2]/div/div[3]/input)
+${txt_search_on_store}    //form[@name="search"]/input[@type="text"]
+
+###BUTTON###
+${btn_search_freebie}    xpath=(//*[@id="titan"]/div[2]/div/div[3]/button)
+${btn_size_level_d}    xpath=(//*[@id="main-content"]/div[2]/div[2]/div[4]/div[1]/div[1]/div[1]/div)
+${btn_color_level_d}    xpath=(//*[@id="main-content"]/div[2]/div[2]/div[4]/div[2]/div[1]/div[2])
+${btn_search_on_store}    //button[@class="btn btn-shop-search"]
+
+###LINK###
+${lnk_product_detail_page}    xpath=(//*[@id="wrapper"]/div[3]/div[2]/div[2]/ul[1]/li/a/img)
+${img_divcategory_freebie}    //div[@class="fhead-box"]
+${img_product_freebie}    //div[@class="free-box"]
+${divcategory_freebie_lvld}    xpath=(//*[@id="tagFreebie"])
+${lbl_level_b_promotion}    //a[contains(text(),"โปรโมชั่นร้านค้า")]
+${lbl_level_c_highlight}    //span[@class="view-more"]/a
+${lbl_level_c_promotion}    //div[@class="view-more"]/a
+${lbl_level_c_product}    //ul[@class="menu-list"]/li[2]
+${lbl_level_c_category}    //ul[@class="shop-left-submenu"]/li/a[contains(text(),"_CATEGORY_")]

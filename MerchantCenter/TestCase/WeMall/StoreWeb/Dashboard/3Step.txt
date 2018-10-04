@@ -1,0 +1,92 @@
+*** Settings ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close All Browsers
+#Test Setup        Go To    ${URL_STORE}/${seller_name001}/admin/theme/setting
+#Suite Setup       WMS Switch Project    wm
+#Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.1s
+Force Tags        Store-Web    mock
+Library           OperatingSystem
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Store_Dashboard.txt
+#Resource          ../../../../Resource/WeMall/WebElement/BlockShop.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+
+
+*** Test Cases ***
+TC_MC_05549
+    [Documentation]    Incase Shop Information process incomplete. Upload Personal ID document = "Waiting for approve"
+    [Tags]    Regression    High
+    Clear Active Login
+    Account Login    ${user_dashboard}    ${user_pwd_dashboard}
+    Go to    ${URL_STORE}/${user_dashboard_name}/admin/
+    ${msg}    Get Text    ${msg_shopinfo}
+    ${status}    Get Text    ${status_shopinfo}
+    ${shopinfo_status_str1}    Convert To String    ${status}
+    Should Be True    "${shopinfo_status_str1}" == "รอตรวจสอบเอกสาร"
+    Element Should Be Visible    ${icon_shopinfo_disable}
+
+TC_MC_05550
+    [Documentation]    Incase Shop Information process incomplete. Upload Personal ID document = "approved"
+    [Tags]    Regression    High
+    Clear Active Login
+    Account Login    ${user_dashboard1}    ${user_pwd_dashboard1}
+    Goto    ${URL_STORE}/${user_dashboard_name1}/admin
+    ${msg}    Get Text    ${msg_shopinfo}
+    ${status}    Get Text    ${status_shopinfo}
+    ${shopinfo_status_str1}    Convert To String    ${status}
+    Should Be True    "${shopinfo_status_str1}" == "ผ่านการตรวจสอบ"
+    Element Should Be Visible    ${icon_shopinfo_enable}
+
+TC_MC_05551
+    [Documentation]    To ensure the system displays Shipping setting icon. Incase store setting shipping already.
+    [Tags]    Regression    High
+    # GoTo    ${URL_STORE}/${user_str}/admin/shipping
+    # Input Text    ${day_instock}    3
+    # Execute Javascript    ${thailand_post}.click()
+    # Execute Javascript    ${rd_post}.click()
+    # Click Element    ${rd_post_order}
+    # Click Element    ${rd_post_flat_free}
+    # Click Button Save
+    # Sleep    5s
+    Clear Active Login
+    Account Login    ${user_dashboard1}    ${user_pwd_dashboard1}
+    GoTo    ${URL_STORE}/${user_dashboard_name1}/admin
+    ${status}    Get Text    ${status_shipping}
+    ${shipping_status_str}    Convert To String    ${status}
+    Should Be True    "${shipping_status_str}" == "ตั้งค่าการจัดส่งเรียบร้อย"
+
+TC_MC_05552
+    [Documentation]    To ensure the system displays Manage Produc Status. Incase Store dose not add first product.
+    [Tags]    Regression    High
+    Clear Active Login
+    Account Login    ${user_dashboard}    ${user_pwd_dashboard}
+    Go to    ${URL_STORE}/${user_dashboard_name}/admin/
+    ${msg}    Get Text    ${msg_product}
+    ${status}    Get Text    ${msg_status_product}
+    ${product_status_str}    Convert To String    ${status}
+    Should Be True    "${product_status_str}" == "ยังไม่ได้เพิ่มสินค้า"
+    Element Should Be Visible    ${icon_product_disable}
+
+TC_MC_05553
+    [Documentation]    To ensure the system displays addproduct icon. Incase store add product 5 listing already
+    [Tags]    Regression    High
+    # Set Selenium Speed    .4
+    # Go To    ${URL_STORE}/${user_str}/admin/product/create
+    # Add Product Status Instock    ${same_wls}    logo_mi6_seller_1.jpg
+    # Add Product Status Instock With Attribute    ${same_wls}    logo_mi6_seller_2.jpg
+    # Add Product status Pre-order, Not Use Stock    ${same_wls}    logo_mi6_seller_3.jpg
+    # Add Product status Pre-order, Use Stock    ${same_wls}    logo_mi6_seller_4.jpg
+    # Add Product Status Pre-order, Use Stock, Empty Can Buy    ${same_wls}    logo_mi6_seller_5.jpg
+    # Sleep    4s
+    Clear Active Login
+    Account Login    ${user_dashboard1}    ${user_pwd_dashboard1}
+    GoTo    ${URL_STORE}/${user_dashboard_name1}/admin
+    ${msg}    Get Text    ${msg_product}
+    ${status}    Get Text    ${msg_status_product}
+    ${product_status_str}    Convert To String    ${status}
+    Should Be True    "${product_status_str}" == "เพิ่มสินค้าเรียบร้อย"

@@ -1,0 +1,31 @@
+*** variable ***
+${url_payment_incomplete}    ${URL_STORE}/wlsatm1451901758/admin/payment
+${url_payment_complete}    ${URL_STORE}/wlsautomate12/admin/payment
+${msg_status_ewallet}    //*[@id="pravicy_create"]/div/div[2]/div/div[1]/div
+${table_fee}      //div[@class="table-wls table-fee"]
+${btn_open_ewallet}    //*[@id="pravicy_create"]/div/div[2]/div/div[4]/div/a
+${btn_connect_ewallet}    //*[@id="row-body"]/div/div/div/div[2]/div/a[1]
+${link_what_ewallet}    //*[@id="row-body"]/div/div/div/div[2]/div/a[2]
+${menu_page}    //*[@id="page-content"]//h1
+${menu_page2}    //*[@id="page-content"]//h4
+${payment_account}    //*[@class="payment-title"]
+${payment_detail1}    $('.payment-table-box')
+${payment_detail2}    //*[@*="desc-fee-box"]
+${list_payment_success}    $("ul[class='list-payment']")
+${list_payment_unsuccess}    $("ul[class='unsuccess-list-payment']")
+${list_payment_1}    //*[@id="pravicy_create"]/div/div[2]/div/div[2]/div/ul/li[1]
+${list_payment_2}    //*[@id="pravicy_create"]/div/div[2]/div/div[2]/div/ul/li[2]
+${list_payment_3}    //*[@id="pravicy_create"]/div/div[2]/div/div[2]/div/ul/li[3]
+${list_payment_4}    //*[@id="pravicy_create"]/div/div[2]/div/div[2]/div/ul/li[4]
+${list_payment_5}    //*[@id="pravicy_create"]/div/div[2]/div/div[2]/div/ul/li[5]
+${list_payment_6}    //*[@id="pravicy_create"]/div/div[2]/div/div[2]/div/ul/li[6]
+${link_open_credit}    //*[@id="pravicy_create"]/div/div[2]/div/div[2]/div/ul/li[6]/a
+${input_email_ewallet}    //input[@id="inputEmail"]
+${input_pwd_ewallet}    //input[@id="inputPassword"]
+${btn_save_document}    //*[@id="btn_save_document"]
+${upload_idcard}    $("#id_input_file_x")
+${upload_file_idcard}    //input[@id="id_input_file_x"]
+${upload_application1}    $("#id_input_file_y")
+${upload_file_app1}    //input[@id="id_input_file_y"]
+${upload_application2}    $("#id_input_file_y2")
+${upload_file_app2}    /input[@id="id_input_file_y2"]

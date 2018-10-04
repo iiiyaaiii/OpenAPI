@@ -1,0 +1,25 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_07015
+    [Documentation]     Can be delete device on Truemove H Device page
+    [Tags]    Regression    High
+    Set Test Variable                   ${device_test}              Robot Device 1
+    @{sim_types}                        Create List                 Nano SIM    Micro
+    Create Device If Score Not Exist    ${device_test}              @{sim_types}
+	Delete Device 						${device_test}
+	Search Device                       ${device_test}
+    Sleep                               3s
+    Element Should Not Be Visible   		//span[@data-id="name"]

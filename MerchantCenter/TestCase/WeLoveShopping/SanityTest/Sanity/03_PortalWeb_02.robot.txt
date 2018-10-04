@@ -1,0 +1,213 @@
+*** Settings ***
+Suite Setup       Open and Prepare Data
+Suite Teardown    Clear All Test
+Test Setup        Run Keywords    Execute Javascript    $('#home_modal').css("display", "none")    AND    Execute Javascript    $('.modal-backdrop.fade.in').hide()    AND    Clear Active Login
+Force Tags        Sanity-Test    Buyer    Sanity
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Library           Collections
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Home.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Cart.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Portal.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Search.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Checkout.txt
+
+*** Test Cases ***
+TC_MC_00122
+    [Documentation]    User which have no store registered can sign in to website successfully
+    Go to    ${URL_PORTAL}
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Execute JavaScript    ${myacc}.mouseover()
+    Element Should Not Be Visible    ${westore}
+    Element Should Not Be Visible    ${youstore}
+    #    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Sleep    1
+    Element Should Contain    ${profile_email}    ${buyer_account}
+    #    Click Element    ${profile_myacc}
+    Clear Active Login
+
+TC_MC_00124
+    [Documentation]    User which have only WeStore registered can sign in to website successfully
+    Go to    ${URL_PORTAL}
+    Go to Login    ${store_email1}    ${store_password1}
+    Execute JavaScript    ${myshop}.mouseover()
+    Element Should Be Visible    ${westore}
+    Element Should Not Be Visible    ${youstore}
+    Execute JavaScript    ${myshop}.mouseout()
+    Sleep    1s
+    ${store}    Execute Javascript    return $("li[ng-if='profile.we_store']").text().trim()
+    Should Be True    '${store}' == '${store_name1}'
+    Execute JavaScript    ${myacc}.mouseover()
+    #    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Execute JavaScript    $('a:contains(ข้อมูลส่วนตัว)').click()
+    Sleep    1
+    Element Should Contain    ${profile_email}    ${store_email1}
+    Clear Active Login
+
+TC_MC_08331
+    [Documentation]    Add product have 1 attribute
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_1attr_3inv}?refresh=changeme
+    Sleep    1
+    Repeat Keyword    1 times    Execute Javascript    ${leveld_increase_js}.click()
+    ${attribute}=    Selected Attribute    สี    ดำ
+    ${name}=    Get Text    ${leveld_itemname}
+    ${price}=    Get Text    ${leveld_itemprice}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Click Element    ${btn_addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Product In Cart    ${shopname}    ${name}    ${quantity}    ${price}    ${attribute}
+
+TC_MC_03931
+    [Documentation]    Add product from diferrent shop to cart when have product from 1 shop in cart
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_1attr_3inv}?refresh=changeme
+    ${attribute}=    Selected Attribute    สี    ดำ
+    Element Should Be Visible    ${leveld_itemname}
+    ${product1}=    Get Text    ${leveld_itemname}
+    Click Element    ${btn_addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Element Should Be Visible    ${cart_shop}
+    Element Should Be Visible    ${cart_productname}
+    ${cart_shop1}=    Get Text    ${cart_shop}
+    ${cart_name1}=    Get Text    ${cart_productname}
+    Should Be Equal    ${product1}    ${cart_name1}
+    Sleep    1
+    Go to    ${URL_LEVEL_D}/L91288353
+    ${product2}=    Get Text    ${leveld_itemname}
+    Click Element    ${btn_addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Element Should Be Visible    ${cart_shop}
+    Element Should Be Visible    ${cart_productname}
+    ${cart_shop2}=    Get Text    ${cart_shop}
+    ${cart_name2}=    Get Text    ${cart_productname}
+    Should Be Equal    ${product2}    ${cart_name2}
+
+TC_MC_04184
+    [Documentation]    Order Summary have 1 product
+    Go to    ${URL_PORTAL}
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    Repeat Keyword    2 times    Execute Javascript    ${leveld_increase_js}.click()
+    ${item1_name}=    Get Text    ${leveld_itemname}
+    ${item1_price}=    Get Text    ${leveld_itemprice}
+    ${item1_price}=    Remove String    ${item1_price}    ,
+    ${item1_quantity}=    Get Value    ${leveld_quantity}
+    ${item1_total}=    Evaluate    ${item1_price} * ${item1_quantity}
+    ${item_shopname}=    Get Text    ${leveld_shopname}
+    Click Element    ${btn_addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Click Element    ${btn_checkout}
+    Sleep    1
+    ${item_detail}=    Create Dictionary    shopname=${item_shopname}    itemname1=${item1_name}    itemattr1=None    itemqty1=${item1_quantity}    itemtotal1=${item1_total}
+    ...    itemtype1=None
+    Verify Step Summary    \    \    ${item_detail}
+    ${select_adr_step2}=    Get Text    ${address_detail_step2}
+    Execute Javascript    $('.select_address')[0].click()
+    ${select_adr_step3}=    Get Text    ${address_detail_step3}
+    Sleep    1
+    ${ship_adr_step2}=    Checkout Verify Shipping Address    ${select_adr_step2}
+    ${ship_adr_step3}=    Checkout Verify Shipping Address    ${select_adr_step3}
+    Verify Step Summary    \    \    ${item_detail}
+    Execute Javascript    ${shipping_ems}.click()
+    Execute Javascript    ${payment_ATM}.click()
+    Click Element    ${btn_confirm_checkout}
+    Click Element    ${tbr_thx_box_pay_sum_js}
+    Element Should Contain    ${thx_store_info}    ${item_shopname}
+    ${thankyou_adr}    Get Text    ${thx_buyer_info}
+    ${thankyou_adr}    Checkout Verify Shipping Address    ${thankyou_adr}
+    Should Contain    ${thankyou_adr}    ${ship_adr_step3}
+    Verify Thankyou Page Product Summary    \    ${item_detail}
+    Sleep    1
+    Clear Active Login
+
+TC_WLS_03102
+    [Documentation]    Shipping cost : westore NonEMS - เหมา - ฟรี
+    Go to    ${URL_PORTAL}
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_1attr_3inv}?refresh=changeme
+    Sleep    2
+    ${attribute}=    Selected Attribute    สี    ดำ
+    Click Element    ${btn_addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Click Element    ${btn_checkout}
+    Sleep    2
+    Execute Javascript    $('.select_address')[0].click()
+    ## Select POST ##
+    Sleep    2
+    Execute Javascript    ${shipping_post}.click()
+    ${shipping_cost}    Execute Javascript    return ${post_cost}.text()
+    Should Be True    '${shipping_cost}' == 'ฟรี'
+    ${shipping_cost}=    Check Shipping Cost    ${shipping_cost}
+    Run Keyword If    ${shipping_cost}!=0    Element Text Should Be    ${shipping_price}    ${shipping_cost}.00 บาท
+    Run Keyword If    ${shipping_cost}==0    Element Text Should Be    ${shipping_price}    ฟรี
+    Sleep    2
+    Clear Active Login
+
+TC_WLS_03103
+    [Documentation]    Shipping cost : westore EMS - จำนวนสินค้ารวม - ขึ้นไป
+    Go to    ${URL_PORTAL}
+    Go to Login    ${buyer_account}    ${buyer_account_pass}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_1attr_3inv}?refresh=changeme
+    Sleep    2
+    ${attribute}=    Selected Attribute    สี    ดำ
+    Repeat Keyword    3 times    Execute Javascript    ${leveld_increase_js}.click()
+    Click Element    ${btn_addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Click Element    ${btn_checkout}
+    Sleep    2
+    Execute Javascript    $('.select_address')[0].click()
+    ## Select POST ##
+    Sleep    2
+    Execute Javascript    ${shipping_ems}.click()
+    ${shipping_cost}    Execute Javascript    return ${ems_cost}.text()
+    Should Be True    '${shipping_cost}' == '5 บาท'
+    ${shipping_cost}=    Check Shipping Cost    ${shipping_cost}
+    Run Keyword If    ${shipping_cost}!=0    Element Text Should Be    ${shipping_price}    ${shipping_cost}.00 บาท
+    Run Keyword If    ${shipping_cost}==0    Element Text Should Be    ${shipping_price}    ฟรี
+    Sleep    2
+    Clear Active Login
+
+*** Keyword ***
+Open and Prepare Data
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Run Keyword If    '${ENV}' == 'Production'    Open/Close Shop    open
+
+Clear All Test
+    Run Keyword If    '${ENV}' == 'Production'    Open/Close Shop    close
+    Close All Browsers
+
+Open/Close Shop
+    [Arguments]    ${action}
+    Go to Login    ${store_email1}    ${store_password1}
+    Go To    ${URL_STORE}/${store_url1}/admin
+    Sleep    3s
+    ${check} =    Get Value    //input[@id="openshop_status_old"]
+    Run Keyword If    "${check}" == "false" and '${action}' == 'open'    Execute Javascript    $('#btn_openshop_sidebar').click();
+    Run Keyword If    "${check}" == "true" and '${action}' == 'close'    Execute Javascript    $('#btn_openshop_sidebar').click();
+    Sleep    1s
+    Execute Javascript    $('.modal-footer .btn-primary').click();
+    Sleep    3s
+    Clear Active Login

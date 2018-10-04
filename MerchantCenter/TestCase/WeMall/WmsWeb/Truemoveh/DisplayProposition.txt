@@ -1,0 +1,62 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_06722
+    [Documentation]    Display default value of Propositions page when system have data in propositions table
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Element Should Be Visible    //*[contains(text(),'Truemove H Proposition')]
+    Element Should Contain   	 //table[contains(@class, 'PropositionTable')]/thead/tr/th[1]  		No.
+    Element Should Contain   	 //table[contains(@class, 'PropositionTable')]/thead/tr/th[2]  		Details
+    Element Should Contain   	 //table[contains(@class, 'PropositionTable')]/thead/tr/th[3]  		Proposition Name
+    Element Should Contain   	 //table[contains(@class, 'PropositionTable')]/thead/tr/th[4]  		Nas Code
+    Element Should Contain   	 //table[contains(@class, 'PropositionTable')]/thead/tr/th[5]  		Price Plan
+    Element Should Contain   	 //table[contains(@class, 'PropositionTable')]/thead/tr/th[6]  		Total${\n}Mobile Number
+    Element Should Contain   	 //table[contains(@class, 'PropositionTable')]/thead/tr/th[7]  		Source Type
+    Element Should Contain   	 //table[contains(@class, 'PropositionTable')]/thead/tr/th[8]  		Merchant
+    Element Should Contain   	 //table[contains(@class, 'PropositionTable')]/thead/tr/th[9]  	    Status
+    Element Should Contain       //table[contains(@class, 'PropositionTable')]/thead/tr/th[10]      Updated Date
+    Element Should Contain       //table[contains(@class, 'PropositionTable')]/thead/tr/th[11]      Action
+
+TC_MC_09907
+    [Documentation]    Verify status after creating new proposition Sim type
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Proposition - Delete Existing Name          robotNAME01
+    Proposition - Delete Existing Nas Code      robotNAS01
+    Go To    ${url_proposition}/create
+    Create Proposition one merchant          robotNAME01    True Move   CP01    robotNAS01   PN01    599.00     12     2000.00    sim    robot_ts    robot_tl
+    Input Text    ${input_search_nas_code}        robotNAS01
+    Click Element    ${btn_submit_search_propo}
+    Element Text Should Be    ${label_active_status}    Active
+
+TC_MC_09908
+    [Documentation]    Verify status after creating new proposition Bundle type
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Proposition - Delete Existing Name          robotNAME01
+    Proposition - Delete Existing Nas Code      robotNAS01
+    Go To    ${url_proposition}/create
+    Create Proposition Muti merchant          robotNAME01    True Move   CP01    robotNAS01   PN01    599.00     12     2000.00    bundle    robot_ts    robot_tl
+    Input Text    ${input_search_nas_code}        robotNAS01
+    Click Element    ${btn_submit_search_propo}
+    Element Text Should Be    ${label_inactive_status}    Inactive
+
+TC_MC_09909
+    [Documentation]    Verify Map button on proposition Bundle type
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Search Proposition By Source Type    Bundle
+    Element Should Be Visible    ${btn_map_proposition}

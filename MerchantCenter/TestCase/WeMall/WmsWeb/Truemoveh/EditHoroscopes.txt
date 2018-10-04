@@ -1,0 +1,172 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_06059
+    [Documentation]   	Edit horoscope page display error message if user leaves "Score" field as blank
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Click Edit Horoscope                    ${score_1}
+    Wait Until Element Is Visible       	${input_score}                  ${TIMEOUT}     
+    Input Text 								${input_score} 					${EMPTY}
+    Click Element 							${input_title}	
+    Wait Until Element Is Visible       	${error_input_score}             
+    Element Should Contain 					${error_input_score}			The score field is required.
+
+TC_MC_06060
+    [Documentation]   	Edit horoscope page display error message when user input score with character
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Click Edit Horoscope                    ${score_1}
+    Wait Until Element Is Visible       	${input_score}                  ${TIMEOUT}     
+    Input Text 								${input_score} 					Test	
+    Click Element 							${input_title}	
+    Wait Until Element Is Visible       	${error_input_score}                 
+    Element Should Contain 					${error_input_score}			The score field must be an numeric.	
+
+TC_MC_06061
+    [Documentation]   	Edit horoscope page display error message when user input score with special character
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Click Edit Horoscope                    ${score_1}
+    Wait Until Element Is Visible       	${input_score}                  ${TIMEOUT}     
+    Input Text 								${input_score} 					!@$%^#&*()_+-:;/?.,	
+    Click Element 							${input_title}	
+    Wait Until Element Is Visible       	${error_input_score}                 
+    Element Should Contain 					${error_input_score}			The score field must be an numeric.
+
+TC_MC_06062
+    [Documentation]   	Edit horoscope page display error message when user input score with values ​​less than 0
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Click Edit Horoscope                    ${score_1}
+    Wait Until Element Is Visible       	${input_score}                  ${TIMEOUT}     
+    Input Text 								${input_score} 					-1	
+    Click Element 							${input_title}	
+    Wait Until Element Is Visible       	${error_input_score}                 
+    Element Should Contain 					${error_input_score}			The score field must be an numeric.
+
+TC_MC_06063
+    [Documentation]   	Edit horoscope page display error message when user input score with values more than 255
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Click Edit Horoscope                    ${score_1}
+    Wait Until Element Is Visible       	${input_score}                  ${TIMEOUT}     
+    Input Text 								${input_score} 					256	
+    Click Element 							${input_title}	
+    Wait Until Element Is Visible       	${error_input_score_255}                 
+    Element Should Contain 					${error_input_score_255}		The score must be less than or equal to a 255 value.
+    
+TC_MC_06064
+    [Documentation]   	Edit horoscope page display error message when user input score is existing in system
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Set Test Variable                       ${already_score}           		2     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Create Horoscope If Score Not Exist     ${already_score}				
+    Click Edit Horoscope                    ${score_1}
+    Wait Until Element Is Visible       	${input_score}                  ${TIMEOUT}     
+    Input Text 								${input_score} 					${already_score}	
+    Click Element                       	${btn_submit}    
+	Wait Until Element Is Visible           ${result_error}                 
+    Element Should Contain                  ${result_error}         		The score ${already_score} has already been taken.
+
+TC_MC_06065
+    [Documentation]   	Edit horoscope page display error message if user leaves "Title" field as blank
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Click Edit Horoscope                    ${score_1}
+    Wait Until Element Is Visible       	${input_title}                  ${TIMEOUT}  
+    Input Text 								${input_title} 					${EMPTY}
+    Click Element                       	${input_score}  
+    Wait Until Element Is Visible       	${error_input_title}            ${TIMEOUT}     
+    Element Should Contain              	${error_input_title}            The title field is required.
+ 
+TC_MC_06066
+    [Documentation]   	Edit horoscope page display error message when user input title more than 255 characters
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Click Edit Horoscope                    ${score_1}
+    Wait Until Element Is Visible       	${input_title}                  ${TIMEOUT}     
+    Input Text                          	${input_title}                  test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255
+    ${title_value}=                     	Get Value                       ${input_title}               
+    Should Be Equal                     	${title_value}                  test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_is_no_more_than_255_test_
+
+TC_MC_06067
+    [Documentation]   	Edit horoscope page display error message when user input title is existing in system
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Set Test Variable                       ${score_2}           			2     
+    Set Test Variable                       ${robot_title2}           		robot_title2     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Delete Existing Score               	${score_2}
+    Delete Existing Title               	${robot_title2}
+    Create Horoscope  						${score_2}         				${robot_title2}			robot_desc2
+    Click Edit Horoscope                    ${score_1}
+    Wait Until Element Is Visible       	${input_title}              	${TIMEOUT}     
+    Input Text 								${input_title} 					${robot_title2}	
+    Click Element                       	${btn_submit}    
+	Wait Until Element Is Visible           ${result_error}                 
+    Element Should Contain                  ${result_error}         		The title ${robot_title2} has already been taken.
+
+TC_MC_06068
+    [Documentation]   	Edit horoscope page display error message if user leaves "Description" field as blank
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Click Edit Horoscope                    ${score_1}
+    Wait Until Element Is Visible       	${input_description}			${TIMEOUT}		                       
+    Input Text                       		${input_description} 			${EMPTY}				  
+    Click Element                       	${input_title}  
+    Wait Until Element Is Visible       	${error_input_description}             
+    Element Should Contain              	${error_input_description}      The description field is required.
+
+TC_MC_06069
+    [Documentation]   	Truemove H Horoscopes page display edit entries after edit horoscopes with status active success
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Delete Existing Score               	2
+    Delete Existing Title               	robot_title2  
+    Edit Horoscope 			${score_1}		2       		robot_title2		robot_desc2			active  
+    Verify data horoscope       			2        		robot_title2    	robot_desc2      	Active
+
+TC_MC_06070
+    [Documentation]   	Truemove H Horoscopes page display edit entries after edit horoscopes with status inactive success
+    [Tags]    Regression    High
+    Go To                               	${url_horoscopes_truemoveh}
+    Set Test Variable                       ${score_1}           			1     
+    Create Horoscope If Score Not Exist     ${score_1} 
+    Delete Existing Score               	2
+    Delete Existing Title               	robot_title2  
+    Edit Horoscope 			${score_1}		2       		robot_title2		robot_desc2			inactive  
+    Verify data horoscope       			2        		robot_title2    	robot_desc2      	Inactive

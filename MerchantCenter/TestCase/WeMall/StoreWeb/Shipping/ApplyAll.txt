@@ -1,0 +1,29 @@
+*** Setting ***
+Suite Setup       Account Login    ${seller_user_001}    ${seller_pwd_001}
+Suite Teardown    Close All Browsers
+Test Setup        Go To    ${URL_STORE}/${user_s001}/admin/shipping
+Force Tags        Store-Web    Shipping    mock    Ligo    Sprint2017MC10
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Shipping.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Shipping.txt
+
+*** Test Case ***
+TC_MC_03698
+    [Documentation]    [Wemall] Input product instock and Apply all product
+    Input Text    instock    5
+    Select Checkbox    apply_all
+    Click Element    ${btn_save}
+    Sleep    3 s
+    Go To    ${URL_STORE}/${user_s001}/admin/product/create
+    Wait Until Element Is Visible    prepare_shipping
+    Page Should Contain Element    //input[@id="prepare_shipping" and @value="5"]
+    #Verify Edit page
+    Go To    ${URL_STORE}/${user_s001}/admin/product
+    Click Element    ${ProductOnTop}
+    Wait Until Element Is Visible    prepare_shipping
+    Page Should Contain Element    //input[@id="prepare_shipping" and @value="5"]

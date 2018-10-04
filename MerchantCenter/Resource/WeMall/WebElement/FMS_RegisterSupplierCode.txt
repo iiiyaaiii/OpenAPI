@@ -1,0 +1,16 @@
+*** Variables ***
+### Locator ###
+###Step Business Details###
+${cbo_bu-type}          //*[@id="select-bu-type"]
+${input_SPName}    //*[@id="input-supplier-name"]
+${cbo_sourcetype}    //*[@id="select-supplier-type"]
+${input_dpayment}    //*[@id="input-payment-term"]
+${input_venderid}    //*[@id="input-sap-vendor-id"]
+${cbo_SPType}    //*[@name="supplierType"]
+${input_SPtaxid}    //*[@id="input-tax-id"]
+${input_SPaddress}    //*[@id="textarea-supplier-address"]
+${cbo_province}    //*[@name="province[]"]
+${cbo_district}       //*[@data-reactid=".0.1.1.0.2.0.0.0.1.4.0.0.1.0.0.1.1.0"]
+${cbo_subdistrict}    //*[@data-reactid=".0.1.1.0.2.0.0.0.1.4.0.0.1.0.0.2.1.0"]
+${cbo_postcode}    //*[@name="postcode[]"]
+${msg_SPCode}    //*[@class="sweet-alert showSweetAlert visible"]

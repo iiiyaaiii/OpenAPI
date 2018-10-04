@@ -1,0 +1,3169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20180806 11:13:43.889" generator="Robot 3.0.4 (Python 2.7.10 on darwin)">
+<suite source="/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/TestCase/WeMall/WemallMobile/LevelD" id="s1" name="LevelD">
+<suite source="/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/TestCase/WeMall/WemallMobile/LevelD/ProductDetail.robot" id="s1-s1" name="ProductDetail">
+<test id="s1-s1-t1" name="TC_MC_12084">
+<kw name="Open Mobile Browser" library="Mobile_LevelD">
+<kw name="Open Custom Browser" library="Common">
+<arguments>
+<arg>${URL_MOBILE}</arg>
+<arg>Mobile</arg>
+</arguments>
+<kw name="Replace String" library="String">
+<doc>Replaces ``search_for`` in the given ``string`` with ``replace_with``.</doc>
+<arguments>
+<arg>/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/Common</arg>
+<arg>Common</arg>
+<arg>UserLibrary</arg>
+</arguments>
+<assign>
+<var>${path}</var>
+</assign>
+<msg timestamp="20180806 11:13:44.497" level="INFO">${path} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary</msg>
+<status status="PASS" endtime="20180806 11:13:44.497" starttime="20180806 11:13:44.497"></status>
+</kw>
+<kw name="Catenate" library="BuiltIn">
+<doc>Catenates the given items together and returns the resulted string.</doc>
+<arguments>
+<arg>SEPARATOR=</arg>
+<arg>${path}</arg>
+<arg>${/}selenium-server-standalone-2.53.0.jar</arg>
+</arguments>
+<assign>
+<var>${selenium_jar}</var>
+</assign>
+<msg timestamp="20180806 11:13:44.498" level="INFO">${selenium_jar} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar</msg>
+<status status="PASS" endtime="20180806 11:13:44.498" starttime="20180806 11:13:44.497"></status>
+</kw>
+<kw name="Set Environment Variable" library="OperatingSystem">
+<doc>Sets an environment variable to a specified value.</doc>
+<arguments>
+<arg>SELENIUM_SERVER_JAR</arg>
+<arg>${selenium_jar}</arg>
+</arguments>
+<msg timestamp="20180806 11:13:44.498" level="INFO">Environment variable 'SELENIUM_SERVER_JAR' set to value '/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar'.</msg>
+<status status="PASS" endtime="20180806 11:13:44.499" starttime="20180806 11:13:44.498"></status>
+</kw>
+<kw name="Get Chrome Mobile Options" library="_customkeyword">
+<arguments>
+<arg>Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4</arg>
+</arguments>
+<assign>
+<var>${options}</var>
+</assign>
+<msg timestamp="20180806 11:13:44.499" level="INFO">${options} = &lt;selenium.webdriver.chrome.options.Options object at 0x106ce1310&gt;</msg>
+<status status="PASS" endtime="20180806 11:13:44.499" starttime="20180806 11:13:44.499"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Create Webdriver</arg>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<kw name="Create Webdriver" library="SeleniumLibrary">
+<doc>Creates an instance of Selenium WebDriver.</doc>
+<arguments>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<msg timestamp="20180806 11:13:44.501" level="INFO">Creating an instance of the Chrome WebDriver.</msg>
+<status status="PASS" endtime="20180806 11:13:46.337" starttime="20180806 11:13:44.501"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:13:46.337" starttime="20180806 11:13:44.500"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Open Browser</arg>
+<arg>${url}</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:46.343" starttime="20180806 11:13:46.339"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Create Webdriver</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:46.345" starttime="20180806 11:13:46.344"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:46.347" starttime="20180806 11:13:46.346"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:46.350" starttime="20180806 11:13:46.348"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:46.353" starttime="20180806 11:13:46.351"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:46.357" starttime="20180806 11:13:46.356"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Window Size</arg>
+<arg>375</arg>
+<arg>667</arg>
+<arg>ELSE</arg>
+<arg>Set Window Size</arg>
+<arg>1440</arg>
+<arg>900</arg>
+</arguments>
+<kw name="Set Window Size" library="SeleniumLibrary">
+<doc>Sets current windows size to given ``width`` and ``height``.</doc>
+<arguments>
+<arg>375</arg>
+<arg>667</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:46.490" starttime="20180806 11:13:46.359"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:13:46.491" starttime="20180806 11:13:46.358"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Selenium Speed" library="SeleniumLibrary">
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:46.492" starttime="20180806 11:13:46.492"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:13:46.492" starttime="20180806 11:13:46.491"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Browser Implicit Wait" library="SeleniumLibrary">
+<doc>Sets the implicit wait value used by Selenium.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:47.200" starttime="20180806 11:13:46.493"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:13:47.200" starttime="20180806 11:13:46.493"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile' or '${browser}' == 'Safari'</arg>
+<arg>Go To</arg>
+<arg>${url}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${url}</arg>
+</arguments>
+<msg timestamp="20180806 11:13:47.202" level="INFO">Opening url 'https://m.wemall-dev.com'</msg>
+<status status="PASS" endtime="20180806 11:13:53.177" starttime="20180806 11:13:47.202"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:13:53.177" starttime="20180806 11:13:47.200"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile'</arg>
+<arg>Maximize Browser Window</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:53.179" starttime="20180806 11:13:53.178"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:13:53.179" starttime="20180806 11:13:44.496"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>box-my-cart</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:54.629" starttime="20180806 11:13:53.180"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:13:54.629" starttime="20180806 11:13:44.495"></status>
+</kw>
+<kw name="Go To Level D Mobile Page" library="Mobile_LevelD">
+<arguments>
+<arg>product_id_with_truepoint_promotion</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_and_freebie_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_and_freebie_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_multiple_sku_and_some_product_with_truepoint_product'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_multiple_sku_and_some_product_with_truepoint_product}</arg>
+<arg>ELSE</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${ProductLvD}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+</arguments>
+<msg timestamp="20180806 11:13:54.634" level="INFO">Opening url 'https://m.wemall-dev.com/d/L91556654'</msg>
+<status status="PASS" endtime="20180806 11:13:59.738" starttime="20180806 11:13:54.634"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:13:59.738" starttime="20180806 11:13:54.632"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:13:59.738" starttime="20180806 11:13:54.630"></status>
+</kw>
+<kw name="Verify TruePoint Thumbnail" library="Mobile_LevelD">
+<doc>Check TruePoint thumbnail exist when select TruePoint product</doc>
+<arguments>
+<arg>exist</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'exist'</arg>
+<arg>Log To Console</arg>
+<arg>Verify TruePoint Thumbnail exists</arg>
+</arguments>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Verify TruePoint Thumbnail exists</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:13:59.743" starttime="20180806 11:13:59.742"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:13:59.743" starttime="20180806 11:13:59.741"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'exist'</arg>
+<arg>Element Should Be Visible</arg>
+<arg>${img_truepoint_thumbnail}</arg>
+</arguments>
+<kw name="Element Should Be Visible" library="SeleniumLibrary">
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<arguments>
+<arg>${img_truepoint_thumbnail}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:01.191" level="INFO">Element '//div[@class="superpoint-tag ng-scope"]' is displayed.</msg>
+<status status="PASS" endtime="20180806 11:14:01.191" starttime="20180806 11:13:59.745"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:01.191" starttime="20180806 11:13:59.744"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'notexist'</arg>
+<arg>Log To Console</arg>
+<arg>Verify no TruePoint Thumbnail exists</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:01.193" starttime="20180806 11:14:01.192"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'notexist'</arg>
+<arg>Element Should Not Be Visible</arg>
+<arg>${img_truepoint_thumbnail}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:01.194" starttime="20180806 11:14:01.193"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:01.194" starttime="20180806 11:13:59.739"></status>
+</kw>
+<kw type="teardown" name="Run Keywords" library="BuiltIn">
+<doc>Executes all the given keywords in a sequence.</doc>
+<arguments>
+<arg>Capture Page Screenshot</arg>
+<arg>AND</arg>
+<arg>Close Browser</arg>
+</arguments>
+<kw name="Capture Page Screenshot" library="SeleniumLibrary">
+<doc>Takes screenshot of the current page and embeds it into log file.</doc>
+<msg timestamp="20180806 11:14:02.266" html="yes" level="INFO">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-23.png"&gt;&lt;img src="selenium-screenshot-23.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" endtime="20180806 11:14:02.266" starttime="20180806 11:14:01.196"></status>
+</kw>
+<kw name="Close Browser" library="SeleniumLibrary">
+<doc>Closes the current browser.</doc>
+<status status="PASS" endtime="20180806 11:14:03.056" starttime="20180806 11:14:02.267"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:03.056" starttime="20180806 11:14:01.195"></status>
+</kw>
+<doc>[WM][Mobile]Verify TruePoint thumbnail for main Product image on Level D page</doc>
+<tags>
+<tag>High</tag>
+<tag>Regression</tag>
+<tag>Wemall-Mobile</tag>
+</tags>
+<status status="PASS" endtime="20180806 11:14:03.056" critical="yes" starttime="20180806 11:13:44.493"></status>
+</test>
+<test id="s1-s1-t2" name="TC_MC_12086">
+<kw name="Open Mobile Browser" library="Mobile_LevelD">
+<kw name="Open Custom Browser" library="Common">
+<arguments>
+<arg>${URL_MOBILE}</arg>
+<arg>Mobile</arg>
+</arguments>
+<kw name="Replace String" library="String">
+<doc>Replaces ``search_for`` in the given ``string`` with ``replace_with``.</doc>
+<arguments>
+<arg>/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/Common</arg>
+<arg>Common</arg>
+<arg>UserLibrary</arg>
+</arguments>
+<assign>
+<var>${path}</var>
+</assign>
+<msg timestamp="20180806 11:14:03.067" level="INFO">${path} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary</msg>
+<status status="PASS" endtime="20180806 11:14:03.067" starttime="20180806 11:14:03.065"></status>
+</kw>
+<kw name="Catenate" library="BuiltIn">
+<doc>Catenates the given items together and returns the resulted string.</doc>
+<arguments>
+<arg>SEPARATOR=</arg>
+<arg>${path}</arg>
+<arg>${/}selenium-server-standalone-2.53.0.jar</arg>
+</arguments>
+<assign>
+<var>${selenium_jar}</var>
+</assign>
+<msg timestamp="20180806 11:14:03.069" level="INFO">${selenium_jar} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar</msg>
+<status status="PASS" endtime="20180806 11:14:03.069" starttime="20180806 11:14:03.068"></status>
+</kw>
+<kw name="Set Environment Variable" library="OperatingSystem">
+<doc>Sets an environment variable to a specified value.</doc>
+<arguments>
+<arg>SELENIUM_SERVER_JAR</arg>
+<arg>${selenium_jar}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:03.070" level="INFO">Environment variable 'SELENIUM_SERVER_JAR' set to value '/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar'.</msg>
+<status status="PASS" endtime="20180806 11:14:03.070" starttime="20180806 11:14:03.069"></status>
+</kw>
+<kw name="Get Chrome Mobile Options" library="_customkeyword">
+<arguments>
+<arg>Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4</arg>
+</arguments>
+<assign>
+<var>${options}</var>
+</assign>
+<msg timestamp="20180806 11:14:03.071" level="INFO">${options} = &lt;selenium.webdriver.chrome.options.Options object at 0x106d287d0&gt;</msg>
+<status status="PASS" endtime="20180806 11:14:03.071" starttime="20180806 11:14:03.071"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Create Webdriver</arg>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<kw name="Create Webdriver" library="SeleniumLibrary">
+<doc>Creates an instance of Selenium WebDriver.</doc>
+<arguments>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:03.073" level="INFO">Creating an instance of the Chrome WebDriver.</msg>
+<status status="PASS" endtime="20180806 11:14:04.865" starttime="20180806 11:14:03.073"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:04.866" starttime="20180806 11:14:03.072"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Open Browser</arg>
+<arg>${url}</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:04.869" starttime="20180806 11:14:04.867"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Create Webdriver</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:04.870" starttime="20180806 11:14:04.869"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:04.872" starttime="20180806 11:14:04.871"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:04.874" starttime="20180806 11:14:04.872"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:04.877" starttime="20180806 11:14:04.875"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:04.879" starttime="20180806 11:14:04.878"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Window Size</arg>
+<arg>375</arg>
+<arg>667</arg>
+<arg>ELSE</arg>
+<arg>Set Window Size</arg>
+<arg>1440</arg>
+<arg>900</arg>
+</arguments>
+<kw name="Set Window Size" library="SeleniumLibrary">
+<doc>Sets current windows size to given ``width`` and ``height``.</doc>
+<arguments>
+<arg>375</arg>
+<arg>667</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:05.020" starttime="20180806 11:14:04.882"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:05.020" starttime="20180806 11:14:04.880"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Selenium Speed" library="SeleniumLibrary">
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:05.022" starttime="20180806 11:14:05.021"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:05.022" starttime="20180806 11:14:05.020"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Browser Implicit Wait" library="SeleniumLibrary">
+<doc>Sets the implicit wait value used by Selenium.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:05.729" starttime="20180806 11:14:05.023"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:05.729" starttime="20180806 11:14:05.022"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile' or '${browser}' == 'Safari'</arg>
+<arg>Go To</arg>
+<arg>${url}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${url}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:05.732" level="INFO">Opening url 'https://m.wemall-dev.com'</msg>
+<status status="PASS" endtime="20180806 11:14:11.707" starttime="20180806 11:14:05.731"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:11.708" starttime="20180806 11:14:05.730"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile'</arg>
+<arg>Maximize Browser Window</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:11.709" starttime="20180806 11:14:11.708"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:11.709" starttime="20180806 11:14:03.063"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>box-my-cart</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:13.167" starttime="20180806 11:14:11.710"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:13.168" starttime="20180806 11:14:03.061"></status>
+</kw>
+<kw name="Go To Level D Mobile Page" library="Mobile_LevelD">
+<arguments>
+<arg>product_id_with_truepoint_promotion</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_and_freebie_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_and_freebie_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_multiple_sku_and_some_product_with_truepoint_product'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_multiple_sku_and_some_product_with_truepoint_product}</arg>
+<arg>ELSE</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${ProductLvD}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:13.174" level="INFO">Opening url 'https://m.wemall-dev.com/d/L91556654'</msg>
+<status status="PASS" endtime="20180806 11:14:17.166" starttime="20180806 11:14:13.173"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:17.166" starttime="20180806 11:14:13.171"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:17.166" starttime="20180806 11:14:13.169"></status>
+</kw>
+<kw name="Verify TruePoint Button" library="Mobile_LevelD">
+<doc>Check TruePoint button exist when select TruePoint product</doc>
+<arguments>
+<arg>exist</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'exist'</arg>
+<arg>Log To Console</arg>
+<arg>Verify TruePoint Button exists</arg>
+</arguments>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Verify TruePoint Button exists</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:17.171" starttime="20180806 11:14:17.170"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:17.171" starttime="20180806 11:14:17.169"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'exist'</arg>
+<arg>Element Should Be Visible</arg>
+<arg>${btn_truepoint}</arg>
+</arguments>
+<kw name="Element Should Be Visible" library="SeleniumLibrary">
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<arguments>
+<arg>${btn_truepoint}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:18.629" level="INFO">Element '//div[@class="inner point ng-scope"]' is displayed.</msg>
+<status status="PASS" endtime="20180806 11:14:18.630" starttime="20180806 11:14:17.173"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:18.630" starttime="20180806 11:14:17.172"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'exist'</arg>
+<arg>Click Element Contain Text</arg>
+<arg>${btn_truepoint}</arg>
+<arg>แลกด้วย TruePoint</arg>
+</arguments>
+<kw name="Click Element Contain Text" library="Common">
+<arguments>
+<arg>${btn_truepoint}</arg>
+<arg>แลกด้วย TruePoint</arg>
+</arguments>
+<kw name="Get WebElements" library="SeleniumLibrary">
+<doc>Returns list of WebElement objects matching the ``locator``.</doc>
+<arguments>
+<arg>${web_elements}</arg>
+</arguments>
+<assign>
+<var>@{elements_list}</var>
+</assign>
+<msg timestamp="20180806 11:14:19.355" level="INFO">@{elements_list} = [ &lt;selenium.webdriver.remote.webelement.WebElement (session="22fc442819e6c974f2ba094df47a4720", element="0.06919925894339318-1")&gt; ]</msg>
+<status status="PASS" endtime="20180806 11:14:19.355" starttime="20180806 11:14:18.633"></status>
+</kw>
+<kw type="for" name="${element} IN [ @{elements_list} ]">
+<kw type="foritem" name="${element} = &lt;selenium.webdriver.remote.webelement.WebElement (session=&quot;22fc442819e6c974f2ba094df47a4720&quot;, element=&quot;0.06919925894339318-1&quot;)&gt;">
+<kw name="Run Keyword And Return Status" library="BuiltIn">
+<doc>Runs the given keyword with given arguments and returns the status as a Boolean value.</doc>
+<arguments>
+<arg>Element Should Contain</arg>
+<arg>${element}</arg>
+<arg>${text_contain}</arg>
+</arguments>
+<assign>
+<var>${passed}</var>
+</assign>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${element}</arg>
+<arg>${text_contain}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:20.091" level="INFO">Element '&lt;selenium.webdriver.remote.webelement.WebElement (session="22fc442819e6c974f2ba094df47a4720", element="0.06919925894339318-1")&gt;' contains text 'แลกด้วย TruePoint'.</msg>
+<status status="PASS" endtime="20180806 11:14:20.091" starttime="20180806 11:14:19.359"></status>
+</kw>
+<msg timestamp="20180806 11:14:20.092" level="INFO">${passed} = True</msg>
+<status status="PASS" endtime="20180806 11:14:20.092" starttime="20180806 11:14:19.358"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>${passed}</arg>
+<arg>Scroll Element Into View</arg>
+<arg>${element}</arg>
+</arguments>
+<kw name="Scroll Element Into View" library="Common">
+<arguments>
+<arg>${element}</arg>
+</arguments>
+<kw name="Get WebElement" library="SeleniumLibrary">
+<doc>Returns the first WebElement matching the given ``locator``.</doc>
+<arguments>
+<arg>${locator}</arg>
+</arguments>
+<assign>
+<var>${elem}</var>
+</assign>
+<msg timestamp="20180806 11:14:20.096" level="INFO">${elem} = &lt;selenium.webdriver.remote.webelement.WebElement (session="22fc442819e6c974f2ba094df47a4720", element="0.06919925894339318-1")&gt;</msg>
+<status status="PASS" endtime="20180806 11:14:20.096" starttime="20180806 11:14:20.095"></status>
+</kw>
+<kw name="Get Library Instance" library="BuiltIn">
+<doc>Returns the currently active instance of the specified test library.</doc>
+<arguments>
+<arg>name=SeleniumLibrary</arg>
+</arguments>
+<assign>
+<var>${instance}</var>
+</assign>
+<msg timestamp="20180806 11:14:20.097" level="INFO">${instance} = &lt;SeleniumLibrary.SeleniumLibrary object at 0x106632450&gt;</msg>
+<status status="PASS" endtime="20180806 11:14:20.097" starttime="20180806 11:14:20.096"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>arguments[0].scrollIntoView()</arg>
+</arguments>
+<assign>
+<var>${script}</var>
+</assign>
+<msg timestamp="20180806 11:14:20.098" level="INFO">${script} = arguments[0].scrollIntoView()</msg>
+<status status="PASS" endtime="20180806 11:14:20.098" starttime="20180806 11:14:20.098"></status>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>$instance._current_browser().execute_script($script, $elem)</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:20.841" starttime="20180806 11:14:20.099"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${locator}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:21.560" starttime="20180806 11:14:20.842"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:21.560" starttime="20180806 11:14:20.093"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:21.560" starttime="20180806 11:14:20.092"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>${passed}</arg>
+<arg>Click Element</arg>
+<arg>${element}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${element}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:21.562" level="INFO">Clicking element '&lt;selenium.webdriver.remote.webelement.WebElement (session="22fc442819e6c974f2ba094df47a4720", element="0.06919925894339318-1")&gt;'.</msg>
+<status status="PASS" endtime="20180806 11:14:22.350" starttime="20180806 11:14:21.562"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:22.350" starttime="20180806 11:14:21.561"></status>
+</kw>
+<kw name="Exit For Loop If" library="BuiltIn">
+<doc>Stops executing the enclosing for loop if the ``condition`` is true.</doc>
+<arguments>
+<arg>${passed}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:22.351" level="INFO">Exiting for loop altogether.</msg>
+<status status="PASS" endtime="20180806 11:14:22.351" starttime="20180806 11:14:22.350"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:22.351" starttime="20180806 11:14:19.357"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:22.352" starttime="20180806 11:14:19.356"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:22.352" starttime="20180806 11:14:18.632"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:22.352" starttime="20180806 11:14:18.630"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'notexist'</arg>
+<arg>Log To Console</arg>
+<arg>Verify no TruePoint Button exists</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:22.353" starttime="20180806 11:14:22.353"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'notexist'</arg>
+<arg>Element Should Not Be Visible</arg>
+<arg>${btn_truepoint}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:22.355" starttime="20180806 11:14:22.354"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:22.355" starttime="20180806 11:14:17.167"></status>
+</kw>
+<kw type="teardown" name="Run Keywords" library="BuiltIn">
+<doc>Executes all the given keywords in a sequence.</doc>
+<arguments>
+<arg>Capture Page Screenshot</arg>
+<arg>AND</arg>
+<arg>Close Browser</arg>
+</arguments>
+<kw name="Capture Page Screenshot" library="SeleniumLibrary">
+<doc>Takes screenshot of the current page and embeds it into log file.</doc>
+<msg timestamp="20180806 11:14:23.420" html="yes" level="INFO">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-24.png"&gt;&lt;img src="selenium-screenshot-24.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" endtime="20180806 11:14:23.421" starttime="20180806 11:14:22.357"></status>
+</kw>
+<kw name="Close Browser" library="SeleniumLibrary">
+<doc>Closes the current browser.</doc>
+<status status="PASS" endtime="20180806 11:14:24.185" starttime="20180806 11:14:23.422"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:24.186" starttime="20180806 11:14:22.356"></status>
+</kw>
+<doc>Verify TruePoint button on Level D page</doc>
+<tags>
+<tag>High</tag>
+<tag>Regression</tag>
+<tag>Wemall-Mobile</tag>
+</tags>
+<status status="PASS" endtime="20180806 11:14:24.186" critical="yes" starttime="20180806 11:14:03.058"></status>
+</test>
+<test id="s1-s1-t3" name="TC_MC_12087">
+<kw name="Open Mobile Browser" library="Mobile_LevelD">
+<kw name="Open Custom Browser" library="Common">
+<arguments>
+<arg>${URL_MOBILE}</arg>
+<arg>Mobile</arg>
+</arguments>
+<kw name="Replace String" library="String">
+<doc>Replaces ``search_for`` in the given ``string`` with ``replace_with``.</doc>
+<arguments>
+<arg>/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/Common</arg>
+<arg>Common</arg>
+<arg>UserLibrary</arg>
+</arguments>
+<assign>
+<var>${path}</var>
+</assign>
+<msg timestamp="20180806 11:14:24.194" level="INFO">${path} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary</msg>
+<status status="PASS" endtime="20180806 11:14:24.194" starttime="20180806 11:14:24.193"></status>
+</kw>
+<kw name="Catenate" library="BuiltIn">
+<doc>Catenates the given items together and returns the resulted string.</doc>
+<arguments>
+<arg>SEPARATOR=</arg>
+<arg>${path}</arg>
+<arg>${/}selenium-server-standalone-2.53.0.jar</arg>
+</arguments>
+<assign>
+<var>${selenium_jar}</var>
+</assign>
+<msg timestamp="20180806 11:14:24.195" level="INFO">${selenium_jar} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar</msg>
+<status status="PASS" endtime="20180806 11:14:24.195" starttime="20180806 11:14:24.194"></status>
+</kw>
+<kw name="Set Environment Variable" library="OperatingSystem">
+<doc>Sets an environment variable to a specified value.</doc>
+<arguments>
+<arg>SELENIUM_SERVER_JAR</arg>
+<arg>${selenium_jar}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:24.196" level="INFO">Environment variable 'SELENIUM_SERVER_JAR' set to value '/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar'.</msg>
+<status status="PASS" endtime="20180806 11:14:24.196" starttime="20180806 11:14:24.195"></status>
+</kw>
+<kw name="Get Chrome Mobile Options" library="_customkeyword">
+<arguments>
+<arg>Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4</arg>
+</arguments>
+<assign>
+<var>${options}</var>
+</assign>
+<msg timestamp="20180806 11:14:24.197" level="INFO">${options} = &lt;selenium.webdriver.chrome.options.Options object at 0x106d2edd0&gt;</msg>
+<status status="PASS" endtime="20180806 11:14:24.197" starttime="20180806 11:14:24.196"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Create Webdriver</arg>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<kw name="Create Webdriver" library="SeleniumLibrary">
+<doc>Creates an instance of Selenium WebDriver.</doc>
+<arguments>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:24.198" level="INFO">Creating an instance of the Chrome WebDriver.</msg>
+<status status="PASS" endtime="20180806 11:14:26.021" starttime="20180806 11:14:24.198"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:26.021" starttime="20180806 11:14:24.197"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Open Browser</arg>
+<arg>${url}</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:26.024" starttime="20180806 11:14:26.023"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Create Webdriver</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:26.025" starttime="20180806 11:14:26.024"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:26.026" starttime="20180806 11:14:26.026"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:26.028" starttime="20180806 11:14:26.027"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:26.029" starttime="20180806 11:14:26.028"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:26.030" starttime="20180806 11:14:26.029"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Window Size</arg>
+<arg>375</arg>
+<arg>667</arg>
+<arg>ELSE</arg>
+<arg>Set Window Size</arg>
+<arg>1440</arg>
+<arg>900</arg>
+</arguments>
+<kw name="Set Window Size" library="SeleniumLibrary">
+<doc>Sets current windows size to given ``width`` and ``height``.</doc>
+<arguments>
+<arg>375</arg>
+<arg>667</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:26.150" starttime="20180806 11:14:26.032"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:26.151" starttime="20180806 11:14:26.030"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Selenium Speed" library="SeleniumLibrary">
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:26.154" starttime="20180806 11:14:26.153"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:26.154" starttime="20180806 11:14:26.151"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Browser Implicit Wait" library="SeleniumLibrary">
+<doc>Sets the implicit wait value used by Selenium.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:26.862" starttime="20180806 11:14:26.156"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:26.862" starttime="20180806 11:14:26.155"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile' or '${browser}' == 'Safari'</arg>
+<arg>Go To</arg>
+<arg>${url}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${url}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:26.864" level="INFO">Opening url 'https://m.wemall-dev.com'</msg>
+<status status="PASS" endtime="20180806 11:14:37.063" starttime="20180806 11:14:26.864"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:37.063" starttime="20180806 11:14:26.862"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile'</arg>
+<arg>Maximize Browser Window</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:37.065" starttime="20180806 11:14:37.064"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:37.065" starttime="20180806 11:14:24.192"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>box-my-cart</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:38.532" starttime="20180806 11:14:37.066"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:38.532" starttime="20180806 11:14:24.190"></status>
+</kw>
+<kw name="Go To Level D Mobile Page" library="Mobile_LevelD">
+<arguments>
+<arg>product_id_with_truepoint_promotion</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_and_freebie_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_and_freebie_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_multiple_sku_and_some_product_with_truepoint_product'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_multiple_sku_and_some_product_with_truepoint_product}</arg>
+<arg>ELSE</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${ProductLvD}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:38.537" level="INFO">Opening url 'https://m.wemall-dev.com/d/L91556654'</msg>
+<status status="PASS" endtime="20180806 11:14:40.122" starttime="20180806 11:14:38.536"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:40.122" starttime="20180806 11:14:38.535"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:40.123" starttime="20180806 11:14:38.533"></status>
+</kw>
+<kw name="Verify Additional Line for TruePoint Product" library="Mobile_LevelD">
+<doc>Check additional lines when select TruePoint product</doc>
+<arguments>
+<arg>exist</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'exist'</arg>
+<arg>Log To Console</arg>
+<arg>Verify TruePoint condition lines exist</arg>
+</arguments>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Verify TruePoint condition lines exist</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:40.128" starttime="20180806 11:14:40.127"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:40.128" starttime="20180806 11:14:40.126"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'exist'</arg>
+<arg>Element Should Contain</arg>
+<arg>${txt_truepoint_info}</arg>
+<arg>ใช้ทรูพอยท์</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${txt_truepoint_info}</arg>
+<arg>ใช้ทรูพอยท์</arg>
+</arguments>
+<msg timestamp="20180806 11:14:44.371" level="INFO">Element '//div[@class="product-superpoint-info"]' contains text 'ใช้ทรูพอยท์'.</msg>
+<status status="PASS" endtime="20180806 11:14:44.371" starttime="20180806 11:14:40.130"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:44.371" starttime="20180806 11:14:40.129"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'exist'</arg>
+<arg>Element Should Contain</arg>
+<arg>${txt_truepoint_condition}</arg>
+<arg>อ่านเงื่อนไข</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${txt_truepoint_condition}</arg>
+<arg>อ่านเงื่อนไข</arg>
+</arguments>
+<msg timestamp="20180806 11:14:45.833" level="INFO">Element '//div[@class="product-superpoint-description"]' contains text 'อ่านเงื่อนไข'.</msg>
+<status status="PASS" endtime="20180806 11:14:45.834" starttime="20180806 11:14:44.373"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:45.834" starttime="20180806 11:14:44.372"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'notexist'</arg>
+<arg>Log To Console</arg>
+<arg>Verify TruePoint condition lines do not exist</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:45.835" starttime="20180806 11:14:45.834"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'notexist'</arg>
+<arg>Element Should Not Be Visible</arg>
+<arg>${txt_truepoint_info}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:45.836" starttime="20180806 11:14:45.836"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'notexist'</arg>
+<arg>Element Should Not Be Visible</arg>
+<arg>${txt_truepoint_condition}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:45.838" starttime="20180806 11:14:45.837"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:45.838" starttime="20180806 11:14:40.124"></status>
+</kw>
+<kw type="teardown" name="Run Keywords" library="BuiltIn">
+<doc>Executes all the given keywords in a sequence.</doc>
+<arguments>
+<arg>Capture Page Screenshot</arg>
+<arg>AND</arg>
+<arg>Close Browser</arg>
+</arguments>
+<kw name="Capture Page Screenshot" library="SeleniumLibrary">
+<doc>Takes screenshot of the current page and embeds it into log file.</doc>
+<msg timestamp="20180806 11:14:46.936" html="yes" level="INFO">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-25.png"&gt;&lt;img src="selenium-screenshot-25.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" endtime="20180806 11:14:46.936" starttime="20180806 11:14:45.840"></status>
+</kw>
+<kw name="Close Browser" library="SeleniumLibrary">
+<doc>Closes the current browser.</doc>
+<status status="PASS" endtime="20180806 11:14:47.708" starttime="20180806 11:14:46.937"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:47.709" starttime="20180806 11:14:45.839"></status>
+</kw>
+<doc>Verify product's price on Level D page</doc>
+<tags>
+<tag>High</tag>
+<tag>Regression</tag>
+<tag>Wemall-Mobile</tag>
+</tags>
+<status status="PASS" endtime="20180806 11:14:47.709" critical="yes" starttime="20180806 11:14:24.188"></status>
+</test>
+<test id="s1-s1-t4" name="TC_MC_12093">
+<kw name="Open Mobile Browser" library="Mobile_LevelD">
+<kw name="Open Custom Browser" library="Common">
+<arguments>
+<arg>${URL_MOBILE}</arg>
+<arg>Mobile</arg>
+</arguments>
+<kw name="Replace String" library="String">
+<doc>Replaces ``search_for`` in the given ``string`` with ``replace_with``.</doc>
+<arguments>
+<arg>/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/Common</arg>
+<arg>Common</arg>
+<arg>UserLibrary</arg>
+</arguments>
+<assign>
+<var>${path}</var>
+</assign>
+<msg timestamp="20180806 11:14:47.716" level="INFO">${path} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary</msg>
+<status status="PASS" endtime="20180806 11:14:47.716" starttime="20180806 11:14:47.716"></status>
+</kw>
+<kw name="Catenate" library="BuiltIn">
+<doc>Catenates the given items together and returns the resulted string.</doc>
+<arguments>
+<arg>SEPARATOR=</arg>
+<arg>${path}</arg>
+<arg>${/}selenium-server-standalone-2.53.0.jar</arg>
+</arguments>
+<assign>
+<var>${selenium_jar}</var>
+</assign>
+<msg timestamp="20180806 11:14:47.717" level="INFO">${selenium_jar} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar</msg>
+<status status="PASS" endtime="20180806 11:14:47.717" starttime="20180806 11:14:47.717"></status>
+</kw>
+<kw name="Set Environment Variable" library="OperatingSystem">
+<doc>Sets an environment variable to a specified value.</doc>
+<arguments>
+<arg>SELENIUM_SERVER_JAR</arg>
+<arg>${selenium_jar}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:47.718" level="INFO">Environment variable 'SELENIUM_SERVER_JAR' set to value '/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar'.</msg>
+<status status="PASS" endtime="20180806 11:14:47.718" starttime="20180806 11:14:47.718"></status>
+</kw>
+<kw name="Get Chrome Mobile Options" library="_customkeyword">
+<arguments>
+<arg>Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4</arg>
+</arguments>
+<assign>
+<var>${options}</var>
+</assign>
+<msg timestamp="20180806 11:14:47.719" level="INFO">${options} = &lt;selenium.webdriver.chrome.options.Options object at 0x106921950&gt;</msg>
+<status status="PASS" endtime="20180806 11:14:47.719" starttime="20180806 11:14:47.719"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Create Webdriver</arg>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<kw name="Create Webdriver" library="SeleniumLibrary">
+<doc>Creates an instance of Selenium WebDriver.</doc>
+<arguments>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:47.723" level="INFO">Creating an instance of the Chrome WebDriver.</msg>
+<status status="PASS" endtime="20180806 11:14:49.553" starttime="20180806 11:14:47.720"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:49.554" starttime="20180806 11:14:47.719"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Open Browser</arg>
+<arg>${url}</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:49.558" starttime="20180806 11:14:49.555"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Create Webdriver</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:49.559" starttime="20180806 11:14:49.558"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:49.562" starttime="20180806 11:14:49.561"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:49.564" starttime="20180806 11:14:49.563"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:49.567" starttime="20180806 11:14:49.565"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:49.574" starttime="20180806 11:14:49.570"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Window Size</arg>
+<arg>375</arg>
+<arg>667</arg>
+<arg>ELSE</arg>
+<arg>Set Window Size</arg>
+<arg>1440</arg>
+<arg>900</arg>
+</arguments>
+<kw name="Set Window Size" library="SeleniumLibrary">
+<doc>Sets current windows size to given ``width`` and ``height``.</doc>
+<arguments>
+<arg>375</arg>
+<arg>667</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:49.701" starttime="20180806 11:14:49.578"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:49.701" starttime="20180806 11:14:49.576"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Selenium Speed" library="SeleniumLibrary">
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:49.704" starttime="20180806 11:14:49.703"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:49.704" starttime="20180806 11:14:49.702"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Browser Implicit Wait" library="SeleniumLibrary">
+<doc>Sets the implicit wait value used by Selenium.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:14:50.413" starttime="20180806 11:14:49.706"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:14:50.413" starttime="20180806 11:14:49.705"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile' or '${browser}' == 'Safari'</arg>
+<arg>Go To</arg>
+<arg>${url}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${url}</arg>
+</arguments>
+<msg timestamp="20180806 11:14:50.415" level="INFO">Opening url 'https://m.wemall-dev.com'</msg>
+<status status="PASS" endtime="20180806 11:15:01.423" starttime="20180806 11:14:50.415"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:01.423" starttime="20180806 11:14:50.414"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile'</arg>
+<arg>Maximize Browser Window</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:01.424" starttime="20180806 11:15:01.424"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:01.425" starttime="20180806 11:14:47.714"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>box-my-cart</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:02.880" starttime="20180806 11:15:01.426"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:02.881" starttime="20180806 11:14:47.713"></status>
+</kw>
+<kw name="Delete All Product In Cart Mobile" library="Checkout">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${h_cart_icon}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:02.884" level="INFO">Clicking element '//div[@id='box-my-cart']'.</msg>
+<status status="PASS" endtime="20180806 11:15:04.406" starttime="20180806 11:15:02.884"></status>
+</kw>
+<kw name="Wait Until Page Contains" library="SeleniumLibrary">
+<doc>Waits until ``text`` appears on current page.</doc>
+<arguments>
+<arg>All Rights Reserved</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:05.238" starttime="20180806 11:15:04.407"></status>
+</kw>
+<kw name="Get Matching Xpath Count" library="SeleniumLibrary">
+<doc>Deprecated. Use `Get Element Count` instead.</doc>
+<arguments>
+<arg>${m_cart_delete_item}</arg>
+</arguments>
+<assign>
+<var>${count}</var>
+</assign>
+<msg timestamp="20180806 11:15:06.693" level="INFO">${count} = 0</msg>
+<status status="PASS" endtime="20180806 11:15:06.693" starttime="20180806 11:15:05.238"></status>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>${count} + 1</arg>
+</arguments>
+<assign>
+<var>${index}</var>
+</assign>
+<msg timestamp="20180806 11:15:06.695" level="INFO">${index} = 1</msg>
+<status status="PASS" endtime="20180806 11:15:06.695" starttime="20180806 11:15:06.694"></status>
+</kw>
+<kw type="for" name="${i} IN RANGE [ 0 | ${count} ]">
+<status status="PASS" endtime="20180806 11:15:06.695" starttime="20180806 11:15:06.695"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:06.696" starttime="20180806 11:15:02.882"></status>
+</kw>
+<kw name="Go To Level D Mobile Page" library="Mobile_LevelD">
+<arguments>
+<arg>product_id_multiple_sku_and_some_product_with_truepoint_product</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_and_freebie_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_and_freebie_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_multiple_sku_and_some_product_with_truepoint_product'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_multiple_sku_and_some_product_with_truepoint_product}</arg>
+<arg>ELSE</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${ProductLvD}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_MOBILE}/d/${product_id_multiple_sku_and_some_product_with_truepoint_product}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:06.701" level="INFO">Opening url 'https://m.wemall-dev.com/d/L91556659'</msg>
+<status status="PASS" endtime="20180806 11:15:08.680" starttime="20180806 11:15:06.700"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:08.681" starttime="20180806 11:15:06.698"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:08.681" starttime="20180806 11:15:06.696"></status>
+</kw>
+<kw name="Select Level D Product" library="Mobile_LevelD">
+<doc>Select specific product from varient</doc>
+<arguments>
+<arg>normal</arg>
+</arguments>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Select Specific Product from Other varient</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:08.686" starttime="20180806 11:15:08.686"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>window.scrollTo(0,1500)</arg>
+</arguments>
+<msg timestamp="20180806 11:15:08.688" level="INFO">Executing JavaScript:
+window.scrollTo(0,1500)</msg>
+<status status="PASS" endtime="20180806 11:15:11.276" starttime="20180806 11:15:08.687"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${product}' == 'normal'</arg>
+<arg>Click Button</arg>
+<arg>${btn_attribute_red}</arg>
+</arguments>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_attribute_red}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:11.280" level="INFO">Clicking element '//div[@data-option-title="แดง"]'.</msg>
+<status status="PASS" endtime="20180806 11:15:12.782" starttime="20180806 11:15:11.280"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:12.782" starttime="20180806 11:15:11.278"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:12.782" starttime="20180806 11:15:11.277"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${product}' == 'truepoint'</arg>
+<arg>Click Button</arg>
+<arg>${btn_attribute_black}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:12.783" starttime="20180806 11:15:12.783"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:12.783" starttime="20180806 11:15:08.684"></status>
+</kw>
+<kw name="Click on Add To Cart Button" library="Mobile_LevelD">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_add_to_cart}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:12.785" level="INFO">Clicking element 'add-to-cart'.</msg>
+<status status="PASS" endtime="20180806 11:15:14.304" starttime="20180806 11:15:12.785"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:14.305" starttime="20180806 11:15:12.784"></status>
+</kw>
+<kw name="Confirmation Popup Should Be Appeared" library="Mobile_LevelD">
+<kw name="Element Should Be Visible" library="SeleniumLibrary">
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<arguments>
+<arg>${popup_confirmation}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:15.765" level="INFO">Element '//div[@class='modal-content']' is displayed.</msg>
+<status status="PASS" endtime="20180806 11:15:15.767" starttime="20180806 11:15:14.311"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:15.767" starttime="20180806 11:15:14.306"></status>
+</kw>
+<kw name="Click ดูสินค้าต่อ Button" library="Mobile_LevelD">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${popup_view_more}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:15.770" level="INFO">Clicking element '//a[@ng-click='continueShopping()']'.</msg>
+<status status="PASS" endtime="20180806 11:15:17.274" starttime="20180806 11:15:15.769"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:17.275" starttime="20180806 11:15:15.768"></status>
+</kw>
+<kw name="Select Level D Product" library="Mobile_LevelD">
+<doc>Select specific product from varient</doc>
+<arguments>
+<arg>truepoint</arg>
+</arguments>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Select Specific Product from Other varient</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:17.277" starttime="20180806 11:15:17.277"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>window.scrollTo(0,1500)</arg>
+</arguments>
+<msg timestamp="20180806 11:15:17.278" level="INFO">Executing JavaScript:
+window.scrollTo(0,1500)</msg>
+<status status="PASS" endtime="20180806 11:15:17.987" starttime="20180806 11:15:17.278"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${product}' == 'normal'</arg>
+<arg>Click Button</arg>
+<arg>${btn_attribute_red}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:17.989" starttime="20180806 11:15:17.988"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${product}' == 'truepoint'</arg>
+<arg>Click Button</arg>
+<arg>${btn_attribute_black}</arg>
+</arguments>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_attribute_black}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:17.998" level="INFO">Clicking element '//div[@data-option-title="ดำ"]'.</msg>
+<status status="PASS" endtime="20180806 11:15:19.503" starttime="20180806 11:15:17.997"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:19.503" starttime="20180806 11:15:17.995"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:19.503" starttime="20180806 11:15:17.990"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:19.503" starttime="20180806 11:15:17.275"></status>
+</kw>
+<kw name="Click TruePoint Button On Level D Page" library="Mobile_LevelD">
+<doc>Click TruePoint button on level D page</doc>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Click TruePoint Button on Level D Page</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:19.506" starttime="20180806 11:15:19.506"></status>
+</kw>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_truepoint}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:19.510" level="INFO">Clicking element '//div[@class="inner point ng-scope"]'.</msg>
+<status status="PASS" endtime="20180806 11:15:21.007" starttime="20180806 11:15:19.509"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:21.007" starttime="20180806 11:15:19.507"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:21.007" starttime="20180806 11:15:19.504"></status>
+</kw>
+<kw name="Verify Level D TruePoint Alert Message" library="Mobile_LevelD">
+<doc>Verify TruePoint Alert Message at Popup</doc>
+<arguments>
+<arg>yes</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Log To Console</arg>
+<arg>Verify TruePoint Alert Message at Popup</arg>
+</arguments>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Verify TruePoint Alert Message at Popup</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:21.015" starttime="20180806 11:15:21.013"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:21.015" starttime="20180806 11:15:21.011"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Wait Until Element Is Visible</arg>
+<arg>${popup_truepoint_msg}</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${popup_truepoint_msg}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:22.465" starttime="20180806 11:15:21.021"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:22.465" starttime="20180806 11:15:21.018"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Element Should Contain</arg>
+<arg>${popup_error_msg}</arg>
+<arg>คุณแลกสินค้าทรูพอยท์ได้เพียง 1 ชิ้น</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${popup_error_msg}</arg>
+<arg>คุณแลกสินค้าทรูพอยท์ได้เพียง 1 ชิ้น</arg>
+</arguments>
+<msg timestamp="20180806 11:15:23.917" level="INFO">Element '//h4[@class="modal-title"]' contains text 'คุณแลกสินค้าทรูพอยท์ได้เพียง 1 ชิ้น'.</msg>
+<status status="PASS" endtime="20180806 11:15:23.917" starttime="20180806 11:15:22.466"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:23.917" starttime="20180806 11:15:22.466"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Element Should Contain</arg>
+<arg>${btn_at_popup_truepoint_continue}</arg>
+<arg>ดำเนินการต่อ</arg>
+</arguments>
+<kw name="Element Should Contain" library="SeleniumLibrary">
+<doc>Verifies that element ``locator`` contains text ``expected``.</doc>
+<arguments>
+<arg>${btn_at_popup_truepoint_continue}</arg>
+<arg>ดำเนินการต่อ</arg>
+</arguments>
+<msg timestamp="20180806 11:15:25.372" level="INFO">Element '//a[@class="btn btn-addtocart-point"]' contains text 'ดำเนินการต่อ'.</msg>
+<status status="PASS" endtime="20180806 11:15:25.372" starttime="20180806 11:15:23.918"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:25.372" starttime="20180806 11:15:23.918"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Log To Console</arg>
+<arg>Verify no Alert Message And Go To Cart Page</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:25.374" starttime="20180806 11:15:25.373"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Wait Until Page Does Not Contain Element</arg>
+<arg>add-to-cart</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:25.376" starttime="20180806 11:15:25.375"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Verify Level D Go To Cart Page</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:25.378" starttime="20180806 11:15:25.377"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:25.378" starttime="20180806 11:15:21.008"></status>
+</kw>
+<kw name="Click Continue On TruePoint Alert Message" library="Mobile_LevelD">
+<doc>Click Continue button on TruePoint Popup Message</doc>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Click Continue button on TruePoint Popup Message</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:25.381" starttime="20180806 11:15:25.380"></status>
+</kw>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_at_popup_truepoint_continue}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:25.383" level="INFO">Clicking element '//a[@class="btn btn-addtocart-point"]'.</msg>
+<status status="PASS" endtime="20180806 11:15:26.875" starttime="20180806 11:15:25.382"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:26.875" starttime="20180806 11:15:25.381"></status>
+</kw>
+<kw name="Wait Until Page Does Not Contain Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` disappears from current page.</doc>
+<arguments>
+<arg>add-to-cart</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:28.473" starttime="20180806 11:15:26.876"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:28.474" starttime="20180806 11:15:25.379"></status>
+</kw>
+<kw name="Delete All Product In Cart Mobile" library="Checkout">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${h_cart_icon}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:28.478" level="INFO">Clicking element '//div[@id='box-my-cart']'.</msg>
+<status status="PASS" endtime="20180806 11:15:29.969" starttime="20180806 11:15:28.477"></status>
+</kw>
+<kw name="Wait Until Page Contains" library="SeleniumLibrary">
+<doc>Waits until ``text`` appears on current page.</doc>
+<arguments>
+<arg>All Rights Reserved</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:30.707" starttime="20180806 11:15:29.969"></status>
+</kw>
+<kw name="Get Matching Xpath Count" library="SeleniumLibrary">
+<doc>Deprecated. Use `Get Element Count` instead.</doc>
+<arguments>
+<arg>${m_cart_delete_item}</arg>
+</arguments>
+<assign>
+<var>${count}</var>
+</assign>
+<msg timestamp="20180806 11:15:31.437" level="INFO">${count} = 1</msg>
+<status status="PASS" endtime="20180806 11:15:31.437" starttime="20180806 11:15:30.708"></status>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>${count} + 1</arg>
+</arguments>
+<assign>
+<var>${index}</var>
+</assign>
+<msg timestamp="20180806 11:15:31.438" level="INFO">${index} = 2</msg>
+<status status="PASS" endtime="20180806 11:15:31.438" starttime="20180806 11:15:31.437"></status>
+</kw>
+<kw type="for" name="${i} IN RANGE [ 0 | ${count} ]">
+<kw type="foritem" name="${i} = 0">
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>$('.delete-item')[0].click()</arg>
+</arguments>
+<msg timestamp="20180806 11:15:31.440" level="INFO">Executing JavaScript:
+$('.delete-item')[0].click()</msg>
+<status status="PASS" endtime="20180806 11:15:32.180" starttime="20180806 11:15:31.439"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>0.3s</arg>
+</arguments>
+<msg timestamp="20180806 11:15:32.483" level="INFO">Slept 300 milliseconds</msg>
+<status status="PASS" endtime="20180806 11:15:32.483" starttime="20180806 11:15:32.181"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:32.484" starttime="20180806 11:15:31.439"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:32.484" starttime="20180806 11:15:31.438"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:32.484" starttime="20180806 11:15:28.475"></status>
+</kw>
+<kw type="teardown" name="Run Keywords" library="BuiltIn">
+<doc>Executes all the given keywords in a sequence.</doc>
+<arguments>
+<arg>Capture Page Screenshot</arg>
+<arg>AND</arg>
+<arg>Close Browser</arg>
+</arguments>
+<kw name="Capture Page Screenshot" library="SeleniumLibrary">
+<doc>Takes screenshot of the current page and embeds it into log file.</doc>
+<msg timestamp="20180806 11:15:33.571" html="yes" level="INFO">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-26.png"&gt;&lt;img src="selenium-screenshot-26.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" endtime="20180806 11:15:33.571" starttime="20180806 11:15:32.486"></status>
+</kw>
+<kw name="Close Browser" library="SeleniumLibrary">
+<doc>Closes the current browser.</doc>
+<status status="PASS" endtime="20180806 11:15:34.357" starttime="20180806 11:15:33.572"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:34.357" starttime="20180806 11:15:32.485"></status>
+</kw>
+<doc>Verify alert message at Level D page when Cart is not empty</doc>
+<tags>
+<tag>High</tag>
+<tag>Regression</tag>
+<tag>Wemall-Mobile</tag>
+</tags>
+<status status="PASS" endtime="20180806 11:15:34.358" critical="yes" starttime="20180806 11:14:47.711"></status>
+</test>
+<test id="s1-s1-t5" name="TC_MC_12094">
+<kw name="Open Mobile Browser" library="Mobile_LevelD">
+<kw name="Open Custom Browser" library="Common">
+<arguments>
+<arg>${URL_MOBILE}</arg>
+<arg>Mobile</arg>
+</arguments>
+<kw name="Replace String" library="String">
+<doc>Replaces ``search_for`` in the given ``string`` with ``replace_with``.</doc>
+<arguments>
+<arg>/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/Common</arg>
+<arg>Common</arg>
+<arg>UserLibrary</arg>
+</arguments>
+<assign>
+<var>${path}</var>
+</assign>
+<msg timestamp="20180806 11:15:34.365" level="INFO">${path} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary</msg>
+<status status="PASS" endtime="20180806 11:15:34.366" starttime="20180806 11:15:34.365"></status>
+</kw>
+<kw name="Catenate" library="BuiltIn">
+<doc>Catenates the given items together and returns the resulted string.</doc>
+<arguments>
+<arg>SEPARATOR=</arg>
+<arg>${path}</arg>
+<arg>${/}selenium-server-standalone-2.53.0.jar</arg>
+</arguments>
+<assign>
+<var>${selenium_jar}</var>
+</assign>
+<msg timestamp="20180806 11:15:34.367" level="INFO">${selenium_jar} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar</msg>
+<status status="PASS" endtime="20180806 11:15:34.367" starttime="20180806 11:15:34.366"></status>
+</kw>
+<kw name="Set Environment Variable" library="OperatingSystem">
+<doc>Sets an environment variable to a specified value.</doc>
+<arguments>
+<arg>SELENIUM_SERVER_JAR</arg>
+<arg>${selenium_jar}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:34.368" level="INFO">Environment variable 'SELENIUM_SERVER_JAR' set to value '/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar'.</msg>
+<status status="PASS" endtime="20180806 11:15:34.368" starttime="20180806 11:15:34.368"></status>
+</kw>
+<kw name="Get Chrome Mobile Options" library="_customkeyword">
+<arguments>
+<arg>Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4</arg>
+</arguments>
+<assign>
+<var>${options}</var>
+</assign>
+<msg timestamp="20180806 11:15:34.369" level="INFO">${options} = &lt;selenium.webdriver.chrome.options.Options object at 0x106975e50&gt;</msg>
+<status status="PASS" endtime="20180806 11:15:34.369" starttime="20180806 11:15:34.369"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Create Webdriver</arg>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<kw name="Create Webdriver" library="SeleniumLibrary">
+<doc>Creates an instance of Selenium WebDriver.</doc>
+<arguments>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:34.371" level="INFO">Creating an instance of the Chrome WebDriver.</msg>
+<status status="PASS" endtime="20180806 11:15:36.196" starttime="20180806 11:15:34.371"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:36.197" starttime="20180806 11:15:34.370"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Open Browser</arg>
+<arg>${url}</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:36.200" starttime="20180806 11:15:36.199"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Create Webdriver</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:36.202" starttime="20180806 11:15:36.201"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:36.204" starttime="20180806 11:15:36.203"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:36.206" starttime="20180806 11:15:36.205"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:36.210" starttime="20180806 11:15:36.207"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:36.213" starttime="20180806 11:15:36.212"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Window Size</arg>
+<arg>375</arg>
+<arg>667</arg>
+<arg>ELSE</arg>
+<arg>Set Window Size</arg>
+<arg>1440</arg>
+<arg>900</arg>
+</arguments>
+<kw name="Set Window Size" library="SeleniumLibrary">
+<doc>Sets current windows size to given ``width`` and ``height``.</doc>
+<arguments>
+<arg>375</arg>
+<arg>667</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:36.339" starttime="20180806 11:15:36.215"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:36.339" starttime="20180806 11:15:36.214"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Selenium Speed" library="SeleniumLibrary">
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:36.342" starttime="20180806 11:15:36.341"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:36.342" starttime="20180806 11:15:36.340"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Browser Implicit Wait" library="SeleniumLibrary">
+<doc>Sets the implicit wait value used by Selenium.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:37.051" starttime="20180806 11:15:36.343"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:37.051" starttime="20180806 11:15:36.342"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile' or '${browser}' == 'Safari'</arg>
+<arg>Go To</arg>
+<arg>${url}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${url}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:37.054" level="INFO">Opening url 'https://m.wemall-dev.com'</msg>
+<status status="PASS" endtime="20180806 11:15:46.450" starttime="20180806 11:15:37.053"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:46.451" starttime="20180806 11:15:37.052"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile'</arg>
+<arg>Maximize Browser Window</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:46.452" starttime="20180806 11:15:46.451"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:46.452" starttime="20180806 11:15:34.363"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>box-my-cart</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:47.903" starttime="20180806 11:15:46.453"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:47.903" starttime="20180806 11:15:34.362"></status>
+</kw>
+<kw name="Delete All Product In Cart Mobile" library="Checkout">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${h_cart_icon}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:47.908" level="INFO">Clicking element '//div[@id='box-my-cart']'.</msg>
+<status status="PASS" endtime="20180806 11:15:49.426" starttime="20180806 11:15:47.908"></status>
+</kw>
+<kw name="Wait Until Page Contains" library="SeleniumLibrary">
+<doc>Waits until ``text`` appears on current page.</doc>
+<arguments>
+<arg>All Rights Reserved</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:50.492" starttime="20180806 11:15:49.427"></status>
+</kw>
+<kw name="Get Matching Xpath Count" library="SeleniumLibrary">
+<doc>Deprecated. Use `Get Element Count` instead.</doc>
+<arguments>
+<arg>${m_cart_delete_item}</arg>
+</arguments>
+<assign>
+<var>${count}</var>
+</assign>
+<msg timestamp="20180806 11:15:51.949" level="INFO">${count} = 0</msg>
+<status status="PASS" endtime="20180806 11:15:51.949" starttime="20180806 11:15:50.492"></status>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>${count} + 1</arg>
+</arguments>
+<assign>
+<var>${index}</var>
+</assign>
+<msg timestamp="20180806 11:15:51.951" level="INFO">${index} = 1</msg>
+<status status="PASS" endtime="20180806 11:15:51.951" starttime="20180806 11:15:51.950"></status>
+</kw>
+<kw type="for" name="${i} IN RANGE [ 0 | ${count} ]">
+<status status="PASS" endtime="20180806 11:15:51.952" starttime="20180806 11:15:51.952"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:51.952" starttime="20180806 11:15:47.904"></status>
+</kw>
+<kw name="Go To Level D Mobile Page" library="Mobile_LevelD">
+<arguments>
+<arg>product_id_with_truepoint_promotion</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_and_freebie_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_and_freebie_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_multiple_sku_and_some_product_with_truepoint_product'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_multiple_sku_and_some_product_with_truepoint_product}</arg>
+<arg>ELSE</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${ProductLvD}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:51.957" level="INFO">Opening url 'https://m.wemall-dev.com/d/L91556654'</msg>
+<status status="PASS" endtime="20180806 11:15:59.962" starttime="20180806 11:15:51.956"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:59.962" starttime="20180806 11:15:51.955"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:15:59.962" starttime="20180806 11:15:51.953"></status>
+</kw>
+<kw name="Click TruePoint Button On Level D Page" library="Mobile_LevelD">
+<doc>Click TruePoint button on level D page</doc>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Click TruePoint Button on Level D Page</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:15:59.966" starttime="20180806 11:15:59.965"></status>
+</kw>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_truepoint}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180806 11:15:59.969" level="INFO">Clicking element '//div[@class="inner point ng-scope"]'.</msg>
+<status status="PASS" endtime="20180806 11:16:01.479" starttime="20180806 11:15:59.968"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:01.479" starttime="20180806 11:15:59.966"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:01.479" starttime="20180806 11:15:59.963"></status>
+</kw>
+<kw name="Verify Level D TruePoint Alert Message" library="Mobile_LevelD">
+<doc>Verify TruePoint Alert Message at Popup</doc>
+<arguments>
+<arg>no</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Log To Console</arg>
+<arg>Verify TruePoint Alert Message at Popup</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:01.483" starttime="20180806 11:16:01.482"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Wait Until Element Is Visible</arg>
+<arg>${popup_truepoint_msg}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:01.484" starttime="20180806 11:16:01.483"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Element Should Contain</arg>
+<arg>${popup_error_msg}</arg>
+<arg>คุณแลกสินค้าทรูพอยท์ได้เพียง 1 ชิ้น</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:01.486" starttime="20180806 11:16:01.485"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Element Should Contain</arg>
+<arg>${btn_at_popup_truepoint_continue}</arg>
+<arg>ดำเนินการต่อ</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:01.487" starttime="20180806 11:16:01.486"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Log To Console</arg>
+<arg>Verify no Alert Message And Go To Cart Page</arg>
+</arguments>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Verify no Alert Message And Go To Cart Page</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:01.489" starttime="20180806 11:16:01.488"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:01.489" starttime="20180806 11:16:01.487"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Wait Until Page Does Not Contain Element</arg>
+<arg>add-to-cart</arg>
+</arguments>
+<kw name="Wait Until Page Does Not Contain Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` disappears from current page.</doc>
+<arguments>
+<arg>add-to-cart</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:02.954" starttime="20180806 11:16:01.492"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:02.954" starttime="20180806 11:16:01.490"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Verify Level D Go To Cart Page</arg>
+</arguments>
+<kw name="Verify Level D Go To Cart Page" library="Mobile_LevelD">
+<doc>Verify whether Page Go To Cart page or not</doc>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Verify whether Page Go To Cart from Level D or not</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:02.958" starttime="20180806 11:16:02.957"></status>
+</kw>
+<kw name="Location Should Contain" library="SeleniumLibrary">
+<doc>Verifies that current URL contains ``expected``.</doc>
+<arguments>
+<arg>/cart</arg>
+</arguments>
+<msg timestamp="20180806 11:16:03.672" level="INFO">Current location contains '/cart'.</msg>
+<status status="PASS" endtime="20180806 11:16:03.673" starttime="20180806 11:16:02.958"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:03.673" starttime="20180806 11:16:02.956"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:03.673" starttime="20180806 11:16:02.955"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:03.673" starttime="20180806 11:16:01.480"></status>
+</kw>
+<kw name="Delete All Product In Cart Mobile" library="Checkout">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${h_cart_icon}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:03.677" level="INFO">Clicking element '//div[@id='box-my-cart']'.</msg>
+<status status="PASS" endtime="20180806 11:16:05.183" starttime="20180806 11:16:03.676"></status>
+</kw>
+<kw name="Wait Until Page Contains" library="SeleniumLibrary">
+<doc>Waits until ``text`` appears on current page.</doc>
+<arguments>
+<arg>All Rights Reserved</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:05.913" starttime="20180806 11:16:05.185"></status>
+</kw>
+<kw name="Get Matching Xpath Count" library="SeleniumLibrary">
+<doc>Deprecated. Use `Get Element Count` instead.</doc>
+<arguments>
+<arg>${m_cart_delete_item}</arg>
+</arguments>
+<assign>
+<var>${count}</var>
+</assign>
+<msg timestamp="20180806 11:16:06.637" level="INFO">${count} = 1</msg>
+<status status="PASS" endtime="20180806 11:16:06.638" starttime="20180806 11:16:05.913"></status>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>${count} + 1</arg>
+</arguments>
+<assign>
+<var>${index}</var>
+</assign>
+<msg timestamp="20180806 11:16:06.641" level="INFO">${index} = 2</msg>
+<status status="PASS" endtime="20180806 11:16:06.641" starttime="20180806 11:16:06.639"></status>
+</kw>
+<kw type="for" name="${i} IN RANGE [ 0 | ${count} ]">
+<kw type="foritem" name="${i} = 0">
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>$('.delete-item')[0].click()</arg>
+</arguments>
+<msg timestamp="20180806 11:16:06.644" level="INFO">Executing JavaScript:
+$('.delete-item')[0].click()</msg>
+<status status="PASS" endtime="20180806 11:16:07.382" starttime="20180806 11:16:06.644"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>0.3s</arg>
+</arguments>
+<msg timestamp="20180806 11:16:07.684" level="INFO">Slept 300 milliseconds</msg>
+<status status="PASS" endtime="20180806 11:16:07.684" starttime="20180806 11:16:07.383"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:07.684" starttime="20180806 11:16:06.643"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:07.684" starttime="20180806 11:16:06.642"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:07.685" starttime="20180806 11:16:03.674"></status>
+</kw>
+<kw type="teardown" name="Run Keywords" library="BuiltIn">
+<doc>Executes all the given keywords in a sequence.</doc>
+<arguments>
+<arg>Capture Page Screenshot</arg>
+<arg>AND</arg>
+<arg>Close Browser</arg>
+</arguments>
+<kw name="Capture Page Screenshot" library="SeleniumLibrary">
+<doc>Takes screenshot of the current page and embeds it into log file.</doc>
+<msg timestamp="20180806 11:16:08.647" html="yes" level="INFO">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-27.png"&gt;&lt;img src="selenium-screenshot-27.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" endtime="20180806 11:16:08.647" starttime="20180806 11:16:07.687"></status>
+</kw>
+<kw name="Close Browser" library="SeleniumLibrary">
+<doc>Closes the current browser.</doc>
+<status status="PASS" endtime="20180806 11:16:09.444" starttime="20180806 11:16:08.648"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:09.444" starttime="20180806 11:16:07.686"></status>
+</kw>
+<doc>Verify no alert message at Level D page when Cart is empty</doc>
+<tags>
+<tag>High</tag>
+<tag>Regression</tag>
+<tag>Wemall-Mobile</tag>
+</tags>
+<status status="PASS" endtime="20180806 11:16:09.444" critical="yes" starttime="20180806 11:15:34.359"></status>
+</test>
+<test id="s1-s1-t6" name="TC_MC_12095">
+<kw name="Open Mobile Browser" library="Mobile_LevelD">
+<kw name="Open Custom Browser" library="Common">
+<arguments>
+<arg>${URL_MOBILE}</arg>
+<arg>Mobile</arg>
+</arguments>
+<kw name="Replace String" library="String">
+<doc>Replaces ``search_for`` in the given ``string`` with ``replace_with``.</doc>
+<arguments>
+<arg>/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/Common</arg>
+<arg>Common</arg>
+<arg>UserLibrary</arg>
+</arguments>
+<assign>
+<var>${path}</var>
+</assign>
+<msg timestamp="20180806 11:16:09.453" level="INFO">${path} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary</msg>
+<status status="PASS" endtime="20180806 11:16:09.453" starttime="20180806 11:16:09.453"></status>
+</kw>
+<kw name="Catenate" library="BuiltIn">
+<doc>Catenates the given items together and returns the resulted string.</doc>
+<arguments>
+<arg>SEPARATOR=</arg>
+<arg>${path}</arg>
+<arg>${/}selenium-server-standalone-2.53.0.jar</arg>
+</arguments>
+<assign>
+<var>${selenium_jar}</var>
+</assign>
+<msg timestamp="20180806 11:16:09.455" level="INFO">${selenium_jar} = /Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar</msg>
+<status status="PASS" endtime="20180806 11:16:09.455" starttime="20180806 11:16:09.454"></status>
+</kw>
+<kw name="Set Environment Variable" library="OperatingSystem">
+<doc>Sets an environment variable to a specified value.</doc>
+<arguments>
+<arg>SELENIUM_SERVER_JAR</arg>
+<arg>${selenium_jar}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:09.456" level="INFO">Environment variable 'SELENIUM_SERVER_JAR' set to value '/Users/thanakrit.mak/Documents/automate_mc/MerchantCenter/Keyword/UserLibrary/selenium-server-standalone-2.53.0.jar'.</msg>
+<status status="PASS" endtime="20180806 11:16:09.456" starttime="20180806 11:16:09.455"></status>
+</kw>
+<kw name="Get Chrome Mobile Options" library="_customkeyword">
+<arguments>
+<arg>Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4</arg>
+</arguments>
+<assign>
+<var>${options}</var>
+</assign>
+<msg timestamp="20180806 11:16:09.457" level="INFO">${options} = &lt;selenium.webdriver.chrome.options.Options object at 0x106d2e350&gt;</msg>
+<status status="PASS" endtime="20180806 11:16:09.457" starttime="20180806 11:16:09.457"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Create Webdriver</arg>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<kw name="Create Webdriver" library="SeleniumLibrary">
+<doc>Creates an instance of Selenium WebDriver.</doc>
+<arguments>
+<arg>Chrome</arg>
+<arg>chrome_options=${options}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:09.459" level="INFO">Creating an instance of the Chrome WebDriver.</msg>
+<status status="PASS" endtime="20180806 11:16:11.364" starttime="20180806 11:16:09.458"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:11.365" starttime="20180806 11:16:09.458"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Open Browser</arg>
+<arg>${url}</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:11.368" starttime="20180806 11:16:11.367"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Create Webdriver</arg>
+<arg>${browser}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:11.370" starttime="20180806 11:16:11.369"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:11.371" starttime="20180806 11:16:11.370"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' != 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.5s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:11.373" starttime="20180806 11:16:11.372"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:11.375" starttime="20180806 11:16:11.374"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile' and '${browser}' == 'Safari'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>1s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:11.378" starttime="20180806 11:16:11.376"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Window Size</arg>
+<arg>375</arg>
+<arg>667</arg>
+<arg>ELSE</arg>
+<arg>Set Window Size</arg>
+<arg>1440</arg>
+<arg>900</arg>
+</arguments>
+<kw name="Set Window Size" library="SeleniumLibrary">
+<doc>Sets current windows size to given ``width`` and ``height``.</doc>
+<arguments>
+<arg>375</arg>
+<arg>667</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:11.532" starttime="20180806 11:16:11.380"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:11.532" starttime="20180806 11:16:11.379"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Selenium Speed</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Selenium Speed" library="SeleniumLibrary">
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:11.537" starttime="20180806 11:16:11.536"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:11.537" starttime="20180806 11:16:11.533"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile'</arg>
+<arg>Set Browser Implicit Wait</arg>
+<arg>0.7s</arg>
+</arguments>
+<kw name="Set Browser Implicit Wait" library="SeleniumLibrary">
+<doc>Sets the implicit wait value used by Selenium.</doc>
+<arguments>
+<arg>0.7s</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:12.245" starttime="20180806 11:16:11.539"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:12.246" starttime="20180806 11:16:11.537"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' == 'Mobile' or '${browser}' == 'Safari'</arg>
+<arg>Go To</arg>
+<arg>${url}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${url}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:12.248" level="INFO">Opening url 'https://m.wemall-dev.com'</msg>
+<status status="PASS" endtime="20180806 11:16:20.443" starttime="20180806 11:16:12.248"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:20.443" starttime="20180806 11:16:12.246"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${browser}' != 'Mobile'</arg>
+<arg>Maximize Browser Window</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:20.445" starttime="20180806 11:16:20.444"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:20.445" starttime="20180806 11:16:09.451"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>box-my-cart</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:21.904" starttime="20180806 11:16:20.446"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:21.904" starttime="20180806 11:16:09.450"></status>
+</kw>
+<kw name="Delete All Product In Cart Mobile" library="Checkout">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${h_cart_icon}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:21.908" level="INFO">Clicking element '//div[@id='box-my-cart']'.</msg>
+<status status="PASS" endtime="20180806 11:16:24.069" starttime="20180806 11:16:21.907"></status>
+</kw>
+<kw name="Wait Until Page Contains" library="SeleniumLibrary">
+<doc>Waits until ``text`` appears on current page.</doc>
+<arguments>
+<arg>All Rights Reserved</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:25.209" starttime="20180806 11:16:24.070"></status>
+</kw>
+<kw name="Get Matching Xpath Count" library="SeleniumLibrary">
+<doc>Deprecated. Use `Get Element Count` instead.</doc>
+<arguments>
+<arg>${m_cart_delete_item}</arg>
+</arguments>
+<assign>
+<var>${count}</var>
+</assign>
+<msg timestamp="20180806 11:16:26.665" level="INFO">${count} = 0</msg>
+<status status="PASS" endtime="20180806 11:16:26.665" starttime="20180806 11:16:25.210"></status>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>${count} + 1</arg>
+</arguments>
+<assign>
+<var>${index}</var>
+</assign>
+<msg timestamp="20180806 11:16:26.666" level="INFO">${index} = 1</msg>
+<status status="PASS" endtime="20180806 11:16:26.667" starttime="20180806 11:16:26.666"></status>
+</kw>
+<kw type="for" name="${i} IN RANGE [ 0 | ${count} ]">
+<status status="PASS" endtime="20180806 11:16:26.667" starttime="20180806 11:16:26.667"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:26.667" starttime="20180806 11:16:21.905"></status>
+</kw>
+<kw name="Go To Level D Mobile Page" library="Mobile_LevelD">
+<arguments>
+<arg>product_id_with_truepoint_promotion</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_and_freebie_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_and_freebie_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_multiple_sku_and_some_product_with_truepoint_product'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_multiple_sku_and_some_product_with_truepoint_product}</arg>
+<arg>ELSE</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${ProductLvD}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:26.674" level="INFO">Opening url 'https://m.wemall-dev.com/d/L91556654'</msg>
+<status status="PASS" endtime="20180806 11:16:29.170" starttime="20180806 11:16:26.673"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:29.171" starttime="20180806 11:16:26.670"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:29.171" starttime="20180806 11:16:26.668"></status>
+</kw>
+<kw name="Click TruePoint Button On Level D Page" library="Mobile_LevelD">
+<doc>Click TruePoint button on level D page</doc>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Click TruePoint Button on Level D Page</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:29.174" starttime="20180806 11:16:29.173"></status>
+</kw>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_truepoint}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:29.177" level="INFO">Clicking element '//div[@class="inner point ng-scope"]'.</msg>
+<status status="PASS" endtime="20180806 11:16:34.255" starttime="20180806 11:16:29.176"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:34.255" starttime="20180806 11:16:29.174"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:34.255" starttime="20180806 11:16:29.172"></status>
+</kw>
+<kw name="Verify Level D TruePoint Alert Message" library="Mobile_LevelD">
+<doc>Verify TruePoint Alert Message at Popup</doc>
+<arguments>
+<arg>no</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Log To Console</arg>
+<arg>Verify TruePoint Alert Message at Popup</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:34.259" starttime="20180806 11:16:34.258"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Wait Until Element Is Visible</arg>
+<arg>${popup_truepoint_msg}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:34.260" starttime="20180806 11:16:34.260"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Element Should Contain</arg>
+<arg>${popup_error_msg}</arg>
+<arg>คุณแลกสินค้าทรูพอยท์ได้เพียง 1 ชิ้น</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:34.262" starttime="20180806 11:16:34.261"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Element Should Contain</arg>
+<arg>${btn_at_popup_truepoint_continue}</arg>
+<arg>ดำเนินการต่อ</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:34.264" starttime="20180806 11:16:34.263"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Log To Console</arg>
+<arg>Verify no Alert Message And Go To Cart Page</arg>
+</arguments>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Verify no Alert Message And Go To Cart Page</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:34.266" starttime="20180806 11:16:34.266"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:34.267" starttime="20180806 11:16:34.265"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Wait Until Page Does Not Contain Element</arg>
+<arg>add-to-cart</arg>
+</arguments>
+<kw name="Wait Until Page Does Not Contain Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` disappears from current page.</doc>
+<arguments>
+<arg>add-to-cart</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:35.729" starttime="20180806 11:16:34.268"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:35.729" starttime="20180806 11:16:34.267"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Verify Level D Go To Cart Page</arg>
+</arguments>
+<kw name="Verify Level D Go To Cart Page" library="Mobile_LevelD">
+<doc>Verify whether Page Go To Cart page or not</doc>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Verify whether Page Go To Cart from Level D or not</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:35.734" starttime="20180806 11:16:35.733"></status>
+</kw>
+<kw name="Location Should Contain" library="SeleniumLibrary">
+<doc>Verifies that current URL contains ``expected``.</doc>
+<arguments>
+<arg>/cart</arg>
+</arguments>
+<msg timestamp="20180806 11:16:36.451" level="INFO">Current location contains '/cart'.</msg>
+<status status="PASS" endtime="20180806 11:16:36.451" starttime="20180806 11:16:35.734"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:36.452" starttime="20180806 11:16:35.731"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:36.452" starttime="20180806 11:16:35.730"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:36.453" starttime="20180806 11:16:34.256"></status>
+</kw>
+<kw name="Go To Level D Mobile Page" library="Mobile_LevelD">
+<arguments>
+<arg>product_id_multiple_sku_and_some_product_with_truepoint_product</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_with_truepoint_and_freebie_promotion'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_with_truepoint_and_freebie_promotion}</arg>
+<arg>ELSE IF</arg>
+<arg>'${ProductLvD}' == 'product_id_multiple_sku_and_some_product_with_truepoint_product'</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${product_id_multiple_sku_and_some_product_with_truepoint_product}</arg>
+<arg>ELSE</arg>
+<arg>Go to</arg>
+<arg>${URL_MOBILE}/d/${ProductLvD}</arg>
+</arguments>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>${URL_MOBILE}/d/${product_id_multiple_sku_and_some_product_with_truepoint_product}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:36.460" level="INFO">Opening url 'https://m.wemall-dev.com/d/L91556659'</msg>
+<status status="PASS" endtime="20180806 11:16:39.555" starttime="20180806 11:16:36.459"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:39.555" starttime="20180806 11:16:36.457"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:39.556" starttime="20180806 11:16:36.454"></status>
+</kw>
+<kw name="Select Level D Product" library="Mobile_LevelD">
+<doc>Select specific product from varient</doc>
+<arguments>
+<arg>normal</arg>
+</arguments>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Select Specific Product from Other varient</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:39.559" starttime="20180806 11:16:39.558"></status>
+</kw>
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>window.scrollTo(0,1500)</arg>
+</arguments>
+<msg timestamp="20180806 11:16:39.561" level="INFO">Executing JavaScript:
+window.scrollTo(0,1500)</msg>
+<status status="PASS" endtime="20180806 11:16:40.278" starttime="20180806 11:16:39.560"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${product}' == 'normal'</arg>
+<arg>Click Button</arg>
+<arg>${btn_attribute_red}</arg>
+</arguments>
+<kw name="Click Button" library="Common">
+<doc>Use for click muti ship button on waitshipping tab</doc>
+<arguments>
+<arg>${btn_attribute_red}</arg>
+</arguments>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${locator_button}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:40.283" level="INFO">Clicking element '//div[@data-option-title="แดง"]'.</msg>
+<status status="PASS" endtime="20180806 11:16:41.777" starttime="20180806 11:16:40.283"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:41.777" starttime="20180806 11:16:40.281"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:41.778" starttime="20180806 11:16:40.279"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${product}' == 'truepoint'</arg>
+<arg>Click Button</arg>
+<arg>${btn_attribute_black}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:41.779" starttime="20180806 11:16:41.778"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:41.779" starttime="20180806 11:16:39.556"></status>
+</kw>
+<kw name="Click Add to Cart And Go to Cart" library="Mobile_LevelD">
+<doc>Click Add To Cart button and continue to Cart page</doc>
+<kw name="Click on Add To Cart Button" library="Mobile_LevelD">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${btn_add_to_cart}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:41.784" level="INFO">Clicking element 'add-to-cart'.</msg>
+<status status="PASS" endtime="20180806 11:16:43.283" starttime="20180806 11:16:41.783"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:43.283" starttime="20180806 11:16:41.782"></status>
+</kw>
+<kw name="Confirmation Popup Should Be Appeared" library="Mobile_LevelD">
+<kw name="Element Should Be Visible" library="SeleniumLibrary">
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<arguments>
+<arg>${popup_confirmation}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:44.731" level="INFO">Element '//div[@class='modal-content']' is displayed.</msg>
+<status status="PASS" endtime="20180806 11:16:44.731" starttime="20180806 11:16:43.285"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:44.731" starttime="20180806 11:16:43.284"></status>
+</kw>
+<kw name="Click สั่งซื้อสินค้า Button" library="Mobile_LevelD">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${popup_check_order}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:44.734" level="INFO">Clicking element '//a[@ng-click='linkTo( "/cart" )']'.</msg>
+<status status="PASS" endtime="20180806 11:16:46.360" starttime="20180806 11:16:44.733"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:46.361" starttime="20180806 11:16:44.732"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:46.362" starttime="20180806 11:16:41.780"></status>
+</kw>
+<kw name="Verify Level D TruePoint Alert Message" library="Mobile_LevelD">
+<doc>Verify TruePoint Alert Message at Popup</doc>
+<arguments>
+<arg>no</arg>
+</arguments>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Log To Console</arg>
+<arg>Verify TruePoint Alert Message at Popup</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:46.368" starttime="20180806 11:16:46.366"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Wait Until Element Is Visible</arg>
+<arg>${popup_truepoint_msg}</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:46.369" starttime="20180806 11:16:46.368"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Element Should Contain</arg>
+<arg>${popup_error_msg}</arg>
+<arg>คุณแลกสินค้าทรูพอยท์ได้เพียง 1 ชิ้น</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:46.370" starttime="20180806 11:16:46.370"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'yes'</arg>
+<arg>Element Should Contain</arg>
+<arg>${btn_at_popup_truepoint_continue}</arg>
+<arg>ดำเนินการต่อ</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:46.372" starttime="20180806 11:16:46.371"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Log To Console</arg>
+<arg>Verify no Alert Message And Go To Cart Page</arg>
+</arguments>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Verify no Alert Message And Go To Cart Page</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:46.374" starttime="20180806 11:16:46.373"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:46.374" starttime="20180806 11:16:46.372"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Wait Until Page Does Not Contain Element</arg>
+<arg>add-to-cart</arg>
+</arguments>
+<kw name="Wait Until Page Does Not Contain Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` disappears from current page.</doc>
+<arguments>
+<arg>add-to-cart</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:47.820" starttime="20180806 11:16:46.377"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:47.820" starttime="20180806 11:16:46.375"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${mode}' == 'no'</arg>
+<arg>Verify Level D Go To Cart Page</arg>
+</arguments>
+<kw name="Verify Level D Go To Cart Page" library="Mobile_LevelD">
+<doc>Verify whether Page Go To Cart page or not</doc>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Verify whether Page Go To Cart from Level D or not</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:47.824" starttime="20180806 11:16:47.823"></status>
+</kw>
+<kw name="Location Should Contain" library="SeleniumLibrary">
+<doc>Verifies that current URL contains ``expected``.</doc>
+<arguments>
+<arg>/cart</arg>
+</arguments>
+<msg timestamp="20180806 11:16:48.539" level="INFO">Current location contains '/cart'.</msg>
+<status status="PASS" endtime="20180806 11:16:48.539" starttime="20180806 11:16:47.825"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:48.539" starttime="20180806 11:16:47.822"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:48.540" starttime="20180806 11:16:47.821"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:48.540" starttime="20180806 11:16:46.363"></status>
+</kw>
+<kw name="Delete All Product In Cart Mobile" library="Checkout">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${h_cart_icon}</arg>
+</arguments>
+<msg timestamp="20180806 11:16:48.543" level="INFO">Clicking element '//div[@id='box-my-cart']'.</msg>
+<status status="PASS" endtime="20180806 11:16:50.038" starttime="20180806 11:16:48.542"></status>
+</kw>
+<kw name="Wait Until Page Contains" library="SeleniumLibrary">
+<doc>Waits until ``text`` appears on current page.</doc>
+<arguments>
+<arg>All Rights Reserved</arg>
+</arguments>
+<status status="PASS" endtime="20180806 11:16:50.761" starttime="20180806 11:16:50.039"></status>
+</kw>
+<kw name="Get Matching Xpath Count" library="SeleniumLibrary">
+<doc>Deprecated. Use `Get Element Count` instead.</doc>
+<arguments>
+<arg>${m_cart_delete_item}</arg>
+</arguments>
+<assign>
+<var>${count}</var>
+</assign>
+<msg timestamp="20180806 11:16:51.495" level="INFO">${count} = 2</msg>
+<status status="PASS" endtime="20180806 11:16:51.495" starttime="20180806 11:16:50.762"></status>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>${count} + 1</arg>
+</arguments>
+<assign>
+<var>${index}</var>
+</assign>
+<msg timestamp="20180806 11:16:51.496" level="INFO">${index} = 3</msg>
+<status status="PASS" endtime="20180806 11:16:51.496" starttime="20180806 11:16:51.495"></status>
+</kw>
+<kw type="for" name="${i} IN RANGE [ 0 | ${count} ]">
+<kw type="foritem" name="${i} = 0">
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>$('.delete-item')[0].click()</arg>
+</arguments>
+<msg timestamp="20180806 11:16:51.498" level="INFO">Executing JavaScript:
+$('.delete-item')[0].click()</msg>
+<status status="PASS" endtime="20180806 11:16:52.243" starttime="20180806 11:16:51.497"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>0.3s</arg>
+</arguments>
+<msg timestamp="20180806 11:16:52.545" level="INFO">Slept 300 milliseconds</msg>
+<status status="PASS" endtime="20180806 11:16:52.546" starttime="20180806 11:16:52.244"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:52.546" starttime="20180806 11:16:51.497"></status>
+</kw>
+<kw type="foritem" name="${i} = 1">
+<kw name="Execute Javascript" library="SeleniumLibrary">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>$('.delete-item')[0].click()</arg>
+</arguments>
+<msg timestamp="20180806 11:16:52.547" level="INFO">Executing JavaScript:
+$('.delete-item')[0].click()</msg>
+<status status="PASS" endtime="20180806 11:16:53.292" starttime="20180806 11:16:52.547"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>0.3s</arg>
+</arguments>
+<msg timestamp="20180806 11:16:53.595" level="INFO">Slept 300 milliseconds</msg>
+<status status="PASS" endtime="20180806 11:16:53.596" starttime="20180806 11:16:53.293"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:53.596" starttime="20180806 11:16:52.546"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:53.596" starttime="20180806 11:16:51.496"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:53.597" starttime="20180806 11:16:48.541"></status>
+</kw>
+<kw type="teardown" name="Run Keywords" library="BuiltIn">
+<doc>Executes all the given keywords in a sequence.</doc>
+<arguments>
+<arg>Capture Page Screenshot</arg>
+<arg>AND</arg>
+<arg>Close Browser</arg>
+</arguments>
+<kw name="Capture Page Screenshot" library="SeleniumLibrary">
+<doc>Takes screenshot of the current page and embeds it into log file.</doc>
+<msg timestamp="20180806 11:16:54.781" html="yes" level="INFO">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-28.png"&gt;&lt;img src="selenium-screenshot-28.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" endtime="20180806 11:16:54.782" starttime="20180806 11:16:53.600"></status>
+</kw>
+<kw name="Close Browser" library="SeleniumLibrary">
+<doc>Closes the current browser.</doc>
+<status status="PASS" endtime="20180806 11:16:55.600" starttime="20180806 11:16:54.782"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:55.600" starttime="20180806 11:16:53.598"></status>
+</kw>
+<doc>Verify no alert message at Level D page when Cart has TruePoint product and add another normal product</doc>
+<tags>
+<tag>High</tag>
+<tag>Regression</tag>
+<tag>Wemall-Mobile</tag>
+</tags>
+<status status="PASS" endtime="20180806 11:16:55.600" critical="yes" starttime="20180806 11:16:09.447"></status>
+</test>
+<kw type="teardown" name="Close All Browsers" library="SeleniumLibrary">
+<doc>Closes all open browsers and resets the browser cache.</doc>
+<status status="PASS" endtime="20180806 11:16:55.606" starttime="20180806 11:16:55.605"></status>
+</kw>
+<status status="PASS" endtime="20180806 11:16:55.606" starttime="20180806 11:13:43.918"></status>
+</suite>
+<status status="PASS" endtime="20180806 11:16:55.616" starttime="20180806 11:13:43.893"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="0" pass="6">Critical Tests</stat>
+<stat fail="0" pass="6">All Tests</stat>
+</total>
+<tag>
+<stat fail="0" pass="6">High</stat>
+<stat fail="0" pass="6">Regression</stat>
+<stat fail="0" pass="6">Wemall-Mobile</stat>
+</tag>
+<suite>
+<stat fail="0" id="s1" name="LevelD" pass="6">LevelD</stat>
+<stat fail="0" id="s1-s1" name="ProductDetail" pass="6">LevelD.ProductDetail</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

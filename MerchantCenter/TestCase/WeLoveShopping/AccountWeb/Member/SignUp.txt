@@ -1,0 +1,76 @@
+*** Settings ***
+Suite Setup       Go To Registration Page
+Suite Teardown    Close All Browsers
+Test Teardown     Capture Page Screenshot
+Force Tags        Account-Web    Member    SignUp    Ligo    mc-wls
+Test Timeout      2 minutes
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignUp.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/ManageProfile.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_Register.txt
+
+*** Test Cases ***
+TC_MC_00136
+    [Documentation]    [Welove] Register - Username - Incorrect Format
+    [Tags]    Regression    Sprint2017MC5    Medium
+    [Template]    Member_Register.Validate Registration Form
+    Email               xxx@                   Email Format       ${EMPTY}    ${EMPTY}
+    Email               xxx*@truecorp.com      Email Format       ${EMPTY}    ${EMPTY}
+
+TC_MC_00140
+  [Documentation]    [Welove] Register - Username - Already Registered
+    [Tags]    Regression    Sprint2017MC5    High
+    [Template]    Member_Register.Validate Registration Form
+    Email               ${buyer_account}        ${EMPTY}      ${EMPTY}    ${EMPTY}
+    Password            P@ssw0rd                ${EMPTY}      ${EMPTY}    ${EMPTY}
+    Confirm Password    P@ssw0rd                ${EMPTY}      ${EMPTY}    ${EMPTY}
+    Mobile Number       0981112222              ${EMPTY}      ${EMPTY}    ${EMPTY}
+    Agreement           Tick                    ${EMPTY}      Submit      Email Already Used
+
+TC_MC_00152
+  [Documentation]    [Welove] Register - Password - Minimum Range
+    [Tags]    Regression    Sprint2017MC5    Medium
+    [Template]    Member_Register.Validate Registration Form
+    Password            123456                  Password Range        ${EMPTY}    ${EMPTY}
+
+TC_MC_00156
+  [Documentation]    [Welove] Register - Password - Incorrect Format
+    [Tags]    Regression    Sprint2017MC5    Medium
+    [Template]    Member_Register.Validate Registration Form
+    Password            12345678                  Password Format       ${EMPTY}    ${EMPTY}
+
+TC_MC_00158
+  [Documentation]    [Welove] Register - Password - Mismatch
+    [Tags]    Regression    Sprint2017MC5    Medium
+    [Template]    Member_Register.Validate Registration Form
+    Password            P@ssw0rd                  ${EMPTY}              ${EMPTY}    ${EMPTY}
+    Confirm Password    password                  Password Mismatch     ${EMPTY}    ${EMPTY}
+
+TC_MC_00160
+  [Documentation]    [Welove] Register - Mobile - Incorrect Format
+    [Tags]    Regression    Sprint2017MC5    Medium
+    [Template]    Member_Register.Validate Registration Form
+    Mobile Number       01234567                  Mobile Format         ${EMPTY}    ${EMPTY}
+
+TC_MC_00162
+  [Documentation]    [Welove] Register - Mobile - Leading Zero
+    [Tags]    Regression    Sprint2017MC5    Medium
+    [Template]    Member_Register.Validate Registration Form
+    Mobile Number       1234567890                Mobile Leading         ${EMPTY}    ${EMPTY}
+
+TC_MC_00164
+  [Documentation]    [Welove] Register - Mobile - Incorrect Data Type
+    [Tags]    Regression    Sprint2017MC5    Medium
+    [Template]    Member_Register.Validate Registration Form
+    Mobile Number       กกกขขขคคคก                Mobile Type         ${EMPTY}    ${EMPTY}
+
+*** Keywords ***
+Go To Registration Page
+    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+    Go To Member Registration Page
+    Member Registration Page Should Be Appeared
+

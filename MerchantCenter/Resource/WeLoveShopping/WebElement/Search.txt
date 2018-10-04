@@ -1,0 +1,73 @@
+*** Variables ***
+${sidebar_wemall}    //div[@class='nav-left']//div[1]//div[@class='group-lvc-menu-list']//a
+${lvc_search_title}    //*[@class='title-lvc']
+${lvc_search_count_product}    //*[@class='num-items-title']
+${price_category}    //*[@id="select_order"]/a/span
+${checkbox_wetrust}    //*[@id="filter-we"]
+${checkbox_shipping}    $("#filter-shipping")
+${checkbox_credit}    $("#filter-credit")
+${total_product}    //*[@class="num-items-title"]
+${megamenu_all_cate}    $('.navtop-list')[6]
+${megamenu_fashion}    $("div.wrap-navtop a[title='แฟชั่น']")[0]
+${megamenu_jewellery}  $("div.wrap-navtop a[title='นาฬิกา เครื่องประดับ']")[0]
+${megamenu_electronics}   $("div.wrap-navtop a[title='อิเล็กทรอนิกส์']")[0]
+${megamenu_healthbeauty}   $("div.wrap-navtop a[title='สุขภาพ ความงาม']")[0]
+${megamenu_robot}    $("div.wrap-navtop a[title='เมนู automation']")[0]
+${side_bar}    //div[@class='nav-left']//div[2]//div[@class='group-lvc-menu-list']//a[@class='nl-main-cat ']
+${side_bar_subcat}    //span[@class='nl-cat-name']
+${clear_filter}    //*[@class='nl-sub-title']
+${clear_filter_bar}    //*[@class='remove-sort-all']
+${filter_bar}    //div[@class='sort-option-list-box']
+${filter_bar_color_red}    //span[text()=' สีแดง ']
+${filter_bar_color_black}    //span[text()=' สีดำ ']
+${filter_bar_color_white}    //span[text()=' สีขาว ']
+${filter_color_red}    $("span[title='แดง']")
+${filter_color_black}    $("span[title='ดำ']")
+${filter_color_white}    $("span[title='ขาว']")
+${category_main_active}    //a[@class='nl-main-cat active']
+${category_sub_active}    //a[@class='active']
+${category_sub_lv1}    //ul[@class='nl-sub-cat-list-lv-1'][li]
+${category_nav_left_1}    //*[@id="wrapper"]/div[3]/div[2]/div[1]/a[2]
+${category_nav_left_2}    //*[@id="wrapper"]/div[3]/div[2]/div[1]/a[3]
+${category_nav_left_3}    //*[@id="wrapper"]/div[3]/div[2]/div[1]/a[4]
+${category_nav_left_4}    //*[@id="wrapper"]/div[3]/div[2]/div[1]/a[5]
+${category_nav_left_5}    //*[@id="wrapper"]/div[3]/div[2]/div[1]/a[6]
+${view_more}    //*[@id="view_more"]
+${store_front_shop_name}    //*[@class='shop-avatar-name']/h1
+${product_lvc}    //ul[@class='items-list-box']/li
+${product_lvc_shop}    //ul[@class='items-list-box']/li[1]/div/div/a
+${product_lvc_price}    //ul[@class='items-list-box']/li[1]/div/div[2]/div/span[1]
+${product_lvc_price_compare}    //ul[@class='items-list-box']/li[1]/div/div[2]/div/span[2]
+${product_lvc_item}    //ul[@class='items-list-box']/li[1]/div/a
+${product_lvc_item_js}    $('.items-list-box > li > div > a')
+${product_lvc_item_name}    //ul[@class='items-list-box']/li[1]/div/a
+${breadcrumb_old}    //*[@class='box-breadcrumb']
+${breadcrumb_new}    //*[@class='breadcrumb-box']
+${breadcrumb_old_home}    //ul[@class='breadcrumb-box']/li[1]/a
+${breadcrumb_old_lv1}    //ul[@class='breadcrumb-box']/li[3]/a
+${selected_sort}    //a[@class='dropdown-toggle portal-select-selected']
+${selected_sort_js}    $('.dropdown-toggle.portal-select-selected')
+${sort_new}    //*[@id="select_order"]/ul/li[2]/a
+${sort_price_asc}    //*[@id="select_order"]/ul/li[3]/a
+${sort_price_desc}    //*[@id="select_order"]/ul/li[4]/a
+${filter_min_price}    //*[@id="min_price"]
+${filter_max_price}    //*[@id="max_price"]
+${submit_price}    //*[@class="btn btn-search-price"]
+${main_category}    $(".nl-main-cat ")
+${sub_category}    $(".nl-cat-name")
+${checkbox_promocode}    //*[@id="filter-coupon"]
+${badge_wetrust}    //*[@id="wrapper"]/div[3]/div[2]/div[2]/div[4]/div[2]/div
+${badge_promocode}    //div[@class='sort-active']//span[contains(text(),'โปรโมชั่นพิเศษ')]
+${badge_all}   //div[@class="col-sort-right"]
+${image_promocode}    //span[@class='tag-promocode']
+${image_promotion}    //a[@class='product-promotion']
+${class_promotion}    product-promotion
+${page_pagination}    //*[@id="wrapper"]/div[3]/div[2]/div[2]/ul[2]
+${count_page_pagination}    //ul[@class='pagination portal-pagination']/li
+${clickpage_two}    //*[@id="wrapper"]/div[3]/div[2]/div[2]/ul[2]/li[3]/a
+${clickpage_three}    //*[@id="wrapper"]/div[3]/div[2]/div[2]/ul[2]/li[4]/a
+${clickpage_ten}    //*[@id="wrapper"]/div[3]/div[2]/div[2]/ul[2]/li[11]/a
+${clickpage_next}    //*[@id="wrapper"]/div[3]/div[2]/div[2]/ul[2]/li[12]/a
+${clickpage_ten_js}    $("ul.pagination li a")[10].click()
+${clickpage_next_js}    $("li.ctrl-page a")[1].click()
+${pagi_active}    $("ul.pagination li.active a")[0]

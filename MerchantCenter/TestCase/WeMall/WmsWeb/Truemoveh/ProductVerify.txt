@@ -1,0 +1,87 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/TruemoveH_productVerify.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+
+*** Test Cases ***
+TC_MC_08919
+    [Tags]    Regression    Medium    WmsWeb
+    [Documentation]    Search product by Product ID on Product Verify page
+    Go to TruemoveH Product Verify on wms page
+    Select Merchant to search product verify    True Move
+    Search product verify by product ID    91200184
+    Check that the searched product displays product ID correctly    91200184
+
+TC_MC_08920
+    [Tags]    Regression    Medium    WmsWeb
+    [Documentation]    Search product by Active status on Product Verify page
+    Go to TruemoveH Product Verify on wms page
+    Select Merchant to search product verify    True Move
+    Select product verify by status    Active
+    Check that the searched product displays status correctly    Active
+
+TC_MC_08921
+    [Tags]    Regression    Medium    WmsWeb
+    [Documentation]    Search product by Inactive status on Product Verify page
+    Go to TruemoveH Product Verify on wms page
+    Select Merchant to search product verify    Trust Move
+    Select product verify by status    Inactive
+    Check that the searched product displays status correctly    Inactive
+
+TC_MC_08924
+    [Tags]    Regression    Medium    WmsWeb
+    [Documentation]    Search product without selecting merchant on Product Verify page
+    Go to TruemoveH Product Verify on wms page
+    Select product verify by status    Active
+    Check that the error message displays under Merchant field    The merchant field is required.
+
+TC_MC_08925
+    [Tags]    Regression    Medium    WmsWeb
+    [Documentation]    Search product with invalid product ID on Product Verify page
+    Go to TruemoveH Product Verify on wms page
+    Select Merchant to search product verify    Trust Move
+    Search product verify by product ID    abc
+    Check that the error message displays under product ID field    The product ID is invalid (0-9)
+
+TC_MC_08928
+    [Tags]    Regression    Medium    WmsWeb
+    [Documentation]    Search product by Product Name on List Product page
+    Go to TruemoveH Product Verify on wms page
+    Go to List Product page
+    Select Merchant to search product verify    True Move
+    Search product verify pending by product name    OPPO F5
+    Check that List product page displays product name correctly    OPPO F5
+
+TC_MC_08929
+    [Tags]    Regression    Medium    WmsWeb
+    [Documentation]     Search product by Product ID on List Product page
+    Go to TruemoveH Product Verify on wms page
+    Go to List Product page
+    Select Merchant to search product verify    Trust Move
+    Search product verify pending by product ID    L91200370
+    Check that List product page displays product ID correctly    L91200370
+
+TC_MC_08934
+    [Tags]    High    Medium    WmsWeb
+    [Documentation]     Edit Redirect Link of product
+    Go to TruemoveH Product Verify on wms page
+    Select Merchant to search product verify    Trust Move
+    Search product verify by product ID    91200348
+    Edit the Redirect link successfully    https://www.wemall-dev.com/trustment/test
+
+TC_MC_08935
+    [Tags]    High    Medium    WmsWeb
+    [Documentation]     Edit Status of product
+    Go to TruemoveH Product Verify on wms page
+    Select Merchant to search product verify    Trust Move
+    Search product verify by product ID    91200348
+    Edit the status successfully    Active

@@ -1,0 +1,826 @@
+*** Setting ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Clear Active Login
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Freebie.txt
+Resource          ../../../../Keyword/Common/ManageOrder.txt
+Resource          ../../../../Keyword/Common/Account_History.txt
+Resource          ../../../../Keyword/Common/Account_Detail.txt
+Resource          ../../../../Keyword/Common/Store_History.txt
+Resource          ../../../../Keyword/Common/Store_Detail.txt
+Resource          ../../../../Resource/WeMall/WebElement/Store_Detail.txt
+Resource          ../../../../Resource/Wemall/WebElement/Checkout.txt
+Resource          ../../../../Resource/Wemall/WebElement/Cart.txt
+
+*** Variable ***
+${freebie_orderid}    800011406732
+${freebie_orderid_with_promo}    800011406738
+
+*** Test Cases ***
+TC_MC_04958
+    [Tags]    Medium    Store-Web
+    [Documentation]    Check text bubble in case waiting payment
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${RadioButton_CS}
+    Check Element Visible    ${element_status_thankyou_page}    ${expect_load_time}
+    ${order_id}    Get order id
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    ${content_countdown_bubble_top}=    Execute Javascript    return $('.step2 .content-bub .timeremaining').text().trim()
+    Check countdown time text on top bubble store detail    ${content_countdown_bubble_top}
+    ${content_bubble_bottom}=    Execute Javascript    return $('.bstep1').text().trim()
+    Should Be Equal    ${content_bubble_bottom}    รายการสั่งซื้อสินค้านี้ผู้ซื้อยังไม่ได้ทำการชำระเงิน คุณยังไม่จำเป็นต้องจัดส่งสินค้า จนกว่าผู้ซื้อได้ทำการชำระเงินแล้วสถานะของรายการจะเปลี่ยนเป็น "รอการแจ้งจัดส่งสินค้า"
+
+TC_MC_04959
+    [Tags]    Medium    Store-Web
+    [Documentation]    Check text bubble in case payment failed
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${RadioButton_EW}
+    Check Element Visible    ${wallet_cancel}    ${expect_load_time}
+    Click Element    ${wallet_cancel}
+    ${url_detail}=    Execute JavaScript    return $('.btn.btn-action-main').attr("onclick");
+    ${orderId_remove}=    Remove String    ${url_detail}    window.location.href = '${URL_ACCOUNT}/profile/report/orderdetail/
+    ${order_id}=    Remove String    ${orderID_remove}    ';
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    ${content_bubble_bottom}=    Execute Javascript    return $('.bstep1').text().trim()
+    Should Be Equal    ${content_bubble_bottom}    รายการสั่งซื้อนี้ถูกยกเลิกเนื่องจากการชำระเงินของผู้ซื้อไม่สำเร็จ
+
+TC_MC_04960
+    [Tags]    Medium    Store-Web
+    [Documentation]    Check text bubble in case expired payment
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${RadioButton_CS}
+    Check Element Visible    ${element_status_thankyou_page}    ${expect_load_time}
+    ${order_id}    Get order id
+    ${order_id_sub}    Get substring order id form thankyou page    ${order_id}
+
+    Login admin manage order web
+    Go To    ${URL_ORDER}/admin/manage/datetime
+    Search order id on manage datetime page    ${order_id_sub}
+    API Order Manage Datetime    payment_expired_time    เพิ่ม-ลด    -4    day
+    Run cron order expire on admin manage order web    ${order_id_sub}
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    ${content_bubble_bottom}=    Execute Javascript    return $('.bstep1').text().trim()
+    Should Contain    ${content_bubble_bottom}    รายการสั่งซื้อนี้ถูกยกเลิกเนื่องจากผู้ซื้อไม่ได้ชำระเงินภายในระยะเวลาที่กำหนด
+
+TC_MC_04961
+    [Tags]    Medium    Store-Web
+    [Documentation]    Check text bubble in case waiting ship
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${RadioButton_CCW}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${element_status_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    ${content_countdown_bubble_top}=    Execute Javascript    return $('.step3 .content-bub .timeremaining').text().trim()
+    Check countdown time text on top bubble store detail    ${content_countdown_bubble_top}
+    ${content_bubble_bottom}=    Execute Javascript    return $('.bstep2').text().trim()
+    Should Contain    ${content_bubble_bottom}    กรุณาทำการแจ้งจัดส่งสินค้าภายในระยะเวลาตามที่คุณกำหนดไว้ (ผู้ซื้อสามารถทำการขอเงินคืนได้ หลังจากที่ผู้ซื้อชำระเงินเรียบร้อย)
+    Should Contain    ${content_bubble_bottom}    - หากไม่สามารถทำการจัดส่งสินค้าได้ กรุณาแจ้งผู้ซื้อโดยเร็ว เพื่อให้ผู้ซื้อทำการขอเงินคืนในระบบ
+    Should Contain    ${content_bubble_bottom}    - หากหมดระยะเวลาการจัดส่งแล้ว คุณยังคงสามารถแจ้งจัดส่งสินค้าได้
+    Should Contain    ${content_bubble_bottom}    หมายเหตุ : คุณต้องทำการแจ้งจัดส่งในระบบเท่านั้น จึงถือว่าการแจ้งจัดส่งเรียบร้อย
+
+TC_MC_04962
+    [Tags]    Medium    Store-Web
+    [Documentation]    Check text bubble in case shipping
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${RadioButton_CCW}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${element_status_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+
+    Go to store order history Page    ${storename_slug_wemall}
+    Click search button on store order history
+    Shipping One Product Custom By Product Name    EX123456789TH    https://www.google.co.th    https://store.wls-dev.co.th    A02.jpg    ${trustmall_product1_name}
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    ${content_status_bubble_top}=    Execute Javascript    return $('.step4 .content-bub').text().trim()
+    Should Contain    ${content_status_bubble_top}    กำลังจัดส่งสินค้า
+    ${content_bubble_bottom}=    Execute Javascript    return $('.bstep3').text().trim()
+    Should Contain    ${content_bubble_bottom}    คุณได้ทำการจัดส่งสินค้าแล้วและสามารถตรวจสอบสถานะการจัดส่งเพื่อดูรายละเอียด และคุณจะได้รับเงินค่าสินค้าโอนเข้าบัญชีธนาคารที่ทางร้านแจ้งไว้ หลังจากรายการสั่งซื้อนั้นเปลี่ยนสถานะเป็น “ดำเนินการเรียบร้อย”
+    Should Contain    ${content_bubble_bottom}    หมายเหตุ : หากผู้ซื้อไม่ได้รับสินค้าตามที่สั่งซื้อภายในระยะเวลาที่กำหนด ผู้ซื้อสามารถทำการขอเงินคืนก่อนที่สถานะเปลี่ยนเป็น “ดำเนินการเรียบร้อย”
+
+TC_MC_04967
+    [Tags]    Medium    Store-Web
+    [Documentation]    Check text bubble in case waiting ship (Place order 2 product, Request refund 1 product and Accept refund)
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product3_name}
+    Add Product To Cart
+
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${RadioButton_CCW}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${element_status_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${trustmall_product1_name}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Click accept refund button
+    Check Element Visible    ${accept_refund_modal}    ${expect_load_time}
+    Input password accept request refund    ${pass_login_trust_wemall}
+    Click confirm accept refund button
+    Click ok button on confirm accept modal
+    Check Element Visible    ${go_to_detail_button}    ${expect_load_time}
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    ${content_countdown_bubble_top}=    Execute Javascript    return $('.step3 .content-bub .timeremaining').text().trim()
+    Check countdown time text on top bubble store detail    ${content_countdown_bubble_top}
+    ${content_bubble_bottom}=    Execute Javascript    return $('.bstep2').text().trim()
+    Should Contain    ${content_bubble_bottom}    กรุณาทำการแจ้งจัดส่งสินค้าภายในระยะเวลาตามที่คุณกำหนดไว้ (ผู้ซื้อสามารถทำการขอเงินคืนได้ หลังจากที่ผู้ซื้อชำระเงินเรียบร้อย)
+    Should Contain    ${content_bubble_bottom}    - หากไม่สามารถทำการจัดส่งสินค้าได้ กรุณาแจ้งผู้ซื้อโดยเร็ว เพื่อให้ผู้ซื้อทำการขอเงินคืนในระบบ
+    Should Contain    ${content_bubble_bottom}    - หากหมดระยะเวลาการจัดส่งแล้ว คุณยังคงสามารถแจ้งจัดส่งสินค้าได้
+    Should Contain    ${content_bubble_bottom}    หมายเหตุ : คุณต้องทำการแจ้งจัดส่งในระบบเท่านั้น จึงถือว่าการแจ้งจัดส่งเรียบร้อย
+
+TC_MC_04968
+    [Tags]    Medium    Store-Web
+    [Documentation]    Check text bubble in case waiting ship (Place order 2 product, Request refund 1 product and Decline refund)
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product3_name}
+    Add Product To Cart
+
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${RadioButton_CCW}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${element_status_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${trustmall_product1_name}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Click decline refund button
+    Check Element Visible    ${decline_refund_modal}    ${expect_load_time}
+    Input description decline to buyer    ขออภัยสินค้าสินค้าหมดจะทำการจัดส่งภายใน 3-7 วัน
+    Choose file for decline refund
+    Click confirm decline refund button
+    Click ok button on confirm decline modal
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    ${content_status_bubble_top}=    Execute Javascript    return $('.step3 .content-bub').text().trim()
+    Should Contain    ${content_status_bubble_top}    อยู่ในระหว่างการขอเงินคืน
+    ${content_bubble_bottom}=    Execute Javascript    return $('.bstep2').text().trim()
+    Should Contain    ${content_bubble_bottom}    กรุณาทำการแจ้งจัดส่งสินค้าภายในระยะเวลาตามที่คุณกำหนดไว้ (ผู้ซื้อสามารถทำการขอเงินคืนได้ หลังจากที่ผู้ซื้อชำระเงินเรียบร้อย)
+    Should Contain    ${content_bubble_bottom}    - หากไม่สามารถทำการจัดส่งสินค้าได้ กรุณาแจ้งผู้ซื้อโดยเร็ว เพื่อให้ผู้ซื้อทำการขอเงินคืนในระบบ
+    Should Contain    ${content_bubble_bottom}    - หากหมดระยะเวลาการจัดส่งแล้ว คุณยังคงสามารถแจ้งจัดส่งสินค้าได้
+    Should Contain    ${content_bubble_bottom}    หมายเหตุ : คุณต้องทำการแจ้งจัดส่งในระบบเท่านั้น จึงถือว่าการแจ้งจัดส่งเรียบร้อย
+    Should Contain    ${content_bubble_bottom}    คุณได้ปฏิเสธการขอเงินคืน กรุณารอผู้ซื้อดำเนินการภายในระยะเวลาที่กำหนด
+
+TC_MC_04970
+    [Tags]    Medium    Store-Web
+    [Documentation]    Check text bubble in case already ship (Place order 2 product, Request refund 1 product and Accept refund)
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product3_name}
+    Add Product To Cart
+
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${RadioButton_CCW}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${element_status_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+
+    Go to store order history Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Shipping One Product Custom By Product Name    EX123456789TH    https://www.google.co.th    https://store.wls-dev.co.th    A02.jpg    ${trustmall_product1_name}
+
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${trustmall_product1_name}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Click accept refund button
+    Check Element Visible    ${accept_refund_modal}    ${expect_load_time}
+    Input password accept request refund    ${pass_login_trust_wemall}
+    Click confirm accept refund button
+    Click ok button on confirm accept modal
+    Check Element Visible    ${go_to_detail_button}    ${expect_load_time}
+
+    Go to store order history Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Shipping One Product Custom By Product Name    EX123456789TH    https://www.google.co.th    https://store.wls-dev.co.th    A02.jpg    ${trustmall_product3_name}
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    ${content_status_bubble_top}=    Execute Javascript    return $('.step4 .content-bub').text().trim()
+    Should Contain    ${content_status_bubble_top}    กำลังจัดส่งสินค้า
+    ${content_bubble_bottom}=    Execute Javascript    return $('.bstep3').text().trim()
+    Should Contain    ${content_bubble_bottom}    คุณได้ทำการจัดส่งสินค้าแล้วและสามารถตรวจสอบสถานะการจัดส่งเพื่อดูรายละเอียด และคุณจะได้รับเงินค่าสินค้าโอนเข้าบัญชีธนาคารที่ทางร้านแจ้งไว้ หลังจากรายการสั่งซื้อนั้นเปลี่ยนสถานะเป็น “ดำเนินการเรียบร้อย”
+    Should Contain    ${content_bubble_bottom}    หมายเหตุ : หากผู้ซื้อไม่ได้รับสินค้าตามที่สั่งซื้อภายในระยะเวลาที่กำหนด ผู้ซื้อสามารถทำการขอเงินคืนก่อนที่สถานะเปลี่ยนเป็น “ดำเนินการเรียบร้อย”
+
+TC_MC_04971
+    [Tags]    Medium    Store-Web
+    [Documentation]    Check text bubble in case already ship (Place order 2 product, Request refund 1 product and Decline refund)
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product3_name}
+    Add Product To Cart
+
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${RadioButton_CCW}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${element_status_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+
+    Go to store order history Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Shipping One Product Custom By Product Name    EX123456789TH    https://www.google.co.th    https://store.wls-dev.co.th    A02.jpg    ${trustmall_product1_name}
+
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${trustmall_product1_name}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Click decline refund button
+    Check Element Visible    ${decline_refund_modal}    ${expect_load_time}
+    Input description decline to buyer    ขออภัยสินค้าสินค้าหมดจะทำการจัดส่งภายใน 3-7 วัน
+    Choose file for decline refund
+    Click confirm decline refund button
+    Click ok button on confirm decline modal
+
+    Go to store order history Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Shipping One Product Custom By Product Name    EX123456789TH    https://www.google.co.th    https://store.wls-dev.co.th    A02.jpg    ${trustmall_product3_name}
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    ${content_status_bubble_top}=    Execute Javascript    return $('.step4 .content-bub').text().trim()
+    Should Contain    ${content_status_bubble_top}    อยู่ในระหว่างการขอเงินคืน
+    ${content_bubble_bottom}=    Execute Javascript    return $('.bstep3').text().trim()
+    Should Contain    ${content_bubble_bottom}    คุณได้ทำการจัดส่งสินค้าแล้วและสามารถตรวจสอบสถานะการจัดส่งเพื่อดูรายละเอียด และคุณจะได้รับเงินค่าสินค้าโอนเข้าบัญชีธนาคารที่ทางร้านแจ้งไว้ หลังจากรายการสั่งซื้อนั้นเปลี่ยนสถานะเป็น “ดำเนินการเรียบร้อย”
+    Should Contain    ${content_bubble_bottom}    คุณได้ปฏิเสธการขอเงินคืน กรุณารอผู้ซื้อดำเนินการภายในระยะเวลาที่กำหนด
+    Should Contain    ${content_bubble_bottom}    หากผู้ซื้อไม่ได้ดำเนินการภายในระยะเวลาที่กำหนด ระบบจะถือว่าผู้ซื้อได้ยอมรับการปฏิเสธการขอเงินคืนของคุณและรายการสั่งซื้อนี้จะดำเนินการต่อไปตามปกติ
+
+TC_MC_04972
+    [Tags]    Medium    Store-Web
+    [Documentation]    Check text bubble in case already ship (Place order 2 product, Request refund 1 product, Decline refund and Cancel refund)
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product3_name}
+    Add Product To Cart
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${RadioButton_CCW}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${element_status_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+
+    Go to store order history Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Shipping One Product Custom By Product Name    EX123456789TH    https://www.google.co.th    https://store.wls-dev.co.th    A02.jpg    ${trustmall_product1_name}
+
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${trustmall_product1_name}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Click Element    ${view_detail_store_order_detail}
+    Click decline refund button
+    Check Element Visible    ${decline_refund_modal}    ${expect_load_time}
+    Input description decline to buyer    ขออภัยสินค้าสินค้าหมดจะทำการจัดส่งภายใน 3-7 วัน
+    Choose file for decline refund
+    Click confirm decline refund button
+    Click ok button on confirm decline modal
+
+    Go to account order detail page    ${order_id}
+    Click button refund detail on account detail page
+    Click button cancel refund on account refund detail page
+
+    Go to store order history Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Shipping One Product Custom By Product Name    EX123456789TH    https://www.google.co.th    https://store.wls-dev.co.th    A02.jpg    ${trustmall_product3_name}
+
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    ${content_status_bubble_top}=    Execute Javascript    return $('.step4 .content-bub').text().trim()
+    Should Contain    ${content_status_bubble_top}    กำลังจัดส่งสินค้า
+    ${content_bubble_bottom}=    Execute Javascript    return $('.bstep3').text().trim()
+    Should Contain    ${content_bubble_bottom}    คุณได้ทำการจัดส่งสินค้าแล้วและสามารถตรวจสอบสถานะการจัดส่งเพื่อดูรายละเอียด และคุณจะได้รับเงินค่าสินค้าโอนเข้าบัญชีธนาคารที่ทางร้านแจ้งไว้ หลังจากรายการสั่งซื้อนั้นเปลี่ยนสถานะเป็น “ดำเนินการเรียบร้อย”
+    Should Contain    ${content_bubble_bottom}    หมายเหตุ : หากผู้ซื้อไม่ได้รับสินค้าตามที่สั่งซื้อภายในระยะเวลาที่กำหนด ผู้ซื้อสามารถทำการขอเงินคืนก่อนที่สถานะเปลี่ยนเป็น “ดำเนินการเรียบร้อย”
+
+TC_MC_05411
+    [Documentation]    View Store Detail (Not Ship and Request Refund)
+    [Tags]    Regression    High    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${trustmall_product1_name}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail}    รอการแจ้งจัดส่งสินค้า
+    Check Button Shipping Custom Detail Page
+    Check Text    ${order_refund_txt}    ผู้ซื้อได้ทำการขอเงินคืน
+    Check Text    ${order_product_name_detail}    ${trustmall_product1_name}
+    Check Text    ${order_status_detail_product}    ผู้ซื้อได้ทำการขอเงินคืน
+    Check Product Detail Countdown Time
+
+TC_MC_05479
+    [Tags]    High    Store-Web
+    [Documentation]    Check item status in case place order 1 product, expired ship
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${Vio_baseball_cap}
+    Add Product To Cart
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${ccw_channel_radio_button}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${text_order_id_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+    ${order_id_sub}    Get substring order id form thankyou page    ${order_id}
+    Login admin manage order web
+    Go To    ${URL_ORDER}/admin/manage/datetime
+    Search order id on manage datetime page    ${order_id_sub}
+    Click ELement   ${select_escrow_product1}
+    Select From List    escrow-fields    ship_expired_time
+    Select From List    escrow-type    เพิ่ม-ลด
+    Input Text    ${escrow_time}    -7
+    Select From List    escrow-unit    Day
+    Click Element    ${escrow_btn_update}
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail}    รอการแจ้งจัดส่งสินค้า
+    Check Text    ${countdown_product}    หมดเวลา
+    Check Button Shipping Custom Detail Page
+
+TC_MC_05482
+    [Tags]    Regression    High    Store-Web
+    [Documentation]    Check item status in case place order 2 product, full ship and partial refund
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    ${products}    Create List    ${sanity1_product}    ${sanity2_product}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${storename_slug_wemall}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${sanity1_product}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail}    กำลังจัดส่งสินค้า
+    Check Text    ${order_refund_txt}    ผู้ซื้อได้ทำการขอเงินคืน
+
+TC_MC_05486
+    [Tags]    Regression    High    Store-Web
+    [Documentation]    Check item status in case place order 2 product, ship full, partial refund and refund remaining product
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    ${products}    Create List    ${sanity1_product}    ${sanity2_product}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${slug_name_sanity}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${sanity1_product}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${sanity2_product}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail}    กำลังจัดส่งสินค้า
+    Check Text    ${order_refund_txt}    ผู้ซื้อได้ทำการขอเงินคืน
+
+TC_MC_05488
+    [Tags]    Regression    High    Store-Web
+    [Documentation]    Check item status in case place order 2 product, ship full, partial refund and refund remaining product
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    ${products}    Create List    ${sanity1_product}    ${sanity2_product}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${slug_name_sanity}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    ${locator}=    Replace String    ${chk_ship_product}    productname    ${sanity1_product}
+    Click Element    ${locator}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${sanity2_product}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Account Order History
+    Search order id on account order history    ${order_id}
+    Click search button on account order history
+    Click refund link on account order history
+    Select checkbox product for refund by product name    ${sanity1_product}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Element Should Contain    ${element_box_view_refund}    - คุณได้ทำการแจ้งขอเงินคืน กรุณารอร้านค้าตรวจสอบและดำเนินการ
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail}    รอการแจ้งจัดส่งสินค้า
+    Check Text    ${order_detail_partial_ship}    (จัดส่งไปแล้ว 1 จาก 2 รายการ)
+    Check Text    ${order_refund_txt}    ผู้ซื้อได้ทำการขอเงินคืน
+
+TC_MC_05958
+    [Documentation]    WMStoreDetail Check waiting ship button in case, place order success MF shop 1 product
+    [Tags]    Regression    Low    Store-Web
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall_mf}    ${pass_login_trust_wemall_mf}
+    Create order credit card channel    ${storename_slug_wemall_mf}    ${trustmall_mf_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order Detail Page    ${storename_slug_wemall_mf}    ${order_id}
+    Check Text    ${order_status_detail}    รอการแจ้งจัดส่งสินค้า
+    Check Order Countdown Main Status Order
+    Element Should Not Be Visible    ${request_tracking_button}
+
+TC_MC_05960
+    [Tags]    Regression    Low    Store-Web
+    [Documentation]    WMStoreDetail Check waiting ship button in case, place order success MX shop 2 product and ship 1 product
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall_mx}    ${pass_login_trust_wemall_mx}
+    ${products}    Create List    ${trustmall_mx_product1_name}    ${trustmall_mx_product2_name}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${storename_slug_wemall_mx}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go To Store Order Detail Page    ${storename_slug_wemall_mx}    ${order_id}
+    Check Text    ${order_status_detail}    รอการแจ้งจัดส่งสินค้า
+    Check Order Countdown Main Status Order
+    Element Should Not Be Visible    ${request_tracking_button}
+
+TC_MC_05966
+    [Tags]    Regression    Low    Store-Web
+    [Documentation]    WMStoreDetail Check waiting ship button in case, place order success MF shop 2 product and request refund 1 product
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall_mx}    ${pass_login_trust_wemall_mx}
+    ${products}    Create List    ${trustmall_mx_product1_name}    ${trustmall_mx_product2_name}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${storename_slug_wemall_mx}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go to account order detail page    ${order_id}
+    Click Element    ${account_detail_refund_link}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Select checkbox product for refund by product name    ${trustmall_mx_product1_name}
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Go To Store Order Detail Page    ${storename_slug_wemall_mx}    ${order_id}
+    Check Text    ${order_status_detail}    รอการแจ้งจัดส่งสินค้า
+    Check Text    ${text_request_refund_order_detail}    ผู้ซื้อได้ทำการขอเงินคืน
+    Check Order Countdown Main Status Order
+    Element Should Not Be Visible    ${request_tracking_button}
+
+TC_MC_05968
+    [Tags]    Regression    Low    Store-Web
+    [Documentation]    WMStoreDetail Check waiting ship button in case, place order success MX shop 1 product and ship expired
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall_mf}    ${pass_login_trust_wemall_mf}
+    Create order credit card channel    ${storename_slug_wemall_mf}    ${trustmall_mf_product1_name}    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Login admin manage order web
+    Go To    ${URL_ORDER}/admin/manage/datetime
+    Search order id on manage datetime page    ${order_id}
+    API Order Manage Escrow Datetime    1     escrow_products.ship_expired_time     เพิ่ม-ลด    -30    Day
+    Go To Store Order Detail Page    ${storename_slug_wemall_mf}    ${order_id}
+    Check Text    ${order_status_bubble_ship}    หมดเวลา
+    Check Text    ${order_status_detail_header}    รอการแจ้งจัดส่งสินค้า
+    Check Order Countdown Main Status Order
+    Element Should Not Be Visible    ${request_tracking_button}
+
+TC_MC_05974
+    [Tags]    Regression    Low    Store-Web
+    [Documentation]    WMStoreDetail Check waiting ship button in case, place order success MF shop 2 product, ship 1 product and request refund product was shipped
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall_mx}    ${pass_login_trust_wemall_mx}
+    ${products}    Create List    ${trustmall_mx_product1_name}    ${trustmall_mx_product2_name}
+    ${data}    Create List    ${lbl_credit_card_number1}    ${lbl_credit_card_number2}    ${lbl_credit_card_number3}    ${lbl_credit_card_number4}    ${lbl_cardname}    ${lbl_month}    ${lbl_year}    ${lbl_cnv}
+    Add To Cart Many Items    ${products}    ${storename_slug_wemall_mx}
+    Place Order    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Input Data Of Credit Card    ${data}
+    Click Confirm Checkout Button
+    Get order id online from thankyou page
+    Get substring order id online from thankyou page    ${order_id}
+    Go to account order detail page    ${order_id}
+    Click Element    ${account_detail_refund_link}
+    Select reason refund on account refund page    ร้านค้าแจ้งว่าไม่มีสินค้า / สินค้าหมด
+    Select checkbox product for refund by product name    ${trustmall_mx_product1_name}
+    Input description refund to shop    ขอเงินคืนเนื่องจากเกิดปัญหากับสินค้า
+    Choose file upload    A02.jpg
+    Click request refund button on account refund page
+    Click confirm action
+    Go To Store Order Detail Page    ${storename_slug_wemall_mx}    ${order_id}
+    Check Text    ${order_status_detail}    รอการแจ้งจัดส่งสินค้า
+    Check Text    ${text_request_refund_order_detail}    ผู้ซื้อได้ทำการขอเงินคืน
+    Check Order Countdown Main Status Order
+    Element Should Not Be Visible    ${request_tracking_button}
+
+TC_MC_05403
+    [Tags]    Regression    Medium    Store-Web
+    [Documentation]    WMStoreDetail View Store Detail (Place Order 1 Product)
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order offline channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${cs_channel_radio_button}    ${lbl_payment_cs_ref2_number}
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail_header}    รอการชำระเงิน
+    Check Order Countdown Time
+
+TC_MC_05405
+    [Tags]    Regression    Medium    Store-Web
+    [Documentation]    WMStoreDetail View Store Detail (Payment Expired 1 Product)
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order offline channel    ${storename_slug_wemall}    ${trustmall_product1_name}    ${select_address}    ${shipping_post}    ${cs_channel_radio_button}    ${lbl_payment_cs_ref2_number}
+    Login admin manage order web
+    Go To    ${URL_ORDER}/admin/manage/datetime
+    Search order id on manage datetime page    ${order_id_sub}
+    API Order Manage Datetime    payment_expired_time    เพิ่ม-ลด    -5    day
+    Run cron order expire on admin manage order web    ${order_id_sub}
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail_header}    รายการนี้ถูกยกเลิก
+
+TC_MC_05406
+    [Tags]    Regression    Medium    Store-Web
+    [Documentation]    WMStoreHistory View Store History (Payment Not found 1 Product)
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order ewallet channel    ${storename_slug_wemall}    trustmall 004    ${select_address}    ${shipping_post}    ${ew_channel_radio_button}
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail_header}    ชำระเงินไม่สำเร็จ
+
+TC_MC_05407
+    [Tags]    Regression    High    Store-Web
+    [Documentation]    WMStoreDetail View Store Detail (Payment Success 1 Product)
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    trustmall 004    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail_header}    รอการแจ้งจัดส่งสินค้า
+    Check Order Countdown Main Status Order
+    Element Should Be Visible    ${request_tracking_button}
+
+TC_MC_05409
+    [Tags]    Regression    High    Store-Web
+    [Documentation]    WMStoreDetail View Store Detail (Ship)
+    Set Selenium Speed    0.2
+    Go to Login    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Create order credit card channel    ${storename_slug_wemall}    trustmall 004    ${select_address}    ${shipping_post}    ${ccw_channel_radio_button}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail_header}    กำลังจัดส่งสินค้า
+    ${txt_tracking}=    Execute JavaScript    return $('#product_detail_list tbody .text-center .headline').eq(0).text()
+    Should Be Equal    ${txt_tracking}    หมายเลขพัสดุ หรือ ข้อความ
+    ${txt_tracking}=    Execute JavaScript    return $('#product_detail_list tbody .text-center .headline').eq(1).text()
+    Should Be Equal    ${txt_tracking}    ตรวจสอบสถานะการจัดส่ง
+    Check Text    ${order_detail_custom_url1}    https://www.google.com
+
+TC_MC_05410
+    [Tags]    High    Store-Web
+    [Documentation]    WMStoreDetail View Store Detail (Receive)
+    Set Selenium Speed    0.2
+    Check and Reset Seller Login    ${storename_slug_wemall}    ${user_login_trust_wemall}    ${pass_login_trust_wemall}
+    Delete All Product In Cart
+    Go To    ${URL_PORTAL}/${storename_slug_wemall}
+    Select product by product name    ${trustmall_product1_name}
+    Add Product To Cart
+    Place Order Online Offline Wemall    ${select_address_wemall}    ${ccw_channel_radio_button}
+    Inpage Credit Card
+    Click Confirm Checkout Button
+    Check Element Visible    ${text_order_id_thankyou_page}    ${expect_load_time}
+    ${text_order_id}    Get Text    ${text_order_id_thankyou_page}
+    ${order_id}    Get Substring    ${text_order_id}    19
+    ${order_id_sub}    Get substring order id form thankyou page    ${order_id}
+    Go To Store Order History Page    ${storename_slug_wemall}
+    Search order id on store order history    ${order_id}
+    Click search button on store order history
+    Click Button    ${btn_shipping}
+    Click Button    ${btn_shipping_custom}
+    Input Text    ${input_tracking_custom}    EX123120380809TH
+    Input Text    ${input_url_custom}    https://www.google.com
+    ${file_path}    Get file path
+    Choose File    ${input_custom_file}    ${file_path}/A02.jpg
+    Click Button    ${confirm_custom_button}
+    Login admin manage order web
+    Go To    ${URL_ORDER}/admin/manage/datetime
+    Search order id on manage datetime page    ${order_id_sub}
+    API Order Manage Escrow Datetime    1    receive_expired_time    addsub    -17    day    ${order_id_sub}
+    Check Element Visible    ${escrow_btn_update}    ${expect_load_time}
+    Go to    https://api-order.wls-dev.com/v3/auto/receive?order_id=${order_id_sub}
+    Go To Store Order Detail Page    ${storename_slug_wemall}    ${order_id}
+    Check Text    ${order_status_detail_header}    ผู้ซื้อได้รับสินค้าเรียบร้อยแล้ว
+
+TC_MC_10980
+    [Tags]    Regression    High    Store-Web
+    [Documentation]    [Seller] Verify the freebie product on checkout page when normal product have promotion freebie in the same shop on Order Detail page
+    Go to Login    ${kamufreebie_shop_user}    ${kamufreebie_shop_pwd}
+    Go To Store Order Detail Page    ${storename_freebie_kamu}    ${freebie_orderid}
+    Validate freebie product correctly displayed
+
+TC_MC_10986
+    [Tags]    Regression    High    Store-Web
+    [Documentation]    [Seller] Verify the freebie product on Order Detail page when seller promotion product has promotion freebie
+    Go to Login    ${store_email2}    ${store_password2}
+    Go To Store Order Detail Page    ${store_name1}    ${freebie_orderid_with_promo}
+    Validate freebie product correctly displayed
+    Seller Promotion Tag Displays On Main Product Correctly

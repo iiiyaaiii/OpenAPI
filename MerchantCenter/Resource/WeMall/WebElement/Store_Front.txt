@@ -1,0 +1,11 @@
+*** Variables ***
+##CONTACT US ELEMENTS
+${wemall_contactUs_menu}	//div[@class='header-inner']//a[text()='ติดต่อร้านค้า']
+${wemall_facebook_icon}		//i[@class='icon-white-facebook']
+${wemall_pinterest_icon}	//i[@class='icon-white-pinstagram']
+${wemall_googlePlus_icon}	//i[@class='icon-white-google']
+${wemall_twitter_icon}		//i[@class='icon-white-twitter']
+${wemall_instagram_icon}	//i[@class='icon-white-instagram']
+
+##STORE SIM##
+${search_store_product}    //form[@name="search"]

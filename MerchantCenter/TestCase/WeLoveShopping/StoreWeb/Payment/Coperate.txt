@@ -1,0 +1,50 @@
+*** Setting ***
+Suite Teardown    Close All Browsers
+Test Teardown     Clear Active Login
+Force Tags        Store-Web    mock    mc-wls
+Library           SeleniumLibrary
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Payment.txt
+
+*** Test Case ***
+TC_MC_03727
+    [Documentation]    Verify Content at payment channel page. Incase Document Store Register is not approved.
+    [Tags]    Regression    Medium
+    Account Login    ${user_corp_4step}    ${pwd_corp_4step}
+    Go To    ${URL_STORE}/${user_corp_4step_url}/admin/payment
+    Element should Contain    ${menu_page}    ช่องทางการรับชำระเงิน
+    Element should Contain    ${menu_page2}    บัญชีธนาคารของร้าน
+    Element should Contain    ${payment_account}    คุณยังไม่ได้ระบุข้อมูลบัญชีธนาคารของร้าน เพื่อใช้ในการรับเงินค่าสินค้า
+    ${table_fee1}    Execute Javascript    return $("div[class='condition-transfer-box']").length
+    ${result}    Convert To String    ${table_fee1}
+    Should Contain    ${result}    0
+    Element Should Be Visible    ${payment_detail2}
+    ${list_payment_status}    Execute Javascript    return ${list_payment_success}.length
+    ${result1}    Convert To String    ${list_payment_status}
+    Should Contain    ${result1}    0
+    ${list_payment_status2}    Execute Javascript    return ${list_payment_unsuccess}.length
+    Should Be True    ${list_payment_status2}    == 1
+
+TC_MC_03728
+    [Documentation]    Verify Content at payment channel page. Incase Document Store Register approved already.
+    [Tags]    Regression    Medium
+    Account Login    ${user_corp_001}    ${pwd_corp_001}
+    Go To    ${URL_STORE}/${corp_001}/admin/store
+    ${bank_account_name}    Execute Javascript    return $("[name='corporate_bank_account_name']").val()
+    ${bank_account_no}    Execute Javascript    return $("[name='corporate_bank_account_number']").val()
+    Go To    ${URL_STORE}/${corp_001}/admin/payment
+    Element should Contain    ${menu_page}    ช่องทางการรับชำระเงิน
+    Element should Contain    ${menu_page2}    บัญชีธนาคารของร้าน
+    Element should Contain    //*[@id="payment-corporate-send"]/div[2]/div/div[1]/strong[1]    ${bank_account_name}
+    Element should Contain    //*[@id="payment-corporate-send"]/div[2]/div/div[1]/strong[3]    ${bank_account_no}
+    ${table_fee2}    Execute Javascript    return $("div[class='condition-transfer-box']").length
+    Should Be True    ${table_fee2}    == 1
+    Element Should Be Visible    ${payment_detail2}
+    ${list_payment_status}    Execute Javascript    return ${list_payment_unsuccess}.length
+    ${result1}    Convert To String    ${list_payment_status}
+    Should Contain    ${result1}    0
+    ${list_payment_status2}    Execute Javascript    return ${list_payment_success}.length
+    Should Be True    ${list_payment_status2}    == 1

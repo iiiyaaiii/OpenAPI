@@ -1,0 +1,37 @@
+*** Settings ***
+Suite Setup     Run Keywords    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    AND    WMS Switch Project    wls
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        mock    mc-wls
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Test Timeout      5 minutes
+
+*** Test Case ***
+TC_MC_01392
+    [Tags]    High    WMS-Web
+    Go to    ${URL_WMS}/promotioncode
+    Wait Until Element Is Visible    //a[@id="add_new_promotion_code"]
+    Click Element    //a[@id="add_new_promotion_code"]
+    Execute Javascript    $("input[name='coupon_type']").eq(1).click()
+    ${time}    Get Time    epoch
+    Input Text    //input[@name="promotion_name"]    PromocodeTest${time}
+    ${code_prefix}    String.Generate Random String    2    [LETERS]
+    Input Text    //input[@id="coupon_prefix"]    ${code_prefix}
+    Select From List By Value    //select[@id="unique_coupon_length"]    12
+    Execute Javascript    $("input[id='total_unique_code']").val(10)
+    Execute Javascript    $('#form-field-date').val("2017-03-02 00:00:00 - 2017-12-31 23:59:00")
+    Execute Javascript    $("input[name='display_coupon']").eq(0).click()
+    Execute Javascript    $("input[name='discount_type']").eq(0).click()
+    Input Text    //input[@id="discount_value"]    10
+    Input Text    //input[@name="discount_max"]    1000
+    Input Text    //input[@name="order_min"]    300
+    Execute Javascript    $("textarea[name='store_ids']").val("L926245")
+    Click Element    //button[@id="btn_submit"]
+    Page Should Contain    The prefix must be 3 characters.
+

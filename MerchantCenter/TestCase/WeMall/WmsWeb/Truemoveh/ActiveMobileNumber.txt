@@ -1,0 +1,372 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Test Setup        Check Mobile Report Data
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Library           OperatingSystem
+Library           ../../../../Keyword/PythonLibrary/tmvhGenerateFileImport.py
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_07057
+    [Documentation]    Truemove H Active Mobile Number page display the result of searching is correctly by using criteria: 1. Select Import Date From only 2. Status = Draftand can be change mobile status from draft to active success
+    [Tags]    Ligo    Sprint2017MC19    High
+    Set Test Variable           ${lot_name}         robottest1
+    ${current_date}             Get Current Date         UTC    +7 hours    result_format=%Y-%m-%d    exclude_millis=True
+    ${current_date_str}         Convert To String        ${current_date}
+    ${current_date_str}         Get Substring            ${current_date_str}    \    10
+    Set Test Variable           ${current_date}          ${current_date}
+
+    ${check_lot}=               Get Matching Xpath Count         //select[@id='lot']/option[@value='${lot_name}']
+    ${old_total_active}=        Run Keyword If    ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${current_date}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    Log To Console              old_active=${old_total_active}
+     ${old_total_draft}=        Run Keyword If        ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${current_date}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    ${old_total_active}=        Convert To Integer          ${old_total_active}
+    ${old_total_draft}=         Convert To Integer          ${old_total_draft}
+    ${old_total}=               Evaluate                    ${old_total_active}+ ${old_total_draft}
+
+    ${file_import}=          Gen Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+    Import Phone Number    import_mobile.xls    ${lot_name}    No
+
+    Go To    ${url_block_truemoveh}
+    Search Mobile                       ${current_date}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    Wait Until Element Is Visible       //*[@id='change_status']
+    Click Element                       //*[@id="change_status"]
+
+    Wait Until Element Is Visible       //*[@id='extend_btn']
+    Click Element                       //*[@id="extend_btn"]
+
+    Go To    ${url_block_truemoveh}
+    ${total_active}=                    Get Total Mobile     ${current_date}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    ${old_total}=                       Evaluate             3+${old_total}
+    Should Be Equal                     ${total_active}      ${old_total}
+
+    [Teardown]    Remove Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+
+TC_MC_07058
+    [Documentation]    Truemove H Active Mobile Number page display the result of searching is correctly by using criteria:  1. Select Import Date To only 2. Status = Draft and can be change mobile status from draft to active success
+    [Tags]    Ligo    Sprint2017MC19    High
+    Set Test Variable           ${lot_name}         robottest2
+    ${current_date}             Get Current Date         UTC    +7 hours    result_format=%Y-%m-%d    exclude_millis=True
+    ${current_date_str}         Convert To String        ${current_date}
+    ${current_date_str}         Get Substring            ${current_date_str}    \    10
+    Set Test Variable           ${current_date}          ${current_date}
+
+    ${check_lot}=               Get Matching Xpath Count         //select[@id='lot']/option[@value='${lot_name}']
+    ${old_total_active}=        Run Keyword If    ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    Log To Console              old_active=${old_total_active}
+     ${old_total_draft}=        Run Keyword If        ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    ${old_total_active}=        Convert To Integer          ${old_total_active}
+    ${old_total_draft}=         Convert To Integer          ${old_total_draft}
+    ${old_total}=               Evaluate                    ${old_total_active}+ ${old_total_draft}
+
+    ${file_import}=          Gen Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+    Import Phone Number     import_mobile.xls    ${lot_name}    No
+
+    Go To    ${url_block_truemoveh}
+    Search Mobile                       ${EMPTY}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    Wait Until Element Is Visible       //*[@id='change_status']
+    Click Element                       //*[@id="change_status"]
+
+    Wait Until Element Is Visible       //*[@id='extend_btn']
+    Click Element                       //*[@id="extend_btn"]
+
+    Go To    ${url_block_truemoveh}
+    ${total_active}=                    Get Total Mobile     ${EMPTY}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    ${old_total}=                       Evaluate             3+${old_total}
+    Should Be Equal                     ${total_active}      ${old_total}
+
+    [Teardown]    Remove Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+
+TC_MC_07059
+    [Documentation]    Truemove H Active Mobile Number page display the result of searching is correctly by using criteria:  1. Select Import Date From-To as same day 2. Status = Draft and can be change mobile status from draft to active success
+    [Tags]    Ligo    Sprint2017MC19    High
+    Set Test Variable           ${lot_name}         robottest3
+     ${current_date}             Get Current Date         UTC    +7 hours    result_format=%Y-%m-%d    exclude_millis=True
+    ${current_date_str}         Convert To String        ${current_date}
+    ${current_date_str}         Get Substring            ${current_date_str}    \    10
+    Set Test Variable           ${current_date}          ${current_date}
+
+    ${check_lot}=               Get Matching Xpath Count         //select[@id='lot']/option[@value='${lot_name}']
+    ${old_total_active}=        Run Keyword If    ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${current_date}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    Log To Console              old_active=${old_total_active}
+     ${old_total_draft}=        Run Keyword If        ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${current_date}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    ${old_total_active}=        Convert To Integer          ${old_total_active}
+    ${old_total_draft}=         Convert To Integer          ${old_total_draft}
+    ${old_total}=               Evaluate                    ${old_total_active}+ ${old_total_draft}
+
+    ${file_import}=          Gen Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+    Import Phone Number    import_mobile.xls    ${lot_name}    No
+
+    Go To    ${url_block_truemoveh}
+    Search Mobile                       ${current_date}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    Wait Until Element Is Visible       //*[@id='change_status']
+    Click Element                       //*[@id="change_status"]
+
+    Wait Until Element Is Visible       //*[@id='extend_btn']
+    Click Element                       //*[@id="extend_btn"]
+
+    Go To    ${url_block_truemoveh}
+    ${total_active}=                    Get Total Mobile     ${current_date}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    ${old_total}=                       Evaluate             3+${old_total}
+    Should Be Equal                     ${total_active}      ${old_total}
+
+    [Teardown]    Remove Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+
+TC_MC_07060
+    [Documentation]    Truemove H Active Mobile Number page display the result of searching is correctly by using criteria:  1. Select Import Date From-To = length more than 1 day 2. Status = Draft and can be change mobile status from draft to active success
+    [Tags]    Ligo    Sprint2017MC19    Regression    High
+    Set Test Variable           ${lot_name}         robottest4
+    ${current_date}             Get Current Date         UTC    +7 hours    result_format=%Y-%m-%d    exclude_millis=True
+    ${current_date_str}         Convert To String        ${current_date}
+    ${current_date_str}         Get Substring            ${current_date_str}    \    10
+    Set Test Variable           ${current_date}          ${current_date}
+
+    ${yesterday}=    Subtract Time From Date    ${current_date}    1 days    result_format=%Y-%m-%d    exclude_millis=True
+
+    ${check_lot}=               Get Matching Xpath Count         //select[@id='lot']/option[@value='${lot_name}']
+    ${old_total_active}=        Run Keyword If    ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${yesterday}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    Log To Console              old_active=${old_total_active}
+     ${old_total_draft}=        Run Keyword If        ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${yesterday}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    ${old_total_active}=        Convert To Integer          ${old_total_active}
+    ${old_total_draft}=         Convert To Integer          ${old_total_draft}
+    ${old_total}=               Evaluate                    ${old_total_active}+ ${old_total_draft}
+
+    ${file_import}=          Gen Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+    Import Phone Number      import_mobile.xls    ${lot_name}    No
+
+    Go To    ${url_block_truemoveh}
+    Search Mobile                       ${yesterday}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    Wait Until Element Is Visible       //*[@id='change_status']
+    Click Element                       //*[@id="change_status"]
+
+    Wait Until Element Is Visible       //*[@id='extend_btn']
+    Click Element                       //*[@id="extend_btn"]
+
+    Go To    ${url_block_truemoveh}
+    ${total_active}=                    Get Total Mobile     ${yesterday}    ${current_date}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    ${old_total}=                       Evaluate             3+${old_total}
+    Should Be Equal                     ${total_active}      ${old_total}
+
+    [Teardown]    Remove Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+
+TC_MC_07061
+    [Documentation]    Truemove H Active Mobile Number page display the result of searching is correctly by using criteria:  1. Input mobile number 2. Status = Draft and can be change mobile status from draft to active success
+    [Tags]    Ligo    Sprint2017MC19    Regression    High
+
+    Set Test Variable           ${lot_name}         robottest5
+    ${current_date}             Get Current Date         UTC    +7 hours    result_format=%Y-%m-%d    exclude_millis=True
+    ${current_date_str}         Convert To String        ${current_date}
+    ${current_date_str}         Get Substring            ${current_date_str}    \    10
+    Set Test Variable           ${current_date}          ${current_date}
+
+    ${file_import}=          Gen Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+    Set Test Variable        ${phone_number}    ${file_import}
+    # ${data}=    Get Data In Excel    import_mobile_1.xls    1    0
+    # ${phone_number}    Set Variable    ${data[1][1]}
+
+    ${check_lot}=               Get Matching Xpath Count         //select[@id='lot']/option[@value='${lot_name}']
+    ${old_total_active}=        Run Keyword If    ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${current_date}    ${EMPTY}    ${phone_number}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    Log To Console              old_active=${old_total_active}
+     ${old_total_draft}=        Run Keyword If        ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${current_date}    ${EMPTY}    ${phone_number}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    ${old_total_active}=        Convert To Integer          ${old_total_active}
+    ${old_total_draft}=         Convert To Integer          ${old_total_draft}
+    ${old_total}=               Evaluate                    ${old_total_active}+ ${old_total_draft}
+
+    Import Phone Number    import_mobile.xls    ${lot_name}    No
+
+    Go To    ${url_block_truemoveh}
+    Search Mobile                       ${current_date}    ${EMPTY}    ${phone_number}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    Wait Until Element Is Visible       //*[@id='change_status']
+    Click Element                       //*[@id="change_status"]
+
+    Wait Until Element Is Visible       //*[@id='extend_btn']
+    Click Element                       //*[@id="extend_btn"]
+    Go To    ${url_block_truemoveh}
+    ${total_active}=                    Get Total Mobile     ${current_date}    ${EMPTY}    ${phone_number}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    ${old_total}=                       Evaluate             1+${old_total}
+    Should Be Equal                     ${total_active}      ${old_total}
+
+    [Teardown]    Remove Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+
+TC_MC_07062
+    [Documentation]    Truemove H Active Mobile Number page display the result of searching is correctly by using criteria:  1. Select lot 2. Status = Draft and can be change mobile status from draft to active success
+    [Tags]    Ligo    Sprint2017MC19    Regression    High
+    Set Test Variable           ${lot_name}         robottest6
+
+    ${check_lot}=               Get Matching Xpath Count         //select[@id='lot']/option[@value='${lot_name}']
+    ${old_total_active}=        Run Keyword If    ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    Log To Console              old_active=${old_total_active}
+     ${old_total_draft}=        Run Keyword If        ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    ${old_total_active}=        Convert To Integer          ${old_total_active}
+    ${old_total_draft}=         Convert To Integer          ${old_total_draft}
+    ${old_total}=               Evaluate                    ${old_total_active}+ ${old_total_draft}
+
+    ${file_import}=          Gen Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+    Import Phone Number    import_mobile.xls    ${lot_name}    No
+
+    Go To    ${url_block_truemoveh}
+    Search Mobile                       ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    Wait Until Element Is Visible       //*[@id='change_status']
+    Click Element                       //*[@id="change_status"]
+
+    Wait Until Element Is Visible       //*[@id='extend_btn']
+    Click Element                       //*[@id="extend_btn"]
+
+    Go To    ${url_block_truemoveh}
+    ${total_active}=                    Get Total Mobile     ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    ${old_total}=                       Evaluate             3+${old_total}
+    Should Be Equal                     ${total_active}      ${old_total}
+
+    [Teardown]    Remove Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+
+TC_MC_07063
+    [Documentation]    Truemove H Active Mobile Number page display the result of searching is correctly by using criteria:  1. Select mobile type 2. Status = Draft and can be change mobile status from draft to active success
+    Set Test Variable           ${lot_name}            robottest7
+    Set Test Variable           ${mobile_type}         1
+
+    ${check_lot}=               Get Matching Xpath Count         //select[@id='lot']/option[@value='${lot_name}']
+    ${old_total_active}=        Run Keyword If    ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${mobile_type}    ${EMPTY}    active
+    Log To Console              old_active=${old_total_active}
+     ${old_total_draft}=        Run Keyword If        ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${mobile_type}    ${EMPTY}    draft
+    ${old_total_active}=        Convert To Integer          ${old_total_active}
+    ${old_total_draft}=         Convert To Integer          ${old_total_draft}
+    ${old_total}=               Evaluate                    ${old_total_active}+ ${old_total_draft}
+
+    ${file_import}=          Gen Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+    Import Phone Number    import_mobile.xls    ${lot_name}    No
+
+    Go To    ${url_block_truemoveh}
+    Search Mobile                       ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${mobile_type}    ${EMPTY}    draft
+    Wait Until Element Is Visible       //*[@id='change_status']
+    Click Element                       //*[@id="change_status"]
+
+    Wait Until Element Is Visible       //*[@id='extend_btn']
+    Click Element                       //*[@id="extend_btn"]
+
+    Go To    ${url_block_truemoveh}
+    ${total_active}=                    Get Total Mobile     ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${mobile_type}    ${EMPTY}    active
+    ${old_total}=                       Evaluate             3+${old_total}
+    Should Be Equal                     ${total_active}      ${old_total}
+
+    [Teardown]    Remove Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+
+TC_MC_07064
+    [Documentation]    Truemove H Active Mobile Number page display the result of searching is correctly by using criteria:  1. Expire Status = Expired 2. Status = Draft and can be change mobile status from draft to active success
+    Set Test Variable           ${lot_name}            robottest8
+    Set Test Variable           ${expire_status}         true
+
+    ${check_lot}=               Get Matching Xpath Count         //select[@id='lot']/option[@value='${lot_name}']
+    ${old_total_active}=        Run Keyword If    ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${expire_status}    active
+    Log To Console              old_active=${old_total_active}
+     ${old_total_draft}=        Run Keyword If        ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${expire_status}    draft
+    ${old_total_active}=        Convert To Integer          ${old_total_active}
+    ${old_total_draft}=         Convert To Integer          ${old_total_draft}
+    ${old_total}=               Evaluate                    ${old_total_active}+ ${old_total_draft}
+
+    ${file_import}=          Gen Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+    Import Phone Number    import_mobile.xls    ${lot_name}    No
+
+    Go To    ${url_block_truemoveh}
+    Search Mobile                       ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${expire_status}    draft
+    Wait Until Element Is Visible       //*[@id='change_status']
+    Click Element                       //*[@id="change_status"]
+
+    Wait Until Element Is Visible       //*[@id='extend_btn']
+    Click Element                       //*[@id="extend_btn"]
+
+    Go To    ${url_block_truemoveh}
+    ${total_active}=                    Get Total Mobile     ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${expire_status}    active
+    ${old_total}=                       Evaluate             3+${old_total}
+    Should Be Equal                     ${total_active}      ${old_total}
+
+    [Teardown]    Remove Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+
+TC_MC_07065
+    [Documentation]    Truemove H Active Mobile Number page display the result of searching is correctly by using criteria:  1. Expire Status = Not Expired 2. Status = Draftand can be change mobile status from draft to active success
+    Set Test Variable           ${lot_name}            robot9
+    Set Test Variable           ${expired}             false
+
+    ${check_lot}=               Get Matching Xpath Count         //select[@id='lot']/option[@value='${lot_name}']
+    ${old_total_active}=        Run Keyword If    ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${expired}    active
+    Log To Console              old_active=${old_total_active}
+     ${old_total_draft}=        Run Keyword If        ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${expired}    draft
+    ${old_total_active}=        Convert To Integer          ${old_total_active}
+    ${old_total_draft}=         Convert To Integer          ${old_total_draft}
+    ${old_total}=               Evaluate                    ${old_total_active}+ ${old_total_draft}
+
+    ${file_import}=          Gen Import File Not Expire    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+    Import Phone Number    import_mobile.xls    ${lot_name}    No
+
+    Go To    ${url_block_truemoveh}
+    Search Mobile                       ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${expired}    draft
+    Wait Until Element Is Visible       //*[@id='change_status']
+    Click Element                       //*[@id="change_status"]
+
+    Wait Until Element Is Visible       //*[@id='extend_btn']
+    Click Element                       //*[@id="extend_btn"]
+
+    Go To    ${url_block_truemoveh}
+    ${total_active}=                    Get Total Mobile     ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${expired}    active
+    ${old_total}=                       Evaluate             3+${old_total}
+    Should Be Equal                     ${total_active}      ${old_total}
+
+    [Teardown]    Remove Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+
+TC_MC_07066
+    [Documentation]    Truemove H Active Mobile Number page display the result of searching is correctly by using criteria:  1. Status = Draft and can be change mobile status from draft to active success
+    Set Test Variable           ${lot_name}            robot10
+
+    ${check_lot}=               Get Matching Xpath Count         //select[@id='lot']/option[@value='${lot_name}']
+    ${old_total_active}=        Run Keyword If    ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    Log To Console              old_active=${old_total_active}
+     ${old_total_draft}=        Run Keyword If        ${check_lot} == 0     Convert To Integer        0
+    ...   ELSE                  Get Total Mobile      ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    ${old_total_active}=        Convert To Integer          ${old_total_active}
+    ${old_total_draft}=         Convert To Integer          ${old_total_draft}
+    ${old_total}=               Evaluate                    ${old_total_active}+ ${old_total_draft}
+
+    ${file_import}=          Gen Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls
+    Import Phone Number    import_mobile.xls    ${lot_name}    No
+
+    Go To    ${url_block_truemoveh}
+    Search Mobile                       ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    draft
+    Wait Until Element Is Visible       //*[@id='change_status']
+    Click Element                       //*[@id="change_status"]
+
+    Wait Until Element Is Visible       //*[@id='extend_btn']
+    Click Element                       //*[@id="extend_btn"]
+
+    Go To    ${url_block_truemoveh}
+    ${total_active}=                    Get Total Mobile     ${EMPTY}    ${EMPTY}    ${EMPTY}    ${lot_name}    ${EMPTY}    ${EMPTY}    active
+    ${old_total}=                       Evaluate             3+${old_total}
+    Should Be Equal                     ${total_active}      ${old_total}
+
+    [Teardown]    Remove Import File    ${CURDIR}/../../../../Resource/WeMall/Image/import_mobile.xls

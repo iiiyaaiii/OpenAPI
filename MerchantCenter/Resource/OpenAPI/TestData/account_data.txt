@@ -1,0 +1,12 @@
+*** Variables ***
+### Facebook Data Login ###
+${fb_display_name}        Pitchaya Iiyaa
+${fb_email}               pit_ya@hotmail.com
+${fb_first_name}          Pitchaya
+${fb_last_name}           Ketnirun
+${auth_user}              aygbdRUJ1qQZbMeERSAZWXbz7d2zbv9u
+${auth_passwd}            KiefzfyAMfnKyR5b
+
+### User Data Login ###
+${user_email}             pitchaya_ket@sendit.asia
+${user_password}          Ya110789

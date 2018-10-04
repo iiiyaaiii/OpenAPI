@@ -1,0 +1,300 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Setup        Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Test Teardown     Close All Browsers
+Force Tags        Portal-Web    Ligo    mc-wls
+Library           SeleniumLibrary    15    5    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Campaign.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Widget.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/Cart.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Keyword/Common/Checkout.txt
+Resource          ../../../../Keyword/Common/Cart.txt
+
+*** Test Cases ***
+TC_MC_03925
+    [Documentation]    Add 1 product from 1 store to cart
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}
+    ${name}=    Get Text    ${leveld_itemname}
+    ${price}=    Get Text    ${leveld_itemprice}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Product In Cart    ${shopname}    ${name}    ${quantity}    ${price}
+
+TC_MC_03926
+    [Documentation]    Add 2 product from 1 store to cart
+    [Tags]    High    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    ${name}=    Get Text    ${leveld_itemname}
+    ${price}=    Get Text    ${leveld_itemprice}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Execute Javascript    ${addtocart}.click()
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Product In Cart    ${shopname}    ${name}    ${quantity}    ${price}
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_use}?refresh=changeme
+    Sleep    1
+    Repeat Keyword    1 times    Execute Javascript    ${leveld_increase_js}.click()
+    ${name}=    Get Text    ${leveld_itemname}
+    ${price}=    Get Text    ${leveld_itemprice}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Product In Cart    ${shopname}    ${name}    ${quantity}    ${price}
+
+TC_MC_03927
+    [Documentation]    Add 2 product from 2 store to cart
+    [Tags]    Regression    High    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new3}?refresh=changeme
+    ${name}=    Get Text    ${leveld_itemname}
+    ${price}=    Get Text    ${leveld_itemprice}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Product In Cart    ${shopname}    ${name}    ${quantity}    ${price}
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme
+    ${name}=    Get Text    ${leveld_itemname}
+    ${price}=    Get Text    ${leveld_itemprice}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Product In Cart    ${shopname}    ${name}    ${quantity}    ${price}
+
+TC_MC_03928
+    [Documentation]    Add product have 1 attribute
+    [Tags]    High    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_1attr_3inv}?refresh=changeme
+    Click Element    ${leveld_increase}
+    ${attribute}=    Selected Attribute    สี    แดง
+    ${name}=    Get Text    ${leveld_itemname}
+    ${price}=    Get Text    ${leveld_itemprice}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Product In Cart    ${shopname}    ${name}    ${quantity}    ${price}    ${attribute}
+
+TC_MC_03929
+    [Documentation]    Add product have 2 attribute
+    [Tags]    Regression    SmokeTest    Medium    mock
+    Go to    ${URL_PORTAL}
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_2attr_3inv}?refresh=changeme
+    Click Element    ${leveld_increase}
+    ${name}=    Get Text    ${leveld_itemname}
+    ${price}=    Get Text    ${leveld_itemprice}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    ${quantity}=    Get Value    ${leveld_quantity}
+    ${attribute1}=    Selected Attribute    สี    ขาว
+    ${attribute2}=    Selected Attribute    ขนาด    XL
+    Click Element    ${addtocart}
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Product In Cart    ${shopname}    ${name}    ${quantity}    ${price}    ${attribute1}    ${attribute2}
+
+TC_MC_03930
+    [Documentation]    Add product to cart when no any product in cart
+    [Tags]    High    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    Element Should Be Visible    ${leveld_itemname}
+    ${product1}=    Get Text    ${leveld_itemname}
+    Execute Javascript    ${addtocart}.click()
+    Execute Javascript    ${gotocart}[0].click()
+    Element Should Be Visible    ${cart_shop}
+    Element Should Be Visible    ${cart_productname}
+    ${cart_shop1}=    Get Text    ${cart_shop}
+    ${cart_name1}=    Get Text    ${cart_productname}
+    Should Be Equal    ${product1}    ${cart_name1}
+
+TC_MC_03931
+    [Documentation]    Add product from diferrent shop to cart when have product from 1 shop in cart
+    [Tags]    Regression    SmokeTest    Medium    mock
+    Delete All Product In Cart
+    Add Product To Cart by product name on Store    ${URL_LEVEL_D}/${robot_store1_instock_type_new}    ${cart_robot_store1_product_name}
+    Add Product To Cart by product name on Store    ${URL_LEVEL_D}/${robot_store2_instock_type_new}    ${cart_robot_store2_product_name}
+    Check Text    ${cart_robot_store1}    ${cart_robot_store_name_store1}
+    Check Text    ${cart_robot_store2}    ${cart_robot_store_name_store2}
+
+TC_MC_03932
+    [Documentation]    Add other product from first shop to cart when have product from 2 shop in cart
+    [Tags]    Regression    Medium    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme    # 1 Shop
+    Element Should Be Visible    ${leveld_itemname}
+    ${product1}=    Get Text    ${leveld_itemname}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Element Should Be Visible    ${cart_shop}
+    Element Should Be Visible    ${cart_productname}
+    ${cart_shop1}=    Get Text    ${cart_shop}
+    ${cart_name1}=    Get Text    ${cart_productname}
+    Should Be Equal    ${product1}    ${cart_name1}
+    Sleep    1
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme    # 2 Shop
+    Element Should Be Visible    ${leveld_itemname}
+    ${product2}=    Get Text    ${leveld_itemname}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Element Should Be Visible    ${cart_shop}
+    Element Should Be Visible    ${cart_productname}
+    ${cart_shop2}=    Get Text    ${cart_shop}
+    ${cart_name2}=    Get Text    ${cart_productname}
+    Should Be Equal    ${product2}    ${cart_name2}
+    Sleep    1
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_use}?refresh=changeme    # 1 Shop
+    Element Should Be Visible    ${leveld_itemname}
+    ${product1}=    Get Text    ${leveld_itemname}
+    Element Should Be Visible    ${leveld_shopname}
+    ${shopname1}=    Get Text    ${leveld_shopname}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Element Should Be Visible    ${cart_shop}[1]${cart_shopname}
+    Element Should Be Visible    ${cart_shop}[1]${cart_product}[1]${cart_boxitem}
+    ${cart_shop1}=    Get Text    ${cart_shop}
+    ${cart_name1}=    Get Text    ${cart_shop}[1]${cart_shopname}
+    ${cart_name1}    Remove String    ${cart_name1}    ร้านค้า :${SPACE}
+    Should Be Equal    ${shopname1}    ${cart_name1}
+
+TC_MC_03934
+    [Documentation]    Add other product from first shop to cart when have product from 3 shop in cart
+    [Tags]    Regression    Low    mock
+    Delete All Product In Cart
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme    # 1 Shop
+    Element Should Be Visible    ${leveld_itemname}
+    ${product1}=    Get Text    ${leveld_itemname}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Element Should Be Visible    ${cart_shop}
+    Element Should Be Visible    ${cart_productname}
+    ${cart_shop1}=    Get Text    ${cart_shop}
+    ${cart_name1}=    Get Text    ${cart_productname}
+    Should Be Equal    ${product1}    ${cart_name1}
+    Sleep    1
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme    # 2 Shop
+    Element Should Be Visible    ${leveld_itemname}
+    ${product2}=    Get Text    ${leveld_itemname}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Element Should Be Visible    ${cart_shop}
+    Element Should Be Visible    ${cart_productname}
+    ${cart_shop2}=    Get Text    ${cart_shop}
+    ${cart_name2}=    Get Text    ${cart_productname}
+    Should Be Equal    ${product2}    ${cart_name2}
+    Sleep    1
+    Go to    ${URL_LEVEL_D}/${robot_store_other_product_normal}?refresh=changeme    # 3 Shop
+    Wait Until Element Is Visible    ${leveld_itemname}
+    Element Should Be Visible    ${leveld_itemname}
+    ${product3}=    Get Text    ${leveld_itemname}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Element Should Be Visible    ${cart_shop}
+    Element Should Be Visible    ${cart_productname}
+    ${cart_shop3}=    Get Text    ${cart_shop}
+    ${cart_name3}=    Get Text    ${cart_productname}
+    Should Be Equal    ${product3}    ${cart_name3}
+    Sleep    1
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_use}    # 1 shop
+    Element Should Be Visible    ${leveld_shopname}
+    ${shopname4}=    Get Text    ${leveld_shopname}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Sleep    1
+    Element Should Be Visible    ${cart_shop}
+    Element Should Be Visible    ${cart_productname}
+    Element Should Be Visible    ${cart_shop}[1]${cart_shopname}
+    Element Should Be Visible    ${cart_shop}[1]${cart_product}[1]${cart_boxitem}
+    ${cart_shop4}=    Get Text    ${cart_shop}
+    ${cart_name4}=    Get Text    ${cart_shop}[1]${cart_shopname}
+    ${cart_name4}    Remove String    ${cart_name4}    ร้านค้า :${SPACE}
+    Should Be Equal    ${shopname4}    ${cart_name4}
+
+TC_MC_03939
+    [Documentation]    [Flashsale limit] Add product flashsale and other product in same shop but not flashsale
+    [Tags]    Regression    Medium    mock
+    Delete All Product In Cart
+    Go to    ${URL_PORTAL}
+    Execute Javascript    ${megamenu_flashsale}.click()
+    Get DealZapp Product    robot_store1 - สินค้า FlashSale 1
+    Sleep    1
+    ${url}    Get Location
+    Go to    ${url}?refresh=changeme
+    Sleep    1
+    ${productname}=    Get Text    ${leveld_itemname}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Special Product In Cart    ${shopname}    ${productname}    flashsale
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new3}?refresh=changeme
+    Sleep    1
+    ${productname2}=    Get Text    ${leveld_itemname}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Special Product In Cart    ${shopname}    ${productname2}
+
+TC_MC_03940
+    [Documentation]    [Flashsale limit] Add product flashsale from 2 shops
+    [Tags]    Regression    Medium    Portal-Web    mock
+    Delete All Product In Cart
+    Go to    ${URL_PORTAL}
+    Execute Javascript    ${megamenu_flashsale}.click()
+    Get DealZapp Product    robot_store1 - สินค้า FlashSale 1
+    ${url}    Get Location
+    Go to    ${url}?refresh=changeme
+    Sleep    1
+    ${productname}=    Get Text    ${leveld_itemname}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Special Product In Cart    ${shopname}    ${productname}    flashsale
+    Execute Javascript    ${megamenu_flashsale}.click()
+    Get DealZapp Product    robot_store2 - สินค้า FlashSale 1
+    ${url}    Get Location
+    Go to    ${url}?refresh=changeme
+    Sleep    1
+    ${productname}=    Get Text    ${leveld_itemname}
+    ${shopname}=    Get Text    ${leveld_shopname}
+    Click Element    ${addtocart}
+    Sleep    1
+    Execute Javascript    ${gotocart}[0].click()
+    Verify Special Product In Cart    ${shopname}    ${productname}    flashsale
+

@@ -1,0 +1,95 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wm
+Suite Teardown    Close All Browsers
+Test Setup        Set Selenium Speed    0.2s
+Force Tags        WMS-Web    mock    Ligo    Sprint2017MC9    dealWM1
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Library           Collections
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+
+*** Variables ***
+${product_id_no_stock}    L91556494
+
+*** Test Cases ***
+TC_MC_08168
+    [Documentation]    [Wemall] Select product to Dealzapp next day
+    [Tags]    High    Queue    SmokeTest    mock    Ready
+    [setup]    Reset Test Data Dealzapp    next_deal    wm
+    Set Test Variable    ${ProductID}    ${robot_store2_fix_next_deal}
+    Set Test Variable    ${SpecialPrice}    1
+    ${dealzapp_id}    Check Dealzapp Next Day    wm
+    ${dealzapp_id}    Remove String    ${dealzapp_id}    row-
+    WMS Select Product to Campaign    dealzapp    ${dealzapp_id}    ${robot_store2_fix_next_deal}    0    1
+    Verify product on EverydayWoW    Next
+    Verify dealzapp on Level D    Next
+    WMS Switch Project    wm
+    Remove Product from Campaign    ${dealzapp_id}    ${robot_store2_fix_next_deal}    dealzapp
+
+TC_MC_08170
+    [Documentation]    [Wemall] Select product to DealZapp and DealZapp on time
+    [Tags]    High    Queue    SmokeTest    mock    Ready
+    Set Test Variable    ${ProductID}    ${robot_store2_fix_current_deal}
+    Set Test Variable    ${SpecialPrice}    1
+    ${dealzapp_id}    Check Current Dealzapp
+    ${dealzapp_id}    Remove String    ${dealzapp_id}    row-
+    WMS Select Product to Campaign    dealzapp    ${dealzapp_id}    ${robot_store2_fix_current_deal}    0    1
+    Verify dealzapp on Level D    Current
+    Verify product on EverydayWoW    Current
+    WMS Switch Project    wm
+    Remove Product from Campaign    ${dealzapp_id}    ${robot_store2_fix_current_deal}    dealzapp
+
+TC_MC_08184
+    [Documentation]    [Wemall] [Dealzapp]: Edit limit product in campaign not equal 0
+    [Tags]    Regression    Medium    Protal-API    mock    Ready
+    [setup]    Reset Test Data Dealzapp    current_deal
+    Go to dealzapp list
+    Filter dealzap status    On
+    ${NoData_Msg}    ${campaign_id}    Check no data and get Campaign ID
+    Run Keyword If    '${NoData_Msg}' == '1'    Change dealzapp date to next deal    2400
+    WMS Select Product to Campaign    dealzapp    ${campaign_id}    ${robot_store2_fix_current_deal}    0    1
+    Comment    *** Change number limit ***
+    Wait Until Element Is Visible    //tr[1]//input[contains(@name,'quantity_limit')]    60s
+    Input Text    //tr[1]//input[contains(@name,'quantity_limit')]    3
+    Save Manage shop
+    Comment    *** Verify After change ***
+    Go to Manage Show    ${campaign_id}
+    Wait Until Element Is Visible    //tr[1]//input[contains(@name,'quantity_limit')]    60s
+    ${GetLimit}    Execute Javascript    return $('input[numbers-only="quantity_limit[product.id]"]:eq(0)').val();
+    Should Be Equal    ${GetLimit}    3
+    Remove Product from Campaign    ${campaign_id}    ${robot_store2_fix_current_deal}    dealzapp
+
+TC_MC_08188
+    [Documentation]    [Wemall] [Dealzapp]: Edit custom price product in campaign not equal sell price
+    [Tags]    Regression    Medium    Protal-API    mock    Ready
+    [setup]    Reset Test Data Dealzapp    current_deal
+    Go to dealzapp list
+    Filter dealzap status    On
+    ${NoData_Msg}    ${campaign_id}    Check no data and get Campaign ID
+    Run Keyword If    '${NoData_Msg}' == '1'    Change dealzapp date to next deal    2400
+    WMS Select Product to Campaign    dealzapp    ${campaign_id}    ${robot_store2_fix_current_deal}    0    1
+    Comment    *** Change custom price ***
+    Wait Until Element Is Visible    //tr[1]//input[contains(@name,'price')]    60s
+    Input Text    //tr[1]//input[contains(@name,'price')]    19
+    Save Manage shop
+    Comment    *** Verify After change ***
+    Go to Manage Show    ${campaign_id}
+    Wait Until Element Is Visible    //tr[1]//input[contains(@name,'price')]    60s
+    ${Custom_Price}    Execute Javascript    return $('input[numbers-only="custom_price[product.id]"]:eq(0)').val();
+    Should Be Equal    ${Custom_Price}    19
+    Remove Product from Campaign    ${campaign_id}    ${robot_store2_fix_current_deal}    dealzapp
+
+TC_MC_11894
+    [Documentation]    [Wemall][Dealzaap] Verify can search product in Dealzaap  incase product stock = 0
+    [Tags]    Regression Medium
+    Go to dealzapp list
+    Filter dealzap status    On
+    Click Manage Show
+    Search Product ID    ${product_id_no_stock}
+    Verify Search Product ID

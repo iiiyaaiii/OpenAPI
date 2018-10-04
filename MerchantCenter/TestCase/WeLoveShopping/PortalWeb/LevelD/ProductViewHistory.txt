@@ -1,0 +1,35 @@
+*** Settings ***
+Suite Setup       Open Custom Browser    ${URL_PORTAL}    ${BROWSER}
+Suite Teardown    Close All Browsers
+Test Teardown     Close All Browsers
+Force Tags        LevelD    feature-leveld    Portal-Web    mc-wls
+Resource          ../../../../Resource/WeLoveShopping/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Resource/WeLoveShopping/WebElement/LevelD.txt
+
+*** Test Cases ***
+TC_MC_08480
+    [Documentation]    Product view history : first time to visit product
+    Delete All Cookies
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme
+    Element Should Be Visible    ${breadcrumb_new}
+    Element Should Contain    ${leveld_related_product}    สินค้าที่เกี่ยวข้อง
+    Element Should Not Be Visible    //div[@ng-controller="recentView"]//h4[@class="lvd-sub-title"]
+
+TC_MC_08481
+    [Documentation]    Product view history : don't first time to visit product
+    [Tags]    Regression    Medium    mock
+    Go to    ${URL_LEVEL_D}/${robot_store2_instock_type_new}?refresh=changeme
+    Element Should Be Visible    ${breadcrumb_new}
+    Element Should Contain    ${leveld_related_product}    สินค้าที่เกี่ยวข้อง
+    Element Should Be Visible    ${leveld_box_related}
+    Click Element    //ul[@class="items-list-box related-product"]//li
+    Element Should Be Visible    ${breadcrumb_new}
+    Element Should Be Visible    ${leveld_box_related}
+    Click Element    //ul[@class="items-list-box related-product"]//li
+    Element Should Be Visible    ${breadcrumb_new}
+    Element Should Be Visible    //div[@ng-controller="recentView"]
+    ${category1}    Get Text    ${breadcrumb_new}
+    ${category2}    Get Text    ${breadcrumb_new}
+    ${category3}    Get Text    ${breadcrumb_new}
+    Should Contain    ${category1}    ${category2}    ${category3}

@@ -1,0 +1,37 @@
+*** Keywords ***
+Choose Shipping Type Thailand Post
+    [Documentation]    Action Choose Shipping Type Thailand Post
+    [Arguments]    ${service_thp}
+    ${status}    Execute Javascript    return $("input[type=checkbox][name='thai_land_post']").prop('checked')
+    Run Keyword If    '${status}' == 'False'    Execute Javascript    ${service_thp}.click()
+    ${status_thp}    Execute Javascript    return ${service_thp}.prop('checked')
+    Run Keyword If    '${status_thp}' == 'False'    Execute Javascript    ${service_thp}.click()
+
+Check Shipping Type Selected
+    [Documentation]    Action Check Shipping Type Selected
+    [Arguments]    ${service_type}
+    ${status}    Execute Javascript    return ${service_type}.prop('checked')
+    Run Keyword If    '${status}' == 'False'    Execute Javascript    ${service_type}.click()
+
+Check Row Shipping Have Two Rows
+    [Documentation]    Check Row Shipping Have Two Rows
+    [Arguments]    ${attr_1}    ${attr_2}
+    ${num}    Execute Javascript    return ${attr_1}.closest('.panel-group').find('.row-ship').length
+    ${result}    Convert To Integer    ${num}
+    ${status}    ${value} =    Run Keyword And Ignore Error    Should Be Equal As Integers    ${result}    2
+    Run Keyword If    '${status}' == 'PASS'    Execute Javascript    ${attr_2}.click()
+
+Check Row Shipping Have Three Rows
+    [Documentation]    Check Row Shipping Have Three Rows
+    [Arguments]    ${attr_1}    ${attr_2}
+    ${num}    Execute Javascript    return ${attr_1}.closest('.panel-group').find('.row-ship').length
+    ${result}    Convert To Integer    ${num}
+    ${status}    ${value} =    Run Keyword And Ignore Error    Should Be Equal As Integers    ${result}    3
+    Run Keyword If    '${status}' == 'PASS'    Execute Javascript    ${attr_2}.click()
+    Execute Javascript    ${attr_2}.click()
+
+Uncheck Shipping Type selected
+    [Documentation]    Action Check Shipping Type Selected
+    [Arguments]    ${service_type}
+    ${status}    Execute Javascript    return ${service_type}.prop('checked')
+    Run Keyword If    '${status}' == 'True'    Execute Javascript    ${service_type}.click()

@@ -1,0 +1,29 @@
+*** Settings ***
+Suite Setup       Run Keyword    Open Custom Browser    ${URL_PORTAL}    ${BROWSER}    #AND    Reset Store/Product Status    wm
+Suite Teardown    Close All Browsers
+Force Tags        Wemall-Web    feature-leveld
+Test Timeout      3 minutes
+Library           SeleniumLibrary    run_on_failure=Capture Page Screenshot
+Library           String
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Promocode.txt
+Resource          ../../../../Keyword/Common/LevelD.txt
+Resource          ../../../../Keyword/Common/Campaign.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/WMS_Blockshop.txt
+Resource          ../../../../Keyword/Common/WMS_Blockproduct.txt
+Resource          ../../../../Keyword/Common/Product.txt
+Resource          ../../../../Resource/WeMall/WebElement/LevelD.txt
+Resource          ../../../../Resource/WeMall/WebElement/Product.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+
+
+*** Test Cases ***
+TC_WLS_02040
+    [Documentation]    Tab Payment method [have activated credit card]
+    Go to    ${URL_LEVEL_D}/${robot_store1_instock_type_new}?refresh=changeme
+    Element Should Be Visible    ${leveld_payment}
+    Click Element    ${leveld_payment}
+    Element Should Be Visible    ${leveld_box_payment}
+

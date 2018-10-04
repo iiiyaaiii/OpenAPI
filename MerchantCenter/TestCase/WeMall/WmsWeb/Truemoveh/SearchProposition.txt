@@ -1,0 +1,76 @@
+*** Settings ***
+Suite Setup       WMS Switch Project    wemall
+Suite Teardown    Close All Browsers
+Force Tags        WMS-Web    Truemoveh    mock
+Library           SeleniumLibrary
+Library           String
+Library           DateTime
+Resource          ../../../../Resource/WeMall/init.robot
+Resource          ../../../../Keyword/Common/Common.txt
+Resource          ../../../../Keyword/Common/Member_SignIn.txt
+Resource          ../../../../Keyword/Common/Truemoveh.txt
+Resource          ../../../../Resource/WeMall/WebElement/Member_SignIn.txt
+Resource          ../../../../Resource/WeMall/WebElement/Truemoveh.txt
+
+*** Test Case ***
+TC_MC_06813
+    [Documentation]    Display error message if user search by leaves "Nas Code" field as blank
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Set Test Variable                		${test_nas_code}     			${EMPTY}
+	Wait Until Element Is Visible           ${input_search_nas_code}        ${TIMEOUT}
+    Input Text                              ${input_search_nas_code}        ${test_nas_code}
+    Click Element 					 		//button[@id="search_btn"]
+    Wait Until Element Is Visible           ${error_input_nas_code}
+    Element Should Contain                  ${error_input_nas_code}         The nas code field is required.
+
+TC_MC_06814
+    [Documentation]    Display error message if user search by leaves "Nas Code" field as blank
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Set Test Variable                		${test_nas_code}     			robotSearch
+    Proposition - Delete Existing Nas Code  ${test_nas_code}
+	Wait Until Element Is Visible           ${input_search_nas_code}        ${TIMEOUT}
+    Input Text                              ${input_search_nas_code}        ${test_nas_code}
+    Click Element 					 		//button[@id="search_btn"]
+	Element Should Contain 					//div[@id='search-result']/div/table/tbody/tr/td       Data Not Found.
+
+TC_MC_06815
+    [Documentation]    Display propositions correctly when user search by full nas code is existing in the system
+    [Tags]    High
+    Go To Menu Proposition
+    Set Test Variable                		${test_nas_code}     			robotNAS01
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   ${test_nas_code}
+	Wait Until Element Is Visible           ${input_search_nas_code}        ${TIMEOUT}
+    Input Text                              ${input_search_nas_code}        ${test_nas_code}
+    Click Element 					 		//button[@id="search_btn"]
+    Element Should Be Visible               //span[@data-id="nas_code" and text()="${test_nas_code}"]
+
+TC_MC_06816
+    [Documentation]    Display propositions correctly when user search by some part of nas code is existing in the system
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Set Test Variable                		${test_nas_code}     			robotNAS01
+    Create Proposition If Nas Code Not Exist     robotNAME01     ${EMPTY}   ${test_nas_code}
+	Wait Until Element Is Visible           ${input_search_nas_code}        ${TIMEOUT}
+    Input Text                              ${input_search_nas_code}        botNAS01
+    Click Element 					 		//button[@id="search_btn"]
+    Element Should Be Visible               //span[@data-id="nas_code" and text()="${test_nas_code}"]
+
+TC_MC_09914
+    [Documentation]    Search proposition by source type as Sim
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Search Proposition By Source Type    Sim Only
+    All Proposition Records display Source Type as    Sim Only
+
+TC_MC_09915
+    [Documentation]     Search proposition by source type as Bundle
+    [Tags]    Regression    High
+    Go To Menu Proposition
+    Search Proposition By Source Type    Bundle
+    All Proposition Records display Source Type as    Bundle
+
+
+
+
