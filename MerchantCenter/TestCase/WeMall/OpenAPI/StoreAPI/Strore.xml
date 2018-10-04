@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20181004 15:58:25.704" generator="Robot 3.0.4 (Python 2.7.15 on win32)">
+<suite source="D:\Topblitz\Automate\Automate Robot\automate_mc\automate_mc\MerchantCenter\TestCase\WeMall\OpenAPI\OpenAPI\ProductAPI\Product.robot" id="s1" name="Product">
+<test id="s1-t1" name="TC_MC_13140">
+<kw name="Get multiple product success">
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>multiple_product</arg>
+<arg>${STAGING_HOST}</arg>
+</arguments>
+<msg timestamp="20181004 15:58:26.111" level="INFO">Creating Session using : alias=multiple_product, url=https://kritsanunnun-eval-test.apigee.net, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20181004 15:58:26.111" starttime="20181004 15:58:26.111"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Authorization=${Bearer_success}</arg>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{headers}</var>
+</assign>
+<msg timestamp="20181004 15:58:26.111" level="INFO">&amp;{headers} = { Authorization=Bearer xmRfJD5H8Lh4WsJ5bJzbT5WUVv35 | Content-Type=application/json }</msg>
+<status status="PASS" endtime="20181004 15:58:26.111" starttime="20181004 15:58:26.111"></status>
+</kw>
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the</doc>
+<arguments>
+<arg>multiple_product</arg>
+<arg>${Product_multiple}</arg>
+<arg>headers=${headers}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20181004 15:58:29.110" level="INFO">Get Request using : alias=multiple_product, uri=/ecom/products, headers={u'Authorization': u'Bearer xmRfJD5H8Lh4WsJ5bJzbT5WUVv35', u'Content-Type': u'application/json'} json=None</msg>
+<msg timestamp="20181004 15:58:29.110" level="INFO">c:\Python27\lib\site-packages\urllib3\connectionpool.py:857: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  InsecureRequestWarning)</msg>
+<msg timestamp="20181004 15:58:29.110" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20181004 15:58:29.110" starttime="20181004 15:58:26.111"></status>
+</kw>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+</arguments>
+<status status="PASS" endtime="20181004 15:58:29.110" starttime="20181004 15:58:29.110"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20181004 15:58:29.110" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20181004 15:58:29.110" starttime="20181004 15:58:29.110"></status>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are unequal.</doc>
+<arguments>
+<arg>${resp.json()['status_txt']}</arg>
+<arg>OK</arg>
+</arguments>
+<status status="PASS" endtime="20181004 15:58:29.126" starttime="20181004 15:58:29.110"></status>
+</kw>
+<status status="PASS" endtime="20181004 15:58:29.126" starttime="20181004 15:58:26.111"></status>
+</kw>
+<doc>Get multiple product success</doc>
+<tags>
+<tag>Medium</tag>
+<tag>OpenAPI-Account</tag>
+<tag>Regression</tag>
+</tags>
+<status status="PASS" endtime="20181004 15:58:29.126" critical="yes" starttime="20181004 15:58:26.111"></status>
+</test>
+<test id="s1-t2" name="TC_MC_13141">
+<kw name="Get multiple product failed">
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>multiple_product</arg>
+<arg>${STAGING_HOST}</arg>
+</arguments>
+<msg timestamp="20181004 15:58:29.146" level="INFO">Creating Session using : alias=multiple_product, url=https://kritsanunnun-eval-test.apigee.net, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20181004 15:58:29.148" starttime="20181004 15:58:29.146"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Authorization=${Bearer_failed}</arg>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{headers}</var>
+</assign>
+<msg timestamp="20181004 15:58:29.150" level="INFO">&amp;{headers} = { Authorization=Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxx | Content-Type=application/json }</msg>
+<status status="PASS" endtime="20181004 15:58:29.150" starttime="20181004 15:58:29.148"></status>
+</kw>
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the</doc>
+<arguments>
+<arg>multiple_product</arg>
+<arg>${Product_multiple}</arg>
+<arg>headers=${headers}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20181004 15:58:30.720" level="INFO">Get Request using : alias=multiple_product, uri=/ecom/products, headers={u'Authorization': u'Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxx', u'Content-Type': u'application/json'} json=None</msg>
+<msg timestamp="20181004 15:58:30.720" level="INFO">c:\Python27\lib\site-packages\urllib3\connectionpool.py:857: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  InsecureRequestWarning)</msg>
+<msg timestamp="20181004 15:58:30.720" level="INFO">${resp} = &lt;Response [401]&gt;</msg>
+<status status="PASS" endtime="20181004 15:58:30.720" starttime="20181004 15:58:29.151"></status>
+</kw>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+</arguments>
+<status status="PASS" endtime="20181004 15:58:30.720" starttime="20181004 15:58:30.720"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>401</arg>
+</arguments>
+<msg timestamp="20181004 15:58:30.720" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20181004 15:58:30.720" starttime="20181004 15:58:30.720"></status>
+</kw>
+<status status="PASS" endtime="20181004 15:58:30.720" starttime="20181004 15:58:29.145"></status>
+</kw>
+<doc>Get multiple product failed</doc>
+<tags>
+<tag>Medium</tag>
+<tag>OpenAPI-Account</tag>
+<tag>Regression</tag>
+</tags>
+<status status="PASS" endtime="20181004 15:58:30.720" critical="yes" starttime="20181004 15:58:29.126"></status>
+</test>
+<test id="s1-t3" name="TC_MC_13142">
+<kw name="Get single product detail success">
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>single_product</arg>
+<arg>${STAGING_HOST}</arg>
+</arguments>
+<msg timestamp="20181004 15:58:30.735" level="INFO">Creating Session using : alias=single_product, url=https://kritsanunnun-eval-test.apigee.net, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20181004 15:58:30.735" starttime="20181004 15:58:30.735"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Authorization=${Bearer_success}</arg>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{headers}</var>
+</assign>
+<msg timestamp="20181004 15:58:30.751" level="INFO">&amp;{headers} = { Authorization=Bearer xmRfJD5H8Lh4WsJ5bJzbT5WUVv35 | Content-Type=application/json }</msg>
+<status status="PASS" endtime="20181004 15:58:30.751" starttime="20181004 15:58:30.735"></status>
+</kw>
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the</doc>
+<arguments>
+<arg>single_product</arg>
+<arg>${Product_single}${product_id_success}</arg>
+<arg>headers=${headers}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20181004 15:58:33.238" level="INFO">Get Request using : alias=single_product, uri=/ecom/products/L91556785, headers={u'Authorization': u'Bearer xmRfJD5H8Lh4WsJ5bJzbT5WUVv35', u'Content-Type': u'application/json'} json=None</msg>
+<msg timestamp="20181004 15:58:33.238" level="INFO">c:\Python27\lib\site-packages\urllib3\connectionpool.py:857: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  InsecureRequestWarning)</msg>
+<msg timestamp="20181004 15:58:33.238" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20181004 15:58:33.238" starttime="20181004 15:58:30.751"></status>
+</kw>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+</arguments>
+<status status="PASS" endtime="20181004 15:58:33.238" starttime="20181004 15:58:33.238"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20181004 15:58:33.238" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20181004 15:58:33.238" starttime="20181004 15:58:33.238"></status>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are unequal.</doc>
+<arguments>
+<arg>${resp.json()['status_txt']}</arg>
+<arg>OK</arg>
+</arguments>
+<status status="PASS" endtime="20181004 15:58:33.253" starttime="20181004 15:58:33.253"></status>
+</kw>
+<status status="PASS" endtime="20181004 15:58:33.253" starttime="20181004 15:58:30.735"></status>
+</kw>
+<doc>Get single product detail success</doc>
+<tags>
+<tag>Medium</tag>
+<tag>OpenAPI-Account</tag>
+<tag>Regression</tag>
+</tags>
+<status status="PASS" endtime="20181004 15:58:33.253" critical="yes" starttime="20181004 15:58:30.735"></status>
+</test>
+<test id="s1-t4" name="TC_MC_13143">
+<kw name="Get single product detail success (access token failed)">
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>single_product</arg>
+<arg>${STAGING_HOST}</arg>
+</arguments>
+<msg timestamp="20181004 15:58:33.269" level="INFO">Creating Session using : alias=single_product, url=https://kritsanunnun-eval-test.apigee.net, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20181004 15:58:33.269" starttime="20181004 15:58:33.269"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Authorization=${Bearer_failed}</arg>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{headers}</var>
+</assign>
+<msg timestamp="20181004 15:58:33.269" level="INFO">&amp;{headers} = { Authorization=Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxx | Content-Type=application/json }</msg>
+<status status="PASS" endtime="20181004 15:58:33.269" starttime="20181004 15:58:33.269"></status>
+</kw>
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the</doc>
+<arguments>
+<arg>single_product</arg>
+<arg>${Product_single}${product_id_success}</arg>
+<arg>headers=${headers}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20181004 15:58:34.549" level="INFO">Get Request using : alias=single_product, uri=/ecom/products/L91556785, headers={u'Authorization': u'Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxx', u'Content-Type': u'application/json'} json=None</msg>
+<msg timestamp="20181004 15:58:34.564" level="INFO">c:\Python27\lib\site-packages\urllib3\connectionpool.py:857: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  InsecureRequestWarning)</msg>
+<msg timestamp="20181004 15:58:34.564" level="INFO">${resp} = &lt;Response [401]&gt;</msg>
+<status status="PASS" endtime="20181004 15:58:34.564" starttime="20181004 15:58:33.269"></status>
+</kw>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+</arguments>
+<status status="PASS" endtime="20181004 15:58:34.564" starttime="20181004 15:58:34.564"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>401</arg>
+</arguments>
+<msg timestamp="20181004 15:58:34.564" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20181004 15:58:34.564" starttime="20181004 15:58:34.564"></status>
+</kw>
+<status status="PASS" endtime="20181004 15:58:34.564" starttime="20181004 15:58:33.269"></status>
+</kw>
+<doc>Get single product detail (access token failed)</doc>
+<tags>
+<tag>Medium</tag>
+<tag>OpenAPI-Account</tag>
+<tag>Regression</tag>
+</tags>
+<status status="PASS" endtime="20181004 15:58:34.564" critical="yes" starttime="20181004 15:58:33.269"></status>
+</test>
+<test id="s1-t5" name="TC_MC_13144">
+<kw name="Get single product detail (products id failed)">
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>single_product</arg>
+<arg>${STAGING_HOST}</arg>
+</arguments>
+<msg timestamp="20181004 15:58:34.580" level="INFO">Creating Session using : alias=single_product, url=https://kritsanunnun-eval-test.apigee.net, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20181004 15:58:34.596" starttime="20181004 15:58:34.580"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Authorization=${Bearer_success}</arg>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{headers}</var>
+</assign>
+<msg timestamp="20181004 15:58:34.596" level="INFO">&amp;{headers} = { Authorization=Bearer xmRfJD5H8Lh4WsJ5bJzbT5WUVv35 | Content-Type=application/json }</msg>
+<status status="PASS" endtime="20181004 15:58:34.596" starttime="20181004 15:58:34.596"></status>
+</kw>
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the</doc>
+<arguments>
+<arg>single_product</arg>
+<arg>${Product_single}${product_id_fail}</arg>
+<arg>headers=${headers}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20181004 15:58:37.318" level="INFO">Get Request using : alias=single_product, uri=/ecom/products/L99999999, headers={u'Authorization': u'Bearer xmRfJD5H8Lh4WsJ5bJzbT5WUVv35', u'Content-Type': u'application/json'} json=None</msg>
+<msg timestamp="20181004 15:58:37.318" level="INFO">c:\Python27\lib\site-packages\urllib3\connectionpool.py:857: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  InsecureRequestWarning)</msg>
+<msg timestamp="20181004 15:58:37.318" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20181004 15:58:37.318" starttime="20181004 15:58:34.596"></status>
+</kw>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<status status="PASS" endtime="20181004 15:58:37.334" starttime="20181004 15:58:37.318"></status>
+</kw>
+<status status="PASS" endtime="20181004 15:58:37.334" starttime="20181004 15:58:34.580"></status>
+</kw>
+<doc>Get single product detail (products id failed)</doc>
+<tags>
+<tag>Medium</tag>
+<tag>OpenAPI-Account</tag>
+<tag>Regression</tag>
+</tags>
+<status status="PASS" endtime="20181004 15:58:37.334" critical="yes" starttime="20181004 15:58:34.580"></status>
+</test>
+<status status="PASS" endtime="20181004 15:58:37.349" starttime="20181004 15:58:25.720"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="0" pass="5">Critical Tests</stat>
+<stat fail="0" pass="5">All Tests</stat>
+</total>
+<tag>
+<stat fail="0" pass="5">Medium</stat>
+<stat fail="0" pass="5">OpenAPI-Account</stat>
+<stat fail="0" pass="5">Regression</stat>
+</tag>
+<suite>
+<stat fail="0" id="s1" name="Product" pass="5">Product</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
